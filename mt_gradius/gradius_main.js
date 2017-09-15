@@ -1366,26 +1366,6 @@ const _KEYEVENT_SP={
 	return false;
 },//keydown_game_p
 
-	//コナミコマンド
-// 	if(_DRAW_SETINTERVAL===null){
-// 		_KEYSAFTERPAUSE.push(e.keyCode);
-// 		if(_DEF_KEYSAFTERPAUSE===
-// 				_KEYSAFTERPAUSE.toString()){
-// //			console.log('match');
-// 			_SHOTTYPE=_SHOTTYPE_NORMAL;
-// 			_PLAYERS_MISSILE_ISALIVE=true;
-// 			for(let _i=0;_i<_PLAYERS_OPTION_MAX;_i++){
-// 				_PLAYERS_OPTION[_i].settruealive();
-// 			}
-// 			_PLAYERS_MAIN_FORCE.init();
-// 			_KEYSAFTERPAUSE=[];
-//
-// 			_POWERMETER._set_current_reset();
-// 			_POWERMETER.meterdef_status='101100';
-// 		}
-// 		return false;
-// 	}
-
 'keydown_game_a':function(e){
 	if(_PLAYERS_SHOTS_SETINTERVAL!==null){return;}
 	_PLAYERS_SHOTS_SETINTERVAL=setInterval(function(){
@@ -1421,17 +1401,6 @@ const _KEYEVENT_SP={
 	_POWERMETER.playerset();
 	return false;
 },//keydown_game_b
-
-	//試験版
-	// if(e.key==='M'||e.key==='m'){
-	// 	_DRAW_SCROLL_STOP();
-	// }
-	// if(e.key==='N'||e.key==='n'){
-	// 	_DRAW_SCROLL_RESUME();
-	// }
-	// if(e.key==='B'||e.key==='b'){
-	//  	_POWERMETER.move();
-	// }
 'keyup_game_a':function(e){
 	clearInterval(_PLAYERS_SHOTS_SETINTERVAL);
 	_PLAYERS_SHOTS_SETINTERVAL=null;
@@ -1908,19 +1877,19 @@ class GameObject_PLAYER_OPTION
 
 		_this.shotflag=true;
 
-		_this._ani_c=
-			(_this._ani_c>=(_this.ani.length*3)-1)
-			?0
-			:_this._ani_c+1;
-
 		let _pl=_this.getPlayerCenterPosition();
+		_this.img=(function(_t){
+			_this._ani_c=
+				(_this._ani_c>=(_this.ani.length*3)-1)?0:_this._ani_c+1;
+			return _this.ani[parseInt(_this._ani_c/3)].img;
+		})(_this);
 		let _c=parseInt(_this._ani_c/3);
-		let _w=_this.ani[_c].img.width;
-		let _h=_this.ani[_c].img.height;
+		let _w=_this.img.width;
+		let _h=_this.img.height;
 		let _sw=_w*_this.ani[_c].scale;
 		let _sh=_h*_this.ani[_c].scale;
 		_CONTEXT.drawImage(
-			_this.ani[_c].img,
+			_this.img,
 			_pl._x-(_sw/2),
 			_pl._y-(_sh/2),
 			_sw,
@@ -2008,12 +1977,7 @@ class GameObject_FORCEFIELD{
 	move(_GO){
 		let _this=this;
 		_this.map_collition();
-
 		if(_this._scale===0){return;}
-		_this._c=
-			(_this._c>=(_this.ani.length*5)-1)
-			?0
-			:_this._c+1;
 
 		_this.x=_GO.getPlayerCenterPosition()._x
 					-(_this.width/2)
@@ -2021,8 +1985,12 @@ class GameObject_FORCEFIELD{
 		_this.y=_GO.getPlayerCenterPosition()._y
 					-(_this.height/2)
 					-2;
-		let _a=parseInt(_this._c/5);
-		let _img=_this.ani[_a].img;
+
+		let _img=(function(_t){
+			_this._c=
+				(_this._c>=(_this.ani.length*5)-1)?0:_this._c+1;
+			return _this.ani[parseInt(_this._c/5)].img;
+		})(_this);
 		_CONTEXT.drawImage(
 			_img,_this.x,_this.y,
 				_this.width,_this.height
@@ -2119,32 +2087,22 @@ class GameObject_SHIELD
 		if(_this._scale===0){return;}
 
 		let _pl=_p.getPlayerCenterPosition();
-		_this._c=
-			(_this._c>=(_this.ani.length*5)-1)
-			?0
-			:_this._c+1;
 
 		_this.map_collition(_p);
 
-		let _a=parseInt(_this._c/5);
-		let _img=_this.ani[_a].img;
+		let _img=(function(){
+			_this._c=(_this._c>=(_this.ani.length*5)-1)?0:_this._c+1;
+			return _this.ani[parseInt(_this._c/5)].img;
+		})(_this);
 
 		let _x=_p.x+_p.img.width;
 		let _y1=_pl._y;//下
 		let _y2=_pl._y-(_this.height*_this._scale);//上
 		_CONTEXT.drawImage(
-			_img,
-			_x,
-			_y1,
-			_this.width*_this._scale,
-			_this.height*_this._scale
+			_img,_x,_y1,_this.width,_this.height
 		);
 		_CONTEXT.drawImage(
-			_img,
-			_x,
-			_y2,
-			_this.width*_this._scale,
-			_this.height*_this._scale
+			_img,_x,_y2,_this.width,_this.height
 		);
 		this.x=_x;
 		this.y=_y2;
@@ -4177,17 +4135,18 @@ class GameObject_POWERCAPSELL{
 		//すでにパワーカプセル取得済みは終了
 		if(_this.gotpc){return;}
 		_this.x-=_BACKGROUND_SPEED;
-		let _c=parseInt(_this._c_pc_ani/5);
+
 		//パワーカプセル所持の場合
-		let _img=_this.pc_ani[_c].img;
+		let _img=(function(_t){
+			_this._c_pc_ani=
+				(_this._c_pc_ani>=(_this.pc_ani.length*5)-1)
+				?0:_this._c_pc_ani+1;
+			return _this.pc_ani[parseInt(_this._c_pc_ani/5)].img;
+		})(_this);
 		_CONTEXT.drawImage(
 			_img,_this.x,_this.y,
 			_img.width,_img.height
 		);
-		_this._c_pc_ani=
-			(_this._c_pc_ani>=(_this.pc_ani.length*5)-1)
-			?0
-			:_this._c_pc_ani+1;
 	}
 }
 
@@ -4216,7 +4175,6 @@ class GameObject_BACKGROUND{
 			return (_i<0)
 					?_CANVAS.width
 					:_i-_t.speed;
-;
 		})(this.x);
 
 		_CONTEXT.beginPath();

@@ -686,9 +686,8 @@ class ENEMY_d extends GameObject_ENEMY{
 		_this.y+=_v;
 
 		_this.img=(function(_t){
-			_t._col_c++;
-			let _l=_t.col.length;
-			if(_t._col_c>=(_l*5)-1){_t._col_c=0;}
+			_t._col_c=
+				(_t._col_c>=(_t.col.length*5)-1)?0:_t._col_c+1;
 			return _t.col[parseInt(_t._col_c/5)].img;
 		})(_this)
 
@@ -752,9 +751,8 @@ class ENEMY_e extends GameObject_ENEMY{
 		_this.y+=_v;
 
 		_this.img=(function(_t){
-			_t._col_c++;
-			let _l=_t.col.length;
-			if(_t._col_c>=(_l*5)-1){_t._col_c=0;}
+			_t._col_c=
+				(_t._col_c>=(_t.col.length*5)-1)?0:_t._col_c+1;
 			return _t.col[parseInt(_t._col_c/5)].img;
 		})(_this)
 

@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>HTML 5 sample Drag and Drop</title>
+<style>
+article, aside, dialog, figure, footer, header, hgroup, menu, nav, section { display: block; }
+h1, h2, h3, p{margin:0px;padding:0px;}
+*,*::after,*::before{
+	box-sizing:border-box;
+}
+
+html,body{
+	background:url(./images/gradius_background.jpg);
+	background-size:cover;
+	font-family: HiraKakuProN-W3,"ヒラギノ角ゴ ProN W3",Helvetica,sans-serif;
+	margin:0px;
+	min-width:1000px;
+	padding:0px;
+	position:relative;
+	width:100%;
+	z-index:0;
+}
+html body.ispopup{height:100%;}
+
+
+body{opacity:0;transition:0.5s opacity;}
+body::before{
+	background-color: rgba(0,0,0,0.6);
+    content: '';
+	height: 100%;
+    left: 0px;
+	min-width:1000px;
+	position: absolute;
+	top: 0px;
+    width: 100%;
+    z-index: 0;
+}
+body.on{opacity:1;}
+body.ismenu{padding-bottom:145px;}
+
+
+h1{text-align:center;margin-bottom:30px;}
+
+section#entrylink {}
+section#entrylink .inner {
+    margin: 0px auto;
+    margin-bottom: 30px;
+    text-align: center;
+	width: 1000px;
+}
+section#entrylink .inner a {
+	background-color: rgba(0,0,0,1);
+    border: 1px solid rgba(255,255,255,1);
+    border-radius: 10px;
+	cursor: pointer;
+    display: inline-block;
+	line-height: 10px;
+    padding: 10px 40px;
+	transition: 0.3s background-color;
+}
+section#entrylink .inner a:hover{background-color: rgba(255,255,255,0.6);}
+
+
+
+form{
+	color:rgba(255,255,255,1);
+	min-width:1000px;
+	padding:20px;
+	position:relative;
+	width:100%;
+}
+form img{display:inline-block;}
+
+form h1 img{width:50px;}
+form h2 img{width:25px;}
+form h3 img{width:20px;}
+form .parts_block_wrapper .text img{width:15px;}
+
+
+
+form #form_inner{margin:0px auto;width:100%;}
+
+form #map{
+	background-color:rgba(0,0,0,1);
+	border:1px solid rgba(255,255,255,1);
+	border-radius:10px;
+	margin-bottom:80px;
+	overflow:hidden;
+}
+form #map *{
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+form #map h2{padding:20px;}
+
+form #map section#map_bts {margin: 0 30px 20px;}
+form #map section#map_bts a {
+    background-color: rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,1);
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 0px;
+    padding: 10px;
+    transition: 0.3s background-color;
+}
+
+form #map #area{
+	background-color:rgba(0,0,0,1);
+    border:2px solid rgba(255,255,255,0.8);
+    height:402px;
+    margin-bottom:2em;
+	margin-left:30px;
+	margin-right:30px;
+    overflow:hidden;
+    overflow-x:auto;
+    position:relative;
+    -khtml-user-drag:element;
+}
+form #area #area_selectable{
+    background-color:rgba(0,0,0,0.1);
+    border:1px dotted rgba(0,0,0,1);
+    display:none;
+    position:absolute;
+    z-index:10;
+}
+form #area #area_selectable.on{display:block;}
+
+form #area .area_blocks{left:0px;position:absolute;top:0px;}
+form #area .area_blocks.drop{z-index:10;}
+
+form #area .area_blocks_rows{display:flex;}
+form #area .area_blocks_rows .area_block{
+	border:1px dotted rgba(255,255,255,0.3);
+    flex-shrink:0;
+    height:20px;
+	position:relative;
+    width:20px;
+}
+
+form .parts_block{
+    height:auto;
+    width:100px;
+	transition:0.5s all;
+}
+form #area .area_block[data-val="p"] .parts_block{width:80px;}
+form #area .area_block[data-val="6"] .parts_block{bottom:0px;}
+form #area .area_block[data-val="8"] .parts_block{bottom:0px;}
+
+form #area .area_block .parts_block{position:absolute;width:100%;}
+form #area .area_block .parts_block img{display:block;width:100%;}
+form #area .area_blocks_rows .area_block.over{background-color:rgba(255,255,255,0.4);}
+
+
+#area_parts{
+    background-color:rgba(255,255,255,0.2);
+	display:flex;
+    overflow:hidden;
+	overflow-x:auto;
+    position:relative;
+    z-index:1;
+}
+
+#area_parts .parts_blocks_wrapper{padding:20px;padding-bottom:0px;}
+#area_parts .parts_blocks_wrapper h3{border-bottom:1px solid rgba(255,255,255,1);}
+
+#area_parts .parts_blocks{display:flex;}
+#area_parts .parts_block_wrapper{
+	flex-grow:1;
+	padding:20px;
+	position:relative;
+	text-align:center;
+	width:150px;
+}
+#area_parts .parts_block_wrapper .parts_block{
+	background-color:rgba(0,0,0,1);
+	border:1px dotted rgba(255,255,255,0.5);
+	flex-grow:1;
+	max-width:200px;
+	position:relative;
+}
+#area_parts .parts_block_wrapper .parts_block img{display:block;width:100%;}
+
+
+
+
+
+form .form_group input[type="text"] {
+    background-color:rgba(0,0,0,1);
+    border:1px solid rgba(255,255,255,1);
+    border-radius: 10px;
+	color:rgba(255,255,255,1);
+    font-size:1.5em;
+    padding: 10px;
+    width: 100%;
+}
+form .form_group textarea {
+    background-color:rgba(0,0,0,1);
+	border:1px solid rgba(255,255,255,1);
+    border-radius: 10px;
+	color:rgba(255,255,255,1);
+    font-size:1.5em;
+    padding: 10px;
+    width: 100%;
+}
+form .form_group input[type="range"] {
+    margin:0px 20px;
+    width: 50%;
+}
+
+
+form .form_group{margin-bottom:30px;}
+form .form_group:after{clear:both;content:'';display:table;}
+form .form_group .col_l{float:left;margin-top:15px;margin-right:3%;text-align:right;width:20%;}
+form .form_group .col_r{float:left;width:77%;}
+form .form_group .col_r .val{
+    background-color:rgba(0,0,0,1);
+    border:1px solid rgba(255,255,255,0.7);
+	border-radius:10px;
+    display:inline-block;
+    margin-right:20px;
+	padding:10px;
+	text-align:center;
+    width:100px;
+}
+form .form_group .col_r.range{margin-right:5%;width:10%;}
+
+body #menu{
+	background-color:rgba(12,47,13,1);
+	border-top:1px solid rgb(195, 255, 130);
+    position:relative;
+	transition:0.3s all;
+	transform: translateY(145px);
+	width:100%;
+}
+body #menu_inner{margin:0px auto;padding:40px 0px;text-align:center;width:1000px;}
+body #menu_inner a{
+	background-color:rgba(220,220,220,0.3);
+	border:2px solid rgba(255,255,255,1);
+	border-radius:10px;
+    cursor:pointer;
+	display:inline-block;
+	line-height:0px;
+	padding:20px 20px;
+	transition:0.3s background-color;
+}
+body #menu_inner a:hover{background-color:rgba(255,255,255,0.6);}
+
+body.ismenu #menu{bottom:0px;position:fixed;transform:translateY(0px);z-index:100;}
+
+</style>
+<script src="http://localhost/mt/mt-static/data-api/v3/js/mt-data-api.min.js"></script>
+<script src="./gradius_map.js"></script>
+
+
+</head>
+<body onscroll="_GAME_STAGEEDIT_EVENTS._e_scroll();">
+
+
+<form>
+<h1>EDITING STAGE</h1>
+
+<section id="form_inner"
+    ondragover="_GAME_STAGEEDIT_EVENTS._f_i_dragover(event);"
+    ondrop="_GAME_STAGEEDIT_EVENTS._f_i_drop(event);">
+
+<section id="map">
+<h2>editing map</h2>
+<section id="map_bts">
+<a class="map_bt add" onclick="_GAME_STAGEEDIT_EVENTS._f_map_add(event);" nohref="">add</a>
+<a class="map_bt remove" onclick="_GAME_STAGEEDIT_EVENTS._f_map_remove(event);" nohref="">remove</a>
+</section>
+<section id="area">
+<div id="area_selectable"></div>
+<section class="area_blocks drop">
+<!-- <div class="area_blocks_rows">
+<div class="area_block"></div>
+<div class="area_block"></div>
+<div class="area_block"></div>
+<div class="area_block"></div>
+<div class="area_block"></div>
+</div>
+</div> -->
+</section><!-- /.area_blocks -->
+</section><!-- /#area -->
+
+<section id="area_parts_wrapper">
+<div class="prev"></div>
+<div class="next"></div>
+
+<section id="area_parts">
+<div class="parts_blocks_wrapper">
+<h3>enemy parts</h3>
+<div class="parts_blocks">
+<div class="parts_block_wrapper" data-val="a">
+<div class="text">enemy a</div>
+<div class="parts_block"><img src="images/gradius_enemy_a_1.png"></div>
+</div><!-- /.parts_block_wrapper -->
+<div class="parts_block_wrapper" data-val="b">
+<div class="text">enemy b</div>
+<div class="parts_block"><img src="images/gradius_enemy_b_1.png"></div>
+</div><!-- /.parts_block_wrapper -->
+<div class="parts_block_wrapper" data-val="c">
+<div class="text">enemy c</div>
+<div class="parts_block"><img src="images/gradius_enemy_c_1.png"></div>
+</div><!-- /.parts_block_wrapper -->
+<div class="parts_block_wrapper" data-val="d">
+<div class="text">enemy d</div>
+<div class="parts_block"><img src="images/gradius_enemy_d_1.png"></div>
+</div><!-- /.parts_block_wrapper -->
+<div class="parts_block_wrapper" data-val="e">
+<div class="text">enemy e</div>
+<div class="parts_block"><img src="images/gradius_enemy_e_1.png"></div>
+</div><!-- /.parts_block_wrapper -->
+<div class="parts_block_wrapper" data-val="p">
+<div class="text">enemy p</div>
+<div class="parts_block"><img src="images/gradius_enemy_p_1.png"></div>
+</div><!-- /.parts_block_wrapper -->
+</div><!--.parts_blocks -->
+</div><!--.parts_blocks_wrapper -->
+
+
+<div class="parts_blocks_wrapper">
+<h3>map parts</h3>
+<div class="parts_blocks">
+<div class="parts_block_wrapper" data-val="1">
+<div class="text">map 1</div>
+<div class="parts_block"><img src="images/gradius_map1.png"></div>
+</div><!-- /.parts_block_wrapper -->
+<div class="parts_block_wrapper" data-val="5">
+<div class="text">map 5</div>
+<div class="parts_block"><img src="images/gradius_map5.png"></div>
+</div><!-- /.parts_block_wrapper -->
+<div class="parts_block_wrapper" data-val="6">
+<div class="text">map 6</div>
+<div class="parts_block"><img src="images/gradius_map6.png"></div>
+</div><!-- /.parts_block_wrapper -->
+<div class="parts_block_wrapper" data-val="7">
+<div class="text">map 7</div>
+<div class="parts_block"><img src="images/gradius_map7.png"></div>
+</div><!-- /.parts_block_wrapper -->
+<div class="parts_block_wrapper" data-val="8">
+<div class="text">map 8</div>
+<div class="parts_block"><img src="images/gradius_map8.png"></div>
+</div><!-- /.parts_block_wrapper -->
+<div class="parts_block_wrapper" data-val="9">
+<div class="text">map 9</div>
+<div class="parts_block"><img src="images/gradius_map9.png"></div>
+</div><!-- /.parts_block_wrapper -->
+</div><!--.parts_blocks -->
+</div><!--.parts_blocks_wrapper -->
+
+
+</section><!-- /#area_parts -->
+</section><!-- /#area_parts_wrapper -->
+
+</section><!-- /#map -->
+
+
+<div id="title" class="form_group">
+<label class="col_l">TITLE:</label>
+<div class="col_r">
+<input name="title" type="text">
+</div>
+</div><!-- /#title -->
+<div id="body" class="form_group">
+<label class="col_l">BODY:</label>
+<div class="col_r">
+<textarea name="body" cols="80" rows="10"></textarea>
+</div>
+</div><!-- /#body -->
+<div id="init" class="form_group">
+<label class="col_l">INIT:</label>
+<div class="col_r">
+<div class="val">0</div>
+<label><span>1</span><input name="init" type="range" min="0" max="999" step="25"><span>999</span></label>
+</div>
+</div><!-- /#init -->
+<div id="speed" class="form_group">
+<label class="col_l">SPEED:</label>
+<div class="col_r">
+<div class="val">0</div>
+<label><span>1</span><input name="speed" type="range" min="1" max="5"><span>5</span></label>
+</div>
+</div><!-- /#speed -->
+<div id="difficult" class="form_group">
+<label class="col_l">DIFFICULT:</label>
+<div class="col_r">
+<div class="val">0</div>
+<label><span>1</span><input list="difficult_" step="1" name="difficult" type="range" min="1" max="5"><span>5</span></label>
+<datalist id="difficult_">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+</datalist>
+</div>
+</div><!-- /#difficult -->
+
+</section><!-- /#form_inner -->
+</form>
+
+<section id="popup">
+<div class="inner"></div>
+</section>
+
+<section id="menu">
+<section id="menu_inner">
+<a nohref="" class="prev" onClick="_GAME_STAGEEDIT_EVENTS._e_entrylink_prev();">prev</a>
+<a nohref="" onClick="_GAME_STAGEEDIT_EVENTS._e_update();">update</a>
+<a href="./gradius.html">back to game</a>
+<a nohref="" class="next" onClick="_GAME_STAGEEDIT_EVENTS._e_entrylink_next();">next</a>
+</section><!-- /#menu_inner -->
+</section><!-- /#menu -->
+
+<script>
+'use strict';
+
+const _MAP=new GameObject_MAP();
+let $_pb=document.getElementsByClassName('parts_block');
+let $_ab=document.getElementsByClassName('area_block');
+
+_MAP_PETTERN=0;
+
+const _AJAX=function(_url,_type,_f){
+    let _r=new XMLHttpRequest();
+    _r.onreadystatechange=function(){
+        if(_r.readyState===4){//通信の完了時
+            if(_r.status===200) {//通信の成功時
+                console.log('OK');
+                _f(_r.response);
+            }else{
+                //connecting
+                console.log('NG');
+            }
+        }
+    }
+    _r.open('GET',_url);
+    _r.responseType=_type||'json';
+    _r.send(null);
+}// _AJAX
+
+const _DATAAPI={
+_data_api:'',
+_blog_id:3,
+_init:function(){
+	let _this=this;
+	_this._data_api=new MT.DataAPI({
+		baseUrl:"http://localhost/mt/mt-data-api.cgi",
+		clientId:"api10entries"
+	});
+
+	_this._data_api.getToken(function(res){
+		if (res.error) {
+			if(res.error.code===401) {
+				location.href=
+					_this._data_api.getAuthorizationUrl(location.href);
+			}
+			return false;
+		}
+		_GAME_STAGEEDIT._init();
+	});
+},//_init
+_set_entryupdate:function(_ed){
+	//	_d.title
+	//	_d.status
+	let _this=this;
+	_this._data_api.updateEntry(
+		_this._blog_id,
+		_ed._eid,
+		_ed,
+		function(_r) {
+		if(_r.error){
+			alert('エントリ更新に失敗しました。');
+			return;
+		}
+		alert('エントリ更新しました。');
+		});
+
+}//_set_entryupdate
+}//_DATAAPI
+
+const _GAME_STAGEEDIT={
+_setInitMap:function(_mo){
+	//初期表示
+    let _str='';
+    for(let _i=0;_i<_mo.length;_i++){
+    _str+='<div class="area_blocks_rows">';
+    for(let _j=0;_j<_mo[_i].length;_j++){
+        _str+='<div class="area_block" data-val="'+_mo[_i][_j]+'" '+
+			'ondragenter="_GAME_STAGEEDIT_EVENTS._f_as_dragenter(event);" '+
+			'ondrop="_GAME_STAGEEDIT_EVENTS._f_as_drop(event);">'+
+        (function(_k){
+            if(_k==='0'){return '';}
+			//パーツがある場合はイベントを追加する
+            let _s='<div class="parts_block" '
+					+'ondragstart="_GAME_STAGEEDIT_EVENTS._f_pb_dragstart(event);" '
+					+'draggable="true">';
+            _s+=(_k.match(new RegExp('[a-z]'))!==null)
+                ?'<img src="images/gradius_enemy_'+_k+'_1.png">'
+                :'<img src="images/gradius_map'+_k+'.png">';
+			return _s+'</div>';
+		})(_mo[_i][_j])+
+        '</div><!-- /.area_block -->';
+    }//_j
+    _str+='</div><!-- /.area_blocks_rows -->';
+    }//_i
+    //MAPを表示
+    document.querySelector('.area_blocks.drop').innerHTML=_str;
+
+},//_setInitMap
+
+_clearMap:function(){
+	//MAPを削除
+    document
+		.querySelector('.area_blocks.drop')
+		.textContent=null;
+},//_clearMap
+
+_getTextToFont:function($_obj){
+	let _str='';
+	let $_o=$_obj.children;
+	for(let _i=0;_i<$_o.length;_i++){
+		_str+=$_o[_i]
+	}
+	return _str;
+},
+_setTextToFont:function(_o,_str,_w){
+	if(_o===undefined||_o===null){return;}
+	_w=_w||30;
+	let _s='';
+	for(let _i=0;_i<_str.length;_i++){
+		if(_str[_i]===' '){
+			_s+='<img src="./images/gradius_spacer.png" width="'+_w+'">';
+			continue;
+		}
+        if(_str[_i]===':'){continue;}
+		_s+='<img src="./images/gradius_font_'+_str[_i]+'.png" width="'+_w+'">';
+	}
+	_o.innerHTML=_s;
+},//_setTextToFont
+
+_clearData:function(){
+
+},//_clearData()
+_setData:function(_pt){
+	let _this=this;
+	let _data=_MAPDEFS[_pt];
+	this._setInitMap(_data._map);
+
+	//タイトルを表示
+	const $_title=document.querySelector('#title input[name="title"]');
+	$_title.value=_data._title;
+	//bodyを表示
+	const $_body=document.querySelector('#body textarea[name="body"]');
+	$_body.value=_data._body;
+	//initを表示
+	const $_init=document.querySelector('#init input[name="init"]'),
+		$_init_v=document.querySelector('#init .col_r .val');
+	$_init.value=_data._initx;
+	$_init_v.setAttribute('data-val',_data._initx);
+	_this._setTextToFont($_init_v,_data._initx,20);
+	//speedを表示
+	const $_speed=document.querySelector('#speed input[name="speed"]'),
+		$_speed_v=document.querySelector('#speed .col_r .val');
+	$_speed.value=_data._speed;
+	$_speed_v.setAttribute('data-val',_data._speed);
+	_this._setTextToFont($_speed_v,_data._speed,20);
+	//difficultを表示
+	const $_difficult=document.querySelector('#difficult input[name="difficult"]'),
+		$_difficult_v=document.querySelector('#difficult .col_r .val');
+	$_difficult.value=_data._difficult;
+	$_difficult_v.setAttribute('data-val',_data._difficult);
+	_this._setTextToFont($_difficult_v,_data._difficult,20);
+
+},//_setData
+
+setDataForDataApi:function(){
+	let _d=(function(_m){
+		let _str='';
+
+		//	MAPの取得
+		_str+='"_map":[';
+		let $_abr=document.querySelectorAll('.area_blocks_rows');
+		for(let _i=0;_i<$_abr.length;_i++){
+		let $_ab=$_abr[_i].children;
+		_str+='"';
+		for(let _j=0;_j<$_ab.length;_j++){
+			_str+=$_ab[_j].getAttribute('data-val');
+		}//_j
+		_str+=((_i===$_abr.length-1)?'"':'",');
+		}//_i
+		_str+='],';
+		_str+='"_title":"'+document.querySelector('#title input[name="title"]').value+'",';
+		_str+='"_eid":"'+_m._eid+'",';
+		_str+='"_body":"'+document.querySelector('#body textarea[name="body"]').value+'",';
+		_str+='"_initx":"'+document.querySelector('#init .col_r .val').getAttribute('data-val')+'",';
+		_str+='"_speed":"'+document.querySelector('#speed .col_r .val').getAttribute('data-val')+'",';
+		_str+='"_difficult":"'+document.querySelector('#difficult .col_r .val').getAttribute('data-val')+'"';
+
+		return _str;
+	})(_MAPDEFS[_MAP_PETTERN]);
+
+	let _ed={
+		'title':document.querySelector('#title input[name="title"]').value,
+		'status':'Publish',
+		'_eid':_MAPDEFS[_MAP_PETTERN]._eid,
+		'body':_d
+	};
+	_DATAAPI._set_entryupdate(_ed);
+},
+
+_init:function(){
+	//DataAPI読み込み完了後に実行
+    const _this=this;
+
+	//gradiusフォントにセット
+    const $_qsa=document.querySelectorAll(
+        'h1,h2,h3,#map_bts a,#entrylink a,label.col_l,div.col_r .val,div.col_r label span, .parts_block_wrapper .text, #menu_inner a'
+    );
+    for(let _i=0;_i<$_qsa.length;_i++){
+        _this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,20);
+    }
+
+    //入力値をセット
+    _MAP.init(function(){
+        console.log('success');
+		_this._setData(_MAP_PETTERN);
+
+		//area_parts内、parts_blockイベント設定
+		const $_ap_pb=document.querySelectorAll('#area_parts .parts_block');
+		for(var _i=0;_i<$_ap_pb.length;_i++){
+		    $_ap_pb[_i].setAttribute('draggable',true);
+		    $_ap_pb[_i].addEventListener('dragstart',_GAME_STAGEEDIT_EVENTS._f_ap_dragstart,false);
+			$_ap_pb[_i].addEventListener('dragend',_GAME_STAGEEDIT_EVENTS._f_ap_dragend,false);
+		}
+
+		//入力フォームのイベント設定
+		const $_fg_range=document.querySelectorAll('.form_group .col_r input[type="range"]');
+		for(var _i=0;_i<$_fg_range.length;_i++){
+		    $_fg_range[_i].addEventListener('input',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
+		    $_fg_range[_i].addEventListener('change',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
+		}
+
+		//設定が全て終わったらページを表示させる
+		document.body.classList.add('on');
+		document.body.classList.add('ismenu');
+
+    });
+
+}//_init
+};//_GAME_STAGEEDIT
+
+
+//イベント処理
+const _GAME_STAGEEDIT_EVENTS={
+$_do_area_parts_obj:null,//area_parts内ドラッグ中のオブジェクト
+$_start_area_parts_obj:null,//area_parts内ドラッグ開始のオブジェクト
+
+//前のエントリ
+_e_entrylink_prev:function(){
+	if(_MAP_PETTERN===0){return;}
+	_MAP_PETTERN--;
+	_GAME_STAGEEDIT._clearMap();
+	_GAME_STAGEEDIT._setData(_MAP_PETTERN);
+	return false;
+},//_e_entrylink_prev
+
+//次のエントリ
+_e_entrylink_next:function(){
+	if(_MAP_PETTERN>=_MAPDEFS.length-1){return;}
+	_MAP_PETTERN++;
+	_GAME_STAGEEDIT._clearMap();
+	_GAME_STAGEEDIT._setData(_MAP_PETTERN);
+	return false;
+},//_e_entrylink_next
+
+//UPDATEボタン押下時
+_e_update:function(){
+	(confirm('更新しますか?'))
+		?_GAME_STAGEEDIT.setDataForDataApi()
+		:console.log('false');
+	return false;
+},//_e_update
+
+//ページスクロール時
+_e_scroll:function(e){
+    const $_b=document.body;
+//    const _boh=$_b.offsetHeight;
+    const _wih=document.body.clientHeight;
+    const $_m=document.getElementById('menu');
+    const _mh=$_m.offsetHeight;
+//    console.log($_b.scrollTop+window.innerHeight);
+//	console.log('mh:'+_mh);
+    ($_b.scrollTop+window.innerHeight>_wih-(_mh/2))
+        ?$_b.classList.remove('ismenu')
+        :$_b.classList.add('ismenu');
+},//_e_scroll
+
+//レンジ設定
+_f_fg_range:function(e){
+    let $_t_val=e.target.parentNode.previousElementSibling;
+    let _val=e.target.value;
+	$_t_val.setAttribute('data-val',_val);
+    $_t_val.innerText=_val;
+    _GAME_STAGEEDIT._setTextToFont($_t_val,_val,20);
+
+},//_f_fg_range
+
+//====================
+//	map bts events
+//	for add, remove at back of blocks
+//====================
+_f_map_add:function(e){
+	const $_abr=document.querySelectorAll('.area_blocks_rows');
+	for(let _i=0;_i<$_abr.length;_i++){
+		let $_ab=$_abr[_i].lastElementChild.cloneNode(true);
+		$_abr[_i].appendChild($_ab);
+		if($_ab.children.length===0){continue;}
+	}
+	e.stopPropagation();
+    e.preventDefault();
+	return false;
+},
+_f_map_remove:function(e){
+	const $_abr=document.querySelectorAll('.area_blocks_rows');
+	for(let _i=0;_i<$_abr.length;_i++){
+		$_abr[_i].lastElementChild.remove();
+	}
+	e.stopPropagation();
+    e.preventDefault();
+	return false;
+},
+
+//====================
+//	area_selectable events
+//	parts for copy,move
+//====================
+_f_as_dragenter:function(e){
+	//マップのブロック内ドラッグオーバー処理
+//	console.log(this.$_do_area_parts_obj);
+	if(this.$_do_area_parts_obj!==null){
+		this.$_do_area_parts_obj.classList.remove('over');
+	}
+	this.$_do_area_parts_obj=e.target;
+	this.$_do_area_parts_obj.classList.add('over');
+    e.stopPropagation();
+    e.preventDefault();
+	return false;
+},//_f_as_dragenter
+
+
+_f_as_drop:function(e){
+    console.log('as_drop');
+    let _o=e.dataTransfer.getData("text");//data-val
+	let $_ect=e.currentTarget;//ドロップ先.area_block
+    let $_e=this.$_start_area_parts_obj;//元.area_block
+
+	$_ect.classList.remove('over');
+
+	//先が6または8の時
+	if($_ect.getAttribute('data-val').match(new RegExp('[68]'))!==null){
+		for(let _i=0;_i<$_ect.parentElement.children.length;_i++){
+			let $_c=$_ect.parentElement.children[_i];
+			if($_c!==$_ect){continue;}
+			$_ect=$_ect.parentElement.previousElementSibling.children[_i]
+			break;
+		}
+	}
+
+	//元が6または8の時
+	if(_o.match(new RegExp('[68]'))!==null){
+		for(let _i=0;_i<$_ect.parentElement.children.length;_i++){
+			let $_c=$_ect.parentElement.children[_i];
+			if($_c!==$_ect){continue;}
+			$_ect=$_ect.parentElement.nextElementSibling.children[_i]
+			break;
+		}
+	}
+	if($_ect.childNodes.length!==0){
+		//画像タグの場合（すでにarea_block内に画像がある場合）
+		//area_block内を全て空にする
+		$_ect.textContent=null;
+	}
+    //コピー・移動先にオブジェクトを配置
+	if(e.dataTransfer.effectAllowed==='move'){
+		//移動
+		$_ect.appendChild(this.$_start_area_parts_obj);
+	}else{
+		//コピー
+		$_ect.appendChild($_e.cloneNode(true));
+		$_ect.children[0].addEventListener('dragstart',this._f_pb_dragstart,false);
+	}
+
+	//area_blockの設定
+	$_ect.setAttribute('data-val',_o);
+
+    e.stopPropagation();
+    e.preventDefault();
+    return false;
+},//_f_as_drop
+
+//====================
+//	form_inner events
+//	parts to delete
+//====================
+_f_i_dragover:function(e){
+	e.stopPropagation();
+    e.preventDefault();
+	return false;
+},//_f_i_dragover
+_f_i_drop:function(e){
+	console.log('form_inner drop');
+	if(e.dataTransfer.effectAllowed!=='move'){return false;}
+	this.$_start_area_parts_obj.parentNode.textContent=null;
+	return false;
+},//_f_i_drop
+
+
+//====================
+//	area_parts
+//	dragover
+//====================
+_f_ap_dragstart:function(e){
+	_GAME_STAGEEDIT_EVENTS.$_start_area_parts_obj=e.currentTarget;
+	e.dataTransfer.setData("text",e.currentTarget.parentNode.getAttribute('data-val'));
+    console.log('start');
+},//_f_ap_dragstart
+_f_ap_drag:function(e){
+	e.target.parentNode.classList.add('drag');
+    e.stopPropagation();
+    e.preventDefault();
+	return false;
+},//_f_ap_drag
+_f_ap_dragend:function(e){
+	e.target.parentNode.classList.remove('drag');
+    e.stopPropagation();
+    e.preventDefault();
+	return false;
+},//_f_ap_dragend
+
+
+//====================
+//	parts_block
+//	drag events
+//====================
+_f_pb_dragstart:function(e){
+	console.log('_f_pb_dragstart');
+	e.dataTransfer.effectAllowed='move';
+    e.dataTransfer.dropEffect='move';
+	_GAME_STAGEEDIT_EVENTS.$_start_area_parts_obj=e.currentTarget;
+	e.dataTransfer.setData("text",e.currentTarget.parentNode.getAttribute('data-val'));
+	e.currentTarget.parentNode.setAttribute('data-val',0);
+},//_f_pb_dragstart
+_f_pb_dragmove:function(e){
+	console.log('_f_pb_dragmove');
+    _GAME_STAGEEDIT_EVENTS.$_do_area_parts_obj=this;
+}//
+};//_GAME_STAGEEDIT_EVENTS
+
+
+_DATAAPI._init();
+//_GAME_STAGEEDIT._init();
+
+// const _area=document.querySelector('#area');
+// const $_as=document.querySelector('#area_selectable');
+// const $_ai=document.querySelector('#area_inner');
+// let _as_s=0;
+// let _as_e=0;
+// let _fl=false;
+// let _x,_y,_w,_h;
+// _area.addEventListener('mousedown',function(e){
+//     _fl=true;
+//     console.log('mousedown');
+//     _as_s=new Date().getTime();
+//     _x=e.layerX;
+//     _y=e.layerY;
+// });
+// _area.addEventListener('mousemove',function(e){
+//     //マウスダウンが前提
+//     if(!_fl){return false;}
+//     _as_e=new Date().getTime();
+//     if(_as_e-_as_s<1000){return false;}
+//     _w=Math.abs(e.layerX-_x);
+//     _h=Math.abs(e.layerY-_y);
+//     $_as.style.left=((e.layerX>_x)?_x:e.layerX)+'px';
+//     $_as.style.top=((e.layerY>_y)?_y:e.layerY)+'px';
+//     $_as.style.width=_w+'px';
+//     $_as.style.height=_h+'px';
+// //    e.toElement.classList.add('on');
+//     $_as.classList.add('on');
+// //    console.log('e.layerY:'+e.layerY);
+// //  console.log('_y:'+_y);
+//     console.log(e);
+//     e.stopPropagation();
+//     e.preventDefault();
+//     return false;
+// });
+// _area.addEventListener('mouseup',function(e){
+//     //マウスアップは全てリセット
+//     _fl=false;
+//     console.log('mouseup');
+//     $_as.classList.remove('on');
+//     $_as.removeAttribute('style');
+//     e.stopPropagation();
+//     e.preventDefault();
+//     return false;
+// });
+
+</script>
+
+</body>
+</html>

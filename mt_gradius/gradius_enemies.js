@@ -200,23 +200,6 @@ class GameObject_ENEMY{
 			}
 		}
 	}
-	showPowerCapcell(){
-//		console.log(this._col_pc_c);
-		this.x-=_BACKGROUND_SPEED;
-		let _c=parseInt(this._col_pc_c/5);
-		//パワーカプセル所持の場合
-		_CONTEXT.drawImage(
-			this.col_pc[_c].img,
-			this.x,
-			this.y,
-			this.col_pc[_c].img.width,
-			this.col_pc[_c].img.height
-		);
-		this._col_pc_c=
-			(this._col_pc_c>=(this.col_pc.length*5)-1)
-			?0
-			:this._col_pc_c+1;
-	}
 	showCollapes(){
 		let _this=this;
 		//敵を倒した場合

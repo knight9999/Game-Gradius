@@ -1749,10 +1749,10 @@ class GameObject_PLAYER_MAIN
 				_this.c_vv_ani=25;
 			}
 		}else{
-			if(_this.c_vv_ani>50-2){
-				_this.c_vv_ani=50-2;
-			}else if(_this.c_vv_ani<0+2){
-				_this.c_vv_ani=0+2;
+			if(_this.c_vv_ani>50-4){
+				_this.c_vv_ani=50-4;
+			}else if(_this.c_vv_ani<0+4){
+				_this.c_vv_ani=0+4;
 			}else{
 			}
 
@@ -2685,11 +2685,11 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 
 		let _s=(_a<(_e.img.width/2))?true:false;
 		if(_s){
+			//前回衝突した敵と同じ場合は無視する。
+			if(_t._enemy===_e.id){return;}
 			_e.collision();
 			//敵を倒した場合は貫通させる。
 			if(!_e.isalive()){return;}
-			//前回衝突した敵と同じ場合は無視する。
-			if(_t._enemy===_e.id){return;}
 			if(_t._c===0){
 				_t._c=1;
 			}

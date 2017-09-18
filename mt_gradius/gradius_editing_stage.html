@@ -246,7 +246,9 @@ body #menu_inner a{
 	padding:20px 20px;
 	transition:0.3s background-color;
 }
-body #menu_inner a:hover{background-color:rgba(255,255,255,0.6);}
+body #menu_inner a:not(.off):hover{background-color:rgba(255,255,255,0.6);}
+body #menu_inner a.off{cursor:default;opacity:0.3;}
+
 
 body.ismenu #menu{bottom:0px;position:fixed;transform:translateY(0px);z-index:100;}
 
@@ -409,10 +411,10 @@ body.ismenu #menu{bottom:0px;position:fixed;transform:translateY(0px);z-index:10
 
 <section id="menu">
 <section id="menu_inner">
-<a nohref="" class="prev" onClick="_GAME_STAGEEDIT_EVENTS._e_entrylink_prev();">prev</a>
-<a nohref="" onClick="_GAME_STAGEEDIT_EVENTS._e_update();">update</a>
+<a nohref="" class="prev" onClick="_GAME_STAGEEDIT_EVENTS._e_entrylink_prev(event);">prev</a>
+<a nohref="" onClick="_GAME_STAGEEDIT_EVENTS._e_update(event);">update</a>
 <a href="./gradius.html">back to game</a>
-<a nohref="" class="next" onClick="_GAME_STAGEEDIT_EVENTS._e_entrylink_next();">next</a>
+<a nohref="" class="next" onClick="_GAME_STAGEEDIT_EVENTS._e_entrylink_next(event);">next</a>
 </section><!-- /#menu_inner -->
 </section><!-- /#menu -->
 
@@ -420,8 +422,10 @@ body.ismenu #menu{bottom:0px;position:fixed;transform:translateY(0px);z-index:10
 'use strict';
 
 const _MAP=new GameObject_MAP();
-let $_pb=document.getElementsByClassName('parts_block');
-let $_ab=document.getElementsByClassName('area_block');
+const $_pb=document.getElementsByClassName('parts_block');
+const $_ab=document.getElementsByClassName('area_block');
+const $_mp=document.querySelector('#menu .prev');
+const $_mn=document.querySelector('#menu .next');
 
 _MAP_PETTERN=0;
 
@@ -478,7 +482,36 @@ _set_entryupdate:function(_ed){
 			return;
 		}
 		alert('エントリ更新しました。');
-		});
+
+		//jsonファイルを取得して再表示させる
+		_MAP.init(function(){
+			_MAP_PETTERN=0;
+			_GAME_STAGEEDIT._setData(_MAP_PETTERN);
+
+			//area_parts内、parts_blockイベント設定
+			const $_ap_pb=document.querySelectorAll('#area_parts .parts_block');
+			for(var _i=0;_i<$_ap_pb.length;_i++){
+			    $_ap_pb[_i].setAttribute('draggable',true);
+			    $_ap_pb[_i].addEventListener('dragstart',_GAME_STAGEEDIT_EVENTS._f_ap_dragstart,false);
+				$_ap_pb[_i].addEventListener('dragend',_GAME_STAGEEDIT_EVENTS._f_ap_dragend,false);
+			}
+
+			//入力フォームのイベント設定
+			const $_fg_range=document.querySelectorAll('.form_group .col_r input[type="range"]');
+			for(var _i=0;_i<$_fg_range.length;_i++){
+			    $_fg_range[_i].addEventListener('input',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
+			    $_fg_range[_i].addEventListener('change',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
+			}
+
+			//設定が全て終わったらページを表示させる
+			document.body.classList.add('on');
+			document.body.classList.add('ismenu');
+
+			_GAME_STAGEEDIT._setEntryLink();
+
+	    });//_MAP.init()
+
+	});//updateentry
 
 }//_set_entryupdate
 }//_DATAAPI
@@ -509,7 +542,9 @@ _setInitMap:function(_mo){
     _str+='</div><!-- /.area_blocks_rows -->';
     }//_i
     //MAPを表示
-    document.querySelector('.area_blocks.drop').innerHTML=_str;
+    document
+		.querySelector('.area_blocks.drop')
+		.innerHTML=_str;
 
 },//_setInitMap
 
@@ -612,7 +647,19 @@ setDataForDataApi:function(){
 	};
 	_DATAAPI._set_entryupdate(_ed);
 },
+_setEntryLink:function(){
+	//前後エントリボタンステータス
+	$_mp.classList.remove('off');
+	$_mn.classList.remove('off');
 
+	if(_MAP_PETTERN===0){
+		$_mp.classList.add('off');
+	}
+	if(_MAP_PETTERN>=_MAPDEFS.length-1){
+		$_mn.classList.add('off');
+	}
+
+},//setEntryLink
 _init:function(){
 	//DataAPI読み込み完了後に実行
     const _this=this;
@@ -649,6 +696,7 @@ _init:function(){
 		document.body.classList.add('on');
 		document.body.classList.add('ismenu');
 
+		_GAME_STAGEEDIT._setEntryLink();
     });
 
 }//_init
@@ -661,20 +709,22 @@ $_do_area_parts_obj:null,//area_parts内ドラッグ中のオブジェクト
 $_start_area_parts_obj:null,//area_parts内ドラッグ開始のオブジェクト
 
 //前のエントリ
-_e_entrylink_prev:function(){
+_e_entrylink_prev:function(e){
 	if(_MAP_PETTERN===0){return;}
 	_MAP_PETTERN--;
 	_GAME_STAGEEDIT._clearMap();
 	_GAME_STAGEEDIT._setData(_MAP_PETTERN);
+	_GAME_STAGEEDIT._setEntryLink();
 	return false;
 },//_e_entrylink_prev
 
 //次のエントリ
-_e_entrylink_next:function(){
+_e_entrylink_next:function(e){
 	if(_MAP_PETTERN>=_MAPDEFS.length-1){return;}
 	_MAP_PETTERN++;
 	_GAME_STAGEEDIT._clearMap();
 	_GAME_STAGEEDIT._setData(_MAP_PETTERN);
+	_GAME_STAGEEDIT._setEntryLink();
 	return false;
 },//_e_entrylink_next
 

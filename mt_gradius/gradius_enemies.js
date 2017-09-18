@@ -994,19 +994,20 @@ class ENEMY_BOSS_BOGCORE
 			{img:_CANVAS_IMGS['enemy_z_3'].obj,cs:0,isalive:true,x:15,y:14},
 		];
 
-		this.c_z4_ani=0;
+		//攻撃無効を表示させる画像
+		this.c_z4_ani=30;
 		this.z4_ani=[
-			{img:_CANVAS_IMGS['enemy_z_4'].obj,al:1},
-			{img:_CANVAS_IMGS['enemy_z_4'].obj,al:0.8},
-			{img:_CANVAS_IMGS['enemy_z_4'].obj,al:0.6},
-			{img:_CANVAS_IMGS['enemy_z_4'].obj,al:0.4},
-			{img:_CANVAS_IMGS['enemy_z_4'].obj,al:0.2},
-			{img:_CANVAS_IMGS['enemy_z_4'].obj,al:0}
+			{img:_CANVAS_IMGS['enemy_z_4_1'].obj,al:1},
+			{img:_CANVAS_IMGS['enemy_z_4_2'].obj,al:0.8},
+			{img:_CANVAS_IMGS['enemy_z_4_3'].obj,al:0.6},
+			{img:_CANVAS_IMGS['enemy_z_4_4'].obj,al:0.4},
+			{img:_CANVAS_IMGS['enemy_z_4_5'].obj,al:0.2}
 		];
 
 		this.is_ani_col=false;
 		this.tid=null;
 
+		this.is_done_move_init=false;
 		this.is_able_collision=false;
 		this.init();
 	}
@@ -1130,15 +1131,18 @@ class ENEMY_BOSS_BOGCORE
 			);
 		}
 
+		if(_this.x<750){
+			_this.starttime=new Date().getTime();
+			_this.is_done_move_init=true;
+			_this.is_able_collision=true;
+		}
+
 	}
 	move(){
 		let _this=this;
-		if(_this.x>700){
-			_this.move_init();
-			return;
-		}else{
-			_this.is_able_collision=true;
-		}
+//		console.log(_this.is_done_move_init);
+		if(!_this.is_done_move_init){_this.move_init();return;}
+
 		if(_this._status<=0){
 			_this.showCollapes();
 			return;
@@ -1188,7 +1192,37 @@ class ENEMY_BOSS_BOGCORE
 				_w.isalive=false;
 			}
 		}
-		_this.ani_col();//爆発はここで表示
+		_this.ani_col();//壁の爆発はここで表示
+
+		if(!_this.is_done_move_init){return;}
+//		console.log((new Date().getTime())-_this.starttime);
+
+		//自爆準備
+		if((new Date().getTime())
+			-_this.starttime>=30000){
+			let _ec=_this.getEnemyCenterPosition();
+			//ショットを無効にする
+			_this.is_able_collision=false;
+			_this.c_z4_ani=(_this.c_z4_ani>0)
+					?_this.c_z4_ani-1
+					:0;
+			let _img=_this.z4_ani[parseInt(_this.c_z4_ani/6)].img;
+			_CONTEXT.drawImage(
+				_img,
+				_ec._x-(_img.width/2),
+				_ec._y-(_img.height/2),
+				_img.width,
+				_img.height
+			);
+
+		}
+		//自爆
+		if((new Date().getTime())
+			-_this.starttime>=45000){
+//				console.log('collapes');
+			_this._status=0;
+		}
+
 	}
 }
 

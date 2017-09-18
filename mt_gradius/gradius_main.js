@@ -274,7 +274,11 @@ const _CANVAS_IMGS={
 	'enemy_z_1':{src:'images/gradius_enemy_z_core_1.png',rate:0.60,obj:new Image()},
 	'enemy_z_2':{src:'images/gradius_enemy_z_core_2.png',rate:0.60,obj:new Image()},
 	'enemy_z_3':{src:'images/gradius_enemy_z_core_3.png',rate:0.60,obj:new Image()},
-	'enemy_z_4':{src:'images/gradius_enemy_z_core_4.png',rate:0.60,obj:new Image()},
+	'enemy_z_4_1':{src:'images/gradius_enemy_z_core_4_1.png',rate:0.60,obj:new Image()},
+	'enemy_z_4_2':{src:'images/gradius_enemy_z_core_4_2.png',rate:0.60,obj:new Image()},
+	'enemy_z_4_3':{src:'images/gradius_enemy_z_core_4_3.png',rate:0.60,obj:new Image()},
+	'enemy_z_4_4':{src:'images/gradius_enemy_z_core_4_4.png',rate:0.60,obj:new Image()},
+	'enemy_z_4_5':{src:'images/gradius_enemy_z_core_4_5.png',rate:0.60,obj:new Image()},
 
 	'enemy_collapes1':
  		{src:'images/gradius_enemy_collapes1.png',rate:1,obj:new Image()},

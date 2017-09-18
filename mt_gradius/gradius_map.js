@@ -119,6 +119,12 @@ class GameObject_MAP{
 				_ENEMIES.push(_o);
 				_ENEMIES_BOUNDS.push(_o);
 			}
+			if(this.mapdef[_i][_j]==='z'){
+				let _o=new ENEMY_BOSS_BOGCORE(
+							this.x+(_j*this.t),
+							_i*this.t);
+				_ENEMIES.push(_o);
+			}
 		}//_j
 		}//_i
 	}

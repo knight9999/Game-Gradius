@@ -981,16 +981,16 @@ class ENEMY_BOSS_BOGCORE
 			extends GameObject_ENEMY_BOSS{
 	constructor(_x,_y){
 		super(_CANVAS_IMGS['enemy_z'].obj,_x,_y);
-		this._status=60;
+		this._status=50;
 		this.speed=3;
 		this.getscore=10000;
 		this.img=_CANVAS_IMGS['enemy_z'].obj;
 		this.wall_col={_x:0,_y:0};
 		this.wall=[
-			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:50,isalive:true,x:65,y:7},
-			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:40,isalive:true,x:55,y:7},
-			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:30,isalive:true,x:45,y:7},
-			{img:_CANVAS_IMGS['enemy_z_2'].obj,cs:20,isalive:true,x:35,y:5},
+			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:40,isalive:true,x:65,y:7},
+			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:30,isalive:true,x:55,y:7},
+			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:20,isalive:true,x:45,y:7},
+			{img:_CANVAS_IMGS['enemy_z_2'].obj,cs:10,isalive:true,x:35,y:5},
 			{img:_CANVAS_IMGS['enemy_z_3'].obj,cs:0,isalive:true,x:15,y:14},
 		];
 
@@ -1171,12 +1171,8 @@ class ENEMY_BOSS_BOGCORE
 		for(let _i=0;_i<_this.wall.length;_i++){
 			let _w=_this.wall[_i];
 			if(!_w.isalive){continue;}
-		}
-
-		for(let _i=0;_i<_this.wall.length;_i++){
-			let _w=_this.wall[_i];
-			if(!_w.isalive){continue;}
 			let _ec=_this.getEnemyCenterPosition();
+			//壁を表示
 			_CONTEXT.drawImage(
 				_w.img,
 				_ec._x-_w.x,
@@ -1185,10 +1181,12 @@ class ENEMY_BOSS_BOGCORE
 				_w.img.height
 			);
 
+			//壁を壊した場合
 			if(_w.cs>=_this._status){
 				_this.wall_col.x=_ec._x-_w.x;
 				_this.wall_col.y=_ec._y-_w.y;
 				_this.is_ani_col=true;
+				_SCORE.set(500);
 				_w.isalive=false;
 			}
 		}

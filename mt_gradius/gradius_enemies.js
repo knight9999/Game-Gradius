@@ -110,12 +110,12 @@ class GameObject_ENEMY{
 		_this.x-=_BACKGROUND_SPEED;
 		//大きめな爆発
 		if(_this._col_ani_c
-				>=_this.col_type.length*3-1){
+				>=_this.col_type.length*5-1){
 			//アニメーションが終わったら終了
 			return;
 		}
 
-		let _c=parseInt(_this._col_ani_c/3);
+		let _c=parseInt(_this._col_ani_c/5);
 		let _a=_this.col_type[_c];
 		_CONTEXT.drawImage(
 			_a.img,

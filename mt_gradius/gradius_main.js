@@ -2355,18 +2355,7 @@ class GameObject_SHOTS_MISSILE
 		if(_t._c>0){return}//爆風中は無視
 
 		//ミサイル衝突判定
-		//ミサイルの先端と敵の中心点より判定
-		let _a=Math.sqrt(
-			Math.pow(
-				_e.getEnemyCenterPosition()._x
-				-(_t.x+_t._img.width),2)+
-			Math.pow(
-				_e.getEnemyCenterPosition()._y
-				-(_t.y+_t._img.height),2)
-		);
-
-		let _s=(_a<_e.img.width)?true:false;
-		if(_s){
+		if(_GAME.isMisShotCollision(_t,_e)){
 			//前回衝突した敵と同じ場合は無視する。
 			if(_t._enemy===_e.id){return;}
 			_e.collision(_t);
@@ -2714,18 +2703,7 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 		if(!_t._shot_alive){return;}
 
 		//ミサイル衝突判定
-		//ミサイルの先端と敵の中心点より判定
-		let _a=Math.sqrt(
-			Math.pow(
-				_e.getEnemyCenterPosition()._x
-				-(_t.x+_t._img.width),2)+
-			Math.pow(
-				_e.getEnemyCenterPosition()._y
-				-(_t.y+_t._img.height),2)
-		);
-
-		let _s=(_a<_e.img.width)?true:false;
-		if(_s){
+		if(_GAME.isMisShotCollision(_t,_e)){
 			//前回衝突した敵と同じ場合は無視する。
 			if(_t._enemy===_e.id){return;}
 			_e.collision(_t);
@@ -2774,20 +2752,20 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 
 		//ミサイル衝突判定
 		//ミサイルの先端と敵の中心点より判定
-		let _a=Math.sqrt(
-			Math.pow(
-				_e.getEnemyCenterPosition()._x
-				-(_t.x+_t._img.width),2)+
-			Math.pow(
-				_e.getEnemyCenterPosition()._y
-				-(_t.y+_t._img.height),2)
-		);
+		let _ec=_e.getEnemyCenterPosition();
+		let _s=(function(){
+			//爆風判定
+			if(_t._c>0){
+				return (Math.abs(_ec._x-_t.x)
+					<(_e.img.width/2)+_t._c_area)
+					&&
+					(Math.abs(_ec._y-_t.y)
+					<(_e.img.height/2)+_t._c_area);
+			}
+			//通常判定
+			return _GAME.isMisShotCollision(_t,_e);
+		})();
 
-		let _w=(_t._c>0)
-				?_t._c_area
-				:_e.img.width/2;
-//		console.log(_w);
-		let _s=(_a<_w)?true:false;
 		if(_s){
 			//前回衝突した敵と同じ場合は無視する。
 			if(_t._enemy===_e.id){return;}
@@ -2904,23 +2882,8 @@ class GameObject_SHOTS_MISSILE_2WAY
 		if(!this.player.isalive()){return;}
 		//弾が発していない場合は無視する
 		if(!_t._shot_alive){return;}
-
 		//ミサイル衝突判定
-		//ミサイルの先端と敵の中心点より判定
-		let _a=Math.sqrt(
-			Math.pow(
-				_e.getEnemyCenterPosition()._x
-				-(_t.x+_t._img.width),2)+
-			Math.pow(
-				_e.getEnemyCenterPosition()._y
-				-(_t.y+
-					((_t.id===0)?0:_t._img.height)
-				),2)
-		);
-
-		let _s=(_a<_e.img.width)?true:false;
-
-		if(_s){
+		if(_GAME.isMisShotCollision(_t,_e)){
 			//前回衝突した敵と同じ場合は無視する。
 			if(_t._enemy===_e.id){return;}
 			_e.collision(_t);
@@ -4878,6 +4841,15 @@ isShieldCollision:function(_t,_e){
 		Math.pow(_ec._y-_pl._y,2)
 	);
 	return (_pd<(_e.img.height/2)+(_t.height));
+},
+isMisShotCollision:function(_t,_e){
+	//ミサイルショット衝突判定
+	let _ec=_e.getEnemyCenterPosition();
+	return (Math.abs(_ec._x-_t.x)
+			<(_e.img.width/2)+(_t._img.width/2))
+		&&
+		(Math.abs(_ec._y-_t.y)
+			<(_e.img.height/2)+(_t._img.height/2));
 },
 _showGameStart:function(){
 	//SPのみコントローラーのオブジェクトを取得

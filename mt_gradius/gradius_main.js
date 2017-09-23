@@ -2365,7 +2365,7 @@ class GameObject_SHOTS_MISSILE
 				-(_t.y+_t._img.height),2)
 		);
 
-		let _s=(_a<(_e.img.width/2))?true:false;
+		let _s=(_a<_e.img.width)?true:false;
 		if(_s){
 			//前回衝突した敵と同じ場合は無視する。
 			if(_t._enemy===_e.id){return;}
@@ -2724,7 +2724,7 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 				-(_t.y+_t._img.height),2)
 		);
 
-		let _s=(_a<(_e.img.width/2))?true:false;
+		let _s=(_a<_e.img.width)?true:false;
 		if(_s){
 			//前回衝突した敵と同じ場合は無視する。
 			if(_t._enemy===_e.id){return;}
@@ -2918,7 +2918,8 @@ class GameObject_SHOTS_MISSILE_2WAY
 				),2)
 		);
 
-		let _s=(_a<(_e.img.width/2))?true:false;
+		let _s=(_a<_e.img.width)?true:false;
+
 		if(_s){
 			//前回衝突した敵と同じ場合は無視する。
 			if(_t._enemy===_e.id){return;}
@@ -3341,7 +3342,6 @@ class GameObject_SHOTS_RIPPLE_LASER
 				x:0,//処理変数：照射x軸
 				y:0,
 				_t:0,//アニメーション時間ripple
-				_c_area:25,//ミサイル、爆風の当たり判定
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
 				_width:0,//rippleの横幅
@@ -3349,7 +3349,6 @@ class GameObject_SHOTS_RIPPLE_LASER
 				_init:function(){//初期化
 					this.x=0,
 					this.y=0,
-					this._c_area=25,
 					this._t=0,
 					this._shot=false,
 					this._shot_alive=false,
@@ -3367,16 +3366,13 @@ class GameObject_SHOTS_RIPPLE_LASER
 			if(!_t._shot_alive){continue;}
 			let _ec=_e.getEnemyCenterPosition();
 
-			let _a=Math.sqrt(
-				Math.pow(_ec._x-_t.x,2)+
-				Math.pow(_ec._y-_t.y,2)
-			);
-			let _ms=Math.sqrt(
-				Math.pow(_t._width,2)+
-				Math.pow(_t._height,2)
-			);
-//			console.log(_ms);
-			let _s=(_a<_ms)?true:false;
+			let _s=
+				(Math.abs(_ec._x-_t.x)
+					<(_e.img.width/2)+(_t._width/2)+_MAP.t)
+				&&
+				(Math.abs(_ec._y-_t.y)
+					<(_e.img.height/2)+(_t._height/2)+_MAP.t);
+
 			if(_s&&_e.isalive()){
 				_e.collision(_t);
 				_t._init();
@@ -4274,7 +4270,7 @@ const _IS_ENEMIES_COLLISION=function(){
 	    return 0;
 	});
 
-	for(let _i=0;_i<_ENEMIES.length;_i++){
+	for(let _i=0;_i<_e.length;_i++){
 	//既に倒した敵は無視する
 	if(!_e[_i].isalive()){continue;}
 	if(_e[_i].x>_CANVAS.width-50){continue;}

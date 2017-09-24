@@ -2471,7 +2471,7 @@ class GameObject_SHOTS_MISSILE
 						-_MAP.initx)
 						/_MAP.t);
 			//真横に壁がある場合、初期化
-			if(_MAP.isMapCollision(_map_x+1,_map_y)){
+			if(_MAP.isMapCollision(_map_x,_map_y)){
 				_t._init();
 				return;
 			}

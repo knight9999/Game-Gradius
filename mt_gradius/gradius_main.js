@@ -1296,12 +1296,12 @@ const _KEYEVENT_SP={
 	let _dis=_SP_CONTROLLER._get_st(e)._dis;
 	if(_dis<5){return false;}
 
-	if(_rad>-22&&_rad<=23){
+	if(_rad>-37&&_rad<=37){
 		// 	console.log('left');
  		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel*-1;
  	}
-	if(_rad>23&&_rad<=68){
+	if(_rad>37&&_rad<=53){
 		// 	console.log('left-top');
  		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel*-0.75;
@@ -1309,13 +1309,13 @@ const _KEYEVENT_SP={
  			=_PLAYERS_MAIN.accel*-0.75;
 		_PLAYERS_MAIN.set_vv_ani('Up');
  	}
-	if(_rad>68&&_rad<=113){
+	if(_rad>53&&_rad<=128){
 		// 	console.log('top');
 		_PLAYERS_MAIN._y
  			=_PLAYERS_MAIN.accel*-1;
 		_PLAYERS_MAIN.set_vv_ani('Up');
  	}
-	if(_rad>113&&_rad<=158){
+	if(_rad>128&&_rad<=143){
 		// 	console.log('right-top');
 		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel*0.75;
@@ -1323,13 +1323,13 @@ const _KEYEVENT_SP={
  			=_PLAYERS_MAIN.accel*-0.75;
 		_PLAYERS_MAIN.set_vv_ani('Up');
  	}
-	if((_rad>158&&_rad<=180)
-		||(_rad<-158&&_rad>=-180)){
+	if((_rad>143&&_rad<=180)
+		||(_rad<-143&&_rad>=-180)){
 		// console.log('right');
  		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel;
  	}
-	if(_rad<-113&&_rad>=-158){
+	if(_rad<-128&&_rad>=-143){
 		// console.log('right-bottom');
 		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel*0.75;
@@ -1337,13 +1337,13 @@ const _KEYEVENT_SP={
  			=_PLAYERS_MAIN.accel*0.75;
 		_PLAYERS_MAIN.set_vv_ani('Down');
  	}
-	if(_rad<-68&&_rad>=-113){
+	if(_rad<-53&&_rad>=-128){
 		// console.log('bottom');
  		_PLAYERS_MAIN._y
  			=_PLAYERS_MAIN.accel;
 		_PLAYERS_MAIN.set_vv_ani('Down');
  	}
-	if(_rad<-22&&_rad>=-68){
+	if(_rad<-37&&_rad>=-53){
 		// console.log('left-bottom');
 		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel*-0.75;

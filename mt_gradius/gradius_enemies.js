@@ -775,9 +775,9 @@ class ENEMY_p extends GameObject_ENEMY{
 			if(_SHOTTYPE===_SHOTTYPE_LASER){
 				if(_PLAYERS_POWER_METER===0
 					||_PLAYERS_POWER_METER===1){
-					return _st-0.2;
+					return _st-0.4;
 				}
-				return _st-2;
+				return _st-1.5;
 			}
 			return _st-1;
 		})(this._status);
@@ -877,7 +877,7 @@ class ENEMY_p_small extends GameObject_ENEMY{
 			_MAPDEFS[_MAP_PETTERN]._speed
 			*((Math.random()>0.5)?1:-1);
 		this.speedy=
-			parseInt(Math.random()+1)
+			_MAPDEFS[_MAP_PETTERN]._speed
 			*((Math.random()>0.5)?1:-1);
 		this.col_type=this.col_ani2;
 	}
@@ -887,11 +887,11 @@ class ENEMY_p_small extends GameObject_ENEMY{
 			if(_SHOTTYPE===_SHOTTYPE_LASER){
 				if(_PLAYERS_POWER_METER===0
 					||_PLAYERS_POWER_METER===1){
-					return _st-0.2;
+					return _st-0.15;
 				}
-				return _st-2.5;
+				return _st-2.0;
 			}
-			return _st-1;
+			return _st-1.0;
 		})(this._status);
 		if(!this.isalive()){_SCORE.set(this.getscore);}
 	}
@@ -944,7 +944,7 @@ class ENEMY_p_small extends GameObject_ENEMY{
 			if(_t.y<0){
 				_t.speedy=Math.abs(_t.speedy);
 			}else if(_t.y+_t.img.height>_CANVAS.height){
-				_t.speedy=-1.5;
+				_t.speedy*=-1.0;
 			}
 			return _t.speedy;
 		})(_this);
@@ -1079,9 +1079,9 @@ class ENEMY_BOSS_BOGCORE
 			if(_SHOTTYPE===_SHOTTYPE_LASER){
 				if(_PLAYERS_POWER_METER===0
 					||_PLAYERS_POWER_METER===1){
-					return _st-0.2;
+					return _st-0.1;
 				}
-				return _st-2;
+				return _st-1;
 			}
 			return _st-1;
 		})(_this._status);

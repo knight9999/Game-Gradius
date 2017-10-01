@@ -401,7 +401,7 @@ const _CANVAS_IMGS_INIT={
   		{src:'images/gradius_powermeterselect_shield_1.png',rate:0.28,obj:new Image()},
 };
 
-let _CANVAS_ISGAMECLEAR=false;//GameClearフラグ
+let _DRAW_IS_GAMECLEAR=false;//GameClearフラグ
 
 let _SCROLL_POSITION=1;
 
@@ -1294,14 +1294,14 @@ const _KEYEVENT_SP={
 
 	let _rad=_SP_CONTROLLER._get_st(e)._rad;
 	let _dis=_SP_CONTROLLER._get_st(e)._dis;
-	if(_dis<5){return false;}
+//	if(_dis<5){return false;}
 
-	if(_rad>-37&&_rad<=37){
+	if(_rad>-40&&_rad<=40){
 		// 	console.log('left');
  		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel*-1;
  	}
-	if(_rad>37&&_rad<=53){
+	if(_rad>40&&_rad<=50){
 		// 	console.log('left-top');
  		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel*-0.75;
@@ -1309,13 +1309,13 @@ const _KEYEVENT_SP={
  			=_PLAYERS_MAIN.accel*-0.75;
 		_PLAYERS_MAIN.set_vv_ani('Up');
  	}
-	if(_rad>53&&_rad<=128){
+	if(_rad>50&&_rad<=130){
 		// 	console.log('top');
 		_PLAYERS_MAIN._y
  			=_PLAYERS_MAIN.accel*-1;
 		_PLAYERS_MAIN.set_vv_ani('Up');
  	}
-	if(_rad>128&&_rad<=143){
+	if(_rad>130&&_rad<=140){
 		// 	console.log('right-top');
 		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel*0.75;
@@ -1323,13 +1323,13 @@ const _KEYEVENT_SP={
  			=_PLAYERS_MAIN.accel*-0.75;
 		_PLAYERS_MAIN.set_vv_ani('Up');
  	}
-	if((_rad>143&&_rad<=180)
-		||(_rad<-143&&_rad>=-180)){
+	if((_rad>140&&_rad<=180)
+		||(_rad<-140&&_rad>=-180)){
 		// console.log('right');
  		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel;
  	}
-	if(_rad<-128&&_rad>=-143){
+	if(_rad<-130&&_rad>=-140){
 		// console.log('right-bottom');
 		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel*0.75;
@@ -1337,13 +1337,13 @@ const _KEYEVENT_SP={
  			=_PLAYERS_MAIN.accel*0.75;
 		_PLAYERS_MAIN.set_vv_ani('Down');
  	}
-	if(_rad<-53&&_rad>=-128){
+	if(_rad<-50&&_rad>=-130){
 		// console.log('bottom');
  		_PLAYERS_MAIN._y
  			=_PLAYERS_MAIN.accel;
 		_PLAYERS_MAIN.set_vv_ani('Down');
  	}
-	if(_rad<-37&&_rad>=-53){
+	if(_rad<-40&&_rad>=-50){
 		// console.log('left-bottom');
 		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel*-0.75;
@@ -2517,11 +2517,11 @@ class GameObject_SHOTS_MISSILE
 	collapse_missile(_t){
 		let _this=this;
 		//爆風を表示
-		if(_t._c>=_this.col_mis.length*4){
+		if(_t._c>=_this.col_mis.length*5){
 			_t._init();
 			return;
 		}
-		var _c=parseInt(_t._c/4);
+		var _c=parseInt(_t._c/5);
 		_t._c_area=_this.col_mis[_c].scale;
 
 		_CONTEXT.fillStyle=_this.col_mis[_c].fs;
@@ -4316,21 +4316,24 @@ const _DRAW=function(){
 			_PLAYERS_SHOTS[_SHOTTYPE][_i].move();
 		}
 
+		//MAP（衝突判定）
+		_MAP.isShotCollision();
+
 		//自機からひもづくオプションを表示
 		for(let _i=0;_i<_PLAYERS_OPTION_MAX;_i++){
 			_PLAYERS_OPTION[_i].move(10*(_i+1));
 		}
 
-		//MAP（表示・衝突判定）
+		//自機を表示
+		_PLAYERS_MAIN_FORCE.move(_PLAYERS_MAIN);
+		_PLAYERS_MAIN.move();
+
+		//MAP（表示）
 		_MAP.move();
 
 		//敵、衝突判定
 		_IS_ENEMIES_SHOT_COLLISION();
 		_IS_ENEMIES_COLLISION();
-
-		//自機を表示
-		_PLAYERS_MAIN_FORCE.move(_PLAYERS_MAIN);
-		_PLAYERS_MAIN.move();
 
 		//DRAW POWER METER
 		_POWERMETER.show();
@@ -4339,35 +4342,39 @@ const _DRAW=function(){
 
 		_SCROLL_POSITION+=_BACKGROUND_SPEED;
 
-		//BOSS STAGE
 		if(_SCROLL_POSITION-100<=
 			(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}
 
-		if(!_DRAW_IS_MATCH_BOSS){
-			let _e=new ENEMY_BOSS_BOGCORE(1300,200);
-			_ENEMIES=[];
-			_ENEMIES.push(_e);
-			_ENEMIES_SHOTS=[];
-			_ENEMIES_BOUNDS=[];
-			_DRAW_SCROLL_STOP();
-			_DRAW_IS_MATCH_BOSS=true;
-			return;
-		}
-
-		let _bit='';
-		for(let _i=0;_i<_ENEMIES.length;_i++){
-			_bit+=((_ENEMIES[_i].isalive())?'0':'1');
-		}
-		if(_bit.indexOf('0')!==-1){return;}
-		_DRAW_SCROLL_RESUME();
-		if(_DRAW_IS_MATCH_BOSS_COUNT>100){
-			//GAMECLEAR
-			_DRAW_GAMECLEAR();
-		}else{
-			_DRAW_IS_MATCH_BOSS_COUNT++;
-		}
+		//MATCH_BOSS
+		_DRAW_MATCH_BOSS();
 
 	},1000/_FPS);
+}
+
+const _DRAW_MATCH_BOSS=function(){
+	if(!_DRAW_IS_MATCH_BOSS){
+		let _e=new ENEMY_BOSS_BOGCORE(1300,200);
+		_ENEMIES=[];
+		_ENEMIES.push(_e);
+		_ENEMIES_SHOTS=[];
+		_ENEMIES_BOUNDS=[];
+		_DRAW_SCROLL_STOP();
+		_DRAW_IS_MATCH_BOSS=true;
+		return;
+	}
+
+	let _bit='';
+	for(let _i=0;_i<_ENEMIES.length;_i++){
+		_bit+=((_ENEMIES[_i].isalive())?'0':'1');
+	}
+	if(_bit.indexOf('0')!==-1){return;}
+	_DRAW_SCROLL_RESUME();
+	if(_DRAW_IS_MATCH_BOSS_COUNT>100){
+		//GAMECLEAR
+		_DRAW_GAMECLEAR();
+	}else{
+		_DRAW_IS_MATCH_BOSS_COUNT++;
+	}
 }
 
 const _DRAW_STOP=function(){
@@ -4461,7 +4468,7 @@ const _DRAW_GAMECLEAR=function(){
 			(_CANVAS.height/2)+60,
 			0.15
 		);
-	_CANVAS_ISGAMECLEAR=true;
+	_DRAW_IS_GAMECLEAR=true;
 
 }
 
@@ -4713,11 +4720,11 @@ const _DRAW_INIT_OBJECT=function(){
 
 	//SCORE
 //	_SCORE=new GameObject_SCORE();
-	if(!_CANVAS_ISGAMECLEAR){
+	if(!_DRAW_IS_GAMECLEAR){
 		//クリアしていなければスコアをリセット
 		_SCORE.init();
 	}
-	_CANVAS_ISGAMECLEAR=false;
+	_DRAW_IS_GAMECLEAR=false;
 
 	//BACKGROUND
 	for(let _i=0;_i<_BACKGROUND_STAR_MAX;_i++){
@@ -4769,8 +4776,10 @@ const _DRAW_STAGE_SELECT=function(){
 	_KEYEVENT_MASTER.removeKeydownGameover();
 	_KEYEVENT_MASTER.addKeydownSelectStage();
 
-	_STAGESELECT=new GameObject_STAGESELECT();
-	_STAGESELECT.init();
+	_MAP.init(function(){
+		_STAGESELECT=new GameObject_STAGESELECT();
+		_STAGESELECT.init();
+	});
 
 }
 

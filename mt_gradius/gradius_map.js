@@ -176,27 +176,24 @@ class GameObject_MAP{
 		if(_this.mapdef[_my][_mx].match(this.getCollisionFlag())!==null){return false;}
 		return true;
 	}
-	show(){}
-	move(){
-		this.x-=this.map_background_speed;
-		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
-
+	isShotCollision(){
+		let _this=this;
 		//ショットのあたり判定
 		for(let _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
-			let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
-			for(let _j=0;_j<_ps.shots.length;_j++){
-				let _pss=_ps.shots[_j];
-				//ショット中でない場合無視
-				if(!_pss._shot_alive){continue;}
-				//マップエリア外の場合無視
-				if(_pss.x<this.initx-_SCROLL_POSITION)
-									{continue;}
-				if(_pss.x>(this.mapdef[0].length*this.t)
-							+this.initx-_SCROLL_POSITION)
-											{continue;}
-				_ps.map_collition(_pss);
-			}
-		}
+		let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
+		for(let _j=0;_j<_ps.shots.length;_j++){
+			let _pss=_ps.shots[_j];
+			//ショット中でない場合無視
+			if(!_pss._shot_alive){continue;}
+			//マップエリア外の場合無視
+			if(_pss.x<this.initx-_SCROLL_POSITION)
+								{continue;}
+			if(_pss.x>(this.mapdef[0].length*this.t)
+						+this.initx-_SCROLL_POSITION)
+										{continue;}
+			_ps.map_collition(_pss);
+		}//_j
+		}//_i
 
 		//ミサイルのあたり判定
 		for(let _i=0;_i<_PLAYERS_MISSILE.length;_i++){
@@ -213,6 +210,11 @@ class GameObject_MAP{
 			_pm.map_collition(_pms);
 		}//_j
 		}//_i
+
+	}//isShotCollision()
+	show(){}
+	move(){
+		this.x-=this.map_background_speed;
 
 		//MAPを表示
 		for(let _i=0;_i<this.mapdef.length;_i++){

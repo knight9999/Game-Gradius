@@ -1216,7 +1216,7 @@ class ENEMY_BOSS_BOGCORE
 		//自爆
 		if(_this._c>=4000){_this._status=0;return;}
 
-		console.log(_this._c);
+//		console.log(_this._c);
 		_this._c++;
 
 	}

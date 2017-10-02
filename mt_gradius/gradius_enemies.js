@@ -965,6 +965,7 @@ class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 		super(_o,_x,_y);
 		this.speed=0;
 		this.starttime=0;
+		this._c=0;//アニメーションカウント
 	}
 	ani_col(){}
 	init(){
@@ -1132,7 +1133,6 @@ class ENEMY_BOSS_BOGCORE
 		}
 
 		if(_this.x<750){
-			_this.starttime=new Date().getTime();
 			_this.is_done_move_init=true;
 			_this.is_able_collision=true;
 		}
@@ -1196,8 +1196,7 @@ class ENEMY_BOSS_BOGCORE
 //		console.log((new Date().getTime())-_this.starttime);
 
 		//自爆準備
-		if((new Date().getTime())
-			-_this.starttime>=30000){
+		if(_this._c>=3000){
 			let _ec=_this.getEnemyCenterPosition();
 			//ショットを無効にする
 			_this.is_able_collision=false;
@@ -1215,11 +1214,10 @@ class ENEMY_BOSS_BOGCORE
 
 		}
 		//自爆
-		if((new Date().getTime())
-			-_this.starttime>=45000){
-//				console.log('collapes');
-			_this._status=0;
-		}
+		if(_this._c>=4000){_this._status=0;return;}
+
+//		console.log(_this._c);
+		_this._c++;
 
 	}
 }

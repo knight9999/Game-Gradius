@@ -454,12 +454,13 @@ _init:function(){
 	let _this=this;
 	_this._data_api=new MT.DataAPI({
 		baseUrl:"http://localhost/mt/mt-data-api.cgi",
-		clientId:"api10entries"
+		clientId:"api11entries"
 	});
 
 	_this._data_api.getToken(function(res){
 		if (res.error) {
 			if(res.error.code===401) {
+				console.log('reload after 401 error occuered in updating.');
 				location.href=
 					_this._data_api.getAuthorizationUrl(location.href);
 			}
@@ -479,6 +480,10 @@ _set_entryupdate:function(_ed){
 		function(_r) {
 		if(_r.error){
 			alert('エントリ更新に失敗しました。');
+			if(_r.error.code===401){
+				location.href=
+					_this._data_api.getAuthorizationUrl(location.href);
+			}
 			return;
 		}
 		alert('エントリ更新しました。');

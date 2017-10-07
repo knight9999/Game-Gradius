@@ -1294,7 +1294,7 @@ const _KEYEVENT_SP={
 
 	let _rad=_SP_CONTROLLER._get_st(e)._rad;
 	let _dis=_SP_CONTROLLER._get_st(e)._dis;
-//	if(_dis<5){return false;}
+	if(_dis<5){return false;}
 
 	if(_rad>-40&&_rad<=40){
 		// 	console.log('left');

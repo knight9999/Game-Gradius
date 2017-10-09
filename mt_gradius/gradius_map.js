@@ -135,6 +135,12 @@ class GameObject_MAP{
 	get_stage_map_pattern(_n){
 		return this.map_pettern;
 	}
+	getMapXToPx(_mx){return _mx*this.t;}
+	getMapYToPx(_my){return _my*this.t;}
+	getMapX(_x){return parseInt(
+					(_x+_SCROLL_POSITION-this.initx)
+					/this.t);}
+	getMapY(_y){return parseInt(_y/_MAP.t);}
 	isMapDouble(_s){
 		return (_s.match(this.collision_map_d)!==null);
 	}

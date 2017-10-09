@@ -403,7 +403,7 @@ const _CANVAS_IMGS_INIT={
 
 let _DRAW_IS_GAMECLEAR=false;//GameClearフラグ
 
-let _SCROLL_POSITION=1;
+let _SCROLL_POSITION=0;
 
 const _SHOTTYPE_MISSILE='_SHOTTYPE_MISSILE';
 const _SHOTTYPE_NORMAL='_SHOTTYPE_NORMAL';
@@ -1703,13 +1703,8 @@ class GameObject_PLAYER_MAIN
 		//プレーヤーの中心座標取得
 		let _pl=this.getPlayerCenterPosition();
 		//MAPの位置を取得
-		let _map_x=
-			parseInt((_pl._x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
-		let _map_y=
-			parseInt(_pl._y/_MAP.t);
+		let _map_x=_MAP.getMapX(_pl._x);
+		let _map_y=_MAP.getMapY(_pl._y);
 
 		if(_MAP.isMapCollision(_map_x,_map_y)){
 			this.setfalsealive();
@@ -1980,12 +1975,8 @@ class GameObject_FORCEFIELD{
 		//プレーヤーの中心座標取得
 		let _pl=this.getPlayerCenterPosition();
 		//MAPの位置を取得
-		let _map_x=
-			parseInt((_pl._x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
-		let _map_y=parseInt(_pl._y/_MAP.t);
+		let _map_x=_MAP.getMapX(_pl._x);
+		let _map_y=_MAP.getMapY(_pl._y);
 
 		if(_MAP.isMapCollision(_map_x,_map_y)){
 			this.reduce();
@@ -2085,12 +2076,8 @@ class GameObject_SHIELD
 		let _pl=_this.getPlayerCenterPosition();
 		//MAPの位置を取得
 		//シールドの上下画像の中心点からMAP判定する。
-		let _map_x=
-			parseInt((_pl._x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
-		let _map_y=parseInt(_pl._y/_MAP.t);
+		let _map_x=_MAP.getMapX(_pl._x);
+		let _map_y=_MAP.getMapY(_pl._y);
 
 		if(_MAP.isMapCollision(_map_x,_map_y)){
 			_this.reduce();
@@ -2219,6 +2206,7 @@ class GameObject_SHOTS_MISSILE
 				_t:0,//ミサイル発射後時間
 				_st:'_st1',//ミサイルのステータス
 				_img:new Image(),//ミサイルの画像
+				_c_mc:0,
 				_c:0,//爆風アニメーションカウント
 				_c_area:25,//ミサイル、爆風の当たり判定
 				_enemy:null,//ミサイルに衝突した敵のオブジェクト
@@ -2229,6 +2217,7 @@ class GameObject_SHOTS_MISSILE
 					this.y=0,
 					this._t=0,
 					this._c=0,
+					this._c_mc=0,
 					this._c_area=25,
 					this._st='_st1',
 					this._img=new Image(),
@@ -2368,14 +2357,18 @@ class GameObject_SHOTS_MISSILE
 
 	}
 	get_missile_status(_t){return _t._st;}
-	set_missile_status(_t,_st){_t._st=_st;}
+	set_missile_status(_t,_st){
+		// if(this._st==='_st1'
+		// 	||this._st==='_st2'
+		// 	||this._st==='_st3'
+		// ){return;}
+		// _t._c_mc++;
+		// if(_t._c_mc>1){_t._c_mc=0;return;}
+		_t._st=_st;
+	}
 	map_collition(_t){
-		let _map_x=
-			parseInt((_t.x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
-		let _map_y=parseInt(_t.y/_MAP.t);
+		let _map_x=_MAP.getMapX(_t.x),
+			_map_y=_MAP.getMapY(_t.y);
 
 		//段差を滑らかに表示させるためのもの
 		//ミサイル落下 _st3→_st4
@@ -2387,12 +2380,10 @@ class GameObject_SHOTS_MISSILE
 		//着座時、_st3が必ず壁より１マス上に
 		//配置する必要がある。
 		if(this.get_missile_status(_t)==='_st6'){
-//			console.log('_st6');
+			console.log('_st6');
 			this.set_missile_status(_t,'_st7');
 		}
 		if(this.get_missile_status(_t)==='_st7'){
-//			console.log('_st7');
-			_t.x+=3;
 			this.set_missile_status(_t,'_st8');
 		}
 		if(this.get_missile_status(_t)==='_st8'){
@@ -2417,11 +2408,7 @@ class GameObject_SHOTS_MISSILE
 
 		//落ちかけ
 		if(this.get_missile_status(_t)==='_st5'){
-			_map_x=
-				parseInt((_t.x+_t._img.width
-						+_SCROLL_POSITION
-						-_MAP.initx)
-						/_MAP.t);
+			_map_x=_MAP.getMapX(_t.x+_t._img.width);
 			//MAPを超えた場合は、再落下させる
 			//_st4→_st5
 			if(_MAP.isMapOver(_map_x,_map_y)){
@@ -2453,11 +2440,7 @@ class GameObject_SHOTS_MISSILE
 
 		if(this.get_missile_status(_t)==='_st3'){
 //			console.log('_st3');
-			_map_x=
-				parseInt((_t.x+_t._img.width
-						+_SCROLL_POSITION
-						-_MAP.initx)
-						/_MAP.t);
+			_map_x=_MAP.getMapX(_t.x+_t._img.width);
 			//壁にぶつかる(壁中)
 			if(_MAP.isMapCollision(_map_x,_map_y)){
 				_t._init();
@@ -2465,11 +2448,7 @@ class GameObject_SHOTS_MISSILE
 			}
 
 			//壁にぶつかる
-			_map_x=
-				parseInt((_t.x+(_t._img.width/2)
-						+_SCROLL_POSITION
-						-_MAP.initx)
-						/_MAP.t);
+			_map_x=_MAP.getMapX(_t.x+(_t._img.width/2));
 			//真横に壁がある場合、初期化
 			if(_MAP.isMapCollision(_map_x,_map_y)){
 				_t._init();
@@ -2491,7 +2470,7 @@ class GameObject_SHOTS_MISSILE
 
 		if(this.get_missile_status(_t)==='_st2'){
 //			console.log('_st2');
-			_map_y=parseInt((_t.y+_t._img.height/2)/_MAP.t);
+			_map_y=_MAP.getMapY(_t.y+_t._img.height/2);
 			//下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x,_map_y+1)){
 				_t.y=(_map_y*_MAP.t)-5;
@@ -2501,7 +2480,7 @@ class GameObject_SHOTS_MISSILE
 		}
 
 		if(this.get_missile_status(_t)==='_st1'){
-			_map_y=parseInt((_t.y+_t._img.height/2)/_MAP.t);
+			_map_y=_MAP.getMapY(_t.y+_t._img.height/2);
 			//自身、あるいはその下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x,_map_y)
 				||_MAP.isMapCollision(_map_x,_map_y+1)
@@ -2780,12 +2759,8 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 	}
 	map_collition(_t){
 		//MAPの位置を取得
-		let _map_x=
-			parseInt((_t.x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
-		let _map_y=parseInt(_t.y/_MAP.t);
+		let _map_x=_MAP.getMapX(_t.x);
+		let _map_y=_MAP.getMapY(_t.y);
 
 		if(_MAP.isMapCollision(_map_x,_map_y)
 			||_MAP.isMapCollision(_map_x+1,_map_y)){
@@ -2897,17 +2872,11 @@ class GameObject_SHOTS_MISSILE_2WAY
 	}
 	map_collition(_t){
 		//MAPの位置を取得
-		let _map_x=
-			parseInt((_t.x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
+		let _map_x=_MAP.getMapX(_t.x);
 		let _tmp=(_t.id===0)
 					?_t.y
-					//?_t.y+(_t._img.height/2*-1)
 					:_t.y+_t._img.height
-		let _map_y=
-			parseInt(_tmp/_MAP.t);
+					let _map_y=_MAP.getMapY(_t.y);
 
 		if(_MAP.isMapCollision(_map_x,_map_y)){
 			this.collapse_missile(_t);
@@ -3043,12 +3012,8 @@ class GameObject_SHOTS_NORMAL
 	}
 	map_collition(_t){
 		//MAPの位置を取得
-		let _map_x=
-			parseInt((_t.x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
-		let _map_y=parseInt(_t.y/_MAP.t);
+		let _map_x=_MAP.getMapX(_t.x);
+		let _map_y=_MAP.getMapY(_t.y);
 
 		if(_MAP.isMapCollision(_map_x,_map_y)
 			||_MAP.isMapCollision(_map_x+1,_map_y)){
@@ -3120,12 +3085,8 @@ class GameObject_SHOTS_DOUBLE
 	}
 	map_collition(_t){
 		//MAPの位置を取得
-		let _map_x=
-			parseInt((_t.x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
-		let _map_y=parseInt(_t.y/_MAP.t);
+		let _map_x=_MAP.getMapX(_t.x);
+		let _map_y=_MAP.getMapY(_t.y);
 
 		if(_MAP.isMapCollision(_map_x,_map_y)
 			||_MAP.isMapCollision(_map_x+1,_map_y)){
@@ -3344,12 +3305,8 @@ class GameObject_SHOTS_RIPPLE_LASER
 	}
 	map_collition(_t){
 		//MAPの位置を取得
-		let _map_x=
-			parseInt((_t.x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
-		let _map_y=parseInt(_t.y/_MAP.t);
+		let _map_x=_MAP.getMapX(_t.x);
+		let _map_y=_MAP.getMapY(_t.y);
 
 		if(_MAP.isMapCollision(_map_x,_map_y)
 			||_MAP.isMapCollision(_map_x+1,_map_y)){
@@ -3512,12 +3469,8 @@ class GameObject_SHOTS_LASER
 		//プレーヤーの中心座標取得
 		let _pl=this.player.getPlayerCenterPosition();
 
-		let _map_x=
-			parseInt((_t.x+_pl._x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
-		let _map_y=parseInt(_t.y/_MAP.t);
+		let _map_x=_MAP.getMapX(_t.x+_pl._x);
+		let _map_y=_MAP.getMapY(_t.y);
 
 		if(_MAP.isMapCollision(_map_x-1,_map_y)){
 			if(_t.x<_MAP.t){

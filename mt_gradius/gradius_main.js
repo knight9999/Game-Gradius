@@ -2380,7 +2380,6 @@ class GameObject_SHOTS_MISSILE
 		//着座時、_st3が必ず壁より１マス上に
 		//配置する必要がある。
 		if(this.get_missile_status(_t)==='_st6'){
-			console.log('_st6');
 			this.set_missile_status(_t,'_st7');
 		}
 		if(this.get_missile_status(_t)==='_st7'){

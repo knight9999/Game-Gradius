@@ -140,7 +140,7 @@ class GameObject_MAP{
 	getMapX(_x){return parseInt(
 					(_x+_SCROLL_POSITION-this.initx)
 					/this.t);}
-	getMapY(_y){return parseInt(_y/_MAP.t);}
+	getMapY(_y){return parseInt(_y/this.t);}
 	isMapDouble(_s){
 		return (_s.match(this.collision_map_d)!==null);
 	}
@@ -209,10 +209,6 @@ class GameObject_MAP{
 			let _pms=_pm.shots[_j];
 			//ショット中でない場合無視
 			if(!_pms._shot_alive){continue;}
-			//マップエリア外の場合無視
-			if(_pms.x<=this.initx-_SCROLL_POSITION)
-								{continue;}
-
 			_pm.map_collition(_pms);
 		}//_j
 		}//_i

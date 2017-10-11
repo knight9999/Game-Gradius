@@ -2303,7 +2303,7 @@ class GameObject_SHOTS_MISSILE
 					return (!_t._shot_alive)?_p._x:_i+2;
  				})(_t.x);
 				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+6;
+ 					return (!_t._shot_alive)?_p._y:_i+3;
  				})(_t.y);
 				_t._img=_CANVAS_IMGS['missile1'].obj;
 			},
@@ -2316,7 +2316,7 @@ class GameObject_SHOTS_MISSILE
 					return (!_t._shot_alive)?_p._x:_i+4;
  				})(_t.x);
 				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+5;
+ 					return (!_t._shot_alive)?_p._y:_i+3;
  				})(_t.y);
 				_t._img=_CANVAS_IMGS['missile5'].obj;
 			},
@@ -2329,7 +2329,7 @@ class GameObject_SHOTS_MISSILE
 					return (!_t._shot_alive)?_p._x:_i+4;
  				})(_t.x);
 				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+3;
+ 					return (!_t._shot_alive)?_p._y:_i+2;
  				})(_t.y);
 				_t._img=_CANVAS_IMGS['missile4'].obj;
 			}
@@ -2358,75 +2358,92 @@ class GameObject_SHOTS_MISSILE
 	}
 	get_missile_status(_t){return _t._st;}
 	set_missile_status(_t,_st){
-		// if(this._st==='_st1'
-		// 	||this._st==='_st2'
-		// 	||this._st==='_st3'
-		// ){return;}
-		// _t._c_mc++;
-		// if(_t._c_mc>1){_t._c_mc=0;return;}
+		if(this._st==='_st1'
+			||this._st==='_st2'
+			||this._st==='_st3'
+		){return;}
+		_t._c_mc++;
+		if(_t._c_mc>1){
+			_t._c_mc=0;return;
+		}
 		_t._st=_st;
 	}
 	map_collition(_t){
-		let _map_x=_MAP.getMapX(_t.x),
+		let _this=this;
+		let _map_x=_MAP.getMapX(_t.x+_t._img.width),
 			_map_y=_MAP.getMapY(_t.y);
-
-		//段差を滑らかに表示させるためのもの
-		//ミサイル落下 _st3→_st4
-		if(this.get_missile_status(_t)==='_st4'){
-			this.set_missile_status(_t,'_st5');
-		}
-
-		//ミサイル着地 _st1→_st6→_st7→_st3
-		//着座時、_st3が必ず壁より１マス上に
-		//配置する必要がある。
-		if(this.get_missile_status(_t)==='_st6'){
-			console.log('_st6');
-			this.set_missile_status(_t,'_st7');
-		}
-		if(this.get_missile_status(_t)==='_st7'){
-			this.set_missile_status(_t,'_st8');
-		}
-		if(this.get_missile_status(_t)==='_st8'){
-//			console.log('_st8');
-			_t.y=((_map_y+1)*_MAP.t)-17;
-			this.set_missile_status(_t,'_st3');
-		}
 
 		//MAPに入る手前は無視する
 		if(_MAP.isMapBefore(_map_x,_map_y)){return;}
 		//MAPから抜けた後のミサイルの状態
 		if(_MAP.isMapOver(_map_x,_map_y)){
 //			console.log('===================');
-			if(this.get_missile_status(_t)!=='_st1'){
-				this.set_missile_status(_t,'_st2');
+			if(_this.get_missile_status(_t)==='_st3'
+				){
+				_this.set_missile_status(_t,'_st4');
 				return;
 			}
-			if(this.get_missile_status(_t)==='_st2'){
+			if(_this.get_missile_status(_t)==='_st2'){
 				return;
 			}
 		}
 
-		//落ちかけ
-		if(this.get_missile_status(_t)==='_st5'){
+		//段差を滑らかに表示させるためのもの
+		//ミサイル落下 _st3→_st4
+		if(_this.get_missile_status(_t)==='_st4'){
+			_this.set_missile_status(_t,'_st5');
+		}
+
+		//ミサイル着地 _st1→_st6→_st7→_st3
+		//着座時、_st3が必ず壁より１マス上に
+		//配置する必要がある。
+		if(_this.get_missile_status(_t)==='_st6'){
 			_map_x=_MAP.getMapX(_t.x+_t._img.width);
-			//MAPを超えた場合は、再落下させる
-			//_st4→_st5
-			if(_MAP.isMapOver(_map_x,_map_y)){
-				this.set_missile_status(_t,'_st4');
+			//壁にぶつかる(壁中)
+			if(_MAP.isMapCollision(_map_x,_map_y)){
+				_t._init();
 				return;
 			}
+
+			_this.set_missile_status(_t,'_st7');
+		}
+		if(_this.get_missile_status(_t)==='_st7'){
+			_map_x=_MAP.getMapX(_t.x+_t._img.width);
+			//壁にぶつかる(壁中)
+			if(_MAP.isMapCollision(_map_x,_map_y)){
+				_t._init();
+				return;
+			}
+			_this.set_missile_status(_t,'_st8');
+		}
+		if(_this.get_missile_status(_t)==='_st8'){
+			_map_x=_MAP.getMapX(_t.x+_t._img.width);
+			//壁にぶつかる(壁中)
+			if(_MAP.isMapCollision(_map_x,_map_y)){
+				_t._init();
+				return;
+			}
+//			console.log('_st8');
+			_t.y=(_map_y*_MAP.t)+8;
+			_this.set_missile_status(_t,'_st3');
+		}
+
+		//落ちかけ
+		if(_this.get_missile_status(_t)==='_st5'){
+			_map_x=_MAP.getMapX(_t.x+_t._img.width);
 			//真下に衝突がある場合
 			if(_MAP.isMapCollision(_map_x,_map_y+1)){
 				//→st6→st7→st3への調整のためのy位置調整
 				_t.y=(_map_y*_MAP.t)-5;
-				this.set_missile_status(_t,'_st6');
+				_this.set_missile_status(_t,'_st6');
 				return;
 			}
 
 			//真下に壁がない場合は落下
 			if(!_MAP.isMapCollision(_map_x,_map_y+1)){
-				this.set_missile_status(_t,'_st2');
-				_t.x+=(_t._img.width/2);
+				_this.set_missile_status(_t,'_st2');
+//				_t.x+=(_t._img.width/2);
+				_t.y+=5;
 				return;
 			}
 
@@ -2438,7 +2455,7 @@ class GameObject_SHOTS_MISSILE
 		}
 
 
-		if(this.get_missile_status(_t)==='_st3'){
+		if(_this.get_missile_status(_t)==='_st3'){
 //			console.log('_st3');
 			_map_x=_MAP.getMapX(_t.x+_t._img.width);
 			//壁にぶつかる(壁中)
@@ -2446,6 +2463,11 @@ class GameObject_SHOTS_MISSILE
 				_t._init();
 				return;
 			}
+			//真下に壁がない場合
+ 			if(!_MAP.isMapCollision(_map_x,_map_y+1)){
+ 				_this.set_missile_status(_t,'_st4');
+ 				return;
+ 			}
 
 			//壁にぶつかる
 			_map_x=_MAP.getMapX(_t.x+(_t._img.width/2));
@@ -2457,37 +2479,35 @@ class GameObject_SHOTS_MISSILE
 
 			//MAPからはみ出る
 			if(_MAP.isMapOver(_map_x,_map_y)){
-				this.set_missile_status(_t,'_st4');
-				return;
-			}
-			//真下に壁がない場合
-			if(!_MAP.isMapCollision(_map_x,_map_y+1)){
-				this.set_missile_status(_t,'_st4');
+				_this.set_missile_status(_t,'_st4');
 				return;
 			}
 
 		}
 
-		if(this.get_missile_status(_t)==='_st2'){
+		if(_this.get_missile_status(_t)==='_st2'){
 //			console.log('_st2');
 			_map_y=_MAP.getMapY(_t.y+_t._img.height/2);
 			//下の壁にぶつかる
-			if(_MAP.isMapCollision(_map_x,_map_y+1)){
-				_t.y=(_map_y*_MAP.t)-5;
-				this.set_missile_status(_t,'_st6');
+			if(_MAP.isMapCollision(_map_x,_map_y)
+				||_MAP.isMapCollision(_map_x,_map_y+1)
+				){
+				_t.y=(_map_y*_MAP.t)-8;
+				_this.set_missile_status(_t,'_st6');
 				return;
 			}
 		}
 
-		if(this.get_missile_status(_t)==='_st1'){
+		if(_this.get_missile_status(_t)==='_st1'){
 			_map_y=_MAP.getMapY(_t.y+_t._img.height/2);
 			//自身、あるいはその下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x,_map_y)
 				||_MAP.isMapCollision(_map_x,_map_y+1)
+				||_MAP.isMapCollision(_map_x+1,_map_y+1)
 				){
 				//→st6→st7→st3への調整のためのy位置調整
 				_t.y=(_map_y*_MAP.t)-5;
-				this.set_missile_status(_t,'_st7');
+				_this.set_missile_status(_t,'_st7');
 				return;
 			}
 		}

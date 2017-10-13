@@ -1749,9 +1749,9 @@ class GameObject_PLAYER_MAIN
 					_this._y=0;
 					return 50-(_this.img.height/4);
 				}
-				if(_i>_CANVAS.height-100-(_this.img.height/4)){
+				if(_i>_CANVAS.height-75-(_this.img.height/4)){
 					_this._y=0;
-					return _CANVAS.height-100-(_this.img.height/4);
+					return _CANVAS.height-75-(_this.img.height/4);
 				}
 				return _i+_this._y;
 			})(_this.y);
@@ -3639,7 +3639,7 @@ class GameObject_PM{
 		this.img=_CANVAS_IMGS[_src].obj;
 		this.x=(_CANVAS.width/2)-
 				(this.img.width/2);
-		this.y=_CANVAS.height-50;
+		this.y=_CANVAS.height-30;
 
 		this.meterdef_status='111111';
 		this.meterdef_current='000000';

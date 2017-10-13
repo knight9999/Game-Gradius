@@ -146,7 +146,7 @@ const _CANVAS_IMGS={
 		 obj:new Image()},
 	'shot3':
  		{src:'images/gradius_shot3.png',
- 		 rate:0.4,
+ 		 rate:0.30,
  		 obj:new Image()},
 	'meter':
 		{src:'images/gradius_meter.png',
@@ -2209,7 +2209,7 @@ class GameObject_SHOTS_MISSILE
 				_c_mc:0,
 				_c:0,//爆風アニメーションカウント
 				_c_area:25,//ミサイル、爆風の当たり判定
-				_enemy:null,//ミサイルに衝突した敵のオブジェクト
+				_enemyid:null,//ミサイルに衝突した敵のオブジェクト
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
 				_init:function(){//初期化
@@ -2221,7 +2221,7 @@ class GameObject_SHOTS_MISSILE
 					this._c_area=25,
 					this._st='_st1',
 					this._img=new Image(),
-					this._enemy=null,
+					this._enemyid=null,
 					this._shot=false,
 					this._shot_alive=false
 				}
@@ -2341,18 +2341,17 @@ class GameObject_SHOTS_MISSILE
 		if(!this.player.isalive()){return;}
 		//弾が発していない場合は無視する
 		if(!_t._shot_alive){return;}
-		if(_t._c>0){return}//爆風中は無視
 
 		//ミサイル衝突判定
 		if(_GAME.isMisShotCollision(_t,_e)){
 			//前回衝突した敵と同じ場合は無視する。
-			if(_t._enemy===_e.id){return;}
+			if(_t._enemyid===_e.id){return;}
 			_e.collision(_t);
 			if(_t._c===0){
 				_t._c=1;
 			}
 			//衝突した敵を覚える
-			_t._enemy=_e.id;
+			_t._enemyid=_e.id;
 		}
 
 	}
@@ -2414,6 +2413,7 @@ class GameObject_SHOTS_MISSILE
 				_t._init();
 				return;
 			}
+			_t.x+=2;
 			_this.set_missile_status(_t,'_st8');
 		}
 		if(_this.get_missile_status(_t)==='_st8'){
@@ -2424,6 +2424,7 @@ class GameObject_SHOTS_MISSILE
 				return;
 			}
 //			console.log('_st8');
+			_t.x+=2;
 			_t.y=(_map_y*_MAP.t)+8;
 			_this.set_missile_status(_t,'_st3');
 		}
@@ -2442,7 +2443,7 @@ class GameObject_SHOTS_MISSILE
 			//真下に壁がない場合は落下
 			if(!_MAP.isMapCollision(_map_x,_map_y+1)){
 				_this.set_missile_status(_t,'_st2');
-//				_t.x+=(_t._img.width/2);
+				_t.x+=2;
 				_t.y+=5;
 				return;
 			}
@@ -2704,7 +2705,7 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 		//ミサイル衝突判定
 		if(_GAME.isMisShotCollision(_t,_e)){
 			//前回衝突した敵と同じ場合は無視する。
-			if(_t._enemy===_e.id){return;}
+			if(_t._enemyid===_e.id){return;}
 			_e.collision(_t);
 			//敵を倒した場合は貫通させる。
 			if(!_e.isalive()){return;}
@@ -2712,7 +2713,7 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 				_t._c=1;
 			}
 			//衝突した敵を覚える
-			_t._enemy=_e.id;
+			_t._enemyid=_e.id;
 		}
 
 	}
@@ -2767,13 +2768,13 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 
 		if(_s){
 			//前回衝突した敵と同じ場合は無視する。
-			if(_t._enemy===_e.id){return;}
+			if(_t._enemyid===_e.id){return;}
 			_e.collision(_t);
 			if(_t._c===0){
 				_t._c=1;
 			}
 			//衝突した敵を覚える
-			_t._enemy=_e.id;
+			_t._enemyid=_e.id;
 		}
 
 	}
@@ -2880,13 +2881,13 @@ class GameObject_SHOTS_MISSILE_2WAY
 		//ミサイル衝突判定
 		if(_GAME.isMisShotCollision(_t,_e)){
 			//前回衝突した敵と同じ場合は無視する。
-			if(_t._enemy===_e.id){return;}
+			if(_t._enemyid===_e.id){return;}
 			_e.collision(_t);
 			if(_t._c===0){
 				_t._c=1;
 			}
 			//衝突した敵を覚える
-			_t._enemy=_e.id;
+			_t._enemyid=_e.id;
 		}
 
 	}
@@ -3093,14 +3094,41 @@ class GameObject_SHOTS_DOUBLE
 				sid:_SHOTTYPE_DOUBLE,
 				x:0,//処理変数：照射x軸
 				y:0,
+				_enemyid:null,//敵ID
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
 				_init:function(){//初期化
 					this.x=0,
 					this.y=0,
+					this._enemyid=null,
 					this._shot_alive=false
 				}
 			});
+		}
+	}
+	enemy_collision(_e){//敵への当たり処理
+		let _this=this;
+		if(!_this.player.isalive()){return;}
+		let _is_same_eid=(function(){//全ショットのもつ敵IDが全て一致する
+			let _eid=null;
+			for(let _k=0;_k<_this.shots.length;_k++){
+				let _t=_this.shots[_k];
+				if(_k===0){_eid=_t._enemyid;continue;}
+				if(_t[_k]!==_eid){return false;}
+			}
+			return true;
+		})();
+		for(let _k=0;_k<_this.shots.length;_k++){
+			let _t=_this.shots[_k];
+			let _s=_GAME.isShotCollision(_t,_e);
+			_t._enemyid=_e.id;
+			if(_s&&_e.isalive()){
+				_t._init();
+				//硬い敵に対して、
+				//同時ショット判定を避ける
+				if(_is_same_eid){continue;}
+				_e.collision(_t);
+			}
 		}
 	}
 	map_collition(_t){
@@ -3146,7 +3174,7 @@ class GameObject_SHOTS_DOUBLE
 				if(_j===0){
 					return (!_sa)?_pl._x:_i+30;
 				}else{
-					return (!_sa)?_pl._x+20:_i+30;
+					return (!_sa)?_pl._x:_i+30;
 				}
 			})(_t.x);
 			_t.y=(function(_i){
@@ -3156,7 +3184,6 @@ class GameObject_SHOTS_DOUBLE
 					return (!_sa)?_pl._y-23:_i-23;
 				}
 			})(_t.y);
-
 
 			if (this.shots[0].x>_CANVAS.width){
 				this.shots[0]._init();
@@ -3187,24 +3214,6 @@ class GameObject_SHOTS_DOUBLE
 class GameObject_SHOTS_TAILGUN
 			extends GameObject_SHOTS_DOUBLE{
 	constructor(_p){super(_p);}
-	enemy_collision(_e){//敵への当たり処理
-		if(!this.player.isalive()){return;}
-		for(let _k=0;_k<this.shots.length;_k++){
-			let _t=this.shots[_k];
-			if(!_t._shot_alive){continue;}
-			let _ec=_e.getEnemyCenterPosition();
-
-			let _a=Math.sqrt(
-				Math.pow(_ec._x-_t.x,2)+
-				Math.pow(_ec._y-_t.y,2)
-			);
-			let _s=(_a<_e.img.height)?true:false;
-			if(_s&&_e.isalive()){
-				_e.collision(_t);
-				_t._init();
-			}
-		}
-	}
 	move(){
 		let _p=this.player;
 		if(!_p.isalive()){return;}
@@ -4795,12 +4804,12 @@ _ac:{
 		return (_c>=(_a.length*_p)-1)?0:_c+1;
 	}
 },
-isCollision:function(_t,_e){
+isCollision:function(_p,_e){
 	//ピタゴラス定義による衝突判定
-	if(!_t.isalive()){return false;}
+	if(!_p.isalive()){return false;}
 	if(!_e.isalive()){return false;}
 
-	let _pl=_t.getPlayerCenterPosition();
+	let _pl=_p.getPlayerCenterPosition();
 	let _ec=_e.getEnemyCenterPosition();
 
 	let _pd=Math.sqrt(//敵と自機の距離
@@ -4808,21 +4817,21 @@ isCollision:function(_t,_e){
 		Math.pow(_ec._y-_pl._y,2)
 	);
 //	console.log((_pd<(_e.img.height/2)+(_t.height/2)));
-	return (_pd<(_e.img.height/2)+(_t.height/2));
+	return (_pd<(_e.img.height/2)+(_p.height/2));
 },
-isShieldCollision:function(_t,_e){
+isShieldCollision:function(_p,_e){
 	//ピタゴラス定義による衝突判定
-	if(!_t.isalive()){return false;}
+	if(!_p.isalive()){return false;}
 	if(!_e.isalive()){return false;}
 
-	let _pl=_t.getPlayerCenterPosition();
+	let _pl=_p.getPlayerCenterPosition();
 	let _ec=_e.getEnemyCenterPosition();
 
 	let _pd=Math.sqrt(//敵と自機の距離
 		Math.pow(_ec._x-_pl._x,2)+
 		Math.pow(_ec._y-_pl._y,2)
 	);
-	return (_pd<(_e.img.height/2)+(_t.height));
+	return (_pd<(_e.img.height/2)+(_p.height));
 },
 isMisShotCollision:function(_t,_e){
 	//ミサイルショット衝突判定
@@ -4832,6 +4841,15 @@ isMisShotCollision:function(_t,_e){
 		&&
 		(Math.abs(_ec._y-_t.y)
 			<(_e.img.height/2)+(_t._img.height/2));
+},
+isShotCollision:function(_t,_e){
+	//ショット衝突判定
+	let _ec=_e.getEnemyCenterPosition();	
+	let _td=Math.sqrt(
+		Math.pow(_ec._x-_t.x,2)+
+		Math.pow(_ec._y-_t.y,2)
+	);
+	return (_td<_e.img.height);
 },
 _showGameStart:function(){
 	//SPのみコントローラーのオブジェクトを取得

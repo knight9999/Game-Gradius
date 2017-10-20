@@ -9,6 +9,214 @@ let _MAPDEFS='';
 let _MAPDEF='';
 let _MAP_PETTERN=0;
 let _BACKGROUND_SPEED=0;
+
+const _MAP_ENEMIES={
+	_D:{//向き
+		_U:0,//上
+		_D:1,//下
+		_R:2,//右
+		_L:3//左
+	}
+}
+
+const _MAP_THEME={//_parts要素番号0は空文字
+	'_THEME1':{//なし
+		'_p':{},
+		'_enemies':{}
+	},
+	'_THEME3':{//クリスタル
+		'_p':{
+			'A':{
+				'_o':_CANVAS_IMGS['map_c_A'],
+				'_s':'1',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'B':{
+				'_o':_CANVAS_IMGS['map_f_F'],
+				'_s':'000110000,000110000,001111000,011111100,011111110,111111110',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'C':{
+				'_o':_CANVAS_IMGS['map_f_G'],
+				'_s':'111111110,011111110,011111100,001111000,000110000,000110000',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'H':{
+				'_o':_CANVAS_IMGS['map_f_H'],
+				'_s':
+				'0000000000000000000,'+
+				'0000011111111111111,'+
+				'0000011111111000000,'+
+				'0000000001111000000,'+
+				'0000000000110000000,'+
+				'0000000000110000000,'+
+				'0000000000110000000,'+
+				'1111111111111111110,'+
+				'0111111111111111110,'+
+				'0000000001100000000,'+
+				'0000000001100000000,'+
+				'0000000011100000000,'+
+				'0000000111111000000',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'I':{
+				'_o':_CANVAS_IMGS['map_f_I'],
+				'_s':
+				'000000010000000,'+
+				'000000010000000,'+
+				'000000111000000,'+
+				'000001111100000,'+
+				'000011111110000,'+
+				'000111111111000,'+
+				'001111111111100,'+
+				'001111111111100,'+
+				'011111111111110,'+
+				'111111111111111',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'J':{
+				'_o':_CANVAS_IMGS['map_f_J'],
+				'_s':
+				'111111111111111,'+
+				'011111111111110,'+
+				'001111111111100,'+
+				'001111111111100,'+
+				'000111111111000,'+
+				'000011111110000,'+
+				'000001111100000,'+
+				'000000111000000,'+
+				'000000010000000,'+
+				'000000010000000',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			}
+		},
+		'_enemies':{}
+	},
+	'_THEME2':{//大地
+		'_p':{
+			'A':{
+				'_o':_CANVAS_IMGS['map_f_A'],
+				'_s':'1',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'B':{
+				'_o':_CANVAS_IMGS['map_f_B'],
+				'_s':'1',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i-1;}
+			},
+			'C':{
+				'_o':_CANVAS_IMGS['map_f_C'],
+				'_s':'1',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'D':{
+				'_o':_CANVAS_IMGS['map_f_D'],
+				'_s':'1',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i-1;}
+			},
+			'E':{
+				'_o':_CANVAS_IMGS['map_f_E'],
+				'_s':'1',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'F':{
+				'_o':_CANVAS_IMGS['map_f_F'],
+				'_s':'000110000,'+
+					'000110000,'+
+					'001111000,'+
+					'011111100,'+
+					'011111110,'+
+					'111111111',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'G':{
+				'_o':_CANVAS_IMGS['map_f_G'],
+				'_s':'111111110,011111110,011111100,001111000,000110000,000110000',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'H':{
+				'_o':_CANVAS_IMGS['map_f_H'],
+				'_s':
+				'00000000000000000000,'+
+				'00000111111111111110,'+
+				'00000111111110000000,'+
+				'00000000011110000000,'+
+				'00000000001100000000,'+
+				'00000000001100000000,'+
+				'00000000001100000000,'+
+				'11111111111111111100,'+
+				'01111111111111111100,'+
+				'00000000011000000000,'+
+				'00000000011000000000,'+
+				'00000000111000000000,'+
+				'00000001111110000000',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'I':{//8
+				'_o':_CANVAS_IMGS['map_f_I'],
+				'_s':
+				'000000010000000,'+
+				'000000010000000,'+
+				'000000111000000,'+
+				'000001111100000,'+
+				'000011111110000,'+
+				'000111111111000,'+
+				'001111111111100,'+
+				'001111111111100,'+
+				'011111111111110,'+
+				'111111111111111',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'J':{
+				'_o':_CANVAS_IMGS['map_f_J'],
+				'_s':
+				'111111111111111,'+
+				'011111111111110,'+
+				'001111111111100,'+
+				'001111111111100,'+
+				'000111111111000,'+
+				'000011111110000,'+
+				'000001111100000,'+
+				'000000111000000,'+
+				'000000010000000,'+
+				'000000010000000',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'K':{
+				'_o':_CANVAS_IMGS['map_f_K'],
+				'_s':
+				'010',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'L':{
+				'_o':_CANVAS_IMGS['map_f_L'],
+				'_s':
+				'010',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			}
+		},
+		'_enemies':{}
+	},
+}//_MAP_THEME
+
 //各種ステージ定義
 // _map:配列でマップを作成
 // _title:ステージセレクトで、タイトルを表示
@@ -23,11 +231,14 @@ class GameObject_MAP{
 		this.pt=_pt||0;
 		this.initx=0;
 		this.x=this.initx;
-		this.collision=new RegExp('[0a-z]');
-		this.collision_map=new RegExp('[1-9]');
-		this.collision_map_d=new RegExp('[68]');
+		this.collision=new RegExp('[1A-Z]');
+		this.collision_enemies=new RegExp('[a-z]','g');
+		this.collision_map=new RegExp('[A-Z]');
+		this.collision_map_d=new RegExp('[BD]');//MAP衝突用
 		this.t=25;//単位
-		this.mapdef=0;
+		this.mapdef=new Array();//MAP表示用
+		this.mapdef_col=new Array();//MAP衝突用
+		this.map_theme=0;
 		this.map_pettern=0;
 		this.map_difficult=0;
 		this.map_background_speed=0;
@@ -47,34 +258,31 @@ class GameObject_MAP{
 		this.initx=parseInt(_MAPDEFS[this.map_pettern]._initx);
 		this.mapdef=_MAPDEFS[this.map_pettern]._map;
 		this.map_difficult=parseInt(_MAPDEFS[this.map_pettern]._difficult)-1;
-		_ENEMY_DIFFICULT=parseInt(_MAPDEFS[this.map_pettern]._difficult)-1;
-		_BACKGROUND_SPEED=parseInt(_MAPDEFS[this.map_pettern]._speed);
+		_ENEMY_DIFFICULT=
+			(_ISDEBUG)
+				?_ENEMY_DIFFICULT
+				:parseInt(_MAPDEFS[this.map_pettern]._difficult)-1;
 		this.map_background_speed=parseInt(_MAPDEFS[this.map_pettern]._speed);
+		_BACKGROUND_SPEED=parseInt(_MAPDEFS[this.map_pettern]._speed);
 		_MAP_PETTERN=this.map_pettern;
+		this.map_theme=_MAPDEFS[this.map_pettern]._theme;
+
+		this.init_mapdef_col();
 	}
 	init_enemies_location(){
-		_ENEMIES=[];
 		//MAPより敵の配置
 		for(let _i=0;_i<this.mapdef.length;_i++){
 		for(let _j=0;_j<this.mapdef[_i].length;_j++){
 			//空、または壁はスキップ
-			if(this.mapdef[_i][_j]==='0'){continue;}
-			if(this.mapdef[_i][_j]
-					.match(this.collision)===null){continue;}
+			if(this.isCollisionBit(this.mapdef[_i][_j])){continue;}
 
 			//上下の壁にそって、敵の向きを設定
-			let _vdirec=(
-					this.mapdef[_i-1]!==undefined
-					&&this.mapdef[_i-1][_j]!==undefined
-					&&this.mapdef[_i-1][_j]
-							.match(this.collision_map)!==null)
+			let _vdirec=
+					(this.isMapCollision(_j,_i-1))
 						?'up'
 						:'down';
-				_vdirec=(
-					this.mapdef[_i+1]!==undefined
-					&&this.mapdef[_i+1][_j]!==undefined
-					&&this.mapdef[_i+1][_j]
-							.match(this.collision_map)!==null)
+				_vdirec=
+					(this.isMapCollision(_j,_i+1))
 						?'down'
 						:'up';
 
@@ -113,11 +321,39 @@ class GameObject_MAP{
 								_vdirec)
 						);
 			}
+			if(this.mapdef[_i][_j]==='f'){
+				_ENEMIES.push(
+					new ENEMY_f(this.x+(_j*this.t),
+								_i*this.t,
+								_vdirec)
+						);
+			}
+			if(this.mapdef[_i][_j]==='g'){
+				_ENEMIES.push(
+					new ENEMY_g(this.x+(_j*this.t),
+								_i*this.t,
+								_vdirec)
+						);
+			}
 			if(this.mapdef[_i][_j]==='p'){
 				let _o=new ENEMY_p(this.x+(_j*this.t),
 							_i*this.t);
 				_ENEMIES.push(_o);
 				_ENEMIES_BOUNDS.push(_o);
+			}
+			if(this.mapdef[_i][_j]==='n'){
+				_ENEMIES.push(
+					new ENEMY_n(
+						this.x+(_j*this.t),
+						_i*this.t)
+				);
+			}
+			if(this.mapdef[_i][_j]==='o'){
+				_ENEMIES.push(
+					new ENEMY_o(
+						this.x+(_j*this.t),
+						_i*this.t)
+				);
 			}
 			if(this.mapdef[_i][_j]==='z'){
 				let _o=new ENEMY_BOSS_BOGCORE(
@@ -127,6 +363,37 @@ class GameObject_MAP{
 			}
 		}//_j
 		}//_i
+	}
+	init_mapdef_col(){
+		//MAP衝突用を作成
+		let _this=this;
+		Object.assign(_this.mapdef_col,_this.mapdef);
+		for(let _i=0;_i<_this.mapdef_col.length;_i++){
+			_this.mapdef_col[_i]=
+				_this.mapdef_col[_i].replace(_this.collision_enemies,'0');
+		}
+
+		for(let _i=0;_i<_this.mapdef_col.length;_i++){
+		let _m=_this.mapdef_col[_i];
+		for(let _j=0;_j<_m.length;_j++){
+			if(!_this.isCollisionBit(_m[_j])){continue;}
+			if(_m[_j]==='1'){continue;}
+			let _p=_MAP_THEME[_this.map_theme]._p[_m[_j]];
+			let _p_s=_p._s.split(',');
+			for(let _l=0;_l<_p_s.length;_l++){//p._s分ループ
+				let _s=_this.mapdef_col[_i+_l];
+				//置換箇所は文字列を分割、置換、結合処理
+				let _s1=_s.substr(0,_j);
+				let _s2=_GAME.getOrBit(
+							_s.substr(_j,_p_s[_l].length),
+							_p_s[_l],
+							_p_s[_l].length
+						);
+				let _s3=_s.substr(_j+_p_s[_l].length,_m.length);
+				_this.mapdef_col[_i+_l]=_s1+_s2+_s3;
+			}//_l
+		}//_j
+		}//_i	
 	}
 	getCollisionFlag(){return this.collision;}
 	getBackGroundSpeed(){
@@ -141,6 +408,9 @@ class GameObject_MAP{
 					(_x+_SCROLL_POSITION-this.initx)
 					/this.t);}
 	getMapY(_y){return parseInt(_y/this.t);}
+	isCollisionBit(_bit){
+		return (_bit.match(this.collision)!==null);
+	}
 	isMapDouble(_s){
 		return (_s.match(this.collision_map_d)!==null);
 	}
@@ -177,14 +447,14 @@ class GameObject_MAP{
 		//true:衝突
 		//false:衝突しない、またはそのMAPが存在しない
 		let _this=this;
-		if(_this.mapdef[_my]===undefined){return false;}
-		if(_this.mapdef[_my][_mx]===undefined){return false;}
-		if(_this.mapdef[_my][_mx].match(this.getCollisionFlag())!==null){return false;}
-		return true;
+		if(_this.mapdef_col[_my]===undefined){return false;}
+		if(_this.mapdef_col[_my][_mx]===undefined){return false;}
+		if(_this.isCollisionBit(_this.mapdef_col[_my][_mx])){return true;}
+		return false;
 	}
-	isShotCollision(){
+	isPlayersShotCollision(){
 		let _this=this;
-		//ショットのあたり判定
+		//プレーヤーのショットあたり判定
 		for(let _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
 		let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
 		for(let _j=0;_j<_ps.shots.length;_j++){
@@ -215,29 +485,66 @@ class GameObject_MAP{
 
 	}//isShotCollision()
 	show(){}
+	showMapForStageselect(_m){
+		let _this=this;
+		if(_m===null||_m===undefined){return;}
+		for(let _i=0;_i<_m._map.length;_i++){
+		let _ml=_m._map[_i].length;
+		for(let _j=0;_j<((_ml>30)?30:_ml);_j++){
+			let _k=_m._map[_i][_j];
+			if(_k==='0'){continue;}
+			if(_k.match(_this.collision_enemies)!==null){
+				//敵
+				let _img=_CANVAS_IMGS['enemy_'+_k+'_1'].obj;
+				//画像サイズは、25x25px
+				//ここでは10x10pxに調整
+				_CONTEXT.drawImage(
+					_img,
+					50+(_j*10),130+(_i*10),
+					_img.width/2.5,_img.height/2.5
+				);
+
+			}else{
+				//MAP
+				let _p=_MAP_THEME[_m._theme]._p[_k];
+				let _img=_p._o.obj;
+				//画像サイズは、25x25px
+				//ここでは10x10pxに調整
+				_CONTEXT.drawImage(
+					_img,
+					50+(_j*10),
+					130+(_p._my(_i)*10),
+					_img.width/2.5,_img.height/2.5
+				);
+			}
+		}//_j
+		}//_i
+		_CONTEXT.fillStyle="rgba(0,0,0,1)";
+		_CONTEXT.fillRect(351,130,_CANVAS.width,200);
+
+	}//showMapForStageselect
 	move(){
-		this.x-=this.map_background_speed;
+		let _this=this;
+		_this.x-=_this.map_background_speed;
 
 		//MAPを表示
-		for(let _i=0;_i<this.mapdef.length;_i++){
-		for(let _j=0;_j<this.mapdef[_i].length;_j++){
-			if(this.mapdef[_i][_j].match(this.collision)!==null){continue;}
-//			if(this.x<0){continue;}
-//			if(_i===0&&_j===0){console.log('0:'+parseInt(this.x+(_j*this.t)));}
-//			if(_i===0&&_j===1){console.log('1:'+parseInt(this.x+(_j*this.t)));}
-			if(this.x+(_j*this.t)<-100
-				||this.x+(_j*this.t)>_CANVAS.width+100){
-				//通り過ぎたら描画しない
+		for(let _i=0;_i<_this.mapdef.length;_i++){
+		for(let _j=0;_j<_this.mapdef[_i].length;_j++){
+			let _k=_this.mapdef[_i][_j];
+			if(!_this.isCollisionBit(_k)){continue;}
+			if(_this.x+(_j*_this.t)<-500
+				||_this.x+(_j*_this.t)>_CANVAS.width+100){
+				//キャンバスからある程度の距離は描画しない
 				continue;
 			}
-			let _img=
-				_CANVAS_IMGS['map'+this.mapdef[_i][_j]];
+			let _p=_MAP_THEME[_this.map_theme]._p[_k];
+			let _img=_p._o.obj;
 			_CONTEXT.drawImage(
-				_img.obj,
-				this.x+(_j*this.t),
-				(this.mapdef[_i][_j]==='8'||this.mapdef[_i][_j]==='6')?(_i-1)*this.t:_i*this.t,
-				_img.obj.width,
-				_img.obj.height
+				_img,
+				_this.x+(_p._mx(_j)*_this.t),
+				_p._my(_i)*_this.t,
+				_img.width,
+				_img.height
 			);
 		}//_j
 		}//_i

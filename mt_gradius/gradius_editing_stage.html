@@ -146,8 +146,8 @@ form .parts_block{
 	transition:0.5s all;
 }
 form #area .area_block[data-val="p"] .parts_block{width:80px;}
-form #area .area_block[data-val="6"] .parts_block{bottom:0px;}
-form #area .area_block[data-val="8"] .parts_block{bottom:0px;}
+form #area .area_block[data-val="B"] .parts_block{bottom:0px;}
+form #area .area_block[data-val="D"] .parts_block{bottom:0px;}
 
 form #area .area_block .parts_block{position:absolute;width:100%;}
 form #area .area_block .parts_block img{display:block;width:100%;}
@@ -254,6 +254,7 @@ body.ismenu #menu{bottom:0px;position:fixed;transform:translateY(0px);z-index:10
 
 </style>
 <script src="http://localhost/mt/mt-static/data-api/v3/js/mt-data-api.min.js"></script>
+<script src="./gradius_canvasimgs.js"></script>
 <script src="./gradius_map.js"></script>
 
 
@@ -522,8 +523,9 @@ _set_entryupdate:function(_ed){
 }//_DATAAPI
 
 const _GAME_STAGEEDIT={
-_setInitMap:function(_mo){
+_setInitMap:function(_m){
 	//初期表示
+	let _mo=_m._map;
     let _str='';
     for(let _i=0;_i<_mo.length;_i++){
     _str+='<div class="area_blocks_rows">';
@@ -537,9 +539,11 @@ _setInitMap:function(_mo){
             let _s='<div class="parts_block" '
 					+'ondragstart="_GAME_STAGEEDIT_EVENTS._f_pb_dragstart(event);" '
 					+'draggable="true">';
-            _s+=(_k.match(new RegExp('[a-z]'))!==null)
-                ?'<img src="images/gradius_enemy_'+_k+'_1.png">'
-                :'<img src="images/gradius_map'+_k+'.png">';
+			if(_k.match(_MAP.collision_enemies)!==null){
+				_s+='<img src="images/gradius_enemy_'+_k+'_1.png">';
+			}else if(_k.match(_MAP.collision_map)!==null){
+                _s+='<img src="'+_MAP_THEME[_m._theme]._p[_k]._o.src+'">';
+			}
 			return _s+'</div>';
 		})(_mo[_i][_j])+
         '</div><!-- /.area_block -->';
@@ -589,7 +593,7 @@ _clearData:function(){
 _setData:function(_pt){
 	let _this=this;
 	let _data=_MAPDEFS[_pt];
-	this._setInitMap(_data._map);
+	this._setInitMap(_data);
 
 	//タイトルを表示
 	const $_title=document.querySelector('#title input[name="title"]');
@@ -636,6 +640,7 @@ setDataForDataApi:function(){
 		_str+='],';
 		_str+='"_title":"'+document.querySelector('#title input[name="title"]').value+'",';
 		_str+='"_eid":"'+_m._eid+'",';
+		_str+='"_theme":"'+_m._theme+'",';
 		_str+='"_body":"'+document.querySelector('#body textarea[name="body"]').value+'",';
 		_str+='"_initx":"'+document.querySelector('#init .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_speed":"'+document.querySelector('#speed .col_r .val').getAttribute('data-val')+'",';

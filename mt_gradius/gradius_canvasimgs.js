@@ -346,8 +346,15 @@ const _CANVAS_IMGS={
 	'map_f_K':
 		{src:'images/gradius_map_f_K.png',rate:1,obj:new Image()},
 	'map_f_L':
-		{src:'images/gradius_map_f_L.png',rate:1,obj:new Image()}
-
+		{src:'images/gradius_map_f_L.png',rate:1,obj:new Image()},
+	'map_f_M':
+		{src:'images/gradius_map_f_M.png',rate:1,obj:new Image()},
+	'map_f_N':
+		{src:'images/gradius_map_f_N.png',rate:1,obj:new Image()},
+	'map_f_O':
+		{src:'images/gradius_map_f_O.png',rate:1,obj:new Image()},
+	'map_f_P':
+		{src:'images/gradius_map_f_P.png',rate:1,obj:new Image()}
 };
 
 const _CANVAS_IMGS_INIT={

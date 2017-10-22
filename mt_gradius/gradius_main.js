@@ -1612,7 +1612,7 @@ class GameObject_FORCEFIELD{
 
 	}
 	reduce(){
-		this._scale-=0.15;
+		this._scale-=0.06;
 		//ある大きさになれば削除
 		if(this._scale<0.7){
 			this._scale=0;

@@ -929,7 +929,7 @@ class ENEMY_o extends GameObject_ENEMY{
 		}
 		_this.x-=_BACKGROUND_SPEED;		
 		//オブジェクト追加
-		if(Math.random()>0.2){return;}
+		if(Math.random()>0.1){return;}
 		let _cls=new ENEMY_o_small(
 					_CANVAS_IMGS[
 						(['enemy_o_1','enemy_o_2'])
@@ -948,7 +948,7 @@ class ENEMY_o_small extends GameObject_ENEMY{
 		this.speedX=
 			Math.random()*(10-2)+2;
 		this.flagX=Math.random()>0.5?1:-1;
-		this.speedY=Math.random()/5;
+		this.speedY=Math.random()/1000;
 		this._v=parseInt(Math.random()*5)-10;
 	}
 	map_collition(){
@@ -1003,7 +1003,7 @@ class ENEMY_n extends GameObject_ENEMY{
 		}
 		_this.x-=_BACKGROUND_SPEED;		
 		//オブジェクト追加
-		if(Math.random()>0.2){return;}
+		if(Math.random()>0.1){return;}
 		let _cls=new ENEMY_n_small(
 					_CANVAS_IMGS[
 						(['enemy_o_1','enemy_o_2'])

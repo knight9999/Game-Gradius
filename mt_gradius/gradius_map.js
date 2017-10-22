@@ -32,66 +32,31 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				'_mx':function(_j){return _j;},
 				'_my':function(_i){return _i;}
 			},
-			'B':{
-				'_o':_CANVAS_IMGS['map_f_F'],
-				'_s':'000110000,000110000,001111000,011111100,011111110,111111110',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'C':{
-				'_o':_CANVAS_IMGS['map_f_G'],
-				'_s':'111111110,011111110,011111100,001111000,000110000,000110000',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'H':{
-				'_o':_CANVAS_IMGS['map_f_H'],
+			'M':{
+				'_o':_CANVAS_IMGS['map_f_M'],
 				'_s':
-				'0000000000000000000,'+
-				'0000011111111111111,'+
-				'0000011111111000000,'+
-				'0000000001111000000,'+
-				'0000000000110000000,'+
-				'0000000000110000000,'+
-				'0000000000110000000,'+
-				'1111111111111111110,'+
-				'0111111111111111110,'+
-				'0000000001100000000,'+
-				'0000000001100000000,'+
-				'0000000011100000000,'+
-				'0000000111111000000',
+				'0111,1111',
 				'_mx':function(_j){return _j;},
 				'_my':function(_i){return _i;}
 			},
-			'I':{
-				'_o':_CANVAS_IMGS['map_f_I'],
+			'N':{
+				'_o':_CANVAS_IMGS['map_f_N'],
 				'_s':
-				'000000010000000,'+
-				'000000010000000,'+
-				'000000111000000,'+
-				'000001111100000,'+
-				'000011111110000,'+
-				'000111111111000,'+
-				'001111111111100,'+
-				'001111111111100,'+
-				'011111111111110,'+
-				'111111111111111',
+				'1111,0111',
 				'_mx':function(_j){return _j;},
 				'_my':function(_i){return _i;}
 			},
-			'J':{
-				'_o':_CANVAS_IMGS['map_f_J'],
+			'O':{
+				'_o':_CANVAS_IMGS['map_f_O'],
 				'_s':
-				'111111111111111,'+
-				'011111111111110,'+
-				'001111111111100,'+
-				'001111111111100,'+
-				'000111111111000,'+
-				'000011111110000,'+
-				'000001111100000,'+
-				'000000111000000,'+
-				'000000010000000,'+
-				'000000010000000',
+				'1111,1110',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'P':{
+				'_o':_CANVAS_IMGS['map_f_P'],
+				'_s':
+				'1110,1111',
 				'_mx':function(_j){return _j;},
 				'_my':function(_i){return _i;}
 			}
@@ -209,6 +174,34 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				'_o':_CANVAS_IMGS['map_f_L'],
 				'_s':
 				'010',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'M':{
+				'_o':_CANVAS_IMGS['map_f_M'],
+				'_s':
+				'0111,1111',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'N':{
+				'_o':_CANVAS_IMGS['map_f_N'],
+				'_s':
+				'1111,0111',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'O':{
+				'_o':_CANVAS_IMGS['map_f_O'],
+				'_s':
+				'1111,1110',
+				'_mx':function(_j){return _j;},
+				'_my':function(_i){return _i;}
+			},
+			'P':{
+				'_o':_CANVAS_IMGS['map_f_P'],
+				'_s':
+				'1110,1111',
 				'_mx':function(_j){return _j;},
 				'_my':function(_i){return _i;}
 			}

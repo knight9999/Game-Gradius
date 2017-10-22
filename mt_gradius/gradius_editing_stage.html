@@ -294,38 +294,15 @@ body.ismenu #menu{bottom:0px;position:fixed;transform:translateY(0px);z-index:10
 <div class="next"></div>
 
 <section id="area_parts">
-<div class="parts_blocks_wrapper">
+<div class="parts_blocks_wrapper enemy">
 <h3>enemy parts</h3>
 <div class="parts_blocks">
-<div class="parts_block_wrapper" data-val="a">
-<div class="text">enemy a</div>
-<div class="parts_block"><img src="images/gradius_enemy_a_1.png"></div>
-</div><!-- /.parts_block_wrapper -->
-<div class="parts_block_wrapper" data-val="b">
-<div class="text">enemy b</div>
-<div class="parts_block"><img src="images/gradius_enemy_b_1.png"></div>
-</div><!-- /.parts_block_wrapper -->
-<div class="parts_block_wrapper" data-val="c">
-<div class="text">enemy c</div>
-<div class="parts_block"><img src="images/gradius_enemy_c_1.png"></div>
-</div><!-- /.parts_block_wrapper -->
-<div class="parts_block_wrapper" data-val="d">
-<div class="text">enemy d</div>
-<div class="parts_block"><img src="images/gradius_enemy_d_1.png"></div>
-</div><!-- /.parts_block_wrapper -->
-<div class="parts_block_wrapper" data-val="e">
-<div class="text">enemy e</div>
-<div class="parts_block"><img src="images/gradius_enemy_e_1.png"></div>
-</div><!-- /.parts_block_wrapper -->
-<div class="parts_block_wrapper" data-val="p">
-<div class="text">enemy p</div>
-<div class="parts_block"><img src="images/gradius_enemy_p_1.png"></div>
-</div><!-- /.parts_block_wrapper -->
+<!-- /js -->
 </div><!--.parts_blocks -->
 </div><!--.parts_blocks_wrapper -->
 
 
-<div class="parts_blocks_wrapper">
+<div class="parts_blocks_wrapper map">
 <h3>map parts</h3>
 <div class="parts_blocks">
 <div class="parts_block_wrapper" data-val="1">
@@ -557,6 +534,36 @@ _setInitMap:function(_m){
 
 },//_setInitMap
 
+_setInitPartsBlocksWrapper:function(_m){
+	let _mo=_m._map;
+	let _str='';
+	//ENEMY
+	for(let [_k,_v] of Object.entries(_MAP_ENEMIES._ENEMIES)){
+		_str+=
+			'<div class="parts_block_wrapper" data-val="'+_k+'">'+
+			'<div class="text">enemy '+_k+'</div>'+
+			'<div class="parts_block"><img src="'+_v._o.src+'"></div>'+
+			'</div><!-- /.parts_block_wrapper -->'
+	}
+    document
+		.querySelector('.parts_blocks_wrapper.enemy .parts_blocks')
+		.innerHTML=_str;
+
+	_str='';
+	for(let [_k,_v] of Object.entries(_MAP_THEME[_m._theme])){
+		_str+=
+			'<div class="parts_block_wrapper" data-val="'+_k+'">'+
+			'<div class="text">MAP '+_k+'</div>'+
+			'<div class="parts_block"><img src="'+_v._o.src+'"></div>'+
+			'</div><!-- /.parts_block_wrapper -->'
+	}
+	//MAP
+	document
+		.querySelector('.parts_blocks_wrapper.map .parts_blocks')
+		.innerHTML=_str;
+
+},//_setPartsBlocksWrapper
+
 _clearMap:function(){
 	//MAPを削除
     document
@@ -594,6 +601,8 @@ _setData:function(_pt){
 	let _this=this;
 	let _data=_MAPDEFS[_pt];
 	this._setInitMap(_data);
+	this._setInitPartsBlocksWrapper(_data);
+	_this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,20);
 
 	//タイトルを表示
 	const $_title=document.querySelector('#title input[name="title"]');

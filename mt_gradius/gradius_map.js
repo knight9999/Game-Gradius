@@ -397,6 +397,13 @@ class GameObject_MAP{
 				_ENEMIES.push(_o);
 				_ENEMIES_BOUNDS.push(_o);
 			}
+			if(this.mapdef[_i][_j]==='n'){
+				_ENEMIES.push(
+					new ENEMY_n(
+						this.x+(_j*this.t),
+						_i*this.t)
+				);
+			}
 			if(this.mapdef[_i][_j]==='o'){
 				_ENEMIES.push(
 					new ENEMY_o(

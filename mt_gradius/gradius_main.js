@@ -2142,8 +2142,9 @@ class GameObject_SHOTS_MISSILE
 		}
 
 	}
-	collapse_missile(_t){
+	collapse_missile(_t,_pos){
 		let _this=this;
+		_pos=_pos||-5
 		//爆風を表示
 		if(_t._c>=_this.col_mis.length*5){
 			_t._init();
@@ -2155,7 +2156,7 @@ class GameObject_SHOTS_MISSILE
 		_CONTEXT.fillStyle=_this.col_mis[_c].fs;
  	 	_CONTEXT.beginPath();
  		_CONTEXT.arc(_t.x,
- 					_t.y+4,
+ 					_t.y+_pos,
  					_this.col_mis[_c].scale,
  					0,
  					Math.PI*2,false);
@@ -2166,7 +2167,7 @@ class GameObject_SHOTS_MISSILE
 				=_this.col_mis[_c-1].fs;
 		 	_CONTEXT.beginPath();
 			_CONTEXT.arc(_t.x,
-						_t.y+4,
+						_t.y+_pos,
 						_this.col_mis[_c-1].scale,
 						0,
 						Math.PI*2,false);
@@ -2186,7 +2187,7 @@ class GameObject_SHOTS_MISSILE
 //			console.log(_t._c);
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
-				_this.collapse_missile(_t);
+				_this.collapse_missile(_t,10);
 				continue;
 			}
 //console.log('_j:'+_j+'   _t.x:'+_t.x+'   _t.y:'+_t.y);
@@ -2413,7 +2414,7 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 
 		if(_MAP.isMapCollision(_map_x,_map_y)
 			||_MAP.isMapCollision(_map_x+1,_map_y)){
-			this.collapse_missile(_t);
+			this.collapse_missile(_t,-25);
 			return;
 		}
 
@@ -2511,9 +2512,7 @@ class GameObject_SHOTS_MISSILE_2WAY
 			//前回衝突した敵と同じ場合は無視する。
 			if(_t._enemyid===_e.id){return;}
 			_e.collision(_t);
-			if(_t._c===0){
-				_t._c=1;
-			}
+			if(_t._c===0){_t._c=1;}
 			//衝突した敵を覚える
 			_t._enemyid=_e.id;
 		}
@@ -2522,13 +2521,13 @@ class GameObject_SHOTS_MISSILE_2WAY
 	map_collition(_t){
 		//MAPの位置を取得
 		let _map_x=_MAP.getMapX(_t.x);
-		let _tmp=(_t.id===0)
-					?_t.y
-					:_t.y+_t._img.height
-		let _map_y=_MAP.getMapY(_tmp);
-
+		let _map_y=_MAP.getMapY(
+			(_t.id===0)
+			?_t.y
+			:_t.y+_t._img.height
+		);
 		if(_MAP.isMapCollision(_map_x,_map_y)){
-			this.collapse_missile(_t);
+			if(_t._c===0){_t._c=1;}
 			return;
 		}
 
@@ -2566,7 +2565,7 @@ class GameObject_SHOTS_MISSILE_2WAY
 
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
-				_this.collapse_missile(_t);
+				_this.collapse_missile(_t,10);
 				continue;
 			}
 
@@ -4458,11 +4457,14 @@ isShieldCollision:function(_p,_e){
 isMisShotCollision:function(_t,_e){
 	//ミサイルショット衝突判定
 	let _ec=_e.getEnemyCenterPosition();
-	return (Math.abs(_ec._x-_t.x)
-			<(_e.img.width/2)+(_t._img.width/2))
-		&&
-		(Math.abs(_ec._y-_t.y)
-			<(_e.img.height/2)+(_t._img.height/2));
+	let _tc={_x:_t.x+_t._img.width/2,
+			_y:_t.y+_t._img.height/2};
+	
+	let _pd=Math.sqrt(//敵と自機の距離
+		Math.pow(_ec._x-_tc._x,2)+
+		Math.pow(_ec._y-_tc._y,2)
+	);
+	return (_pd<(_e.img.height/2)+(_t._img.height/2));
 },
 isShotCollision:function(_t,_e){
 	//ショット衝突判定

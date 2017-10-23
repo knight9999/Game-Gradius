@@ -7,7 +7,7 @@
 
 let _MAPDEFS='';
 let _MAPDEF='';
-let _MAP_PETTERN=0;
+let _MAP_PETTERN=1;
 let _BACKGROUND_SPEED=0;
 
 const _MAP_ENEMIES={

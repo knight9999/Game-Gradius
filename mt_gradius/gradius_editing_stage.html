@@ -305,30 +305,7 @@ body.ismenu #menu{bottom:0px;position:fixed;transform:translateY(0px);z-index:10
 <div class="parts_blocks_wrapper map">
 <h3>map parts</h3>
 <div class="parts_blocks">
-<div class="parts_block_wrapper" data-val="1">
-<div class="text">map 1</div>
-<div class="parts_block"><img src="images/gradius_map1.png"></div>
-</div><!-- /.parts_block_wrapper -->
-<div class="parts_block_wrapper" data-val="5">
-<div class="text">map 5</div>
-<div class="parts_block"><img src="images/gradius_map5.png"></div>
-</div><!-- /.parts_block_wrapper -->
-<div class="parts_block_wrapper" data-val="6">
-<div class="text">map 6</div>
-<div class="parts_block"><img src="images/gradius_map6.png"></div>
-</div><!-- /.parts_block_wrapper -->
-<div class="parts_block_wrapper" data-val="7">
-<div class="text">map 7</div>
-<div class="parts_block"><img src="images/gradius_map7.png"></div>
-</div><!-- /.parts_block_wrapper -->
-<div class="parts_block_wrapper" data-val="8">
-<div class="text">map 8</div>
-<div class="parts_block"><img src="images/gradius_map8.png"></div>
-</div><!-- /.parts_block_wrapper -->
-<div class="parts_block_wrapper" data-val="9">
-<div class="text">map 9</div>
-<div class="parts_block"><img src="images/gradius_map9.png"></div>
-</div><!-- /.parts_block_wrapper -->
+<!-- /js -->
 </div><!--.parts_blocks -->
 </div><!--.parts_blocks_wrapper -->
 
@@ -550,7 +527,7 @@ _setInitPartsBlocksWrapper:function(_m){
 		.innerHTML=_str;
 
 	_str='';
-	for(let [_k,_v] of Object.entries(_MAP_THEME[_m._theme])){
+	for(let [_k,_v] of Object.entries(_MAP_THEME[_m._theme]._p)){
 		_str+=
 			'<div class="parts_block_wrapper" data-val="'+_k+'">'+
 			'<div class="text">MAP '+_k+'</div>'+
@@ -600,9 +577,9 @@ _clearData:function(){
 _setData:function(_pt){
 	let _this=this;
 	let _data=_MAPDEFS[_pt];
-	this._setInitMap(_data);
-	this._setInitPartsBlocksWrapper(_data);
-	_this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,20);
+	_this._setInitMap(_data);
+	_this._setInitPartsBlocksWrapper(_data);
+//	_this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,20);
 
 	//タイトルを表示
 	const $_title=document.querySelector('#title input[name="title"]');

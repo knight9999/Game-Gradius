@@ -4452,7 +4452,7 @@ isShieldCollision:function(_p,_e){
 		Math.pow(_ec._x-_pl._x,2)+
 		Math.pow(_ec._y-_pl._y,2)
 	);
-	return (_pd<(_e.img.height/2)+(_p.height));
+	return (_pd<(_e.img.height/2)+(_p.height/2));
 },
 isMisShotCollision:function(_t,_e){
 	//ミサイルショット衝突判定

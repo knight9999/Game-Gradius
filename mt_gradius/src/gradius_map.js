@@ -7,207 +7,270 @@
 
 let _MAPDEFS='';
 let _MAPDEF='';
-let _MAP_PETTERN=1;
+let _MAP_PETTERN=0;
 let _BACKGROUND_SPEED=0;
 
 const _MAP_ENEMIES={
-	_D:{//向き
-		_U:0,//上
-		_D:1,//下
-		_R:2,//右
-		_L:3//左
+_D:{//向き
+	_U:0,//上
+	_D:1,//下
+	_R:2,//右
+	_L:3//左
+},//_D
+_ENEMIES:{
+	'a':{
+		'_f':function(_x,_y,_d){
+			_ENEMIES.push(new ENEMY_a(_x,_y,_d));
+			},
+		'_o':_CANVAS_IMGS['enemy_a_1']
+	},
+	'b':{
+		'_f':function(_x,_y,_d){
+			_ENEMIES.push(new ENEMY_b(_x,_y,_d));
+			},
+		'_o':_CANVAS_IMGS['enemy_b_1']
+	},
+	'c':{
+		'_f':function(_x,_y,_d){
+			_ENEMIES.push(new ENEMY_c(_x,_y,_d));
+			},
+		'_o':_CANVAS_IMGS['enemy_c_1']
+	},
+	'd':{
+		'_f':function(_x,_y,_d){
+			_ENEMIES.push(new ENEMY_d(_x,_y,_d));
+			},
+		'_o':_CANVAS_IMGS['enemy_d_1']
+	},
+	'e':{
+		'_f':function(_x,_y,_d){
+			_ENEMIES.push(new ENEMY_e(_x,_y,_d));
+			},
+		'_o':_CANVAS_IMGS['enemy_e_1']
+	},
+	'f':{
+		'_f':function(_x,_y,_d){
+			_ENEMIES.push(new ENEMY_f(_x,_y,_d));
+			},
+		'_o':_CANVAS_IMGS['enemy_f_1']
+	},
+	'g':{
+		'_f':function(_x,_y,_d){
+			_ENEMIES.push(new ENEMY_g(_x,_y,_d));
+			},
+		'_o':_CANVAS_IMGS['enemy_g_1']
+	},
+	'p':{
+		'_f':function(_x,_y,_d){
+			_ENEMIES.push(new ENEMY_p(_x,_y,_d));
+			},
+		'_o':_CANVAS_IMGS['enemy_p_1']
+	},
+	'o':{
+		'_f':function(_x,_y,_d){
+			_ENEMIES.push(new ENEMY_o(_x,_y,_d));
+			},
+		'_o':_CANVAS_IMGS['enemy_o_1']
+	},
+	'z':{
+		'_f':function(_x,_y,_d){
+			_ENEMIES.push(new ENEMY_BOSS_BOGCORE(_x,_y,_d));
+			},
+		'_o':_CANVAS_IMGS['enemy_z']
 	}
+
+}//_ENEMIES
 }
 
 const _MAP_THEME={//_parts要素番号0は空文字
-	'_THEME1':{//なし
-		'_p':{},
-		'_enemies':{}
-	},
-	'_THEME3':{//クリスタル
-		'_p':{
-			'A':{
-				'_o':_CANVAS_IMGS['map_c_A'],
-				'_s':'1',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'M':{
-				'_o':_CANVAS_IMGS['map_f_M'],
-				'_s':
-				'0111,1111',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'N':{
-				'_o':_CANVAS_IMGS['map_f_N'],
-				'_s':
-				'1111,0111',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'O':{
-				'_o':_CANVAS_IMGS['map_f_O'],
-				'_s':
-				'1111,1110',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'P':{
-				'_o':_CANVAS_IMGS['map_f_P'],
-				'_s':
-				'1110,1111',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			}
+'_THEME1':{//なし
+	'_p':{},
+	'_enemies':{}
+},//_THEME1
+'_THEME2':{//大地
+	'_p':{
+		'A':{
+			'_o':_CANVAS_IMGS['map_f_A'],
+			'_s':'1',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
 		},
-		'_enemies':{}
-	},
-	'_THEME2':{//大地
-		'_p':{
-			'A':{
-				'_o':_CANVAS_IMGS['map_f_A'],
-				'_s':'1',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'B':{
-				'_o':_CANVAS_IMGS['map_f_B'],
-				'_s':'1',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i-1;}
-			},
-			'C':{
-				'_o':_CANVAS_IMGS['map_f_C'],
-				'_s':'1',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'D':{
-				'_o':_CANVAS_IMGS['map_f_D'],
-				'_s':'1',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i-1;}
-			},
-			'E':{
-				'_o':_CANVAS_IMGS['map_f_E'],
-				'_s':'1',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'F':{
-				'_o':_CANVAS_IMGS['map_f_F'],
-				'_s':'000110000,'+
-					'000110000,'+
-					'001111000,'+
-					'011111100,'+
-					'011111110,'+
-					'111111111',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'G':{
-				'_o':_CANVAS_IMGS['map_f_G'],
-				'_s':'111111110,011111110,011111100,001111000,000110000,000110000',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'H':{
-				'_o':_CANVAS_IMGS['map_f_H'],
-				'_s':
-				'00000000000000000000,'+
-				'00000111111111111110,'+
-				'00000111111110000000,'+
-				'00000000011110000000,'+
-				'00000000001100000000,'+
-				'00000000001100000000,'+
-				'00000000001100000000,'+
-				'11111111111111111100,'+
-				'01111111111111111100,'+
-				'00000000011000000000,'+
-				'00000000011000000000,'+
-				'00000000111000000000,'+
-				'00000001111110000000',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'I':{//8
-				'_o':_CANVAS_IMGS['map_f_I'],
-				'_s':
-				'000000010000000,'+
-				'000000010000000,'+
-				'000000111000000,'+
-				'000001111100000,'+
-				'000011111110000,'+
-				'000111111111000,'+
-				'001111111111100,'+
-				'001111111111100,'+
-				'011111111111110,'+
-				'111111111111111',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'J':{
-				'_o':_CANVAS_IMGS['map_f_J'],
-				'_s':
-				'111111111111111,'+
-				'011111111111110,'+
-				'001111111111100,'+
-				'001111111111100,'+
-				'000111111111000,'+
-				'000011111110000,'+
-				'000001111100000,'+
-				'000000111000000,'+
-				'000000010000000,'+
-				'000000010000000',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'K':{
-				'_o':_CANVAS_IMGS['map_f_K'],
-				'_s':
-				'010',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'L':{
-				'_o':_CANVAS_IMGS['map_f_L'],
-				'_s':
-				'010',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'M':{
-				'_o':_CANVAS_IMGS['map_f_M'],
-				'_s':
-				'0111,1111',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'N':{
-				'_o':_CANVAS_IMGS['map_f_N'],
-				'_s':
-				'1111,0111',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'O':{
-				'_o':_CANVAS_IMGS['map_f_O'],
-				'_s':
-				'1111,1110',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			},
-			'P':{
-				'_o':_CANVAS_IMGS['map_f_P'],
-				'_s':
-				'1110,1111',
-				'_mx':function(_j){return _j;},
-				'_my':function(_i){return _i;}
-			}
+		'B':{
+			'_o':_CANVAS_IMGS['map_f_B'],
+			'_s':'1',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i-1;}
 		},
-		'_enemies':{}
+		'C':{
+			'_o':_CANVAS_IMGS['map_f_C'],
+			'_s':'1',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'D':{
+			'_o':_CANVAS_IMGS['map_f_D'],
+			'_s':'1',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i-1;}
+		},
+		'E':{
+			'_o':_CANVAS_IMGS['map_f_E'],
+			'_s':'1',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'F':{
+			'_o':_CANVAS_IMGS['map_f_F'],
+			'_s':'000110000,'+
+				'000110000,'+
+				'001111000,'+
+				'011111100,'+
+				'011111110,'+
+				'111111111',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'G':{
+			'_o':_CANVAS_IMGS['map_f_G'],
+			'_s':'111111110,011111110,011111100,001111000,000110000,000110000',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'H':{
+			'_o':_CANVAS_IMGS['map_f_H'],
+			'_s':
+			'00000000000000000000,'+
+			'00000111111111111110,'+
+			'00000111111110000000,'+
+			'00000000011110000000,'+
+			'00000000001100000000,'+
+			'00000000001100000000,'+
+			'00000000001100000000,'+
+			'11111111111111111100,'+
+			'01111111111111111100,'+
+			'00000000011000000000,'+
+			'00000000011000000000,'+
+			'00000000111000000000,'+
+			'00000001111110000000',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'I':{//8
+			'_o':_CANVAS_IMGS['map_f_I'],
+			'_s':
+			'000000010000000,'+
+			'000000010000000,'+
+			'000000111000000,'+
+			'000001111100000,'+
+			'000011111110000,'+
+			'000111111111000,'+
+			'001111111111100,'+
+			'001111111111100,'+
+			'011111111111110,'+
+			'111111111111111',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'J':{
+			'_o':_CANVAS_IMGS['map_f_J'],
+			'_s':
+			'111111111111111,'+
+			'011111111111110,'+
+			'001111111111100,'+
+			'001111111111100,'+
+			'000111111111000,'+
+			'000011111110000,'+
+			'000001111100000,'+
+			'000000111000000,'+
+			'000000010000000,'+
+			'000000010000000',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'K':{
+			'_o':_CANVAS_IMGS['map_f_K'],
+			'_s':
+			'010',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'L':{
+			'_o':_CANVAS_IMGS['map_f_L'],
+			'_s':
+			'010',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'M':{
+			'_o':_CANVAS_IMGS['map_f_M'],
+			'_s':
+			'0111,1111',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'N':{
+			'_o':_CANVAS_IMGS['map_f_N'],
+			'_s':
+			'1111,0111',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'O':{
+			'_o':_CANVAS_IMGS['map_f_O'],
+			'_s':
+			'1111,1110',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'P':{
+			'_o':_CANVAS_IMGS['map_f_P'],
+			'_s':
+			'1110,1111',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		}
 	},
+	'_enemies':{}
+},//_THEME2
+'_THEME3':{//クリスタル
+	'_p':{
+		'A':{
+			'_o':_CANVAS_IMGS['map_c_A'],
+			'_s':'1',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'M':{
+			'_o':_CANVAS_IMGS['map_f_M'],
+			'_s':
+			'0111,1111',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'N':{
+			'_o':_CANVAS_IMGS['map_f_N'],
+			'_s':
+			'1111,0111',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'O':{
+			'_o':_CANVAS_IMGS['map_f_O'],
+			'_s':
+			'1111,1110',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'P':{
+			'_o':_CANVAS_IMGS['map_f_P'],
+			'_s':
+			'1110,1111',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		}
+	},
+	'_enemies':{}
+}//_THEME3
 }//_MAP_THEME
 
 //各種ステージ定義
@@ -376,17 +439,38 @@ class GameObject_MAP{
 			for(let _l=0;_l<_p_s.length;_l++){//p._s分ループ
 				let _s=_this.mapdef_col[_i+_l];
 				//置換箇所は文字列を分割、置換、結合処理
-				let _s1=_s.substr(0,_j);
-				let _s2=_GAME.getOrBit(
-							_s.substr(_j,_p_s[_l].length),
-							_p_s[_l],
-							_p_s[_l].length
-						);
-				let _s3=_s.substr(_j+_p_s[_l].length,_m.length);
-				_this.mapdef_col[_i+_l]=_s1+_s2+_s3;
+				_this.mapdef_col[_i+_l]=
+					_s.substr(0,_j)
+					+(function(_s_mdc,_psl){
+						let _str='';
+						if(_l===0){
+							_str=_psl.charAt(0);
+							_s_mdc=_s_mdc.substring(1);
+							_psl=_psl.substring(1);
+						}
+						return _str+_this.setCollisionBit(_s_mdc,_psl);
+					})(_s.substr(_j,_p_s[_l].length),_p_s[_l])
+					+_s.substr(_j+_p_s[_l].length,_m.length);			
+				// let _s2=_GAME.getOrBit(
+				// 			_s.substr(_j,_p_s[_l].length),
+				// 			_p_s[_l],
+				// 			_p_s[_l].length
+				// 		);
 			}//_l
 		}//_j
 		}//_i	
+	}
+	setCollisionBit(_b,_mb){
+		let _this=this;
+		let _s='';
+		for(let _i=0;_i<_b.length;_i++){
+			if(_b[_i]==='0'){
+				_s+=_mb[_i];
+				continue;
+			}
+			_s+='1';
+		}
+		return _s;
 	}
 	getCollisionFlag(){return this.collision;}
 	getBackGroundSpeed(){
@@ -402,7 +486,12 @@ class GameObject_MAP{
 					/this.t);}
 	getMapY(_y){return parseInt(_y/this.t);}
 	isCollisionBit(_bit){
+		//衝突ビット判定フラグ
 		return (_bit.match(this.collision)!==null);
+	}
+	isEnemiesBit(_bit){
+		//衝突ビット判定フラグ
+		return (_bit.match(this.collision_enemies)!==null);
 	}
 	isMapDouble(_s){
 		return (_s.match(this.collision_map_d)!==null);

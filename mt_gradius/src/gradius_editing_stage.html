@@ -150,7 +150,7 @@ form #area .area_block[data-val="B"] .parts_block{bottom:0px;}
 form #area .area_block[data-val="D"] .parts_block{bottom:0px;}
 
 form #area .area_block .parts_block{position:absolute;width:100%;}
-form #area .area_block .parts_block img{display:block;}
+form #area .area_block .parts_block img{display:block;width:100%;}
 form #area .area_blocks_rows .area_block.over{background-color:rgba(255,255,255,0.4);}
 
 
@@ -476,10 +476,8 @@ _set_entryupdate:function(_ed){
 }//_DATAAPI
 
 const _GAME_STAGEEDIT={
-_theme:0,
 _setInitMap:function(_m){
 	//初期表示
-	this._theme=_m._theme;
 	let _mo=_m._map;
     let _str='';
     for(let _i=0;_i<_mo.length;_i++){
@@ -495,13 +493,9 @@ _setInitMap:function(_m){
 					+'ondragstart="_GAME_STAGEEDIT_EVENTS._f_pb_dragstart(event);" '
 					+'draggable="true">';
 			if(_k.match(_MAP.collision_enemies)!==null){
-				_s+='<img width="20" height="20" src="images/gradius_enemy_'+_k+'_1.png">';
+				_s+='<img src="images/gradius_enemy_'+_k+'_1.png">';
 			}else if(_k.match(_MAP.collision_map)!==null){
-				let _wh=(function(_s){
-					return {_w:_s.split(',')[0].length
-							,_h:_s.split(',').length}
-				})(_MAP_THEME[_m._theme]._p[_k]._s);
-                _s+='<img width="'+parseInt(20*_wh._w)+'" height="'+parseInt(20*_wh._h)+'" src="'+_MAP_THEME[_m._theme]._p[_k]._o.src+'">';
+                _s+='<img src="'+_MAP_THEME[_m._theme]._p[_k]._o.src+'">';
 			}
 			return _s+'</div>';
 		})(_mo[_i][_j])+
@@ -842,20 +836,7 @@ _f_as_drop:function(e){
 		$_ect.appendChild(this.$_start_area_parts_obj);
 	}else{
 		//コピー
-		let $_cn=$_e.cloneNode(true);
-		$_ect.appendChild($_cn);
-		if(_o.match(_MAP.collision_enemies)!==null){
-			$_cn.children[0].width=20;
-			$_cn.children[0].height=20;
-		}
-		if(_o.match(_MAP.collision_map)!==null){
-			let _wh=(function(_s){
-				return {_w:_s.split(',')[0].length
-						,_h:_s.split(',').length}
-			})(_MAP_THEME[_GAME_STAGEEDIT._theme]._p[_k]._s);
-			$_cn.children[0].width=_wh._w;
-			$_cn.children[0].height=_wh._h;
-		}
+		$_ect.appendChild($_e.cloneNode(true));
 		$_ect.children[0].addEventListener('dragstart',this._f_pb_dragstart,false);
 	}
 

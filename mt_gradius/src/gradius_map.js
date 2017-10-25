@@ -7,7 +7,7 @@
 
 let _MAPDEFS='';
 let _MAPDEF='';
-let _MAP_PETTERN=1;
+let _MAP_PETTERN=0;
 let _BACKGROUND_SPEED=0;
 
 const _MAP_ENEMIES={
@@ -439,17 +439,38 @@ class GameObject_MAP{
 			for(let _l=0;_l<_p_s.length;_l++){//p._s分ループ
 				let _s=_this.mapdef_col[_i+_l];
 				//置換箇所は文字列を分割、置換、結合処理
-				let _s1=_s.substr(0,_j);
-				let _s2=_GAME.getOrBit(
-							_s.substr(_j,_p_s[_l].length),
-							_p_s[_l],
-							_p_s[_l].length
-						);
-				let _s3=_s.substr(_j+_p_s[_l].length,_m.length);
-				_this.mapdef_col[_i+_l]=_s1+_s2+_s3;
+				_this.mapdef_col[_i+_l]=
+					_s.substr(0,_j)
+					+(function(_s_mdc,_psl){
+						let _str='';
+						if(_l===0){
+							_str=_psl.charAt(0);
+							_s_mdc=_s_mdc.substring(1);
+							_psl=_psl.substring(1);
+						}
+						return _str+_this.setCollisionBit(_s_mdc,_psl);
+					})(_s.substr(_j,_p_s[_l].length),_p_s[_l])
+					+_s.substr(_j+_p_s[_l].length,_m.length);			
+				// let _s2=_GAME.getOrBit(
+				// 			_s.substr(_j,_p_s[_l].length),
+				// 			_p_s[_l],
+				// 			_p_s[_l].length
+				// 		);
 			}//_l
 		}//_j
 		}//_i	
+	}
+	setCollisionBit(_b,_mb){
+		let _this=this;
+		let _s='';
+		for(let _i=0;_i<_b.length;_i++){
+			if(_b[_i]==='0'){
+				_s+=_mb[_i];
+				continue;
+			}
+			_s+='1';
+		}
+		return _s;
 	}
 	getCollisionFlag(){return this.collision;}
 	getBackGroundSpeed(){
@@ -465,7 +486,12 @@ class GameObject_MAP{
 					/this.t);}
 	getMapY(_y){return parseInt(_y/this.t);}
 	isCollisionBit(_bit){
+		//衝突ビット判定フラグ
 		return (_bit.match(this.collision)!==null);
+	}
+	isEnemiesBit(_bit){
+		//衝突ビット判定フラグ
+		return (_bit.match(this.collision_enemies)!==null);
 	}
 	isMapDouble(_s){
 		return (_s.match(this.collision_map_d)!==null);

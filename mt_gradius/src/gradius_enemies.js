@@ -923,13 +923,13 @@ class ENEMY_o extends GameObject_ENEMY{
 	}
 	move(){
 		let _this=this;
-		if(_this.x+_this.img.width<0){
+		if(_this.x+_this.img.width<200){
 			_this._status=0;
 			return;
 		}
 		_this.x-=_BACKGROUND_SPEED;		
 		//オブジェクト追加
-		if(Math.random()>0.1){return;}
+		if(Math.random()>0.3){return;}
 		let _cls=new ENEMY_o_small(
 					_CANVAS_IMGS[
 						(['enemy_o_1','enemy_o_2'])
@@ -997,13 +997,13 @@ class ENEMY_n extends GameObject_ENEMY{
 	}
 	move(){
 		let _this=this;
-		if(_this.x+_this.img.width<0){
+		if(_this.x+_this.img.width<200){
 			_this._status=0;
 			return;
 		}
 		_this.x-=_BACKGROUND_SPEED;		
 		//オブジェクト追加
-		if(Math.random()>0.1){return;}
+		if(Math.random()>0.3){return;}
 		let _cls=new ENEMY_n_small(
 					_CANVAS_IMGS[
 						(['enemy_o_1','enemy_o_2'])

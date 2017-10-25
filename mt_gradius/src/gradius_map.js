@@ -421,9 +421,14 @@ class GameObject_MAP{
 		}//_i
 	}
 	init_mapdef_col(){
-		//MAP衝突用を作成
+		//MAP衝突用作成関数
+		//MAPからMAP衝突用を複製し、
+		//MAPテーマがMAPビット・敵ビットを置換させる。
+		//最終的には'1'と'0'のみにする。
 		let _this=this;
+		//MAPからMAP衝突用を複製
 		Object.assign(_this.mapdef_col,_this.mapdef);
+		//MAP衝突用から的ビットを外す
 		for(let _i=0;_i<_this.mapdef_col.length;_i++){
 			_this.mapdef_col[_i]=
 				_this.mapdef_col[_i].replace(_this.collision_enemies,'0');
@@ -432,8 +437,10 @@ class GameObject_MAP{
 		for(let _i=0;_i<_this.mapdef_col.length;_i++){
 		let _m=_this.mapdef_col[_i];
 		for(let _j=0;_j<_m.length;_j++){
+			//MAP衝突用1行分ループ
 			if(!_this.isCollisionBit(_m[_j])){continue;}
 			if(_m[_j]==='1'){continue;}
+			//MAPテーマより、MAPビットを取得する
 			let _p=_MAP_THEME[_this.map_theme]._p[_m[_j]];
 			let _p_s=_p._s.split(',');
 			for(let _l=0;_l<_p_s.length;_l++){//p._s分ループ
@@ -444,18 +451,14 @@ class GameObject_MAP{
 					+(function(_s_mdc,_psl){
 						let _str='';
 						if(_l===0){
+							//MAPにあるMAPビットのみ'1'・'0'のみ処理させる
 							_str=_psl.charAt(0);
-							_s_mdc=_s_mdc.substring(1);
-							_psl=_psl.substring(1);
+								_s_mdc=_s_mdc.substring(1);
+								_psl=_psl.substring(1);
 						}
 						return _str+_this.setCollisionBit(_s_mdc,_psl);
 					})(_s.substr(_j,_p_s[_l].length),_p_s[_l])
 					+_s.substr(_j+_p_s[_l].length,_m.length);			
-				// let _s2=_GAME.getOrBit(
-				// 			_s.substr(_j,_p_s[_l].length),
-				// 			_p_s[_l],
-				// 			_p_s[_l].length
-				// 		);
 			}//_l
 		}//_j
 		}//_i	

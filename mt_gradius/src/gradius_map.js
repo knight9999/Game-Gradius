@@ -11,69 +11,95 @@ let _MAP_PETTERN=0;
 let _BACKGROUND_SPEED=0;
 
 const _MAP_ENEMIES={
-_D:{//向き
+_DEF_DIR:{//向き
 	_U:0,//上
 	_D:1,//下
 	_R:2,//右
 	_L:3//左
-},//_D
+},//_DEF_DIR
+_setDir:function(_mx,_my){
+	let _this=this;
+	let _r=_this._DEF_DIR._D;
+	return (_MAP.isMapCollision(_mx,_my-1))
+			?_this._DEF_DIR._U
+			:_r;
+},//_setDir
 _ENEMIES:{
 	'a':{
-		'_f':function(_x,_y,_d){
-			_ENEMIES.push(new ENEMY_a(_x,_y,_d));
+		'_f':function(_mx,_my){
+			let _md=_MAP_ENEMIES._setDir(_mx,_my);
+			_ENEMIES.push(new ENEMY_a(_mx,_my,_md));
 			},
 		'_o':_CANVAS_IMGS['enemy_a_1']
 	},
 	'b':{
-		'_f':function(_x,_y,_d){
-			_ENEMIES.push(new ENEMY_b(_x,_y,_d));
+		'_f':function(_mx,_my){
+			let _md=_MAP_ENEMIES._setDir(_mx,_my);
+			_ENEMIES.push(new ENEMY_a(_mx,_my,_md));
 			},
 		'_o':_CANVAS_IMGS['enemy_b_1']
 	},
 	'c':{
-		'_f':function(_x,_y,_d){
+		'_f':function(_mx,_my){
+			let _md=_MAP_ENEMIES._setDir(_mx,_my);
 			_ENEMIES.push(new ENEMY_c(_x,_y,_d));
 			},
 		'_o':_CANVAS_IMGS['enemy_c_1']
 	},
 	'd':{
-		'_f':function(_x,_y,_d){
+		'_f':function(_mx,_my){
+			let _md=_MAP_ENEMIES._setDir(_mx,_my);
 			_ENEMIES.push(new ENEMY_d(_x,_y,_d));
 			},
 		'_o':_CANVAS_IMGS['enemy_d_1']
 	},
 	'e':{
-		'_f':function(_x,_y,_d){
+		'_f':function(_mx,_my){
+			let _md=_MAP_ENEMIES._setDir(_mx,_my);
 			_ENEMIES.push(new ENEMY_e(_x,_y,_d));
 			},
 		'_o':_CANVAS_IMGS['enemy_e_1']
 	},
 	'f':{
-		'_f':function(_x,_y,_d){
+		'_f':function(_mx,_my){
 			_ENEMIES.push(new ENEMY_f(_x,_y,_d));
 			},
 		'_o':_CANVAS_IMGS['enemy_f_1']
 	},
 	'g':{
-		'_f':function(_x,_y,_d){
+		'_f':function(_mx,_my){
 			_ENEMIES.push(new ENEMY_g(_x,_y,_d));
 			},
 		'_o':_CANVAS_IMGS['enemy_g_1']
 	},
-	'p':{
-		'_f':function(_x,_y,_d){
-			_ENEMIES.push(new ENEMY_p(_x,_y,_d));
+	'm':{
+		'_f':function(_mx,_my){
+			_ENEMIES.push(new ENEMY_m(_x,_y,_d));
 			},
-		'_o':_CANVAS_IMGS['enemy_p_1']
+		'_o':_CANVAS_IMGS['enemy_m_1']
+	},
+	'n':{
+		'_f':function(_mx,_my){
+			_ENEMIES.push(new ENEMY_n(_x,_y,_d));
+			},
+		'_o':_CANVAS_IMGS['enemy_o_1']
 	},
 	'o':{
-		'_f':function(_x,_y,_d){
+		'_f':function(_mx,_my){
 			_ENEMIES.push(new ENEMY_o(_x,_y,_d));
 			},
 		'_o':_CANVAS_IMGS['enemy_o_1']
 	},
+	'p':{
+		'_f':function(_mx,_my){
+			let _o=new ENEMY_p(_mx,_my);
+			_ENEMIES.push(_o);
+			_ENEMIES_BOUNDS.push(_o);			
+		},
+		'_o':_CANVAS_IMGS['enemy_p_1']
+	},
 	'z':{
-		'_f':function(_x,_y,_d){
+		'_f':function(_mx,_my){
 			_ENEMIES.push(new ENEMY_BOSS_BOGCORE(_x,_y,_d));
 			},
 		'_o':_CANVAS_IMGS['enemy_z']
@@ -341,26 +367,32 @@ class GameObject_MAP{
 					(this.isMapCollision(_j,_i+1))
 						?'down'
 						:'up';
+			let _d=(this.isMapCollision(_j,_i-1))
+						?_MAP_ENEMIES._DEF_DIR._U
+						:_MAP_ENEMIES._DEF_DIR._D;
+				_d=(this.isMapCollision(_j,_i+1))
+					?_MAP_ENEMIES._DEF_DIR._D
+					:_MAP_ENEMIES._DEF_DIR._U;
 
 			if(this.mapdef[_i][_j]==='a'){
 				_ENEMIES.push(
 					new ENEMY_a(this.x+(_j*this.t),
 								_i*this.t,
-								_vdirec)
+								_d)
 						);
 			}
 			if(this.mapdef[_i][_j]==='b'){
 				_ENEMIES.push(
 					new ENEMY_b(this.x+(_j*this.t),
 								_i*this.t,
-								_vdirec)
+								_d)
 						);
 			}
 			if(this.mapdef[_i][_j]==='c'){
 				_ENEMIES.push(
 					new ENEMY_c(this.x+(_j*this.t),
 								_i*this.t,
-								_vdirec)
+								_d)
 						);
 			}
 			if(this.mapdef[_i][_j]==='d'){
@@ -378,17 +410,23 @@ class GameObject_MAP{
 						);
 			}
 			if(this.mapdef[_i][_j]==='f'){
+				_d=(_i*this.t<_CANVAS.height/2)
+						?_MAP_ENEMIES._DEF_DIR._U
+						:_MAP_ENEMIES._DEF_DIR._D;
 				_ENEMIES.push(
 					new ENEMY_f(this.x+(_j*this.t),
 								_i*this.t,
-								_vdirec)
+								_d)
 						);
 			}
 			if(this.mapdef[_i][_j]==='g'){
+				_d=(_i*this.t<_CANVAS.height/2)
+					?_MAP_ENEMIES._DEF_DIR._U
+					:_MAP_ENEMIES._DEF_DIR._D;
 				_ENEMIES.push(
 					new ENEMY_g(this.x+(_j*this.t),
 								_i*this.t,
-								_vdirec)
+								_d)
 						);
 			}
 			if(this.mapdef[_i][_j]==='p'){
@@ -396,6 +434,14 @@ class GameObject_MAP{
 							_i*this.t);
 				_ENEMIES.push(_o);
 				_ENEMIES_BOUNDS.push(_o);
+			}
+			if(this.mapdef[_i][_j]==='m'){
+				_ENEMIES.push(
+					new ENEMY_m(
+						this.x+(_j*this.t),
+						_i*this.t,
+						_d)
+				);
 			}
 			if(this.mapdef[_i][_j]==='n'){
 				_ENEMIES.push(

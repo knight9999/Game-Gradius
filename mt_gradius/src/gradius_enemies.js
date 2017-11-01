@@ -1232,7 +1232,7 @@ class ENEMY_p_small extends GameObject_ENEMY{
 					||_PLAYERS_POWER_METER===1){
 					return _st-0.15;
 				}
-				return _st-2.0;
+				return _st-1.5;
 			}
 			return _st-1.0;
 		})(this._status);
@@ -1418,9 +1418,9 @@ class ENEMY_BOSS_BOGCORE
 			if(_SHOTTYPE===_SHOTTYPE_LASER){
 				if(_PLAYERS_POWER_METER===0
 					||_PLAYERS_POWER_METER===1){
-					return _st-0.1;
+					return _st-0.5;
 				}
-				return _st-1;
+				return _st-1.5;
 			}
 			return _st-1;
 		})(_this._status);

@@ -12,7 +12,7 @@ const _DEF_DIFFICULT=[
 	{_ENEMY_SHOT_RATE:0.004,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
 	{_ENEMY_SHOT_RATE:0.1,_ENEMY_SHOT_SPEED:4,_ENEMY_SPEED:2}
 ]
-let _ENEMY_DIFFICULT=0;//主にデバッグ用。
+let _ENEMY_DIFFICULT=4;//主にデバッグ用。
 
 class GameObject_ENEMY{
 	constructor(_o,_x,_y){
@@ -472,7 +472,7 @@ class ENEMY_c extends GameObject_ENEMY{
 			return;
 		}
 		//表示エリアから一定距離超えた場合終了。
-		if(_this.x<-200){
+		if(_this.x<-100){
 			_this._status=0;
 			return;
 		}
@@ -1643,29 +1643,6 @@ class GameObject_ENEMY_SHOT2 extends
 		super(_x,_y);
 		this.sx=_sx||1;
 		this.sy=_sy||1;
-	}
-	move(){
-		//弾がキャンバス外の場合は初期化
-		let _this=this;
-		if(_GAME.isEnemyCanvasOut(_this)){
-			_this._shot_alive=false;
-			return;
-		}
-		if(!this._shot_alive){return;}
-		this.map_collition();
-		this.ani_enemy_bullet();
-
-		this.x+=this.sx*this.speed;
-		this.y+=this.sy*this.speed;
-
-		_CONTEXT.drawImage(
-			this.img,
-			this.x-(this.img.width/2),
-			this.y-(this.img.height/2),
-			this.img.width,
-			this.img.height
-		);
-		this._shot_alive=true;
 	}
 }
 

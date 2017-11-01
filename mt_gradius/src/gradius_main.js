@@ -1971,16 +1971,16 @@ class GameObject_SHOTS_MISSILE
 		if(!_t._shot_alive){return;}
 
 		//ミサイル衝突判定
-		if(_GAME.isMisShotCollision(_t,_e)){
-			//前回衝突した敵と同じ場合は無視する。
-			if(_t._enemyid===_e.id){return;}
-			_e.collision(_t);
-			if(_t._c===0){
-				_t._c=1;
-			}
-			//衝突した敵を覚える
-			_t._enemyid=_e.id;
-		}
+		if(!_GAME.isMisShotCollision(_t,_e)){return;}
+
+		//前回衝突した敵と同じ場合は無視する。
+		if(_t._enemyid===_e.id){return;}
+		//爆発中は無視
+		if(_t._c>0){return;}
+		_e.collision(_t);
+		if(_t._c===0){_t._c=1;}
+		//衝突した敵を覚える
+		_t._enemyid=_e.id;
 
 	}
 	get_missile_status(_t){return _t._st;}
@@ -2184,7 +2184,7 @@ class GameObject_SHOTS_MISSILE
 		for(let _j=0;_j<_this.shots.length;_j++){
 			let _t=_this.shots[_j];
 			if(!_t._shot&&!_t._shot_alive){continue;}
-//			console.log(_t._c);
+//			console.log(_j+':'+_t.y+':'+_t._st);
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
 				_this.collapse_missile(_t,10);
@@ -2196,7 +2196,6 @@ class GameObject_SHOTS_MISSILE
 			if (_t.y>_CANVAS.height
 				||_t.x>_CANVAS.width){
 				_t._init();
-//				console.log('init')
 				continue;
 			}
 			_this.mis_status[_t._st](_t);
@@ -2332,18 +2331,18 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 		if(!_t._shot_alive){return;}
 
 		//ミサイル衝突判定
-		if(_GAME.isMisShotCollision(_t,_e)){
-			//前回衝突した敵と同じ場合は無視する。
-			if(_t._enemyid===_e.id){return;}
-			_e.collision(_t);
-			//敵を倒した場合は貫通させる。
-			if(!_e.isalive()){return;}
-			if(_t._c===0){
-				_t._c=1;
-			}
-			//衝突した敵を覚える
-			_t._enemyid=_e.id;
-		}
+		if(!_GAME.isMisShotCollision(_t,_e)){return;}
+
+		//前回衝突した敵と同じ場合は無視する。
+		if(_t._enemyid===_e.id){return;}
+		//爆発中は無視
+		if(_t._c>0){return;}			
+		_e.collision(_t);
+		//敵を倒した場合は貫通させる。
+		if(!_e.isalive()){return;}
+		if(_t._c===0){_t._c=1;}
+		//衝突した敵を覚える
+		_t._enemyid=_e.id;
 
 	}
 }//GameObject_SHOTS_MISSILE_PHOTOM
@@ -2508,14 +2507,16 @@ class GameObject_SHOTS_MISSILE_2WAY
 		//弾が発していない場合は無視する
 		if(!_t._shot_alive){return;}
 		//ミサイル衝突判定
-		if(_GAME.isMisShotCollision(_t,_e)){
-			//前回衝突した敵と同じ場合は無視する。
-			if(_t._enemyid===_e.id){return;}
-			_e.collision(_t);
-			if(_t._c===0){_t._c=1;}
-			//衝突した敵を覚える
-			_t._enemyid=_e.id;
-		}
+		if(!_GAME.isMisShotCollision(_t,_e)){return;}
+
+		//前回衝突した敵と同じ場合は無視する。
+		if(_t._enemyid===_e.id){return;}
+		//爆発中は無視
+		if(_t._c>0){return;}
+		_e.collision(_t);
+		if(_t._c===0){_t._c=1;}
+		//衝突した敵を覚える
+		_t._enemyid=_e.id;
 
 	}
 	map_collition(_t){

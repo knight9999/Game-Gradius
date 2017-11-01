@@ -122,7 +122,7 @@ const _CANVAS_IMGS={
 		 obj:new Image()},
 	'shot3':
  		{src:'images/gradius_shot3.png',
- 		 rate:0.30,
+ 		 rate:0.4,
  		 obj:new Image()},
 	'meter':
 		{src:'images/gradius_meter.png',

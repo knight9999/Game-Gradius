@@ -7,7 +7,7 @@
 
 let _MAPDEFS='';
 let _MAPDEF='';
-let _MAP_PETTERN=0;
+let _MAP_PETTERN=1;
 let _BACKGROUND_SPEED=0;
 
 const _MAP_ENEMIES={
@@ -19,79 +19,84 @@ _DEF_DIR:{//向き
 },//_DEF_DIR
 _setDir:function(_mx,_my){
 	let _this=this;
-	let _r=_this._DEF_DIR._D;
-	return (_MAP.isMapCollision(_mx,_my-1))
+	let _d=(_MAP.isMapCollision(_mx,_my-1))
 			?_this._DEF_DIR._U
-			:_r;
+			:_this._DEF_DIR._D;
+	_d=(_MAP.isMapCollision(_mx,_my+1))
+			?_this._DEF_DIR._D
+			:_this._DEF_DIR._U;
+	return _d;
 },//_setDir
 _ENEMIES:{
 	'a':{
-		'_f':function(_mx,_my){
-			let _md=_MAP_ENEMIES._setDir(_mx,_my);
+		'_f':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_a(_mx,_my,_md));
 			},
 		'_o':_CANVAS_IMGS['enemy_a_1']
 	},
 	'b':{
-		'_f':function(_mx,_my){
-			let _md=_MAP_ENEMIES._setDir(_mx,_my);
-			_ENEMIES.push(new ENEMY_a(_mx,_my,_md));
+		'_f':function(_mx,_my,_md){
+			_ENEMIES.push(new ENEMY_b(_mx,_my,_md));
 			},
 		'_o':_CANVAS_IMGS['enemy_b_1']
 	},
 	'c':{
-		'_f':function(_mx,_my){
-			let _md=_MAP_ENEMIES._setDir(_mx,_my);
-			_ENEMIES.push(new ENEMY_c(_x,_y,_d));
+		'_f':function(_mx,_my,_md){
+			_ENEMIES.push(new ENEMY_c(_mx,_my,_md));
 			},
 		'_o':_CANVAS_IMGS['enemy_c_1']
 	},
 	'd':{
-		'_f':function(_mx,_my){
-			let _md=_MAP_ENEMIES._setDir(_mx,_my);
-			_ENEMIES.push(new ENEMY_d(_x,_y,_d));
+		'_f':function(_mx,_my,_md){
+			_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
 			},
 		'_o':_CANVAS_IMGS['enemy_d_1']
 	},
 	'e':{
-		'_f':function(_mx,_my){
-			let _md=_MAP_ENEMIES._setDir(_mx,_my);
-			_ENEMIES.push(new ENEMY_e(_x,_y,_d));
+		'_f':function(_mx,_my,_md){
+			_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
 			},
 		'_o':_CANVAS_IMGS['enemy_e_1']
 	},
 	'f':{
-		'_f':function(_mx,_my){
-			_ENEMIES.push(new ENEMY_f(_x,_y,_d));
+		'_f':function(_mx,_my,_md){
+			_md=(_my<_CANVAS.height/2)
+				?_MAP_ENEMIES._DEF_DIR._U
+				:_MAP_ENEMIES._DEF_DIR._D;
+			_ENEMIES.push(new ENEMY_f(_mx,_my,_md));
 			},
 		'_o':_CANVAS_IMGS['enemy_f_1']
 	},
 	'g':{
-		'_f':function(_mx,_my){
-			_ENEMIES.push(new ENEMY_g(_x,_y,_d));
+		'_f':function(_mx,_my,_md){
+			_md=(_my<_CANVAS.height/2)
+				?_MAP_ENEMIES._DEF_DIR._U
+				:_MAP_ENEMIES._DEF_DIR._D;
+
+			_ENEMIES.push(new ENEMY_g(_mx,_my,_md));
 			},
 		'_o':_CANVAS_IMGS['enemy_g_1']
 	},
 	'm':{
-		'_f':function(_mx,_my){
-			_ENEMIES.push(new ENEMY_m(_x,_y,_d));
+		'_f':function(_mx,_my,_md){
+			_ENEMIES.push(new ENEMY_m(_mx,_my,_md));
 			},
 		'_o':_CANVAS_IMGS['enemy_m_1']
 	},
 	'n':{
-		'_f':function(_mx,_my){
-			_ENEMIES.push(new ENEMY_n(_x,_y,_d));
+		'_f':function(_mx,_my,_md){
+			_ENEMIES.push(new ENEMY_n(_mx,_my));
 			},
 		'_o':_CANVAS_IMGS['enemy_o_1']
 	},
 	'o':{
-		'_f':function(_mx,_my){
-			_ENEMIES.push(new ENEMY_o(_x,_y,_d));
+		'_f':function(_mx,_my,_md){
+			_ENEMIES.push(new ENEMY_o(_mx,_my));
 			},
 		'_o':_CANVAS_IMGS['enemy_o_1']
 	},
 	'p':{
-		'_f':function(_mx,_my){
+		'_f':function(_mx,_my,_md){
 			let _o=new ENEMY_p(_mx,_my);
 			_ENEMIES.push(_o);
 			_ENEMIES_BOUNDS.push(_o);			
@@ -99,7 +104,7 @@ _ENEMIES:{
 		'_o':_CANVAS_IMGS['enemy_p_1']
 	},
 	'z':{
-		'_f':function(_mx,_my){
+		'_f':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_BOSS_BOGCORE(_x,_y,_d));
 			},
 		'_o':_CANVAS_IMGS['enemy_z']
@@ -352,117 +357,18 @@ class GameObject_MAP{
 		this.init_mapdef_col();
 	}
 	init_enemies_location(){
+		let _this=this;
 		//MAPより敵の配置
-		for(let _i=0;_i<this.mapdef.length;_i++){
-		for(let _j=0;_j<this.mapdef[_i].length;_j++){
+		for(let _i=0;_i<_this.mapdef.length;_i++){
+		for(let _j=0;_j<_this.mapdef[_i].length;_j++){
 			//空、または壁はスキップ
-			if(this.isCollisionBit(this.mapdef[_i][_j])){continue;}
+			let _md=_this.mapdef[_i][_j];
+			if(_this.isCollisionBit(_md)){continue;}
+			if(_md==='0'){continue;}
+			let _d=_MAP_ENEMIES._setDir(_j,_i);
+			_MAP_ENEMIES._ENEMIES[_md]
+				._f(_this.x+(_j*_this.t),_i*_this.t,_d);
 
-			//上下の壁にそって、敵の向きを設定
-			let _vdirec=
-					(this.isMapCollision(_j,_i-1))
-						?'up'
-						:'down';
-				_vdirec=
-					(this.isMapCollision(_j,_i+1))
-						?'down'
-						:'up';
-			let _d=(this.isMapCollision(_j,_i-1))
-						?_MAP_ENEMIES._DEF_DIR._U
-						:_MAP_ENEMIES._DEF_DIR._D;
-				_d=(this.isMapCollision(_j,_i+1))
-					?_MAP_ENEMIES._DEF_DIR._D
-					:_MAP_ENEMIES._DEF_DIR._U;
-
-			if(this.mapdef[_i][_j]==='a'){
-				_ENEMIES.push(
-					new ENEMY_a(this.x+(_j*this.t),
-								_i*this.t,
-								_d)
-						);
-			}
-			if(this.mapdef[_i][_j]==='b'){
-				_ENEMIES.push(
-					new ENEMY_b(this.x+(_j*this.t),
-								_i*this.t,
-								_d)
-						);
-			}
-			if(this.mapdef[_i][_j]==='c'){
-				_ENEMIES.push(
-					new ENEMY_c(this.x+(_j*this.t),
-								_i*this.t,
-								_d)
-						);
-			}
-			if(this.mapdef[_i][_j]==='d'){
-				_ENEMIES.push(
-					new ENEMY_d(this.x+(_j*this.t),
-								_i*this.t,
-								_vdirec)
-						);
-			}
-			if(this.mapdef[_i][_j]==='e'){
-				_ENEMIES.push(
-					new ENEMY_e(this.x+(_j*this.t),
-								_i*this.t,
-								_vdirec)
-						);
-			}
-			if(this.mapdef[_i][_j]==='f'){
-				_d=(_i*this.t<_CANVAS.height/2)
-						?_MAP_ENEMIES._DEF_DIR._U
-						:_MAP_ENEMIES._DEF_DIR._D;
-				_ENEMIES.push(
-					new ENEMY_f(this.x+(_j*this.t),
-								_i*this.t,
-								_d)
-						);
-			}
-			if(this.mapdef[_i][_j]==='g'){
-				_d=(_i*this.t<_CANVAS.height/2)
-					?_MAP_ENEMIES._DEF_DIR._U
-					:_MAP_ENEMIES._DEF_DIR._D;
-				_ENEMIES.push(
-					new ENEMY_g(this.x+(_j*this.t),
-								_i*this.t,
-								_d)
-						);
-			}
-			if(this.mapdef[_i][_j]==='p'){
-				let _o=new ENEMY_p(this.x+(_j*this.t),
-							_i*this.t);
-				_ENEMIES.push(_o);
-				_ENEMIES_BOUNDS.push(_o);
-			}
-			if(this.mapdef[_i][_j]==='m'){
-				_ENEMIES.push(
-					new ENEMY_m(
-						this.x+(_j*this.t),
-						_i*this.t,
-						_d)
-				);
-			}
-			if(this.mapdef[_i][_j]==='n'){
-				_ENEMIES.push(
-					new ENEMY_n(
-						this.x+(_j*this.t),
-						_i*this.t)
-				);
-			}
-			if(this.mapdef[_i][_j]==='o'){
-				_ENEMIES.push(
-					new ENEMY_o(
-						this.x+(_j*this.t),
-						_i*this.t)
-				);
-			}
-			if(this.mapdef[_i][_j]==='z'){
-				let _o=new ENEMY_BOSS_BOGCORE(
-							this.x+(_j*this.t),
-							_i*this.t);
-				_ENEMIES.push(_o);
-			}
 		}//_j
 		}//_i
 	}
@@ -610,6 +516,8 @@ class GameObject_MAP{
 			let _pms=_pm.shots[_j];
 			//ショット中でない場合無視
 			if(!_pms._shot_alive){continue;}
+			//爆発中は無視
+			if(_pms._c>0){continue;}
 			_pm.map_collition(_pms);
 		}//_j
 		}//_i

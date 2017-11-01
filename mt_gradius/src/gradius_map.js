@@ -271,6 +271,25 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'_mx':function(_j){return _j;},
 			'_my':function(_i){return _i;}
 		},
+		'H':{
+			'_o':_CANVAS_IMGS['map_f_H'],
+			'_s':
+			'00000000000000000000,'+
+			'00000111111111111110,'+
+			'00000111111110000000,'+
+			'00000000011110000000,'+
+			'00000000001100000000,'+
+			'00000000001100000000,'+
+			'00000000001100000000,'+
+			'11111111111111111100,'+
+			'01111111111111111100,'+
+			'00000000011000000000,'+
+			'00000000011000000000,'+
+			'00000000111000000000,'+
+			'00000001111110000000',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
 		'M':{
 			'_o':_CANVAS_IMGS['map_f_M'],
 			'_s':
@@ -394,6 +413,9 @@ class GameObject_MAP{
 			if(_m[_j]==='1'){continue;}
 			//MAPテーマより、MAPビットを取得する
 			let _p=_MAP_THEME[_this.map_theme]._p[_m[_j]];
+			if(_p===undefined){
+				console.log('テーマ:'+_this.map_theme+'に対して '+_m[_j]+'の定義がありません。');
+			}
 			let _p_s=_p._s.split(',');
 			for(let _l=0;_l<_p_s.length;_l++){//p._s分ループ
 				let _s=_this.mapdef_col[_i+_l];

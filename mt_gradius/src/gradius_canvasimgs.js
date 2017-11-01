@@ -229,6 +229,10 @@ const _CANVAS_IMGS={
 	'enemy_m_2':{src:'images/gradius_enemy_m_2.png',rate:0.24,obj:new Image()},
 	'enemy_m_3':{src:'images/gradius_enemy_m_3.png',rate:0.24,obj:new Image()},
 	'enemy_m_4':{src:'images/gradius_enemy_m_4.png',rate:0.24,obj:new Image()},
+	'enemy_m_5':{src:'images/gradius_enemy_m_5.png',rate:0.24,obj:new Image()},
+	'enemy_m_6':{src:'images/gradius_enemy_m_6.png',rate:0.24,obj:new Image()},
+	'enemy_m_7':{src:'images/gradius_enemy_m_7.png',rate:0.24,obj:new Image()},
+	'enemy_m_8':{src:'images/gradius_enemy_m_8.png',rate:0.24,obj:new Image()},
 
 	'enemy_m_11':{src:'images/gradius_enemy_m_11.png',rate:0.22,obj:new Image()},
 	'enemy_m_12':{src:'images/gradius_enemy_m_12.png',rate:0.22,obj:new Image()},

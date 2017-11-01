@@ -789,6 +789,16 @@ class ENEMY_m extends GameObject_ENEMY{
 			{img:_CANVAS_IMGS['enemy_m_2'].obj,scale:1},
 			{img:_CANVAS_IMGS['enemy_m_1'].obj,scale:1}
 		];
+
+		_this.col2=[//アニメ定義
+			{img:_CANVAS_IMGS['enemy_m_5'].obj,scale:1},
+			{img:_CANVAS_IMGS['enemy_m_6'].obj,scale:1},
+			{img:_CANVAS_IMGS['enemy_m_7'].obj,scale:1},
+			{img:_CANVAS_IMGS['enemy_m_8'].obj,scale:1},
+			{img:_CANVAS_IMGS['enemy_m_7'].obj,scale:1},
+			{img:_CANVAS_IMGS['enemy_m_6'].obj,scale:1},
+			{img:_CANVAS_IMGS['enemy_m_5'].obj,scale:1}
+		];
 	}
 	ani_col(){
 		let _this=this;
@@ -824,31 +834,35 @@ class ENEMY_m extends GameObject_ENEMY{
 
 		_this.x-=_BACKGROUND_SPEED;
 		_this.img=(function(_t){
+			//画像オブジェクト設定（残り1）
+			let _t_col=(_t._status<=1)
+						?_t.col2
+						:_t.col;
 			//閉じてる状態
 			if(!_t._isopen){
 				//開くタイミングを設定
 				if(_this.x>=690&&_this.x<700){_this._isopen=true;}
 				if(_this.x>=380&&_this.x<400){_this._isopen=true;}
-				return _t.col[0].img;
+				return _t_col[0].img;
 			}
 
 			//以下は開いてる状態
 			_t._open_count++;
 			if(parseInt(_t._col_c/5)===3&&_t._open_count<=200){
-				return _t.col[parseInt(_t._col_c/5)].img;
+				return _t_col[parseInt(_t._col_c/5)].img;
 			}			
 			if(_t._open_count>200){
 				// _t._col_c++;
 				// return _t.col[parseInt(_t._col_c/5)].img;
-				if(_t._col_c>=(_t.col.length*5)-1){
+				if(_t._col_c>=(_t_col.length*5)-1){
 					_t._col_c=0;
 					_t._open_count=0;
 					_t._isopen=false;
 				}	
 			}
 			_t._col_c=
-				(_t._col_c>=(_t.col.length*5)-1)?0:_t._col_c+1;
-			return _t.col[parseInt(_t._col_c/5)].img;
+				(_t._col_c>=(_t_col.length*5)-1)?0:_t._col_c+1;
+			return _t_col[parseInt(_t._col_c/5)].img;
 		})(_this);
 
 		//オブジェクト追加

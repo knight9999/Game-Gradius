@@ -347,7 +347,7 @@ _init:function(){
 
 		//gradiusフォントにセット
 		const $_qsa=document.querySelectorAll(
-		'h1,h2,h3,#map_bts a,#entrylink a,label.col_l,div.col_r .val,div.col_r label span, .parts_block_wrapper .text, #menu_inner a'
+		'h1,h2,h3,#map_bts a,#entrylink a,label.col_l,div.col_r label span, .parts_block_wrapper .text, #menu_inner a'
 		);
 		for(let _i=0;_i<$_qsa.length;_i++){
 		_this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,20);
@@ -501,26 +501,6 @@ _f_as_drop:function(e){
     let $_e=this.$_start_area_parts_obj;//元.area_block
 
 	$_ect.classList.remove('over');
-
-	// //先が6または8の時
-	// if($_ect.getAttribute('data-val').match(new RegExp('[68]'))!==null){
-	// 	for(let _i=0;_i<$_ect.parentElement.children.length;_i++){
-	// 		let $_c=$_ect.parentElement.children[_i];
-	// 		if($_c!==$_ect){continue;}
-	// 		$_ect=$_ect.parentElement.previousElementSibling.children[_i]
-	// 		break;
-	// 	}
-	// }
-
-	// //元が6または8の時
-	// if(_o.match(new RegExp('[68]'))!==null){
-	// 	for(let _i=0;_i<$_ect.parentElement.children.length;_i++){
-	// 		let $_c=$_ect.parentElement.children[_i];
-	// 		if($_c!==$_ect){continue;}
-	// 		$_ect=$_ect.parentElement.nextElementSibling.children[_i]
-	// 		break;
-	// 	}
-	// }
 	if($_ect.childNodes.length!==0){
 		//画像タグの場合（すでにarea_block内に画像がある場合）
 		//area_block内を全て空にする

@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "uglify-es": "^3.1.6",
-    "uglifyjs": "^2.4.11"
+    "uglifyjs": "^2.4.11",
+    "webpack": "^3.8.1"
   }
 }

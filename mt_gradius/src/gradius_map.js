@@ -122,27 +122,27 @@ const _MAP_THEME={//_parts要素番号0は空文字
 	'_p':{
 		'A':{
 			'_o':_CANVAS_IMGS['map_f_A'],
-			'_s':'1',
+			'_s':'111111111,111111111,000000000',
 			'_mx':function(_j){return _j;},
 			'_my':function(_i){return _i;}
 		},
 		'B':{
 			'_o':_CANVAS_IMGS['map_f_B'],
-			'_s':'1',
+			'_s':'111111111,111111111,000000000',
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i-1;}
+			'_my':function(_i){return _i;}
 		},
 		'C':{
 			'_o':_CANVAS_IMGS['map_f_C'],
-			'_s':'1',
+			'_s':'000000000,111111111,111111111',
 			'_mx':function(_j){return _j;},
 			'_my':function(_i){return _i;}
 		},
 		'D':{
 			'_o':_CANVAS_IMGS['map_f_D'],
-			'_s':'1',
+			'_s':'000000000,111111111,111111111',
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i-1;}
+			'_my':function(_i){return _i;}
 		},
 		'E':{
 			'_o':_CANVAS_IMGS['map_f_E'],
@@ -399,14 +399,14 @@ class GameObject_MAP{
 		let _this=this;
 		//MAPからMAP衝突用を複製
 		Object.assign(_this.mapdef_col,_this.mapdef);
-		//MAP衝突用から的ビットを外す
+		//MAP衝突用から敵ビットを外す
 		for(let _i=0;_i<_this.mapdef_col.length;_i++){
 			_this.mapdef_col[_i]=
-				_this.mapdef_col[_i].replace(_this.collision_enemies,'0');
+				_this.mapdef_col[_i].replace(/[a-zA-Z]/ig,'0');
 		}
 
-		for(let _i=0;_i<_this.mapdef_col.length;_i++){
-		let _m=_this.mapdef_col[_i];
+		for(let _i=0;_i<_this.mapdef.length;_i++){
+		let _m=_this.mapdef[_i];
 		for(let _j=0;_j<_m.length;_j++){
 			//MAP衝突用1行分ループ
 			if(!_this.isCollisionBit(_m[_j])){continue;}
@@ -418,31 +418,27 @@ class GameObject_MAP{
 			}
 			let _p_s=_p._s.split(',');
 			for(let _l=0;_l<_p_s.length;_l++){//p._s分ループ
-				let _s=_this.mapdef_col[_i+_l];
+				let _s_mapdef_col=_this.mapdef_col[_i+_l];
+				let _s_mapdef=_this.mapdef[_i+_l];
 				//置換箇所は文字列を分割、置換、結合処理
 				_this.mapdef_col[_i+_l]=
-					_s.substr(0,_j)
-					+(function(_s_mdc,_psl){
-						let _str='';
-						if(_l===0){
-							//MAPにあるMAPビットのみ'1'・'0'のみ処理させる
-							_str=_psl.charAt(0);
-								_s_mdc=_s_mdc.substring(1);
-								_psl=_psl.substring(1);
-						}
-						return _str+_this.setCollisionBit(_s_mdc,_psl);
-					})(_s.substr(_j,_p_s[_l].length),_p_s[_l])
-					+_s.substr(_j+_p_s[_l].length,_m.length);			
+					_s_mapdef_col.substr(0,_j)
+					+(function(_s_md,_s_mdc,_psl){
+						return _this.setCollisionBit(_psl,_s_mdc);
+					})(_s_mapdef.substr(_j,_p_s[_l].length),
+						_s_mapdef_col.substr(_j,_p_s[_l].length),
+						_p_s[_l])
+					+_s_mapdef_col.substr(_j+_p_s[_l].length,_m.length);			
 			}//_l
 		}//_j
 		}//_i	
 	}
-	setCollisionBit(_b,_mb){
+	setCollisionBit(_pb,_mcb){
 		let _this=this;
 		let _s='';
-		for(let _i=0;_i<_b.length;_i++){
-			if(_b[_i]==='0'){
-				_s+=_mb[_i];
+		for(let _i=0;_i<_pb.length;_i++){
+			if(_pb[_i]==='0'){
+				_s+=_mcb[_i];
 				continue;
 			}
 			_s+='1';

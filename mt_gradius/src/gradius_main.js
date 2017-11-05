@@ -2200,8 +2200,7 @@ class GameObject_SHOTS_MISSILE
 			}
 			_this.mis_status[_t._st](_t);
 
-			if(_t._st==='_st1'
-			||_t._st==='_st7'){
+			if(_t._st==='_st1'){
 			if(_MAP.isMapCollision(
 				_MAP.getMapX(_t.x),
 				_MAP.getMapY(_t.y))){

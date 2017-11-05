@@ -298,6 +298,15 @@ _setEntryLink:function(){
 	}
 
 },//setEntryLink
+_setPartsBlockEvent:function(){
+	//area_parts内、parts_blockイベント設定
+	const $_ap_pb=document.querySelectorAll('#area_parts .parts_block');
+	for(var _i=0;_i<$_ap_pb.length;_i++){
+		$_ap_pb[_i].setAttribute('draggable',true);
+		$_ap_pb[_i].addEventListener('dragstart',_GAME_STAGEEDIT_EVENTS._f_ap_dragstart,false);
+		$_ap_pb[_i].addEventListener('dragend',_GAME_STAGEEDIT_EVENTS._f_ap_dragend,false);
+	}
+},//_setPartsBlockEvent
 _init_images:function(_obj,_func){
 	let _imgLoadedCount=0;
 	for(let _i in _obj){
@@ -324,13 +333,8 @@ _init:function(){
 		_this._setData(_MAP_PETTERN);
 
 		//area_parts内、parts_blockイベント設定
-		const $_ap_pb=document.querySelectorAll('#area_parts .parts_block');
-		for(var _i=0;_i<$_ap_pb.length;_i++){
-		    $_ap_pb[_i].setAttribute('draggable',true);
-		    $_ap_pb[_i].addEventListener('dragstart',_GAME_STAGEEDIT_EVENTS._f_ap_dragstart,false);
-			$_ap_pb[_i].addEventListener('dragend',_GAME_STAGEEDIT_EVENTS._f_ap_dragend,false);
-		}
-
+		_GAME_STAGEEDIT._setPartsBlockEvent();
+		
 		//入力フォームのイベント設定
 		const $_fg_range=document.querySelectorAll('.form_group .col_r input[type="range"]');
 		for(var _i=0;_i<$_fg_range.length;_i++){
@@ -371,6 +375,9 @@ _e_entrylink_prev:function(e){
 	_GAME_STAGEEDIT._setData(_MAP_PETTERN);
 	_GAME_STAGEEDIT._setEntryLink();
 
+	//area_parts内、parts_blockイベント設定
+	_GAME_STAGEEDIT._setPartsBlockEvent();	
+	
 	//gradiusフォントにセット
 	const $_qsa=document.querySelectorAll(
 		'.parts_block_wrapper .text'
@@ -388,6 +395,9 @@ _e_entrylink_next:function(e){
 	_GAME_STAGEEDIT._clearMap();
 	_GAME_STAGEEDIT._setData(_MAP_PETTERN);
 	_GAME_STAGEEDIT._setEntryLink();
+
+	//area_parts内、parts_blockイベント設定
+	_GAME_STAGEEDIT._setPartsBlockEvent();	
 
 	//gradiusフォントにセット
 	const $_qsa=document.querySelectorAll(

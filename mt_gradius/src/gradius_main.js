@@ -5,7 +5,7 @@
 //=====================================================
 'use strict';
 
-const _ISDEBUG=false;
+const _ISDEBUG=true;
 let _PLAYERS_POWER_METER=0;
 let _PLAYERS_POWER_METER_SHIELD=0;
 let _PLAYERS_SHOTS_SETINTERVAL=null;
@@ -4414,6 +4414,20 @@ getOrBit(_b1,_b2,_l){
 			|parseInt(_b2,2)
 		).toString(2);
 	return this.getBit(_s,_l);
+},
+isEnemyCanvasXIn(_oe){
+	let _e=_oe.getEnemyCenterPosition();
+	if(_oe.x<_CANVAS.width){
+		return true;
+	}
+	return false;
+},
+isEnemyCanvasXOut(_oe){
+	let _e=_oe.getEnemyCenterPosition();
+	if(_e._x<-100){
+		return true;
+	}
+	return false;
 },
 isEnemyCanvasOut(_oe){
 	let _e=_oe.getEnemyCenterPosition();

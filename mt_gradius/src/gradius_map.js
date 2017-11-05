@@ -7,7 +7,7 @@
 
 let _MAPDEFS='';
 let _MAPDEF='';
-let _MAP_PETTERN=1;
+let _MAP_PETTERN=0;
 let _BACKGROUND_SPEED=0;
 
 const _MAP_ENEMIES={
@@ -115,7 +115,14 @@ _ENEMIES:{
 
 const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME1':{//なし
-	'_p':{},
+	'_p':{
+		'A':{
+			'_o':_CANVAS_IMGS['enemy_p_1'],
+			'_s':'011,111,110',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		}
+	},
 	'_enemies':{}
 },//_THEME1
 '_THEME2':{//大地

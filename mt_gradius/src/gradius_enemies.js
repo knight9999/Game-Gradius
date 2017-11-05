@@ -12,7 +12,7 @@ const _DEF_DIFFICULT=[
 	{_ENEMY_SHOT_RATE:0.004,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
 	{_ENEMY_SHOT_RATE:0.1,_ENEMY_SHOT_SPEED:4,_ENEMY_SPEED:2}
 ]
-let _ENEMY_DIFFICULT=4;//主にデバッグ用。
+let _ENEMY_DIFFICULT=0;//主にデバッグ用。
 
 class GameObject_ENEMY{
 	constructor(_o,_x,_y){
@@ -148,30 +148,34 @@ class GameObject_ENEMY{
 		let _this=this;
 		let _eb=_ENEMIES_BOUNDS;
 		if(!_this.isalive()){return;}
-		if(_this.x>_CANVAS.width){return;}
+		if(_GAME.isEnemyCanvasOut(_this)){return;}
 
 		for(let _i=0;_i<_eb.length;_i++){
 			if(!_eb[_i].isalive()){continue;}//生きていない場合は無視
-			if(_eb[_i].x>_CANVAS.width){continue;}//キャンバスに入る前は無視
+			if(_GAME.isEnemyCanvasOut(_eb[_i])){continue;}//キャンバスに入る前は無視
 			if(_this.bid===_eb[_i].bid){continue;}//自身の判定はしない
 
+			let _dx=_this.getEnemyCenterPosition()._x
+					-_eb[_i].getEnemyCenterPosition()._x;
+			let _dy=_this.getEnemyCenterPosition()._y
+					-_eb[_i].getEnemyCenterPosition()._y
 			let _a=Math.sqrt(
-				Math.pow(_this.getEnemyCenterPosition()._x
-					-_eb[_i].getEnemyCenterPosition()._x,2)+
-				Math.pow(_this.getEnemyCenterPosition()._y
-					-_eb[_i].getEnemyCenterPosition()._y,2)
+				Math.pow(_dx,2)+Math.pow(_dy,2)
 			);
-			let _ms=_this.img.width/2;
+			let _ms=(_this.img.width/2)+(_eb[_i].img.width/2);
 			let _s=(_a<_ms)?true:false;
-			if(_s){
-//				console.log(_a);
-				_this.speedx=Math.random()*(Math.random()>0.05)?1:-1;
-				_this.speedy=Math.random()*(Math.random()>0.5)?1:-1;
-				_eb[_i].speedx=Math.random()*(Math.random()>0.05)?1:-1;
-				_eb[_i].speedy=Math.random()*(Math.random()>0.5)?1:-1;
-			}
+			if(!_s){continue;}
+			_this.speedx*=-1;
+			_this.speedy*=-1;
+			_eb[_i].speedx*=-1;
+			_eb[_i].speedy*=-1;
+			
+			// _this.speedx*=(Math.random()>0.5)?1:-1;
+			// _this.speedy*=(Math.random()>0.5)?1:-1;
+			// _eb[_i].speedx*=2*(_this.speedx<0)?1:-1;
+			// _eb[_i].speedy*=2*(_this.speedy<0)?1:-1;
 		}
-	}
+	}//move_bounds
 	setDrawImage(){
 		let _this=this;
 		_CONTEXT.save();
@@ -1114,17 +1118,28 @@ class ENEMY_n_small extends ENEMY_o_small{
 
 class ENEMY_p extends GameObject_ENEMY{
     constructor(_x,_y,_d){
-		super(
-			_CANVAS_IMGS['enemy_p_1'].obj,_x,_y
-		)
-		this._status=15;
-		this.getscore=100;
-		this.speedx=_BACKGROUND_SPEED;
-		this.speedy=
-			(Math.random()+1)
-			*((Math.random()>0.5)?1:-1);
-		this._isbroken=false;
-		this.isshot=false;
+		super(_CANVAS_IMGS['enemy_p_1'].obj,_x,_y);
+		let _this=this;
+		_this._status=15;
+		_this.getscore=0;
+		_this.speedx=(_BACKGROUND_SPEED+parseInt(1+Math.random()*1))*-1;
+		_this.speedy=parseInt(Math.random()*(3-1)+1)
+						*((Math.random()>0.5)?1:-1);
+		_this._isbroken=false;
+		_this._isshow=false;
+		_this.isshot=false;
+	}
+	setCanvasBound(){
+		let _this=this;
+		if(_this.x>=_CANVAS.width){
+			_this.speedx*=-1;
+		}
+		if(_this.y<0){
+			_this.speedy=Math.abs(_this.speedy);
+		}
+		if(_this.y+_this.img.height>_CANVAS.height){
+			_this.speedy*=-1;
+		}
 	}
 	collision(){
 		//衝突レーザー、リップルレーザーの判定設定
@@ -1138,105 +1153,115 @@ class ENEMY_p extends GameObject_ENEMY{
 			}
 			return _st-1;
 		})(this._status);
-
-		if(!this.isalive()){_SCORE.set(this.getscore);}
 	}
 	map_collition(){
 		let _this=this;
-		//中心座標取得
-		let _e=_this.getEnemyCenterPosition();
-		//MAPの位置を取得
-		let _map_x=
-			parseInt((_e._x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
-		let _map_y=
-			parseInt(_e._y/_MAP.t);
-
-		if(_MAP.isMapCollision(_map_x,_map_y-1)
-			||_MAP.isMapCollision(_map_x,_map_y+1)){
-			_this.speedx=(Math.random()>0.4)
-				?Math.abs(_this.speedx)
-				:_this.speedx*-1;
-			_this.speedy=(Math.random()>0.4)
-				?Math.abs(_this.speedy)
-				:_this.speedy*-1;
+		let _map_x=_MAP.getMapX(_this.x);
+		let _map_y=_MAP.getMapY(_this.y);
+		if(_MAP.isMapCollision(_map_x,_map_y)){
+//			_this.speedx*=-1;
+			_this.speedy*=-1;
+			return;
 		}
-
+		_map_x=_MAP.getMapX(_this.x+_this.img.width);
+		_map_y=_MAP.getMapY(_this.y);
+		if(_MAP.isMapCollision(_map_x,_map_y)){
+			_this.speedx*=-1;
+			_this.speedy*=-1;
+			return;
+		}
+		_map_x=_MAP.getMapX(_this.x);
+		_map_y=_MAP.getMapY(_this.y+_this.img.height);
+		if(_MAP.isMapCollision(_map_x,_map_y)){
+//			_this.speedx*=-1;
+			_this.speedy*=-1;
+			return;
+		}
+		_map_x=_MAP.getMapX(_this.x+_this.img.width);
+		_map_y=_MAP.getMapY(_this.y+_this.img.height);
+		if(_MAP.isMapCollision(_map_x,_map_y)){
+			_this.speedx*=-1;
+			_this.speedy*=-1;
+			return;
+		}
 	}
 	move(){
 		let _this=this;
 		//表示エリア内に入るまでの待機。
-
-		_this.map_collition();
-		_this.move_bounds();
-		_this.x-=(function(_t){
-			if(_t.x+_t.img.width>_CANVAS.width){
-				_t.speedx=Math.abs(_t.speedx);
-			}
-			return _t.speedx;
-		})(_this);
-		_this.y+=(function(_t){
-			if(_t.y<0){
-				_t.speedy=Math.abs(_t.speedy);
-			}else if(_t.y+_t.img.height>_CANVAS.height){
-				_t.speedy*=-1;
-			}
-			return _t.speedy;
-		})(_this);
-		if(_this.x+_this.img.width<0){
+		if(_GAME.isEnemyCanvasXIn(_this)){
+			_this._isshow=true;
+		}
+		if(!_this._isshow){
+			_this.x-=_BACKGROUND_SPEED;
+			return;
+		}
+		if(_GAME.isEnemyCanvasXOut(_this)){
 			_this._status=0;
 			return;
 		}
 
+		_this.map_collition();
+		_this.move_bounds();
+		_this.setCanvasBound();
+		_this.x+=_this.speedx;
+		_this.y+=_this.speedy;
+
 		let _cp=_this.getEnemyCenterPosition();
-		if(this._status<=0&&!this._isbroken){
-			for(let _i=0;_i<6;_i++){
-				//オブジェクト追加
-				let _cls=
-					new ENEMY_p_small(
-						_CANVAS_IMGS[
-							(['enemy_p_2',
-								'enemy_p_2',
-								'enemy_p_3',
-								'enemy_p_4',
-								'enemy_p_5',
-								'enemy_p_5'])[_i]
-							].obj,
-						_cp._x+([-60,-30,-10,10,30,60])[_i],
-						_cp._y+([-60,-30,-10,10,30,60])[_i]
-						);
-				_ENEMIES.push(_cls);
-				_ENEMIES_BOUNDS.push(_cls);
+		if(_this._status<=0){
+			if(!_this._isbroken){
+				for(let _i=0;_i<6;_i++){
+					//オブジェクト追加
+					let _cls=
+						new ENEMY_p_small(
+							_CANVAS_IMGS[
+								(['enemy_p_2',
+									'enemy_p_2',
+									'enemy_p_3',
+									'enemy_p_4',
+									'enemy_p_5',
+									'enemy_p_5'])[_i]
+								].obj,
+							_cp._x+([-60,-30,-10,10,30,60])[_i],
+							_cp._y+([-60,-30,-10,10,30,60])[_i]
+							);
+					_ENEMIES.push(_cls);
+					_ENEMIES_BOUNDS.push(_cls);
+				}
+				_this._isbroken=true;
 			}
-			this._isbroken=true;
 			return;
 		}
 
-		if(this._status>0){
-			_CONTEXT.drawImage(
-				this.img,
-				this.x,
-				this.y,
-				this.img.width,
-				this.img.height
-			);
-		}
+		_CONTEXT.drawImage(
+			this.img,
+			this.x,
+			this.y,
+			this.img.width,
+			this.img.height
+		);
 	}
 }
 class ENEMY_p_small extends GameObject_ENEMY{
     constructor(_d,_x,_y){
 		super(_d,_x,_y);
-		this._status=10;
-		this.getscore=500;
-		this.speedx=
-			_MAPDEFS[_MAP_PETTERN]._speed
-			*((Math.random()>0.5)?1:-1);
-		this.speedy=
-			_MAPDEFS[_MAP_PETTERN]._speed
-			*((Math.random()>0.5)?1:-1);
-		this.col_type=this.col_ani2;
+		let _this=this;
+		_this._status=10;
+		_this.getscore=500;
+		_this.speedx=(_BACKGROUND_SPEED+parseInt(Math.random()*2))*-1;
+		_this.speedy=1+parseInt(Math.random()*2);
+		_this.col_type=_this.col_ani2;
+	}
+	setCanvasBound(){
+		let _this=this;
+		if(_this.x>=_CANVAS.width){
+			_this.speedx*=-1;
+		}
+		if(_this.y<0){
+			_this.speedy=Math.abs(_this.speedy);
+		}
+		if(_this.y+_this.img.height>_CANVAS.height){
+			_this.speedy*=-1;
+		}
 	}
 	collision(){
 		//衝突レーザー、リップルレーザーの判定設定
@@ -1254,22 +1279,34 @@ class ENEMY_p_small extends GameObject_ENEMY{
 	}
 	map_collition(){
 		let _this=this;
-		//中心座標取得
-		let _e=_this.getEnemyCenterPosition();
-		//MAPの位置を取得
-		let _map_x=_MAP.getMapX(_e._x);
-		let _map_y=_MAP.getMapY(_e._y);
-
-		if(_MAP.isMapCollision(_map_x,_map_y-1)
-			||_MAP.isMapCollision(_map_x,_map_y+4)){
-			_this.speedx=(_this.speedx<=0)
-				?Math.abs(_this.speedx)
-				:_this.speedx*-1;
-			_this.speedy=(_this.speedy<=0)
-				?Math.abs(_this.speedy)
-				:_this.speedy*-1;
+		let _map_x=_MAP.getMapX(_this.x);
+		let _map_y=_MAP.getMapY(_this.y);
+		if(_MAP.isMapCollision(_map_x,_map_y)){
+//			_this.speedx*=-1;
+			_this.speedy*=-1;
+			return;
 		}
-
+		_map_x=_MAP.getMapX(_this.x+_this.img.width);
+		_map_y=_MAP.getMapY(_this.y);
+		if(_MAP.isMapCollision(_map_x,_map_y)){
+			_this.speedx*=-1;
+			_this.speedy*=-1;
+			return;
+		}
+		_map_x=_MAP.getMapX(_this.x);
+		_map_y=_MAP.getMapY(_this.y+_this.img.height);
+		if(_MAP.isMapCollision(_map_x,_map_y)){
+//			_this.speedx*=-1;
+			_this.speedy*=-1;
+			return;
+		}
+		_map_x=_MAP.getMapX(_this.x+_this.img.width);
+		_map_y=_MAP.getMapY(_this.y+_this.img.height);
+		if(_MAP.isMapCollision(_map_x,_map_y)){
+			_this.speedx*=-1;
+			_this.speedy*=-1;
+			return;
+		}
 	}
 	move(){
 		let _this=this;
@@ -1284,22 +1321,10 @@ class ENEMY_p_small extends GameObject_ENEMY{
 
 		_this.map_collition();
 		_this.move_bounds();
+		_this.setCanvasBound();
 
-		let _cp=_this.getEnemyCenterPosition();
-		_this.x-=(function(_t){
-			if(_t.x+_t.img.width>_CANVAS.width){
-				_t.speedx=1.5;
-			}
-			return _t.speedx;
-		})(_this);
-		_this.y+=(function(_t){
-			if(_t.y<0){
-				_t.speedy=Math.abs(_t.speedy);
-			}else if(_t.y+_t.img.height>_CANVAS.height){
-				_t.speedy*=-1.0;
-			}
-			return _t.speedy;
-		})(_this);
+		_this.x+=_this.speedx;
+		_this.y+=_this.speedy;
 
 		_CONTEXT.drawImage(
 			_this.img,

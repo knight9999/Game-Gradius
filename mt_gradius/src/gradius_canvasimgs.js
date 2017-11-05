@@ -245,7 +245,7 @@ const _CANVAS_IMGS={
 	'enemy_o_1':{src:'images/gradius_enemy_o_1.png',rate:0.3,obj:new Image()},
 	'enemy_o_2':{src:'images/gradius_enemy_o_2.png',rate:0.3,obj:new Image()},
 
-	'enemy_p_1':{src:'images/gradius_enemy_p_1.png',rate:0.26,obj:new Image()},
+	'enemy_p_1':{src:'images/gradius_enemy_p_1.png',rate:0.23,obj:new Image()},
 	'enemy_p_2':{src:'images/gradius_enemy_p_2.png',rate:0.30,obj:new Image()},
 	'enemy_p_3':{src:'images/gradius_enemy_p_3.png',rate:0.30,obj:new Image()},
 	'enemy_p_4':{src:'images/gradius_enemy_p_4.png',rate:0.30,obj:new Image()},

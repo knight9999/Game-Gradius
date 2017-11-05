@@ -139,8 +139,6 @@ form .parts_block{
     width:100px;
 	transition:0.5s all;
 }
-form #area .area_block[data-val="p"] .parts_block{width:80px;}
-
 form #area .area_block .parts_block{position:absolute;width:100%;}
 form #area .area_block .parts_block img{display:block;}
 form #area .area_block .parts_block img.over{background-color:rgba(255,255,255,0.3);border:2px dotted rgba(255,255,255,0.6);}

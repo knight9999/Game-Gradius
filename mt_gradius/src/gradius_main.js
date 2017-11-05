@@ -2199,6 +2199,17 @@ class GameObject_SHOTS_MISSILE
 				continue;
 			}
 			_this.mis_status[_t._st](_t);
+
+			if(_t._st==='_st1'
+			||_t._st==='_st7'){
+			if(_MAP.isMapCollision(
+				_MAP.getMapX(_t.x),
+				_MAP.getMapY(_t.y))){
+				_t._init();
+				return;
+			}
+			}
+
 			_CONTEXT.drawImage(
 				_t._img,
 				_t.x,
@@ -4414,6 +4425,20 @@ getOrBit(_b1,_b2,_l){
 			|parseInt(_b2,2)
 		).toString(2);
 	return this.getBit(_s,_l);
+},
+isEnemyCanvasXIn(_oe){
+	let _e=_oe.getEnemyCenterPosition();
+	if(_oe.x<_CANVAS.width){
+		return true;
+	}
+	return false;
+},
+isEnemyCanvasXOut(_oe){
+	let _e=_oe.getEnemyCenterPosition();
+	if(_e._x<-100){
+		return true;
+	}
+	return false;
 },
 isEnemyCanvasOut(_oe){
 	let _e=_oe.getEnemyCenterPosition();

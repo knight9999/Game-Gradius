@@ -1146,13 +1146,8 @@ class ENEMY_p extends GameObject_ENEMY{
 		//中心座標取得
 		let _e=_this.getEnemyCenterPosition();
 		//MAPの位置を取得
-		let _map_x=
-			parseInt((_e._x
-					+_SCROLL_POSITION
-					-_MAP.initx)
-					/_MAP.t);
-		let _map_y=
-			parseInt(_e._y/_MAP.t);
+		let _map_x=_MAP.getMapX(_e._x);
+		let _map_y=_MAP.getMapY(_e._y);
 
 		if(_MAP.isMapCollision(_map_x,_map_y-1)
 			||_MAP.isMapCollision(_map_x,_map_y+1)){

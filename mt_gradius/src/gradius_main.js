@@ -5,7 +5,7 @@
 //=====================================================
 'use strict';
 
-const _ISDEBUG=true;
+const _ISDEBUG=false;
 let _PLAYERS_POWER_METER=0;
 let _PLAYERS_POWER_METER_SHIELD=0;
 let _PLAYERS_SHOTS_SETINTERVAL=null;
@@ -2199,6 +2199,17 @@ class GameObject_SHOTS_MISSILE
 				continue;
 			}
 			_this.mis_status[_t._st](_t);
+
+			if(_t._st==='_st1'
+			||_t._st==='_st7'){
+			if(_MAP.isMapCollision(
+				_MAP.getMapX(_t.x),
+				_MAP.getMapY(_t.y))){
+				_t._init();
+				return;
+			}
+			}
+
 			_CONTEXT.drawImage(
 				_t._img,
 				_t.x,

@@ -2201,12 +2201,15 @@ class GameObject_SHOTS_MISSILE
 			_this.mis_status[_t._st](_t);
 
 			if(_t._st==='_st1'){
-			if(_MAP.isMapCollision(
-				_MAP.getMapX(_t.x),
-				_MAP.getMapY(_t.y))){
-				_t._init();
-				return;
-			}
+				//初期ショット時
+				//壁中にいてもミサイルが
+				//表示されるため、ここで非表示制御
+				if(_MAP.isMapCollision(
+					_MAP.getMapX(_t.x),
+					_MAP.getMapY(_t.y))){
+					_t._init();
+					return;
+				}
 			}
 
 			_CONTEXT.drawImage(

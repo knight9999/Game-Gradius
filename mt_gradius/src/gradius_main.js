@@ -4384,6 +4384,12 @@ const _DRAW_INIT=function(_obj,_func){
 				_func();
 			}
 		}
+		_o.obj.onabort=function(){
+			console.log('abort');
+		}
+		_o.obj.onerror=function(){
+			console.log('error');
+		}
 	}
 }
 

@@ -1957,7 +1957,7 @@ class GameObject_SHOTS_MISSILE
 					return (!_t._shot_alive)?_p._x:_i+4;
  				})(_t.x);
 				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+2;
+ 					return (!_t._shot_alive)?_p._y:_i+1;
  				})(_t.y);
 				_t._img=_CANVAS_IMGS['missile4'].obj;
 			}
@@ -2053,7 +2053,7 @@ class GameObject_SHOTS_MISSILE
 			}
 //			console.log('_st8');
 			_t.x+=2;
-			_t.y=(_map_y*_MAP.t)+8;
+			_t.y=(_map_y*_MAP.t)+3;
 			_this.set_missile_status(_t,'_st3');
 		}
 
@@ -2305,7 +2305,7 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 					return (!_t._shot_alive)?_p._x:_i+2;
  				})(_t.x);
 				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+6;
+ 					return (!_t._shot_alive)?_p._y:_i+3;
  				})(_t.y);
 				_t._img=_CANVAS_IMGS['missile1'].obj;
 			},
@@ -2318,7 +2318,7 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 					return (!_t._shot_alive)?_p._x:_i+4;
  				})(_t.x);
 				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+5;
+ 					return (!_t._shot_alive)?_p._y:_i+4;
  				})(_t.y);
 				_t._img=_CANVAS_IMGS['missile5'].obj;
 			},
@@ -2331,7 +2331,7 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 					return (!_t._shot_alive)?_p._x:_i+4;
  				})(_t.x);
 				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+3;
+ 					return (!_t._shot_alive)?_p._y:_i+2;
  				})(_t.y);
 				_t._img=_CANVAS_IMGS['missile4'].obj;
 			}

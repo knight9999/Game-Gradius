@@ -12,7 +12,7 @@ const _DEF_DIFFICULT=[
 	{_ENEMY_SHOT_RATE:0.004,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
 	{_ENEMY_SHOT_RATE:0.1,_ENEMY_SHOT_SPEED:4,_ENEMY_SPEED:2}
 ]
-let _ENEMY_DIFFICULT=4;//主にデバッグ用。
+let _ENEMY_DIFFICULT=0;//主にデバッグ用。
 
 class GameObject_ENEMY{
 	constructor(_o,_x,_y){
@@ -1610,12 +1610,12 @@ class GameObject_ENEMY_SHOT{
 	isalive(){return this._shot_alive;}
 	move(){
 		let _this=this;
-		_this.map_collition();
 		if(_GAME.isEnemyCanvasOut(_this)){
 			_this.init();
 			return;
 		}
 		if(!_this._shot_alive){return;}
+		_this.map_collition();
 		_this.ani_enemy_bullet();
 
 		_this.x+=_this.sx*_this.speed;

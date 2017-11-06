@@ -1,11 +1,15 @@
 //=====================================================
 //	gradius_main.js
 //	全体処理
+//	※デバッグモードはURLパラメータをつかう
+//		debug:（true/false）:デバッグモード有無
+//		mp:（数値）:debug有効時、デバッグしたいマップの配列要素（0スタート）
+//		ed:（数値）:debug有効時、敵難易度（0スタート）
 //	2017.08.12 : 新規作成
 //=====================================================
 'use strict';
 
-const _ISDEBUG=false;
+let _ISDEBUG=false;
 let _PLAYERS_POWER_METER=0;
 let _PLAYERS_POWER_METER_SHIELD=0;
 let _PLAYERS_SHOTS_SETINTERVAL=null;
@@ -3905,7 +3909,11 @@ const _DRAW=function(){
 
 		//MAP（衝突判定）
 		_MAP.isPlayersShotCollision();
-		 
+
+ 		//敵、衝突判定
+		 _IS_ENEMIES_SHOT_COLLISION();
+		 _IS_ENEMIES_COLLISION();
+ 
 		//ショットを表示
 		for(let _i=0;_i<_PLAYERS_MAX;_i++){
 			if(_PLAYERS_MISSILE_ISALIVE){
@@ -3925,17 +3933,12 @@ const _DRAW=function(){
 
 		//MAP（表示）
 		_MAP.move();
-
-		//敵、衝突判定
-		_IS_ENEMIES_SHOT_COLLISION();
-		_IS_ENEMIES_COLLISION();
-
 		//DRAW POWER METER
 		_POWERMETER.show();
 		//SCORE
 		_SCORE.show();
 
-		_SCROLL_POSITION+=_BACKGROUND_SPEED;
+		_SCROLL_POSITION+=_MAP.map_background_speed;
 
 		if(_SCROLL_POSITION-100<=
 			(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}
@@ -4391,6 +4394,7 @@ const _DRAW_INIT=function(_obj,_func){
 
 
 const _GAME={//ゲーム用スクリプト
+_url_params:new Array(),
 _init:function(){
 	//マップ用jsonを取得したあとに、
 	//スタート画面をコールバックで表示させる
@@ -4417,6 +4421,15 @@ getOrBit(_b1,_b2,_l){
 			|parseInt(_b2,2)
 		).toString(2);
 	return this.getBit(_s,_l);
+},
+setUrlParams(){
+	var _prm=location.search.slice(1).split(/(&|&amp;)/);
+	for(var _i=0;_i<_prm.length;_i++){
+			var _p=_prm[_i].replace('amp;','').split('=');
+			if(_p[0]===''||_p[0]===undefined){continue;}
+			if(_p[0]==='&'){continue;}
+			this._url_params[_p[0]]=_p[1];
+	}
 },
 isEnemyCanvasXIn(_oe){
 	let _e=_oe.getEnemyCenterPosition();
@@ -4583,6 +4596,13 @@ _multilineText(context, text, width) {
 window.addEventListener('load',function(){
 	_CANVAS=document.getElementById('game');
 	_CONTEXT=_CANVAS.getContext('2d');
+
+	//URLからパラメータを取得
+	_GAME.setUrlParams();
+	//以下パラメータからデバッグモードを設定
+	_ISDEBUG=(_GAME._url_params['debug']==='true')?true:false;
+	_MAP_PETTERN=_GAME._url_params['mp']||0;
+	_ENEMY_DIFFICULT=_GAME._url_params['ed']||0;
 
 	if(_ISSP){
 		document

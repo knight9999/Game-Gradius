@@ -3812,9 +3812,6 @@ const _IS_GET_POWERCAPSELL=function(){
 			_SCORE.set(300);
 			continue;
 		}
-
-		_pwc.move();
-
 	}
 }
 
@@ -3890,11 +3887,10 @@ const _DRAW=function(){
 					_CANVAS.width,
 					_CANVAS.height);
 
-		//BACKGROUND
+		//BACKGROUNDを表示
 		for(let _i=0;_i<_BACKGROUND_STAR_MAX;_i++){
 			_BACKGROUND[_i].move();
 		}
-
 		//敵の弾を表示
 		for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
 			_ENEMIES_SHOTS[_i].move();
@@ -3906,14 +3902,16 @@ const _DRAW=function(){
 		}
 
 		_IS_GET_POWERCAPSELL();
-
 		//MAP（衝突判定）
 		_MAP.isPlayersShotCollision();
-
  		//敵、衝突判定
 		 _IS_ENEMIES_SHOT_COLLISION();
 		 _IS_ENEMIES_COLLISION();
  
+		//パワーカプセルを表示
+		for(let _i=0;_i<_POWERCAPSELLS.length;_i++){
+			_POWERCAPSELLS[_i].move();			
+		}
 		//ショットを表示
 		for(let _i=0;_i<_PLAYERS_MAX;_i++){
 			if(_PLAYERS_MISSILE_ISALIVE){
@@ -3921,21 +3919,18 @@ const _DRAW=function(){
 			}
 			_PLAYERS_SHOTS[_SHOTTYPE][_i].move();
 		}
-
 		//自機からひもづくオプションを表示
 		for(let _i=0;_i<_PLAYERS_OPTION_MAX;_i++){
 			_PLAYERS_OPTION[_i].move(10*(_i+1));
 		}
-
 		//自機を表示
 		_PLAYERS_MAIN_FORCE.move(_PLAYERS_MAIN);
 		_PLAYERS_MAIN.move();
-
-		//MAP（表示）
+		//MAPを表示
 		_MAP.move();
-		//DRAW POWER METER
+		//DRAW POWER METERを表示
 		_POWERMETER.show();
-		//SCORE
+		//SCOREを表示
 		_SCORE.show();
 
 		_SCROLL_POSITION+=_MAP.map_background_speed;

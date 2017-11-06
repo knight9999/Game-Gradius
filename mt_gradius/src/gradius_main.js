@@ -2128,6 +2128,8 @@ class GameObject_SHOTS_MISSILE
 		}
 
 		if(_this.get_missile_status(_t)==='_st1'){
+			if(_MAP.isMapCollision(_MAP.getMapX(_t.x),_MAP.getMapY(_t.y))){return;}
+			
 			_map_y=_MAP.getMapY(_t.y+_t._img.height/2);
 			//自身、あるいはその下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x,_map_y)
@@ -2199,19 +2201,6 @@ class GameObject_SHOTS_MISSILE
 				continue;
 			}
 			_this.mis_status[_t._st](_t);
-
-			if(_t._st==='_st1'){
-				//初期ショット時
-				//壁中にいてもミサイルが
-				//表示されるため、ここで非表示制御
-				if(_MAP.isMapCollision(
-					_MAP.getMapX(_t.x),
-					_MAP.getMapY(_t.y))){
-					_t._init();
-					return;
-				}
-			}
-
 			_CONTEXT.drawImage(
 				_t._img,
 				_t.x,
@@ -2742,6 +2731,7 @@ class GameObject_SHOTS_DOUBLE
 					this.x=0,
 					this.y=0,
 					this._enemyid=null,
+					this._shot=false,
 					this._shot_alive=false
 				}
 			});
@@ -3913,6 +3903,9 @@ const _DRAW=function(){
 
 		_IS_GET_POWERCAPSELL();
 
+		//MAP（衝突判定）
+		_MAP.isPlayersShotCollision();
+		 
 		//ショットを表示
 		for(let _i=0;_i<_PLAYERS_MAX;_i++){
 			if(_PLAYERS_MISSILE_ISALIVE){
@@ -3920,9 +3913,6 @@ const _DRAW=function(){
 			}
 			_PLAYERS_SHOTS[_SHOTTYPE][_i].move();
 		}
-
-		//MAP（衝突判定）
-		_MAP.isPlayersShotCollision();
 
 		//自機からひもづくオプションを表示
 		for(let _i=0;_i<_PLAYERS_OPTION_MAX;_i++){

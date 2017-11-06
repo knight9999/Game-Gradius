@@ -12,7 +12,7 @@ const _DEF_DIFFICULT=[
 	{_ENEMY_SHOT_RATE:0.004,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
 	{_ENEMY_SHOT_RATE:0.1,_ENEMY_SHOT_SPEED:4,_ENEMY_SPEED:2}
 ]
-let _ENEMY_DIFFICULT=4;//主にデバッグ用。
+let _ENEMY_DIFFICULT=0;//主にデバッグ用。
 
 class GameObject_ENEMY{
 	constructor(_o,_x,_y){

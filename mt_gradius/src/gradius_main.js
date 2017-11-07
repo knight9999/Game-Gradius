@@ -4376,6 +4376,7 @@ const _DRAW_STAGE_SELECT=function(){
 
 const _DRAW_INIT=function(_obj,_func){
 	let _imgLoadedCount=0;
+	let _alertFlag=false;
 	for(let _i in _obj){
 		let _o=_obj[_i];
 		_o.obj.src=_obj[_i].src;
@@ -4391,10 +4392,11 @@ const _DRAW_INIT=function(_obj,_func){
 			}
 		}
 		_o.obj.onabort=function(){
-			console.log('abort');
 		}
 		_o.obj.onerror=function(){
-			console.log('error');
+			if(_alertFlag){return;}
+			alert('一部画像読み込みに失敗しました。再度立ち上げなおしてください');
+			_alertFlag=true;
 		}
 	}
 }

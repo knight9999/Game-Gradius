@@ -3187,16 +3187,19 @@ class GameObject_SHOTS_LASER
 
 		//	自機のショット状態を取得
 		_CONTEXT.beginPath();
-		_CONTEXT.lineWidth=this.lineWidth;
-		_CONTEXT.strokeStyle=this.strokeStyle;
+		_CONTEXT.lineWidth=_this.lineWidth;
+		_CONTEXT.strokeStyle=_this.strokeStyle;
 		_CONTEXT.lineCap='round';
 
 		//ショットの描画(１つのみ)
-		for(let _j=0;_j<this.shots.length;_j++){
+		for(let _j=0;_j<_this.shots.length;_j++){
 			let _t=_this.shots[_j];
 			if(!_t._shot&&!_t._shot_alive){continue;}
 
 //			console.log(_t._laser_MaxX);
+			//照射開始位置は、自機またはオプションの
+			//中心座標からとする。
+			//照射開始
 			_t.x=(function(_i){
 	  			if(_i>=_t._laser_MaxX-_pl._x){
 					//レーザーがキャンバスの右端に届いた時
@@ -3206,6 +3209,7 @@ class GameObject_SHOTS_LASER
 				return _i+_this.speed;
 			})(_t.x);
 
+			//照射終了
 			_t._sx=(function(_i){
 				if(!_t._shot){
 					//ショットを離した時
@@ -3218,7 +3222,7 @@ class GameObject_SHOTS_LASER
 				}
 
 				if(_t._laser_t<=_t.laser_time-200){return _i;}
-				//時間時間経過後に、照射終了カウント開始
+				//時間経過後に、照射終了カウント開始
 				_t._laser_ts+=(1000/_FPS);
 				//照射時間に達するまで照射を続ける
 				if(_t._laser_ts>_t.laser_time-200){
@@ -3231,21 +3235,23 @@ class GameObject_SHOTS_LASER
 			})(_t._sx);
 			_t.y=_pl._y;
 
+			if(_t.x<_t._sx){_t._init();return;}
+
 	//		console.log('_x+_t._sx:'+(_t._sx));
 	//		console.log('_x+_t._x:'+(_t.x));
 			_CONTEXT.beginPath();
-			_CONTEXT.strokeStyle=this.strokeStyle_u;
+			_CONTEXT.strokeStyle=_this.strokeStyle_u;
 			_CONTEXT.moveTo(_pl._x+_t._sx,_pl._y+1);
 			_CONTEXT.lineTo(_pl._x+_t.x,_pl._y+1);
 			_CONTEXT.stroke();
 
 			_CONTEXT.beginPath();
-			_CONTEXT.strokeStyle=this.strokeStyle;
+			_CONTEXT.strokeStyle=_this.strokeStyle;
 			_CONTEXT.moveTo(_pl._x+_t._sx,_pl._y);
 			_CONTEXT.lineTo(_pl._x+_t.x,_pl._y);
 			_CONTEXT.stroke();
 
-			this.setLaserLine(_t,
+			_this.setLaserLine(_t,
 								_pl._x+_t.x,
 								_pl._y,
 								_pl._x+_t._sx,

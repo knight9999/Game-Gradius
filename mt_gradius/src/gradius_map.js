@@ -459,7 +459,7 @@ class GameObject_MAP{
 	get_stage_map_pattern(_n){
 		return this.map_pettern;
 	}
-	getMapXToPx(_mx){return _mx*this.t;}
+	getMapXToPx(_mx){return (_mx*this.t)+this.initx-_SCROLL_POSITION;}
 	getMapYToPx(_my){return _my*this.t;}
 	getMapX(_x){return parseInt(
 					(_x+_SCROLL_POSITION-this.initx)
@@ -523,12 +523,6 @@ class GameObject_MAP{
 			let _pss=_ps.shots[_j];
 			//ショット中でない場合無視
 			if(!_pss._shot_alive){continue;}
-			//マップエリア外の場合無視
-			if(_pss.x<this.initx-_SCROLL_POSITION)
-								{continue;}
-			if(_pss.x>(this.mapdef[0].length*this.t)
-						+this.initx-_SCROLL_POSITION)
-										{continue;}
 			_ps.map_collition(_pss);
 		}//_j
 		}//_i

@@ -3111,7 +3111,7 @@ class GameObject_SHOTS_LASER
 		if(_s){
 			_e.collision(_t);
 			if(_e.isalive()){
-				this.setLaserMaxX(_e_1.x+(_e.img.width/2));
+				this.setLaserMaxX(_e_1.x+(_e.img.width/4));
 				_t._enemy=_e.id;
 			}else{
 				this.setLaserMaxX(_CANVAS.width);
@@ -3135,30 +3135,13 @@ class GameObject_SHOTS_LASER
 
 		let _map_x=_MAP.getMapX(_t.x+_pl._x);
 		let _map_y=_MAP.getMapY(_t.y);
-
-		if(_MAP.isMapCollision(_map_x-1,_map_y)){
-			if(_t.x<_MAP.t){
-//				console.log('_t.x:'+_t.x);
-				//オプションが壁に入り込んだ時のショットは、
-				//xをリセットさせ、オプションの位置から再発射
-				_t.x=0;
-				this.setLaserMaxX(_pl._x);
-				return;
-			}
-			this.setLaserMaxX(_t.x+_pl._x-_MAP.t);
+		if(_MAP.isMapCollision(_map_x,_map_y)){
+			this.setLaserMaxX(_MAP.getMapXToPx(_map_x));
 			return;
 		}
 
-		if(_MAP.isMapCollision(_map_x,_map_y)){
-			if(_t.x<_MAP.t){
-//				console.log('_t.x:'+_t.x);
-				//オプションが壁に入り込んだ時のショットは、
-				//xをリセットさせ、オプションの位置から再発射
-				_t.x=0;
-				this.setLaserMaxX(_pl._x);
-				return;
-			}
-			this.setLaserMaxX(_t.x+_pl._x-_MAP.t);
+		if(_MAP.isMapCollision(_map_x-1,_map_y)){
+			this.setLaserMaxX(_MAP.getMapXToPx(_map_x));
 			return;
 		}
 
@@ -3205,10 +3188,12 @@ class GameObject_SHOTS_LASER
 					//レーザーがキャンバスの右端に届いた時
 					_t._laser_t+=(1000/_FPS);
 					return _t._laser_MaxX-_pl._x;
+//					return _t._laser_MaxX;
 				}
 				return _i+_this.speed;
 			})(_t.x);
 
+//			console.log(_t._sx)
 			//照射終了
 			_t._sx=(function(_i){
 				if(!_t._shot){
@@ -3235,7 +3220,7 @@ class GameObject_SHOTS_LASER
 			})(_t._sx);
 			_t.y=_pl._y;
 
-			if(_t.x<_t._sx){_t._init();return;}
+			if(_t.x<_t._sx||Math.abs(_t.x-_t._sx)<50){return;}
 
 	//		console.log('_x+_t._sx:'+(_t._sx));
 	//		console.log('_x+_t._x:'+(_t.x));

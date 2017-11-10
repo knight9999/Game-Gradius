@@ -267,6 +267,7 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'_mx':function(_j){return _j;},
 			'_my':function(_i){return _i;}
 		}
+
 	},
 	'_enemies':{}
 },//_THEME2
@@ -327,7 +328,30 @@ const _MAP_THEME={//_parts要素番号0は空文字
 		}
 	},
 	'_enemies':{}
-}//_THEME3
+},//_THEME3
+'_THEME4':{//なし
+	'_p':{
+		'A':{
+			'_o':_CANVAS_IMGS['map_c_A'],
+			'_s':'1',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'B':{
+			'_o':_CANVAS_IMGS['map_m_A'],
+			'_s':'0000000000,1111111111,1111111111,0000000000',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'C':{
+			'_o':_CANVAS_IMGS['map_m_B'],
+			'_s':'0000000000,1111111111,1111111111,0000000000',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		}
+	},
+	'_enemies':{}
+},//_THEME4
 }//_MAP_THEME
 
 //各種ステージ定義

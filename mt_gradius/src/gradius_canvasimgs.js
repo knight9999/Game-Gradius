@@ -307,6 +307,11 @@ const _CANVAS_IMGS={
 	'map_c_A':
   		{src:'images/gradius_map_c_A.png',rate:1,obj:new Image()},
 
+	'map_m_A':
+		{src:'images/gradius_map_m_A.png',rate:0.5,obj:new Image()},
+	'map_m_B':
+		{src:'images/gradius_map_m_B.png',rate:0.5,obj:new Image()},
+
 	'map_f_A':
   		{src:'images/gradius_map_f_A.png',rate:1,obj:new Image()},
 	'map_f_B':

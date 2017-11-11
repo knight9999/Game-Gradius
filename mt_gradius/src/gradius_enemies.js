@@ -11,8 +11,66 @@ const _DEF_DIFFICULT=[
 	{_ENEMY_SHOT_RATE:0.001,_ENEMY_SHOT_SPEED:2,_ENEMY_SPEED:1},
 	{_ENEMY_SHOT_RATE:0.004,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
 	{_ENEMY_SHOT_RATE:0.1,_ENEMY_SHOT_SPEED:4,_ENEMY_SPEED:2}
-]
+];
 let _ENEMY_DIFFICULT=0;//主にデバッグ用。
+
+const _ENEMY_DEF_ANI_COL={//衝突アニメーション定義
+'t0':{
+	'intv':5,//アニメ間隔（数字が短いほどコマ送りが速い）
+	'imgs':[//アニメ画像
+		{img:_CANVAS_IMGS['enemy_collapes1'].obj,scale:0.3},
+		{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.3},
+		{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.3},
+		{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.2},
+		{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.2}
+	]
+},//t0
+'t1':{
+	'intv':5,
+	'imgs':[
+		{img:_CANVAS_IMGS['enemy_collapes12'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes13'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes13'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes12'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes11'].obj,scale:1.0}
+	]
+},//t1
+'t2':{
+	'intv':3,
+	'imgs':[
+		{img:_CANVAS_IMGS['enemy_collapes21'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes22'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes23'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes24'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes23'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes22'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes21'].obj,scale:1.0}
+	]
+},//t2
+'t8':{
+	'intv':5,
+	'imgs':[
+		{img:_CANVAS_IMGS['enemy_collapes81'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes82'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes83'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes84'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes83'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes82'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes81'].obj,scale:1.0}
+	]
+},//t8
+'t9':{
+	'intv':5,
+	'imgs':[
+		{img:_CANVAS_IMGS['enemy_collapes91'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes92'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes93'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes94'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes95'].obj,scale:1.0},
+		{img:_CANVAS_IMGS['enemy_collapes96'].obj,scale:1.0}
+	]
+}//t9
+};
 
 class GameObject_ENEMY{
 	constructor(_o,_x,_y){
@@ -41,45 +99,12 @@ class GameObject_ENEMY{
 		_this.haspc=false;
 		_this.showedpc=false;//パワーカプセル表示完了
 
-		_this._col_ani_c=0;
-		_this.col_ani=[//衝突時のアニメ定義
-			{img:_CANVAS_IMGS['enemy_collapes1'].obj,scale:0.3},
-			{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.3},
-			{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.3},
-			{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.2},
-			{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.2}
-		];
+		_this.col_ani_c=0;
+		_this.col_imgs=_ENEMY_DEF_ANI_COL.t0.imgs;//衝突アニメ画像
+		_this.col_intv=_ENEMY_DEF_ANI_COL.t0.intv;//衝突アニメ間隔
 
-		_this._col_ani2_c=0;
-		_this.col_ani2=[//衝突時のアニメ定義
-			{img:_CANVAS_IMGS['enemy_collapes12'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes13'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes13'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes12'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes11'].obj,scale:1.0}
-		];
-
-		this._col_ani2_c=0;
-		this.col_ani2=[//衝突時のアニメ定義
-			{img:_CANVAS_IMGS['enemy_collapes12'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes13'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes13'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes12'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes11'].obj,scale:1.0}
-		];
-
-		this._col_ani9_c=0;
-		this.col_ani9=[//衝突時のアニメ定義
-			{img:_CANVAS_IMGS['enemy_collapes91'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes92'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes93'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes94'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes95'].obj,scale:1.0},
-			{img:_CANVAS_IMGS['enemy_collapes96'].obj,scale:1.0}
-		];
-
-		this._col_pc_c=0;
-		this.col_pc=[//パワーカプセルのアニメ定義
+		_this._col_pc_c=0;
+		_this.col_pc=[//パワーカプセルのアニメ定義
 			{img:_CANVAS_IMGS['pc1'].obj,scale:0.6},
 			{img:_CANVAS_IMGS['pc2'].obj,scale:0.6},
 			{img:_CANVAS_IMGS['pc3'].obj,scale:0.5},
@@ -87,31 +112,32 @@ class GameObject_ENEMY{
 			{img:_CANVAS_IMGS['pc5'].obj,scale:0.1}
 		];
 
-		this.col_type=this.col_ani;//上記衝突表示フラグ
 	}
 	init(){
         _ENEMIES=new Array();
 	}
-	ani_col(){
+	ani_col(_x,_y){
 		let _this=this;
 		_this.x-=_BACKGROUND_SPEED;
+		_x=_x||0;
+		_y=_y||0;
 		//大きめな爆発
-		if(_this._col_ani_c
-				>=_this.col_type.length*5-1){
+		if(_this.col_ani_c
+				>=_this.col_imgs.length*_this.col_intv-1){
 			//アニメーションが終わったら終了
 			return;
 		}
-
-		let _c=parseInt(_this._col_ani_c/5);
-		let _a=_this.col_type[_c];
+		let _a=_this.col_imgs[
+				parseInt(_this.col_ani_c/_this.col_intv)
+				];
 		_CONTEXT.drawImage(
 			_a.img,
-			_this.x,
-			_this.y,
+			_this.x+_x,
+			_this.y+_y,
 			_a.img.width*_a.scale,
 			_a.img.height*_a.scale
 		);
-		_this._col_ani_c++;
+		_this.col_ani_c++;
 	}
 	collision(){
 		this._status-=1;
@@ -197,10 +223,13 @@ class GameObject_ENEMY{
 		);
 		_CONTEXT.restore();
 	}
-	showCollapes(){
+	showCollapes(_x,_y){
 		let _this=this;
 		//敵を倒した場合
-		if(_this.haspc&&!_this.showedpc){
+		if(_this.haspc){
+			if(_this.showedpc){
+				return;
+			}
 			//パワーカプセルを持ってる場合は、
 			//パワーカプセルを表示
 			_POWERCAPSELLS.push(
@@ -211,27 +240,26 @@ class GameObject_ENEMY{
 			return;
 		}
 		//爆発して終了
-		_this.ani_col();
-		return;
-
+		_this.ani_col(_x,_y);
 	}
 	move(){
-		if(this.x+this.img.width<0){this.init();return;}
+		let _this=this;
+		if(_this.x+_this.img.width<0){_this.init();return;}
 		if(_this._status<=0){
 			_this.showCollapes();
 			return;
 		}
 
-		this.x-=_BACKGROUND_SPEED;
+		_this.x-=_BACKGROUND_SPEED;
 		_CONTEXT.drawImage(
-			this.img,
-			this.x,
-			this.y,
-			this.img.width,
-			this.img.height
+			_this.img,
+			_this.x,
+			_this.y,
+			_this.img.width,
+			_this.img.height
 		);
 		//弾の発射
-		this.shot();
+		_this.shot();
 
 	}
 }
@@ -243,6 +271,9 @@ class ENEMY_a extends GameObject_ENEMY{
 		_this._status=1;
         _this.direct=_d||_this._DEF_DIR._U;
         _this.defimg=[_CANVAS_IMGS['enemy_a_1'].obj,_CANVAS_IMGS['enemy_a_2'].obj];
+
+		_this.col_imgs=_ENEMY_DEF_ANI_COL.t2.imgs;//衝突アニメ画像
+		_this.col_intv=_ENEMY_DEF_ANI_COL.t2.intv;//衝突アニメ間隔
 	}
 	setDrawImage(){
 		let _this=this;
@@ -317,7 +348,10 @@ class ENEMY_c extends GameObject_ENEMY{
 		_this._shot=false;
 		_this._status=2;//ライフステータス
         _this.direct=_d||_this._DEF_DIR._U;
-		_this.col_type=this.col_ani2;//上記衝突表示フラグ
+
+		_this.col_imgs=_ENEMY_DEF_ANI_COL.t1.imgs;//衝突アニメ画像
+		_this.col_intv=_ENEMY_DEF_ANI_COL.t1.intv;//衝突アニメ間隔
+
 		_this.speed=
 			_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SPEED;
 		_this._c_shotstep=0;
@@ -332,7 +366,7 @@ class ENEMY_c extends GameObject_ENEMY{
 			];
 		_this._c_walk=0;
 		let _p=_PLAYERS_MAIN;
-
+		
         _this._ene_status={
 			'_st1':function(){//walk
 				if(_this._shot===true){return;}
@@ -521,8 +555,8 @@ class ENEMY_d extends GameObject_ENEMY{
 			{img:_CANVAS_IMGS['enemy_d_3'].obj,scale:1},
 			{img:_CANVAS_IMGS['enemy_d_2'].obj,scale:1}
 		];
-		_this.col_type=this.col_ani;
-
+		_this.col_imgs=_ENEMY_DEF_ANI_COL.t0.imgs;//衝突アニメ画像
+		_this.col_intv=_ENEMY_DEF_ANI_COL.t0.intv;//衝突アニメ間隔
 	}
 	move(){
 		let _this=this;
@@ -563,17 +597,13 @@ class ENEMY_d extends GameObject_ENEMY{
 	}
 }
 
-class ENEMY_e extends GameObject_ENEMY{
+class ENEMY_e extends ENEMY_d{
 	constructor(_x,_y,_d){
-		super(
-			_CANVAS_IMGS['enemy_e_1'].obj,_x,_y
-		)
-		this._status=1;
-		this.haspc=true;
-        let _t=this;
-
-		this._col_c=0;
-		this.col=[//アニメ定義
+		super(_x,_y,_d);
+		let _this=this;
+		_this.haspc=true;
+		_this._col_c=0;
+		_this.col=[//アニメ定義
 			{img:_CANVAS_IMGS['enemy_e_1'].obj,scale:1},
 			{img:_CANVAS_IMGS['enemy_e_2'].obj,scale:1},
 			{img:_CANVAS_IMGS['enemy_e_3'].obj,scale:1},
@@ -581,49 +611,7 @@ class ENEMY_e extends GameObject_ENEMY{
 			{img:_CANVAS_IMGS['enemy_e_3'].obj,scale:1},
 			{img:_CANVAS_IMGS['enemy_e_2'].obj,scale:1}
 		];
-		this.col_type=this.col_ani;
-
-	}
-	move(){
-		let _this=this;
-		if(_this.x+_this.img.width<0){
-			_this._status=0;
-			return;
-		}
-		if(_this._status<=0){
-			_this.showCollapes();
-			return;
-		}
-
-		_this.x-=(function(_t){
-			return (_t.x>_CANVAS.width)
-				?_MAPDEFS[_MAP_PETTERN]._speed
-				:_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SPEED*5;
-		}(_this));
-		if(_this.x+_this.img.width<0){
-			_this._status=0;
-			return;
-		}
-
-		let _d=_SCROLL_POSITION*0.5;//radのスピード
-		let _v=2*Math.cos(_d*Math.PI/180);//縦幅調整
-		_this.y+=_v;
-
-		_this.img=(function(_t){
-			_t._col_c=
-				(_t._col_c>=(_t.col.length*5)-1)?0:_t._col_c+1;
-			return _t.col[parseInt(_t._col_c/5)].img;
-		})(_this)
-
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.x,
-			_this.y,
-			_this.img.width,
-			_this.img.height
-		);
-		//弾の発射
-		_this.shot();
+		_this.defimg=_this.col;		
 	}
 }
 
@@ -646,7 +634,9 @@ class ENEMY_f extends GameObject_ENEMY{
 				{img:_CANVAS_IMGS['enemy_f_3'].obj,scale:1},
 				{img:_CANVAS_IMGS['enemy_f_4'].obj,scale:1}
 			];
-		_this.col_type=_this.col_ani;
+
+		_this.col_imgs=_ENEMY_DEF_ANI_COL.t2.imgs;//衝突アニメ画像
+		_this.col_intv=_ENEMY_DEF_ANI_COL.t2.intv;//衝突アニメ間隔
 	}
 	getDir(){
 		return (this.x>_CANVAS.width/2)?-1:0.5;
@@ -774,7 +764,6 @@ class ENEMY_m extends GameObject_ENEMY{
 		_this._status=4;
         _this.direct=_d||_this._DEF_DIR._U;//向きの設定		
 		_this.getscore=200;
-		_this.col_type=this.col_ani2;//上記衝突表示フラグ
 		_this._col_c=0;
 
 		_this._isopen=false;
@@ -799,27 +788,9 @@ class ENEMY_m extends GameObject_ENEMY{
 			{img:_CANVAS_IMGS['enemy_m_6'].obj,scale:1},
 			{img:_CANVAS_IMGS['enemy_m_5'].obj,scale:1}
 		];
-	}
-	ani_col(){
-		let _this=this;
-		_this.x-=_BACKGROUND_SPEED;
-		//大きめな爆発
-		if(_this._col_ani_c
-				>=_this.col_type.length*5-1){
-			//アニメーションが終わったら終了
-			return;
-		}
 
-		let _c=parseInt(_this._col_ani_c/5);
-		let _a=_this.col_type[_c];
-		_CONTEXT.drawImage(
-			_a.img,
-			_this.x,
-			_this.y-((_this.direct===_this._DEF_DIR._D)?20:0),
-			_a.img.width*_a.scale,
-			_a.img.height*_a.scale
-		);
-		_this._col_ani_c++;
+		_this.col_imgs=_ENEMY_DEF_ANI_COL.t1.imgs;//衝突アニメ画像
+		_this.col_intv=_ENEMY_DEF_ANI_COL.t1.intv;//衝突アニメ間隔
 	}
 	move(){
 		let _this=this;
@@ -828,7 +799,10 @@ class ENEMY_m extends GameObject_ENEMY{
 			return;
 		}
 		if(_this._status<=0){
-			_this.showCollapes();			
+			_this.showCollapes(
+				0,
+				(_this.direct===_this._DEF_DIR._U)?0:-_MAP.t
+			);			
 			return;
 		}
 
@@ -895,7 +869,9 @@ class ENEMY_m_small extends GameObject_ENEMY{
 			{img:_CANVAS_IMGS['enemy_m_16'].obj,scale:1},
 			{img:_CANVAS_IMGS['enemy_m_17'].obj,scale:1}
 		];
-		_this.col_type=this.col_ani;
+
+		_this.col_imgs=_ENEMY_DEF_ANI_COL.t2.imgs;//衝突アニメ画像
+		_this.col_intv=_ENEMY_DEF_ANI_COL.t2.intv;//衝突アニメ間隔
  
 		_this._change=false;
 		_this._moveX=0;
@@ -1024,13 +1000,17 @@ class ENEMY_o extends GameObject_ENEMY{
 class ENEMY_o_small extends GameObject_ENEMY{
     constructor(_d,_x,_y){
 		super(_d,_x,_y)
-		this._status=1;
-		this.getscore=100;
-		this.speedX=
+		let _this=this;
+		_this._status=1;
+		_this.getscore=100;
+		_this.speedX=
 			Math.random()*(10-2)+2;
-		this.flagX=Math.random()>0.5?1:-1;
-		this.speedY=Math.random()/1000;
-		this._v=parseInt(Math.random()*5)-10;
+		_this.flagX=Math.random()>0.5?1:-1;
+		_this.speedY=Math.random()/1000;
+		_this._v=parseInt(Math.random()*5)-10;
+
+		_this.col_imgs=_ENEMY_DEF_ANI_COL.t2.imgs;//衝突アニメ画像
+		_this.col_intv=_ENEMY_DEF_ANI_COL.t2.intv;//衝突アニメ間隔
 	}
 	map_collition(){
 		let _this=this;
@@ -1223,15 +1203,18 @@ class ENEMY_p extends GameObject_ENEMY{
 class ENEMY_p_small extends GameObject_ENEMY{
     constructor(_d,_x,_y){
 		super(_d,_x,_y);
-		this._status=10;
-		this.getscore=500;
-		this.speedx=
+		let _this=this;
+		_this._status=10;
+		_this.getscore=500;
+		_this.speedx=
 			_MAPDEFS[_MAP_PETTERN]._speed
 			*((Math.random()>0.5)?1:-1);
-		this.speedy=
+		_this.speedy=
 			_MAPDEFS[_MAP_PETTERN]._speed
 			*((Math.random()>0.5)?1:-1);
-		this.col_type=this.col_ani2;
+
+		_this.col_imgs=_ENEMY_DEF_ANI_COL.t1.imgs;//衝突アニメ画像
+		_this.col_intv=_ENEMY_DEF_ANI_COL.t1.intv;//衝突アニメ間隔
 	}
 	collision(){
 		//衝突レーザー、リップルレーザーの判定設定
@@ -1329,12 +1312,13 @@ class ENEMY_BOSS_BOGCORE
 			extends GameObject_ENEMY_BOSS{
 	constructor(_x,_y){
 		super(_CANVAS_IMGS['enemy_z'].obj,_x,_y);
-		this._status=50;
-		this.speed=3;
-		this.getscore=10000;
-		this.img=_CANVAS_IMGS['enemy_z'].obj;
-		this.wall_col={_x:0,_y:0};
-		this.wall=[
+		let _this=this;
+		_this._status=50;
+		_this.speed=3;
+		_this.getscore=10000;
+		_this.img=_CANVAS_IMGS['enemy_z'].obj;
+		_this.wall_col={_x:0,_y:0};
+		_this.wall=[
 			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:40,isalive:true,x:65,y:7},
 			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:30,isalive:true,x:55,y:7},
 			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:20,isalive:true,x:45,y:7},
@@ -1343,8 +1327,8 @@ class ENEMY_BOSS_BOGCORE
 		];
 
 		//攻撃無効を表示させる画像
-		this.c_z4_ani=30;
-		this.z4_ani=[
+		_this.c_z4_ani=30;
+		_this.z4_ani=[
 			{img:_CANVAS_IMGS['enemy_z_4_1'].obj,al:1},
 			{img:_CANVAS_IMGS['enemy_z_4_2'].obj,al:0.8},
 			{img:_CANVAS_IMGS['enemy_z_4_3'].obj,al:0.6},
@@ -1352,25 +1336,30 @@ class ENEMY_BOSS_BOGCORE
 			{img:_CANVAS_IMGS['enemy_z_4_5'].obj,al:0.2}
 		];
 
-		this.is_ani_col=false;
-		this.tid=null;
+		_this.is_ani_col=false;
+		_this.tid=null;
 
-		this.is_done_move_init=false;
-		this.is_able_collision=false;
-		this.init();
+		_this.is_done_move_init=false;
+		_this.is_able_collision=false;
+		_this.init();
+
+		_this.col_ani_c=0;
+		_this.col_ani=_ENEMY_DEF_ANI_COL.t0.imgs;
+		_this.col_ani9_c=0;
+		_this.col_ani9=_ENEMY_DEF_ANI_COL.t9.imgs;
 	}
 	ani_col(){
 		let _this=this;
 		if(!_this.is_ani_col){return;}
-		let _c=_this._col_ani_c;
+		let _c=_this.col_ani_c;
 		if(_c>=_this.col_ani.length*3-1){
 			//アニメーションが終わったら終了
-			_this._col_ani_c=0;
+			_this.col_ani_c=0;
 			_this.is_ani_col=false;
 			return;
 		}
 
-		let _a=_this.col_ani[parseInt(_this._col_ani_c/3)];
+		let _a=_this.col_ani[parseInt(_this.col_ani_c/3)];
 		let _ec=_this.getEnemyCenterPosition();
 		_CONTEXT.drawImage(
 			_a.img,
@@ -1379,11 +1368,11 @@ class ENEMY_BOSS_BOGCORE
 			_a.img.width*_a.scale,
 			_a.img.height*_a.scale
 		);
-		_this._col_ani_c++;
+		_this.col_ani_c++;
 	}
 	ani_col2(){
 		let _this=this;
-		let _c=_this._col_ani9_c;
+		let _c=_this.col_ani9_c;
 		//大きめな爆発
 		if(_c>=_this.col_ani9.length*4-1){
 			//アニメーションが終わったら終了
@@ -1399,7 +1388,7 @@ class ENEMY_BOSS_BOGCORE
 			_a.img.width*_a.scale,
 			_a.img.height*_a.scale
 		);
-		this._col_ani9_c++;
+		_this.col_ani9_c++;
 	}
 	collision(_t){
 		let _this=this;

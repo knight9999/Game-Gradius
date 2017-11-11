@@ -271,6 +271,26 @@ const _CANVAS_IMGS={
   		{src:'images/gradius_enemy_collapes12.png',rate:0.2,obj:new Image()},
 	'enemy_collapes13':
   		{src:'images/gradius_enemy_collapes13.png',rate:0.2,obj:new Image()},
+
+	'enemy_collapes21':
+  		{src:'images/gradius_enemy_collapes21.png',rate:0.22,obj:new Image()},
+	'enemy_collapes22':
+  		{src:'images/gradius_enemy_collapes22.png',rate:0.22,obj:new Image()},
+	'enemy_collapes23':
+  		{src:'images/gradius_enemy_collapes23.png',rate:0.22,obj:new Image()},
+	'enemy_collapes24':
+  		{src:'images/gradius_enemy_collapes24.png',rate:0.22,obj:new Image()},
+
+	'enemy_collapes81':
+  		{src:'images/gradius_enemy_collapes81.png',rate:0.2,obj:new Image()},
+	'enemy_collapes82':
+  		{src:'images/gradius_enemy_collapes82.png',rate:0.2,obj:new Image()},
+	'enemy_collapes83':
+  		{src:'images/gradius_enemy_collapes83.png',rate:0.2,obj:new Image()},
+	'enemy_collapes84':
+  		{src:'images/gradius_enemy_collapes84.png',rate:0.2,obj:new Image()},
+
+
 	'enemy_collapes91':
  		{src:'images/gradius_enemy_collapes91.png',rate:0.2,obj:new Image()},
 	'enemy_collapes92':

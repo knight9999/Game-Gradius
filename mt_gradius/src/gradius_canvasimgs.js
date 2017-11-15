@@ -195,10 +195,10 @@ const _CANVAS_IMGS={
    		 rate:0.4,
    		 obj:new Image()},
 
-	'enemy_a_1':{src:'images/gradius_enemy_a_1.png',rate:0.52,obj:new Image()},
-	'enemy_a_2':{src:'images/gradius_enemy_a_2.png',rate:0.52,obj:new Image()},
-	'enemy_b_1':{src:'images/gradius_enemy_b_1.png',rate:0.52,obj:new Image()},
-	'enemy_b_2':{src:'images/gradius_enemy_b_2.png',rate:0.52,obj:new Image()},
+	'enemy_a_1':{src:'images/gradius_enemy_a_1.png',rate:0.55,obj:new Image()},
+	'enemy_a_2':{src:'images/gradius_enemy_a_2.png',rate:0.55,obj:new Image()},
+	'enemy_b_1':{src:'images/gradius_enemy_b_1.png',rate:0.55,obj:new Image()},
+	'enemy_b_2':{src:'images/gradius_enemy_b_2.png',rate:0.55,obj:new Image()},
 
 	'enemy_c_1':{src:'images/gradius_enemy_c_1.png',rate:0.4,obj:new Image()},
 	'enemy_c_2':{src:'images/gradius_enemy_c_2.png',rate:0.4,obj:new Image()},
@@ -250,6 +250,15 @@ const _CANVAS_IMGS={
 	'enemy_p_3':{src:'images/gradius_enemy_p_3.png',rate:0.30,obj:new Image()},
 	'enemy_p_4':{src:'images/gradius_enemy_p_4.png',rate:0.30,obj:new Image()},
 	'enemy_p_5':{src:'images/gradius_enemy_p_5.png',rate:0.30,obj:new Image()},
+
+	'enemy_m_a_1':{src:'images/gradius_enemy_m_a_1.png',rate:0.25,obj:new Image()},
+	'enemy_m_a_2':{src:'images/gradius_enemy_m_a_2.png',rate:0.25,obj:new Image()},
+	'enemy_m_b_1':{src:'images/gradius_enemy_m_b_1.png',rate:0.25,obj:new Image()},
+	'enemy_m_b_2':{src:'images/gradius_enemy_m_b_2.png',rate:0.25,obj:new Image()},
+	'enemy_m_z':{src:'images/gradius_enemy_m_z.png',rate:0.25,obj:new Image()},
+
+	'enemy_m_y_1':{src:'images/gradius_enemy_m_y_1.png',rate:0.5,obj:new Image()},
+	'enemy_m_y_2':{src:'images/gradius_enemy_m_y_2.png',rate:0.5,obj:new Image()},
 
 	'enemy_z':{src:'images/gradius_enemy_z_core.png',rate:0.60,obj:new Image()},
 	'enemy_z_1':{src:'images/gradius_enemy_z_core_1.png',rate:0.60,obj:new Image()},

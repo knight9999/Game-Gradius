@@ -133,8 +133,10 @@ _setInitMap:function(_m){
 					+'draggable="true">';
 			if(_k.match(_MAP.collision_enemies)!==null){
 				//敵の表示
-				let _o=_MAP_ENEMIES._ENEMIES[_k]._o.obj;
-				_s+='<img width="'+parseInt(_o.width*0.67)+'" height="'+parseInt(_o.height*0.67)+'" src="'+_o.src+'">';
+				console.log(_k)
+				let _o=_MAP_THEME[_m._theme]._enemies[_k]._o.obj;
+				let _st=_MAP_THEME[_m._theme]._enemies[_k]._st;
+				_s+='<img'+((_st==='')?'':' style="'+_st+'"')+' width="'+parseInt(_o.width*0.8)+'" height="'+parseInt(_o.height*0.8)+'" src="'+_o.src+'">';
 			}else if(_k.match(_MAP.collision_map)!==null){
 				//マップの表示
 				let _o=_MAP_THEME[_m._theme]._p[_k]._o.obj;
@@ -158,11 +160,11 @@ _setInitPartsBlocksWrapper:function(_m){
 	let _mo=_m._map;
 	let _str='';
 	//ENEMY
-	for(let [_k,_v] of Object.entries(_MAP_ENEMIES._ENEMIES)){
+	for(let [_k,_v] of Object.entries(_MAP_THEME[_m._theme]._enemies)){
 		_str+=
 			'<div class="parts_block_wrapper" data-val="'+_k+'">'+
 			'<div class="text">enemy '+_k+'</div>'+
-			'<div class="parts_block"><img src="'+_v._o.src+'"></div>'+
+			'<div class="parts_block"><img'+((_v._st==='')?'':' style="'+_v._st+'"')+' src="'+_v._o.src+'"></div>'+
 			'</div><!-- /.parts_block_wrapper -->'
 	}
     document
@@ -526,9 +528,9 @@ _f_as_drop:function(e){
 		$_ect.appendChild($_cn);
 		if(_o.match(_MAP.collision_enemies)!==null){
 			//敵の表示
-			let _obj=_MAP_ENEMIES._ENEMIES[_o]._o.obj
-			$_cn.children[0].width=parseInt(_obj.width*0.67);
-			$_cn.children[0].height=parseInt(_obj.height*0.67);
+			let _obj=_MAP_THEME[_GAME_STAGEEDIT._theme]._enemies[_o]._o.obj;
+			$_cn.children[0].width=parseInt(_obj.width*0.8);
+			$_cn.children[0].height=parseInt(_obj.height*0.8);
 		}
 		if(_o.match(_MAP.collision_map)!==null){
 			//MAPの表示

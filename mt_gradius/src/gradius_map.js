@@ -15,7 +15,11 @@ _DEF_DIR:{//向き
 	_U:0,//上
 	_D:1,//下
 	_R:2,//右
-	_L:3//左
+	_L:3,//左
+	_LU:4,//左上
+	_LD:5,//左下
+	_RU:6,//右上
+	_RD:7//右下
 },//_DEF_DIR
 _setDir:function(_mx,_my){
 	let _this=this;
@@ -32,30 +36,40 @@ _ENEMIES:{
 		'_f':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_a(_mx,_my,_md));
 			},
-		'_o':_CANVAS_IMGS['enemy_a_1']
+		'_st':'',
+		'_s':'0',//MAP衝突用ビット
+		'_o':_CANVAS_IMGS['enemy_a_1']//画像オブジェクト
 	},
 	'b':{
 		'_f':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_b(_mx,_my,_md));
 			},
+		'_st':'',
+		'_s':'0',
 		'_o':_CANVAS_IMGS['enemy_b_1']
 	},
 	'c':{
 		'_f':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_c(_mx,_my,_md));
 			},
+		'_st':'',
+		'_s':'0',
 		'_o':_CANVAS_IMGS['enemy_c_1']
 	},
 	'd':{
 		'_f':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
 			},
+		'_st':'',
+		'_s':'0',
 		'_o':_CANVAS_IMGS['enemy_d_1']
 	},
 	'e':{
 		'_f':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
 			},
+		'_st':'',
+		'_s':'0',
 		'_o':_CANVAS_IMGS['enemy_e_1']
 	},
 	'f':{
@@ -65,6 +79,8 @@ _ENEMIES:{
 				:_MAP_ENEMIES._DEF_DIR._D;
 			_ENEMIES.push(new ENEMY_f(_mx,_my,_md));
 			},
+		'_st':'',
+		'_s':'0',	
 		'_o':_CANVAS_IMGS['enemy_f_1']
 	},
 	'g':{
@@ -75,24 +91,32 @@ _ENEMIES:{
 
 			_ENEMIES.push(new ENEMY_g(_mx,_my,_md));
 			},
+		'_st':'',
+		'_s':'0',	
 		'_o':_CANVAS_IMGS['enemy_g_1']
 	},
 	'm':{
 		'_f':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_m(_mx,_my,_md));
 			},
+		'_st':'',
+		'_s':'0',	
 		'_o':_CANVAS_IMGS['enemy_m_1']
 	},
 	'n':{
 		'_f':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_n(_mx,_my));
 			},
+		'_st':'',
+		'_s':'0',		
 		'_o':_CANVAS_IMGS['enemy_o_1']
 	},
 	'o':{
 		'_f':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_o(_mx,_my));
 			},
+		'_st':'',
+		'_s':'0',		
 		'_o':_CANVAS_IMGS['enemy_o_1']
 	},
 	'p':{
@@ -100,14 +124,10 @@ _ENEMIES:{
 			let _o=new ENEMY_p(_mx,_my);
 			_ENEMIES.push(_o);
 			_ENEMIES_BOUNDS.push(_o);			
-		},
-		'_o':_CANVAS_IMGS['enemy_p_1']
-	},
-	'z':{
-		'_f':function(_mx,_my,_md){
-			_ENEMIES.push(new ENEMY_BOSS_BOGCORE(_x,_y,_d));
 			},
-		'_o':_CANVAS_IMGS['enemy_z']
+		'_st':'',
+		'_s':'000,000,000',		
+		'_o':_CANVAS_IMGS['enemy_p_1']
 	}
 
 }//_ENEMIES
@@ -123,7 +143,7 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'_my':function(_i){return _i;}
 		}
 	},
-	'_enemies':{}
+	'_enemies':_MAP_ENEMIES._ENEMIES
 },//_THEME1
 '_THEME2':{//大地
 	'_p':{
@@ -267,8 +287,9 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'_mx':function(_j){return _j;},
 			'_my':function(_i){return _i;}
 		}
+
 	},
-	'_enemies':{}
+	'_enemies':_MAP_ENEMIES._ENEMIES
 },//_THEME2
 '_THEME3':{//クリスタル
 	'_p':{
@@ -277,57 +298,171 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'_s':'1',
 			'_mx':function(_j){return _j;},
 			'_my':function(_i){return _i;}
-		},
-		'H':{
-			'_o':_CANVAS_IMGS['map_f_H'],
-			'_s':
-			'00000000000000000000,'+
-			'00000111111111111110,'+
-			'00000111111110000000,'+
-			'00000000011110000000,'+
-			'00000000001100000000,'+
-			'00000000001100000000,'+
-			'00000000001100000000,'+
-			'11111111111111111100,'+
-			'01111111111111111100,'+
-			'00000000011000000000,'+
-			'00000000011000000000,'+
-			'00000000111000000000,'+
-			'00000001111110000000',
+		}
+	},
+	'_enemies':_MAP_ENEMIES._ENEMIES
+},//_THEME3
+'_THEME4':{//なし
+	'_p':{
+		'A':{
+			'_o':_CANVAS_IMGS['map_c_A'],
+			'_s':'1',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		}
+
+	},
+	'_enemies':_MAP_ENEMIES._ENEMIES
+},//_THEME4
+'_THEME5':{//なし
+	'_p':{
+		'A':{
+			'_o':_CANVAS_IMGS['map_c_A'],
+			'_s':'1',
 			'_mx':function(_j){return _j;},
 			'_my':function(_i){return _i;}
 		},
-		'M':{
-			'_o':_CANVAS_IMGS['map_f_M'],
-			'_s':
-			'0111,1111',
+		'B':{
+			'_o':_CANVAS_IMGS['map_m_A'],
+			'_s':'0000000000,1111111111,1111111111,0000000000',
 			'_mx':function(_j){return _j;},
 			'_my':function(_i){return _i;}
 		},
-		'N':{
-			'_o':_CANVAS_IMGS['map_f_N'],
-			'_s':
-			'1111,0111',
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
-		},
-		'O':{
-			'_o':_CANVAS_IMGS['map_f_O'],
-			'_s':
-			'1111,1110',
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
-		},
-		'P':{
-			'_o':_CANVAS_IMGS['map_f_P'],
-			'_s':
-			'1110,1111',
+		'C':{
+			'_o':_CANVAS_IMGS['map_m_B'],
+			'_s':'0000000000,1111111111,1111111111,0000000000',
 			'_mx':function(_j){return _j;},
 			'_my':function(_i){return _i;}
 		}
 	},
-	'_enemies':{}
-}//_THEME3
+	'_enemies':{
+		'a':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_a(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',//MAP衝突用ビット
+			'_o':_CANVAS_IMGS['enemy_a_1']//画像オブジェクト
+		},
+		'b':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_b(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_b_1']
+		},
+		'c':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_c(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_c_1']
+		},
+		'd':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_d_1']
+		},
+		'e':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_e_1']
+		},
+		'f':{
+			'_f':function(_mx,_my,_md){
+				_md=(_my<_CANVAS.height/2)
+					?_MAP_ENEMIES._DEF_DIR._U
+					:_MAP_ENEMIES._DEF_DIR._D;
+				_ENEMIES.push(new ENEMY_f(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',	
+			'_o':_CANVAS_IMGS['enemy_f_1']
+		},
+		'g':{
+			'_f':function(_mx,_my,_md){
+				_md=(_my<_CANVAS.height/2)
+					?_MAP_ENEMIES._DEF_DIR._U
+					:_MAP_ENEMIES._DEF_DIR._D;
+	
+				_ENEMIES.push(new ENEMY_g(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',	
+			'_o':_CANVAS_IMGS['enemy_g_1']
+		},
+		'm':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_m(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',	
+			'_o':_CANVAS_IMGS['enemy_m_1']
+		},
+		'l':{
+			'_f':function(_mx,_my,_md){
+				let _o=new ENEMY_q(_mx,_my,_MAP_ENEMIES._DEF_DIR._U);
+				_ENEMIES.push(_o);
+			},
+			'_st':'transform:scale(1,-1);',
+			'_s':'1111,0110,0011,0000',
+			'_o':_CANVAS_IMGS['enemy_m_a_1']
+		},
+		'n':{
+			'_f':function(_mx,_my,_md){
+				let _o=new ENEMY_q(_mx,_my,_MAP_ENEMIES._DEF_DIR._D);
+				_ENEMIES.push(_o);
+			},
+			'_st':'',
+			'_s':'0000,0011,0110,1111',		
+			'_o':_CANVAS_IMGS['enemy_m_a_1']
+		},
+		'o':{
+			'_f':function(_mx,_my,_md){
+				let _o=new ENEMY_r(_mx,_my,_MAP_ENEMIES._DEF_DIR._U);
+				_ENEMIES.push(_o);
+			},
+			'_st':'transform:scale(1,-1);',
+			'_s':'1111,0010,0000,0000',		
+			'_o':_CANVAS_IMGS['enemy_m_b_1']
+		},
+		'p':{
+			'_f':function(_mx,_my,_md){
+				let _o=new ENEMY_r(_mx,_my,_MAP_ENEMIES._DEF_DIR._D);
+				_ENEMIES.push(_o);
+			},
+			'_st':'',
+			'_s':'0000,0000,0010,1111',		
+			'_o':_CANVAS_IMGS['enemy_m_b_2']
+		},
+		'q':{
+			'_f':function(_mx,_my,_md){
+				let _o=new ENEMY_q(_mx,_my,_MAP_ENEMIES._DEF_DIR._LD);
+				_ENEMIES.push(_o);
+			},
+			'_st':'transform:scale(-1,1);',
+			'_s':'0000,1100,0110,1111',
+			'_o':_CANVAS_IMGS['enemy_m_a_1']
+		},
+		'r':{
+			'_f':function(_mx,_my,_md){
+				let _o=new ENEMY_q(_mx,_my,_MAP_ENEMIES._DEF_DIR._LU);
+				_ENEMIES.push(_o);
+			},
+			'_st':'transform:scale(-1,-1);',
+			'_s':'1111,0110,1100,0000',		
+			'_o':_CANVAS_IMGS['enemy_m_a_1']
+		}
+	}
+},//_THEME5
 }//_MAP_THEME
 
 //各種ステージ定義
@@ -391,8 +526,19 @@ class GameObject_MAP{
 			let _md=_this.mapdef[_i][_j];
 			if(_this.isCollisionBit(_md)){continue;}
 			if(_md==='0'){continue;}
-			let _d=_MAP_ENEMIES._setDir(_j,_i);
-			_MAP_ENEMIES._ENEMIES[_md]
+
+			let _d=(function(){//向きを取得する
+				//直上が1
+				let _r=_MAP_ENEMIES._setDir(_j,_i);
+//				let _e=_MAP_ENEMIES._ENEMIES[_md];
+				let _e=_MAP_THEME[_this.map_theme]._enemies[_md]
+				//直下が1（既に直上が1だったら、直上を向き決定にする）
+				_r=(_r===0)
+					?_MAP_ENEMIES._setDir(_j,_i+parseInt(_e._o.obj.height/_MAP.t))
+					:_r;
+				return _r;
+			})();
+			_MAP_THEME[_this.map_theme]._enemies[_md]
 				._f(_this.x+(_j*_this.t),_i*_this.t,_d);
 
 		}//_j
@@ -416,10 +562,12 @@ class GameObject_MAP{
 		let _m=_this.mapdef[_i];
 		for(let _j=0;_j<_m.length;_j++){
 			//MAP衝突用1行分ループ
-			if(!_this.isCollisionBit(_m[_j])){continue;}
-			if(_m[_j]==='1'){continue;}
+			if((_m[_j]).match(/[A-Za-z]/)===null){continue;}
 			//MAPテーマより、MAPビットを取得する
-			let _p=_MAP_THEME[_this.map_theme]._p[_m[_j]];
+			let _p=
+				(_this.isEnemiesBit(_m[_j]))
+				?_MAP_THEME[_this.map_theme]._enemies[_m[_j]]
+				:_MAP_THEME[_this.map_theme]._p[_m[_j]];
 			if(_p===undefined){
 				console.log('テーマ:'+_this.map_theme+'に対して '+_m[_j]+'の定義がありません。');
 			}
@@ -440,6 +588,22 @@ class GameObject_MAP{
 		}//_j
 		}//_i	
 	}
+	set_mapdef_col(_mx,_my,_bit){
+		let _this=this;
+		//MAP衝突用の一部変更
+		if(_mx===undefined
+			||_my===undefined
+			||_bit===undefined){return;}
+		let _p_s=_bit.split(',');
+		for(let _l=0;_l<_p_s.length;_l++){//p._s分ループ
+			let _s_mapdef_col=_this.mapdef_col[_my+_l];
+			//置換箇所は文字列を分割、置換、結合処理
+			_this.mapdef_col[_my+_l]=
+				_s_mapdef_col.substr(0,_mx+1)
+				+_p_s[_l]
+				+_s_mapdef_col.substr(_mx+1+_p_s[_l].length);			
+		}//_l
+	}	
 	setCollisionBit(_pb,_mcb){
 		let _this=this;
 		let _s='';
@@ -553,7 +717,8 @@ class GameObject_MAP{
 			if(_k==='0'){continue;}
 			if(_k.match(_this.collision_enemies)!==null){
 				//敵
-				let _img=_CANVAS_IMGS['enemy_'+_k+'_1'].obj;
+				let _p=_MAP_THEME[_m._theme]._enemies[_k];
+				let _img=_p._o.obj;
 				//画像サイズは、25x25px
 				//ここでは10x10pxに調整
 				_CONTEXT.drawImage(

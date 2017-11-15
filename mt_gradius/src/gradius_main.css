@@ -270,8 +270,8 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide{
 	width:60px !important;
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r{right:400px;top:40px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:300px;top:110px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:200px;top:40px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:200px;top:40px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:300px;top:110px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b{right:100px;top:110px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px;top:40px;}
 }
@@ -301,8 +301,8 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_contr
 
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide{right:350px;bottom:0px;height:30px !important;width:30px !important;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r{right:280px;bottom:40px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:210px;bottom:0px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:140px;bottom:40px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:210px;bottom:0px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:140px;bottom:40px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b{right:70px;bottom:0px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px;bottom:40px;}
 }

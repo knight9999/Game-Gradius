@@ -1334,8 +1334,8 @@ class ENEMY_q extends GameObject_ENEMY{
 		if(!_this._isopen){return;}
 
 		_this._status=(function(_st){
-			if(_s_type===_SHOTTYPE_LASER){return _st-0.2;}
-			if(_s_type===_SHOTTYPE_RIPPLE_LASER){return _st-1;}
+			if(_s_type===_SHOTTYPE_LASER){return _st-0.5;}
+			if(_s_type===_SHOTTYPE_RIPPLE_LASER){return _st-1.5;}
 			return _st-1;
 		})(_this._status);
 
@@ -1497,7 +1497,7 @@ class ENEMY_qr extends GameObject_ENEMY{
 		//_s_type:_SHOTTYPE
 		let _this=this;				
 		_this._status=(function(_st){
-			if(_s_type===_SHOTTYPE_LASER){return _st-0.2;}
+			if(_s_type===_SHOTTYPE_LASER){return _st-0.5;}
 			if(_s_type===_SHOTTYPE_RIPPLE_LASER){return _st-1;}
 			return _st-1;
 		})(_this._status);

@@ -1475,7 +1475,8 @@ class ENEMY_qr extends GameObject_ENEMY{
         let _this=this;
 		_this._status=1;
 		_this.direct=_d||_this._DEF_DIR._U;
-		_this.imgs=[
+		_this.imgs_c=0;
+		_this.imgs=[//アニメ定義
 			_CANVAS_IMGS['enemy_m_y_1'].obj,
 			_CANVAS_IMGS['enemy_m_y_2'].obj
 		];
@@ -1526,6 +1527,10 @@ class ENEMY_qr extends GameObject_ENEMY{
 		_this.map_collition();
 		_this.x+=_this.sx*_MAPDEFS[_MAP_PETTERN]._speed-_BACKGROUND_SPEED;
 		_this.y+=_this.sy*_MAPDEFS[_MAP_PETTERN]._speed;
+		_this.img=(function(_c){
+			_this.imgs_c=(_c>=(_this.imgs.length*10)-1)?0:_c+1;
+			return _this.imgs[parseInt(_this.imgs_c/10)];
+		})(_this.imgs_c);
 		_this.setDrawImage();
 	}
 }

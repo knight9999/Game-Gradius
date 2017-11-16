@@ -119,6 +119,8 @@ class GameObject_ENEMY{
 		_this.shotColMap=[
 			"0,0,"+_this.img.width+","+_this.img.height
 		];
+		_this.col_date=new Date();//打たれた時間
+		_this.col_canint=150;//連続ショット許可間隔
 	}
 	init(){
         _ENEMIES=new Array();
@@ -159,6 +161,17 @@ class GameObject_ENEMY{
 				_y:this.y+(this.img.height/2)}
 	}
 	getstatus(){return this._status;}
+	isCanCollision(){
+		//衝突判定フラグ
+		//250ミリ秒以内は無視する。
+		let _this=this;
+		let _date=new Date();
+		if(_date-_this.col_date>_this.col_canint){
+			_this.col_date=new Date();
+			return true;
+		}
+		return false;
+	}
 	isalive(){return (this._status>0)?true:false;}
 	isshow(){return this._isshow;}
 	shot(){
@@ -1114,7 +1127,7 @@ class ENEMY_p extends GameObject_ENEMY{
 		super(
 			_CANVAS_IMGS['enemy_p_1'].obj,_x,_y
 		)
-		this._status=15;
+		this._status=6;
 		this.getscore=100;
 		this.speedx=_BACKGROUND_SPEED;
 		this.speedy=
@@ -1126,13 +1139,9 @@ class ENEMY_p extends GameObject_ENEMY{
 	collision(_s_type){
 		//衝突レーザー、リップルレーザーの判定設定
 		//_s_type:_SHOTTYPE
-		let _this=this;				
-		_this._status=(function(_st){
-			if(_s_type===_SHOTTYPE_LASER){return _st-0.4;}
-			if(_s_type===_SHOTTYPE_RIPPLE_LASER){return _st-1.5;}
-			return _st-1;
-		})(this._status);
-
+		let _this=this;
+		if(!_this.isCanCollision()){return;}
+		_this._status--;
 		if(!_this.isalive()){_SCORE.set(_this.getscore);}
 	}
 	map_collition(){
@@ -1218,7 +1227,7 @@ class ENEMY_p_small extends GameObject_ENEMY{
     constructor(_d,_x,_y){
 		super(_d,_x,_y);
 		let _this=this;
-		_this._status=10;
+		_this._status=4;
 		_this.getscore=500;
 		_this.speedx=
 			_MAPDEFS[_MAP_PETTERN]._speed
@@ -1231,14 +1240,12 @@ class ENEMY_p_small extends GameObject_ENEMY{
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t1.intv;//衝突アニメ間隔
 	}
 	collision(_s_type){
+		let _this=this;
 		//衝突レーザー、リップルレーザーの判定設定
 		//_s_type:_SHOTTYPE
-		this._status=(function(_st){
-			if(_s_type===_SHOTTYPE_LASER){return _st-0.15;}
-			if(_s_type===_SHOTTYPE_RIPPLE_LASER){return _st-1.5;}
-			return _st-1;
-		})(this._status);
-		if(!this.isalive()){_SCORE.set(this.getscore);}
+		if(!_this.isCanCollision()){return;}
+		_this._status--;
+		if(!_this.isalive()){_SCORE.set(_this.getscore);}
 	}
 	map_collition(){
 		let _this=this;
@@ -1320,10 +1327,10 @@ class ENEMY_q extends GameObject_ENEMY{
 		_this._shot_count=-200;
 		_this.shotColMap=[
 			(function(){
-			if(_this.direct===_this._DEF_DIR._D){return "10,50,45,75";}
-			if(_this.direct===_this._DEF_DIR._U){return "10,25,45,50";}
-			if(_this.direct===_this._DEF_DIR._LD){return "75,50,100,75";}
-			if(_this.direct===_this._DEF_DIR._LU){return "75,25,100,50";}
+			if(_this.direct===_this._DEF_DIR._D){return "0,40,45,75";}
+			if(_this.direct===_this._DEF_DIR._U){return "0,25,45,60";}
+			if(_this.direct===_this._DEF_DIR._LD){return "65,40,100,75";}
+			if(_this.direct===_this._DEF_DIR._LU){return "65,25,100,60";}
 			})()
 		];
 
@@ -1333,13 +1340,8 @@ class ENEMY_q extends GameObject_ENEMY{
 		//_s_type:_SHOTTYPE
 		let _this=this;		
 		if(!_this._isopen){return;}
-
-		_this._status=(function(_st){
-			if(_s_type===_SHOTTYPE_LASER){return _st-0.5;}
-			if(_s_type===_SHOTTYPE_RIPPLE_LASER){return _st-1.5;}
-			return _st-1;
-		})(_this._status);
-
+		if(!_this.isCanCollision()){return;}
+		_this._status--;
 		if(!_this.isalive()){_SCORE.set(_this.getscore);}
 	}
 	shot(){
@@ -1370,11 +1372,11 @@ class ENEMY_q extends GameObject_ENEMY{
 		if(_this._open_count>200){
 			_this.img=_this.imgs[0];
 			_this._isopen=false;
-			_this._open_count=-300;
+			_this._open_count=-100;
 		}
 
 		if(_this._open_count<=0){return;}
-		if(_this._open_count%10!==0){return;}		
+		if(_this._open_count%15!==0){return;}		
 		_ENEMIES.push(
 			new ENEMY_qr(
 				_CANVAS_IMGS['enemy_m_y_1'].obj,
@@ -1443,8 +1445,8 @@ class ENEMY_r extends ENEMY_q{
 
 		_this.shotColMap=[
 			(_this.direct===_this._DEF_DIR._D)
-				?"25,50,50,75"
-				:"25,25,50,50"
+				?"20,30,50,75"
+				:"20,25,50,70"
 			];
 	}
 	move(){
@@ -1496,13 +1498,9 @@ class ENEMY_qr extends GameObject_ENEMY{
 	collision(_s_type){
 		//衝突レーザー、リップルレーザーの判定設定
 		//_s_type:_SHOTTYPE
-		let _this=this;				
-		_this._status=(function(_st){
-			if(_s_type===_SHOTTYPE_LASER){return _st-0.5;}
-			if(_s_type===_SHOTTYPE_RIPPLE_LASER){return _st-1;}
-			return _st-1;
-		})(_this._status);
-
+		let _this=this;
+		if(!_this.isCanCollision()){return;}
+		_this._status--;
 		if(!_this.isalive()){_SCORE.set(_this.getscore);}
 	}
 	map_collition(){
@@ -1647,15 +1645,10 @@ class ENEMY_BOSS_BOGCORE
 		let _this=this;
 		if(!_this.is_able_collision){return;}
 //		console.log(_t);
-		let _ec=_this.getEnemyCenterPosition();
+		if(!_this.isCanCollision()){return;}
 		//衝突レーザー、リップルレーザーの判定
 		//ボスの当たり判定を狭める
-		_this._status=(function(_st){
-			if(_s_type===_SHOTTYPE_LASER){return _st-0.1;}
-			if(_s_type===_SHOTTYPE_RIPPLE_LASER){return _st-1;}
-			return _st-1;
-		})(_this._status);
-
+		_this._status--;
 		if(!this.isalive()){_SCORE.set(this.getscore);}
 	}
 	showCollapes(){this.ani_col2();}
@@ -1701,7 +1694,7 @@ class ENEMY_BOSS_BOGCORE
 			);
 		}
 
-		if(_this.x<_CANVAS.width-_this.img.width-70){
+		if(_this.x<_CANVAS.width-_this.img.width-80){
 			_this.is_done_move_init=true;
 			_this.is_able_collision=true;
 		}

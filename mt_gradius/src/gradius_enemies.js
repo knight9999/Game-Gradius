@@ -1317,12 +1317,13 @@ class ENEMY_q extends GameObject_ENEMY{
 		_this.col_imgs=_ENEMY_DEF_ANI_COL.t8.imgs;//衝突アニメ画像
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t8.intv;//衝突アニメ間隔
 
+		_this._shot_count=-200;
 		_this.shotColMap=[
 			(function(){
 			if(_this.direct===_this._DEF_DIR._D){return "10,50,45,75";}
 			if(_this.direct===_this._DEF_DIR._U){return "10,25,45,50";}
 			if(_this.direct===_this._DEF_DIR._LD){return "75,50,100,75";}
-			if(_this.direct===_this._DEF_DIR._LU){return "60,25,95,50";}
+			if(_this.direct===_this._DEF_DIR._LU){return "75,25,100,50";}
 			})()
 		];
 
@@ -1357,23 +1358,23 @@ class ENEMY_q extends GameObject_ENEMY{
 				}
 				return false;
 			})();
-		if(Math.random()<0.005){
-			if(!_this._isopen&&_f){
-				_this.img=_this.imgs[1];
-				_this._isopen=true;
-				_this._open_count+=1;
-			}
-		}
 
-		if(!_this._isopen){return;}
-		if(_this._open_count>100){
+		if(!_this._open_count>0&&!_f){
+		}else{
+			_this._open_count++;			
+		}
+		if(_this._open_count>0){
+			_this.img=_this.imgs[1];
+			_this._isopen=true;
+		}
+		if(_this._open_count>200){
 			_this.img=_this.imgs[0];
 			_this._isopen=false;
-			_this._open_count=0;
+			_this._open_count=-300;
 		}
 
-		_this._open_count++;
-		if(_this._open_count%8!==0){return;}		
+		if(_this._open_count<=0){return;}
+		if(_this._open_count%10!==0){return;}		
 		_ENEMIES.push(
 			new ENEMY_qr(
 				_CANVAS_IMGS['enemy_m_y_1'].obj,
@@ -1650,20 +1651,6 @@ class ENEMY_BOSS_BOGCORE
 		//衝突レーザー、リップルレーザーの判定
 		//ボスの当たり判定を狭める
 		_this._status=(function(_st){
-//			if(_s_type===_SHOTTYPE_MISSILE){
-// 				let _pd=Math.sqrt(
-// 					Math.pow(_ec._x-60-_t.x,2)+
-// 					Math.pow(_ec._y-_t.y,2)
-// 				);
-// 				//ボス中心座標から60ピクセル左。
-// 				//そことミサイルで半径８０ピクセル以内がヒット
-// 				let _w=80;
-// //				console.log(_pd<_w);
-// 				if(_pd<_w){return _st-1;}
-// 				//ミサイル
-// 				return _st;
-// 			}
-//			if(_t.y<_ec._y+10&&_t.y>_ec._y-10){}else{return _st;}
 			if(_s_type===_SHOTTYPE_LASER){return _st-0.1;}
 			if(_s_type===_SHOTTYPE_RIPPLE_LASER){return _st-1;}
 			return _st-1;
@@ -1714,7 +1701,7 @@ class ENEMY_BOSS_BOGCORE
 			);
 		}
 
-		if(_this.x<750){
+		if(_this.x<_CANVAS.width-_this.img.width-70){
 			_this.is_done_move_init=true;
 			_this.is_able_collision=true;
 		}

@@ -325,8 +325,8 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_contr
 
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide{right:350px;bottom:0px;height:30px !important;width:30px !important;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r{right:280px;bottom:20px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:210px;bottom:0px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:140px;bottom:20px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:140px;bottom:20px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:210px;bottom:0px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b{right:70px;bottom:0px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px;bottom:20px;}
 }

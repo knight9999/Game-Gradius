@@ -1838,16 +1838,14 @@ class GameObject_SHOTS{
 			//自機より後ろは無視する。
 			if(_e.x<this.player.x){continue;}
 			let _s=_GAME.isSqCollision(
-				"0,0,"+_t._img.width+","+_t._img.height,
+				"-10,-10,10,10",
 				_t.x+","+_t.y,
 				_e.shotColMap,
 				_e.x+","+_e.y
 			);
 			if(_s===_IS_SQ_NOTCOL){return;}
 			if(_s===_IS_SQ_COL){
-				if(_e.isalive()){
-					_e.collision(_SHOTTYPE_NORMAL);					
-				}
+				_e.collision(_SHOTTYPE_NORMAL);					
 			}
 			_t._init();
 		}//for
@@ -2184,9 +2182,7 @@ class GameObject_SHOTS_MISSILE
 			}
 		}
 
-		if(_this.get_missile_status(_t)==='_st1'){
-			if(_MAP.isMapCollision(_MAP.getMapX(_t.x),_MAP.getMapY(_t.y))){return;}
-			
+		if(_this.get_missile_status(_t)==='_st1'){			
 			_map_y=_MAP.getMapY(_t.y+_t._img.height/2);
 			//自身、あるいはその下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x,_map_y)
@@ -2258,6 +2254,13 @@ class GameObject_SHOTS_MISSILE
 				continue;
 			}
 			_this.mis_status[_t._st](_t);
+			if(_this.get_missile_status(_t)==='_st1'
+				&&_MAP.isMapCollision(
+				_MAP.getMapX(_t.x),
+				_MAP.getMapY(_t.y))){
+				_t._init();				
+				continue;
+			}
 			_CONTEXT.drawImage(
 				_t._img,
 				_t.x,
@@ -2837,33 +2840,28 @@ class GameObject_SHOTS_DOUBLE
 	enemy_collision(_e){//敵への当たり処理
 		let _this=this;
 		if(!_this.player.isalive()){return;}
-		let _is_same_eid=(function(){//全ショットのもつ敵IDが全て一致する
-			let _eid=null;
-			for(let _k=0;_k<_this.shots.length;_k++){
-				let _t=_this.shots[_k];
-				if(_k===0){_eid=_t._enemyid;continue;}
-				if(_t[_k]!==_eid){return false;}
-			}
-			return true;
-		})();
+		let _str='';
+
 		for(let _k=0;_k<_this.shots.length;_k++){
 			let _t=_this.shots[_k];
 			let _s=_GAME.isSqCollision(
-				"0,0,15,15",
+				"-10,-10,10,10",
 				_t.x+","+_t.y,
 				_e.shotColMap,
 				_e.x+","+_e.y
 			);
-			if(_s===_IS_SQ_NOTCOL){return;}			
-
-			if(!_e.isalive()){return;}
-			_t._enemyid=_e.id;
-			_t._init();
-			if(_s===_IS_SQ_NOTCOL){return;}
-			//硬い敵に対して、
-			//同時ショット判定を避ける
-			if(_is_same_eid){continue;}
-			_e.collision(_SHOTTYPE_DOUBLE);
+			
+			if(_s===_IS_SQ_NOTCOL){continue;}
+			if(_s===_IS_SQ_COL_NONE){
+				_t._init();
+				continue;
+			}
+			if(_e.isalive()){
+				//硬い敵に対して、
+				//同時ショット判定を避ける
+				_e.collision(_SHOTTYPE_DOUBLE);
+				_t._init();
+			}
 		}
 	}
 	map_collition(_t){

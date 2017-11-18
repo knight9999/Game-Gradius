@@ -2,6 +2,8 @@
 
 ## Description
 
+純粋にJavascriptで実装しています。 
+
 以下のゲームを楽しめます。
 1. モアイステージ
 2. 火山ステージ
@@ -9,6 +11,15 @@
 4. クリスタルステージ
 5. デバッグ用ステージ
 
+
+
+操作説明 
+- [A]→ショット＋ミサイル（連射付き）
+- [B]→装備
+- [P]→一時停止
+- [S]→ステージ選択に戻る
+- [R]→再度やり直し
+  
 ## Demo
 1. モアイステージ  
 [![](http://img.youtube.com/vi/sur3x5MF6fg/0.jpg)](https://www.youtube.com/watch?v=sur3x5MF6fg)

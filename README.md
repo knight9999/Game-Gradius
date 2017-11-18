@@ -9,6 +9,13 @@
 4. クリスタルステージ
 5. デバッグ用ステージ
 
+## Demo
+1. モアイステージ
+https://youtu.be/sur3x5MF6fg
+3. スピードステージ
+https://youtu.be/XZ9qYV6dbwM
+
+
 ## Getting Started
 
 Access URL (e.x below)

@@ -10,10 +10,12 @@
 5. デバッグ用ステージ
 
 ## Demo
-1. モアイステージ
-- [![](http://img.youtube.com/vi/sur3x5MF6fg/0.jpg)](https://www.youtube.com/watch?v=sur3x5MF6fg)
-3. スピードステージ
-https://youtu.be/XZ9qYV6dbwM
+1. モアイステージ  
+[![](http://img.youtube.com/vi/sur3x5MF6fg/0.jpg)](https://www.youtube.com/watch?v=sur3x5MF6fg)
+2. 火山ステージ  
+[![](http://img.youtube.com/vi/5dOtu4dOcZo/0.jpg)](https://www.youtube.com/watch?v=5dOtu4dOcZo)
+3. スピードステージ  
+[![](http://img.youtube.com/vi/XZ9qYV6dbwM/0.jpg)](https://www.youtube.com/watch?v=XZ9qYV6dbwM)
 
 
 ## Getting Started

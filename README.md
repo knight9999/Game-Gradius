@@ -11,7 +11,7 @@
 
 ## Demo
 1. モアイステージ
-https://youtu.be/sur3x5MF6fg
+- [![](http://img.youtube.com/vi/sur3x5MF6fg/0.jpg)](https://www.youtube.com/watch?v=sur3x5MF6fg)
 3. スピードステージ
 https://youtu.be/XZ9qYV6dbwM
 

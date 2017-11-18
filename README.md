@@ -2,8 +2,7 @@
 
 ## Description
 
-純粋にJavascriptで実装しています。 
-CANVASで実現させています。
+純粋にJavascript+CANVASで実装しています。 
 
 以下のゲームを楽しめます。
 1. モアイステージ

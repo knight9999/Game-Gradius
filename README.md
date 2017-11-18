@@ -24,11 +24,11 @@ CANVASで実現させています。
 - [R]→再度やり直し
   
 ## Demo
-1. モアイステージ  
+1. モアイステージ(iPhone 8Plus iOS11)  
 [![](http://img.youtube.com/vi/sur3x5MF6fg/0.jpg)](https://www.youtube.com/watch?v=sur3x5MF6fg)
-2. 火山ステージ  
+2. 火山ステージ(iPadmini4 iOS11)  
 [![](http://img.youtube.com/vi/5dOtu4dOcZo/0.jpg)](https://www.youtube.com/watch?v=5dOtu4dOcZo)
-3. スピードステージ  
+3. スピードステージ(iPadmini4 iOS11)  
 [![](http://img.youtube.com/vi/XZ9qYV6dbwM/0.jpg)](https://www.youtube.com/watch?v=XZ9qYV6dbwM)
 
 

@@ -27,7 +27,7 @@
 [![](http://img.youtube.com/vi/sur3x5MF6fg/0.jpg)](https://www.youtube.com/watch?v=sur3x5MF6fg)
 2. 火山ステージ(iPadmini4 iOS11)  
 [![](http://img.youtube.com/vi/5dOtu4dOcZo/0.jpg)](https://www.youtube.com/watch?v=5dOtu4dOcZo)
-2. 火山ステージ(iPadmini4 iOS11) 4. クリスタルステージ  
+2. 火山ステージ、4. クリスタルステージ(iPadmini4 iOS11)  
 [![](http://img.youtube.com/vi/l3_ZVcvrdLU/0.jpg)](https://www.youtube.com/watch?v=l3_ZVcvrdLU)
 3. スピードステージ(iPadmini4 iOS11)  
 [![](http://img.youtube.com/vi/XZ9qYV6dbwM/0.jpg)](https://www.youtube.com/watch?v=XZ9qYV6dbwM)

@@ -1,4 +1,5 @@
 # Game
 
-Getting Started
-/dist/gradius.html
+## Getting Started
+Access URL (e.x below)
+http://hosts/dist/gradius.html

@@ -124,10 +124,27 @@ const _CANVAS_IMGS={
  		{src:'images/gradius_shot3.png',
  		 rate:0.4,
  		 obj:new Image()},
-	'meter':
-		{src:'images/gradius_meter.png',
-		 rate:0.5,
+	'shot_laser_col1':
+		{src:'images/gradius_shot_laser_col1.png',
+		 rate:0.4,
 		 obj:new Image()},
+	'shot_laser_col2':
+		{src:'images/gradius_shot_laser_col2.png',
+		rate:0.4,
+		obj:new Image()},
+	'shot_laser_col3':
+		{src:'images/gradius_shot_laser_col3.png',
+		rate:0.4,
+		obj:new Image()},
+	'shot_laser_col4':
+		{src:'images/gradius_shot_laser_col4.png',
+		rate:0.4,
+		obj:new Image()},
+	  
+	'meter':
+		 {src:'images/gradius_meter.png',
+		  rate:0.5,
+		  obj:new Image()}, 
 	'meter_c_speedup':
 		{src:'images/gradius_meter_c_speedup.png',
 		 rate:0.5,

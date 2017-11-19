@@ -1161,7 +1161,7 @@ class GameObject_PLAYER_MAIN
 			return;
 		}
 		if(_GAME.isSqCollision(
-			"25,30,40,40",
+			"25,33,40,42",
 			this.x+","+this.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
@@ -2977,18 +2977,23 @@ class GameObject_SHOTS_LASER
 			extends GameObject_SHOTS{
 	constructor(_p){
 		super(_p);
-		this.shots=new Array();
-		this.speed=50;
-		this.lineWidth=3;
-		this.strokeStyle="rgba(50,80,255,1)";
-		this.strokeStyle_u="rgba(120,150,255,1)";
+		let _this=this;
+		_this.shots=new Array();
+		_this.speed=50;
+		_this.lineWidth=3;
+		_this.strokeStyle="rgba(50,80,255,1)";
+		_this.strokeStyle_u="rgba(120,150,255,1)";
+		_this.colimg=[
+			_CANVAS_IMGS['shot_laser_col1'].obj,
+			_CANVAS_IMGS['shot_laser_col2'].obj
+		];
 
 		for(let _i=0;_i<1;_i++){
-			this.shots.push({
+			_this.shots.push({
 				sid:_SHOTTYPE_LASER,
 				x:0,//処理変数：照射x軸
 				y:0,
-				_c:0,//アニメーションカウント
+				_c_col:0,//アニメーションカウント衝突
 				laser_time:500,//定義：照射時間（照射終了共通）
 				_sx:0,//処理変数：x軸
 				_enemy:null,//レーザーに衝突した敵のオブジェクト
@@ -3020,6 +3025,19 @@ class GameObject_SHOTS_LASER
 				}
 			});
 		}
+	}
+	laser_collision(_t){
+		let _this=this;
+		_t._c_col=(_t._c_col>1)?0:_t._c_col+1;
+		let _t_img=_this.colimg[_t._c_col];
+		if(_t._c_col>=2){return;}
+		_CONTEXT.drawImage(
+			_t_img,
+			_t._l_x,
+			_t.y-(_t_img.height/2),
+			_t_img.width,
+			_t_img.height
+		);
 	}
 	enemy_collision(_e){
 		if(!this.player.isalive()){return;}
@@ -3089,8 +3107,12 @@ class GameObject_SHOTS_LASER
 	}
 	setLaserMaxX(_v){
 //		console.log(this.shots.length);
-		for(let _i=0;_i<this.shots.length;_i++){
-			this.shots[_i]._laser_MaxX=_v;
+		let _this=this;
+		for(let _i=0;_i<_this.shots.length;_i++){
+			_this.shots[_i]._laser_MaxX=_v;
+			if(_this.shots[_i]._laser_MaxX<_CANVAS.width){
+				_this.laser_collision(_this.shots[_i]);
+			}
 		}
 	}
 	move(){
@@ -3186,9 +3208,14 @@ class GameObject_SHOTS_LASER_CYCLONE
 			extends GameObject_SHOTS_LASER{
 	constructor(_p){
 		super(_p);
-		this.lineWidth=5;
-		this.strokeStyle="rgba(255,80,50,1)";
-		this.strokeStyle_u="rgba(255,200,150,1)";
+		let _this=this;
+		_this.lineWidth=5;
+		_this.strokeStyle="rgba(255,80,50,1)";
+		_this.strokeStyle_u="rgba(255,200,150,1)";
+		_this.colimg=[
+			_CANVAS_IMGS['shot_laser_col3'].obj,
+			_CANVAS_IMGS['shot_laser_col4'].obj
+		];
 	}
 }
 
@@ -3846,7 +3873,7 @@ const _DRAW=function(){
 			if(_PLAYERS_MISSILE_ISALIVE){
 				_PLAYERS_MISSILE[_i].move();
 			}
-			_PLAYERS_SHOTS[_SHOTTYPE][_i].move();
+			_PLAYERS_SHOTS[_SHOTTYPE][_i].move();			
 		}
 		//自機からひもづくオプションを表示
 		for(let _i=0;_i<_PLAYERS_OPTION_MAX;_i++){

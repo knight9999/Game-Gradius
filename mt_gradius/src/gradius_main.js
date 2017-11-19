@@ -12,10 +12,11 @@
 let _ISDEBUG=false;
 let _PLAYERS_POWER_METER=0;
 let _PLAYERS_POWER_METER_SHIELD=0;
-let _PLAYERS_SHOTS_SETINTERVAL=null;
 
 let _DRAW_SETINTERVAL=null;
 let _DRAW_GAMESTART_SETINTERVAL=null;
+let _PLAYERS_SHOTS_SETINTERVAL=null;
+
 let _EVENT_POWERMETER_FLAG=false;
 let _EVENT_SELECT_STAGE_FLAG=false;
 
@@ -437,21 +438,7 @@ const _KEYEVENT={
 	_PLAYERS_SHOTS_SETINTERVAL=null;
 
 	if(e.key==="Enter"||e.key==="enter"){
-		_KEYEVENT_MASTER.removeKeydownSelectPowermeter();
-		let _c=0;
-		let _i=setInterval(function(){
-			_POWERMETER.pms_disp();
-			if(_c%5===0){
-				_POWERMETER.pms_select();
-			}
-			if(_c>40){
-				_PLAYERS_POWER_METER=_POWERMETER._c_pms;
-				_PLAYERS_POWER_METER_SHIELD=_POWERMETER._c_pmss;
-				clearInterval(_i);
-				_DRAW_INIT_OBJECT();
-			}
-			_c++;
-		},1000/_FPS);
+		_DRAW_SELECT_POWERMETER();
 		return false;
 	}
 
@@ -485,9 +472,6 @@ const _KEYEVENT={
 },
 //ステージ選択イベント
 'keydown_select_stage':function(e){
-	clearInterval(_PLAYERS_SHOTS_SETINTERVAL);
-	_PLAYERS_SHOTS_SETINTERVAL=null;
-
 	if(e.key==="Enter"||e.key==="enter"){
 		_MAP.set_stage_map_pattern(_STAGESELECT.mapdef_status);
 		_DRAW_POWER_METER_SELECT();
@@ -512,12 +496,14 @@ const _KEYEVENT={
 },
 'keydown_gameclear':function(e){
 	if(e.key==='R'||e.key==='r'){
+		_DRAW_STOP_PLAYERS_SHOTS();
 		_DRAW_RESET_OBJECT();
 		_DRAW_INIT_OBJECT();
 		return false;
 	}
 
 	if(e.key==='S'||e.key==='s'){
+		_DRAW_STOP_PLAYERS_SHOTS();
 		_DRAW_RESET_OBJECT();
 		_DRAW_STAGE_SELECT();
 		return false;
@@ -535,32 +521,7 @@ const _KEYEVENT={
 
 	if(e.key===' '||e.key==='Spacebar'){
 		if(_PLAYERS_SHOTS_SETINTERVAL!==null){return;}
-		_PLAYERS_SHOTS_SETINTERVAL=setInterval(function(){
-			//ショット
-			for(var _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
-				let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
-				if(!_ps.player._isalive){continue;}
-				_ps._sq=
-					(_ps._sq===_ps.shots.length-1)
-						?0
-						:_ps._sq+1;
-				var _s=_ps.shots[_ps._sq];
-//				console.log(_i+':'+_s._shot_alive);
-				//ショット中は、ショットを有効にしない
-				if(!_s._shot_alive){_s._shot=true;}
-			}
-			//ミサイル
-			for(var _i=0;_i<_PLAYERS_MISSILE.length;_i++){
-				let _pm=_PLAYERS_MISSILE[_i];
-				_pm._sq=
-					(_pm._sq===_pm.shots.length-1)?
-						0
-						:_pm._sq+1;
-				var _sm=_pm.shots[_pm._sq];
-				//ショット中は、ショットを有効にしない
-				if(!_sm._shot_alive){_sm._shot=true;}
-			}
-		},50);
+		_DRAW_PLAYERS_SHOTS();
 	}
 
 	if(e.key==='ArrowLeft'||e.key==='Left'){
@@ -591,12 +552,14 @@ const _KEYEVENT={
 },
 'keydown_gameover':function(e){
 	if(e.key==='R'||e.key==='r'){
+		_DRAW_STOP_PLAYERS_SHOTS();
 		_DRAW_RESET_OBJECT();
 		_DRAW_INIT_OBJECT();
 		return false;
 	}
 
 	if(e.key==='S'||e.key==='s'){
+		_DRAW_STOP_PLAYERS_SHOTS();
 		_DRAW_RESET_OBJECT();
 		_DRAW_STAGE_SELECT();
 		return false;
@@ -607,12 +570,14 @@ const _KEYEVENT={
 	if(!_PLAYERS_MAIN.isalive()){return false;}//撃たれたら機種操作不可
 
 	if(e.key==='R'||e.key==='r'){
+		_DRAW_STOP_PLAYERS_SHOTS();
 		_DRAW_RESET_OBJECT();
 		_DRAW_INIT_OBJECT();
 		return false;
 	}
 
 	if(e.key==='S'||e.key==='s'){
+		_DRAW_STOP_PLAYERS_SHOTS();
 		_DRAW_RESET_OBJECT();
 		_DRAW_STAGE_SELECT();
 		return false;
@@ -650,32 +615,7 @@ const _KEYEVENT={
 
 	if(e.key===' '||e.key==='Spacebar'){
 		if(_PLAYERS_SHOTS_SETINTERVAL!==null){return;}
-		_PLAYERS_SHOTS_SETINTERVAL=setInterval(function(){
-			//ショット
-			for(var _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
-				let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
-				if(!_ps.player._isalive){continue;}
-				_ps._sq=
-					(_ps._sq===_ps.shots.length-1)
-						?0
-						:_ps._sq+1;
-				var _s=_ps.shots[_ps._sq];
-//				console.log(_i+':'+_s._shot_alive);
-				//ショット中は、ショットを有効にしない
-				if(!_s._shot_alive){_s._shot=true;}
-			}
-			//ミサイル
-			for(var _i=0;_i<_PLAYERS_MISSILE.length;_i++){
-				let _pm=_PLAYERS_MISSILE[_i];
-				_pm._sq=
-					(_pm._sq===_pm.shots.length-1)?
-						0
-						:_pm._sq+1;
-				var _sm=_pm.shots[_pm._sq];
-				//ショット中は、ショットを有効にしない
-				if(!_sm._shot_alive){_sm._shot=true;}
-			}
-		},50);
+		_DRAW_PLAYERS_SHOTS();
 	}
 
 	if(e.key==='ArrowLeft'||e.key==='Left'){
@@ -736,21 +676,7 @@ const _KEYEVENT={
 		_PLAYERS_MOVE_FLAG=false;
 	}
 	if(e.key===' '||e.key==='Spacebar'){
-		clearInterval(_PLAYERS_SHOTS_SETINTERVAL);
-		_PLAYERS_SHOTS_SETINTERVAL=null;
-//		console.log('clear')
-		for(var _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
-			let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
-			for(let _j=0;_j<_ps.shots.length;_j++){
-				_ps.shots[_j]._shot=false;
-			}
-		}
-		for(var _i=0;_i<_PLAYERS_MISSILE.length;_i++){
-			let _pm=_PLAYERS_MISSILE[_i];
-			for(let _j=0;_j<_pm.shots.length;_j++){
-				_pm.shots[_j]._shot=false;
-			}
-		}
+		_DRAW_STOP_PLAYERS_SHOTS();
 	}
 }//keyup_game
 
@@ -774,22 +700,7 @@ const _KEYEVENT_SP={
 
 //パワーメーター選択イベント
 'keydown_select_powermeter_a':function(e){
-	_KEYEVENT_MASTER.removeKeydownSelectPowermeter();
-
-	let _c=0;
-	let _i=setInterval(function(){
-		_POWERMETER.pms_disp();
-		if(_c%5===0){
-			_POWERMETER.pms_select();
-		}
-		if(_c>40){
-			_PLAYERS_POWER_METER=_POWERMETER._c_pms;
-			_PLAYERS_POWER_METER_SHIELD=_POWERMETER._c_pmss;
-			clearInterval(_i);
-			_DRAW_INIT_OBJECT();
-		}
-		_c++;
-	},1000/_FPS);
+	_DRAW_SELECT_POWERMETER();
 	return false;
 },
 
@@ -902,21 +813,25 @@ const _KEYEVENT_SP={
 	return false;
 },//keydown_select_stage_a
 'keydown_gameclear_r':function(e){
+	_DRAW_STOP_PLAYERS_SHOTS();
 	_DRAW_RESET_OBJECT();
 	_DRAW_INIT_OBJECT();
 	return false;
 },//keydown_gameclear_r
 'keydown_gameclear_s':function(e){
+	_DRAW_STOP_PLAYERS_SHOTS();
 	_DRAW_RESET_OBJECT();
 	_DRAW_INIT_OBJECT();
 	return false;
 },//keydown_gameclear_s
 'keydown_gameover_r':function(e){
+	_DRAW_STOP_PLAYERS_SHOTS();
 	_DRAW_RESET_OBJECT();
 	_DRAW_INIT_OBJECT();
 	return false;
 },
 'keydown_gameover_s':function(e){
+	_DRAW_STOP_PLAYERS_SHOTS();
 	_DRAW_RESET_OBJECT();
 	_DRAW_STAGE_SELECT();
 	return false;
@@ -1033,32 +948,7 @@ const _KEYEVENT_SP={
 
 'keydown_game_a':function(e){
 	if(_PLAYERS_SHOTS_SETINTERVAL!==null){return;}
-	_PLAYERS_SHOTS_SETINTERVAL=setInterval(function(){
-		//ショット
-		for(var _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
-			let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
-			if(!_ps.player._isalive){continue;}
-			_ps._sq=
-				(_ps._sq===_ps.shots.length-1)
-					?0
-					:_ps._sq+1;
-			var _s=_ps.shots[_ps._sq];
-//				console.log(_i+':'+_s._shot_alive);
-			//ショット中は、ショットを有効にしない
-			if(!_s._shot_alive){_s._shot=true;}
-		}
-		//ミサイル
-		for(var _i=0;_i<_PLAYERS_MISSILE.length;_i++){
-			let _pm=_PLAYERS_MISSILE[_i];
-			_pm._sq=
-				(_pm._sq===_pm.shots.length-1)?
-					0
-					:_pm._sq+1;
-			var _sm=_pm.shots[_pm._sq];
-			//ショット中は、ショットを有効にしない
-			if(!_sm._shot_alive){_sm._shot=true;}
-		}
-	},80);
+	_DRAW_PLAYERS_SHOTS();
 	return false;
 },//keydown_game_a
 'keydown_game_b':function(e){
@@ -1067,21 +957,7 @@ const _KEYEVENT_SP={
 	return false;
 },//keydown_game_b
 'keyup_game_a':function(e){
-	clearInterval(_PLAYERS_SHOTS_SETINTERVAL);
-	_PLAYERS_SHOTS_SETINTERVAL=null;
-//		console.log('clear')
-	for(var _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
-		let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
-		for(let _j=0;_j<_ps.shots.length;_j++){
-			_ps.shots[_j]._shot=false;
-		}
-	}
-	for(var _i=0;_i<_PLAYERS_MISSILE.length;_i++){
-		let _pm=_PLAYERS_MISSILE[_i];
-		for(let _j=0;_j<_pm.shots.length;_j++){
-			_pm.shots[_j]._shot=false;
-		}
-	}
+	_DRAW_STOP_PLAYERS_SHOTS();
 	return false;
 }//keyup_game_a
 }//_KEYEVENT_SP
@@ -1272,39 +1148,10 @@ class GameObject_PLAYER_MAIN
 		this.shotflag=true;//発射可否
 	}
 	collapes(){
-		//クラッシュした瞬間にキーを無効にする
-		_KEYEVENT_MASTER.removeKeydownGame();
-		_KEYEVENT_MASTER.removeKeyupGame();
-
 		let _this=this;
-		let _si=null;
-		let _pl=_this.getPlayerCenterPosition();
+		if(_DRAW_SETINTERVAL===null){return;}
 		_DRAW_STOP();
-
-		_si=setInterval(function(){
-			if(_this._col_ani_c
-				>=(_this.col_ani.length*10)-1){
-				//アニメーションが終わったら終了
-				clearInterval(_si);
-				_DRAW_GAMEOVER();
-				return;
-			}
-
-			let _c=parseInt(_this._col_ani_c/10);
-			let _w=_this.col_ani[_c].img.width;
-			let _h=_this.col_ani[_c].img.height;
-			let _sw=_w*_this.col_ani[_c].scale;
-			let _sh=_h*_this.col_ani[_c].scale;
-			_CONTEXT.drawImage(
-				_this.col_ani[_c].img,
-				_pl._x-(_sw/2),
-				_pl._y-(_sh/2),
-				_sw,
-				_sh
-			);
-			_this._col_ani_c++;
-
-		},1000/_FPS);
+		_DRAW_PLAYER_COLLAPES();
 	//		console.log(this._col_ani_c)
 	}
 	enemy_collision(_e){
@@ -3952,14 +3799,19 @@ const _IS_ENEMIES_SHOT_COLLISION=function(){
 }
 
 
-
+//===========================================
+//	_DRAW系の処理
+//	以下の処理に統一させる
+//	・イベントリスナのクリア
+//	・requestAnimationFrameの管理
+//===========================================
 const _DRAW=function(){
 	_KEYEVENT_MASTER.addKeydownGame();
 	_KEYEVENT_MASTER.addKeyupGame();
 
 	let _c=0;
-
-	_DRAW_SETINTERVAL=setInterval(function(){
+	const _loop=function(){
+		_DRAW_SETINTERVAL=window.requestAnimationFrame(_loop);		
 		_CONTEXT.clearRect(0,0,
 					_CANVAS.width,
 					_CANVAS.height);
@@ -4011,14 +3863,15 @@ const _DRAW=function(){
 		_SCORE.show();
 
 		_SCROLL_POSITION+=_MAP.map_background_speed;
-
 		if(_SCROLL_POSITION-100<=
 			(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}
 
 		//MATCH_BOSS
 		_DRAW_MATCH_BOSS();
 
-	},1000/_FPS);
+	};
+
+	_DRAW_SETINTERVAL=window.requestAnimationFrame(_loop);
 }
 
 const _DRAW_MATCH_BOSS=function(){
@@ -4046,10 +3899,124 @@ const _DRAW_MATCH_BOSS=function(){
 		_DRAW_IS_MATCH_BOSS_COUNT++;
 	}
 }
+const _DRAW_PLAYER_COLLAPES=function(){
+	//クラッシュした瞬間にキーを無効にする
+	_KEYEVENT_MASTER.removeKeydownGame();
+	_KEYEVENT_MASTER.removeKeyupGame();
+
+	const _this=_PLAYERS_MAIN;
+	if(_this===undefined){return;}
+	//自機の爆発表示
+	let _si=null;
+	let _pl=_this.getPlayerCenterPosition();	
+	const _loop=function(){
+		_si=window.requestAnimationFrame(_loop);		
+		if(_this._col_ani_c
+			>=(_this.col_ani.length*10)-1){
+			//アニメーションが終わったら終了
+			cancelAnimationFrame(_si);
+			_DRAW_GAMEOVER();
+			return;
+		}
+
+		let _c=parseInt(_this._col_ani_c/10);
+		let _w=_this.col_ani[_c].img.width;
+		let _h=_this.col_ani[_c].img.height;
+		let _sw=_w*_this.col_ani[_c].scale;
+		let _sh=_h*_this.col_ani[_c].scale;
+		_CONTEXT.drawImage(
+			_this.col_ani[_c].img,
+			_pl._x-(_sw/2),
+			_pl._y-(_sh/2),
+			_sw,
+			_sh
+		);
+		_this._col_ani_c++;
+
+	};
+	_si=window.requestAnimationFrame(_loop);		
+}	
+const _DRAW_PLAYERS_SHOTS=function(){
+	let _date=new Date();
+	const _loop=function(){
+		_PLAYERS_SHOTS_SETINTERVAL=window.requestAnimationFrame(_loop);	
+		let _d=new Date();
+		if(_d-_date<50){return;}
+		_date=new Date();
+		//ショット
+		for(var _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
+			let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
+			if(!_ps.player._isalive){continue;}
+			_ps._sq=
+				(_ps._sq===_ps.shots.length-1)
+					?0
+					:_ps._sq+1;
+			var _s=_ps.shots[_ps._sq];
+//				console.log(_i+':'+_s._shot_alive);
+			//ショット中は、ショットを有効にしない
+			if(!_s._shot_alive){_s._shot=true;}
+		}
+		//ミサイル
+		for(var _i=0;_i<_PLAYERS_MISSILE.length;_i++){
+			let _pm=_PLAYERS_MISSILE[_i];
+			_pm._sq=
+				(_pm._sq===_pm.shots.length-1)?
+					0
+					:_pm._sq+1;
+			var _sm=_pm.shots[_pm._sq];
+			//ショット中は、ショットを有効にしない
+			if(!_sm._shot_alive){_sm._shot=true;}
+		}
+	}
+	_PLAYERS_SHOTS_SETINTERVAL=window.requestAnimationFrame(_loop);	
+}
 
 const _DRAW_STOP=function(){
-	clearInterval(_DRAW_SETINTERVAL);
+//	clearInterval(_DRAW_SETINTERVAL);
+	cancelAnimationFrame(_DRAW_SETINTERVAL);
 	_DRAW_SETINTERVAL=null;
+}
+const _DRAW_STOP_GAMESTART=function(){
+	cancelAnimationFrame(_DRAW_GAMESTART_SETINTERVAL);
+	_DRAW_GAMESTART_SETINTERVAL=null;
+}
+const _DRAW_STOP_PLAYERS_SHOTS=function(){
+	cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
+	_PLAYERS_SHOTS_SETINTERVAL=null;
+	for(var _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
+		let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
+		for(let _j=0;_j<_ps.shots.length;_j++){
+			_ps.shots[_j]._shot=false;
+		}
+	}
+	for(var _i=0;_i<_PLAYERS_MISSILE.length;_i++){
+		let _pm=_PLAYERS_MISSILE[_i];
+		for(let _j=0;_j<_pm.shots.length;_j++){
+			_pm.shots[_j]._shot=false;
+		}
+	}
+}
+
+const _DRAW_SELECT_POWERMETER=function(){
+	_DRAW_STOP_PLAYERS_SHOTS();
+	_KEYEVENT_MASTER.removeKeydownSelectPowermeter();
+	let _c=0;
+	let _si=null;
+	const _loop=function(){
+		_si=window.requestAnimationFrame(_loop);		
+		_POWERMETER.pms_disp();
+		if(_c%5===0){
+			_POWERMETER.pms_select();
+		}
+		if(_c>40){
+			_PLAYERS_POWER_METER=_POWERMETER._c_pms;
+			_PLAYERS_POWER_METER_SHIELD=_POWERMETER._c_pmss;
+			cancelAnimationFrame(_si);			
+			_DRAW_INIT_OBJECT();
+		}
+		_c++;
+	};
+	_si=window.requestAnimationFrame(_loop);
 }
 
 const _DRAW_GAMESTART=function(){
@@ -4058,10 +4025,11 @@ const _DRAW_GAMESTART=function(){
 
 	if(_ISDEBUG){_DRAW();return;}
 	let _c=0;
-	_DRAW_GAMESTART_SETINTERVAL=setInterval(function(){
+	const _loop=function(){
+		_DRAW_GAMESTART_SETINTERVAL=window.requestAnimationFrame(_loop);
+		//	_DRAW_GAMESTART_SETINTERVAL=setInterval(function(){
 		if(_c>250){
-			clearInterval(_DRAW_GAMESTART_SETINTERVAL);
-			_DRAW_GAMESTART_SETINTERVAL=null
+			_DRAW_STOP_GAMESTART();
 			_DRAW();
 			return;
 		}
@@ -4102,8 +4070,8 @@ const _DRAW_GAMESTART=function(){
 			}
 		}
 		_c++;
-
-	},1000/_FPS);
+	};
+	_DRAW_GAMESTART_SETINTERVAL=window.requestAnimationFrame(_loop);
 }
 
 const _DRAW_GAMECLEAR=function(){
@@ -4146,8 +4114,7 @@ const _DRAW_GAMEOVER=function(){
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
 
-	clearInterval(_PLAYERS_SHOTS_SETINTERVAL);
-	_PLAYERS_SHOTS_SETINTERVAL=null;
+	_DRAW_STOP_PLAYERS_SHOTS();
 
 	_KEYEVENT_MASTER.addKeydownGameover();
 	_CONTEXT.clearRect(0,0,
@@ -4189,7 +4156,7 @@ const _DRAW_GAMEOVER=function(){
 			(_CANVAS.height/2)+60,
 			0.15
 		);
-}
+}// _DRAW_GAMEOVER
 
 const _DRAW_DISP_TXT=function(_s,_x,_y,_r){
 	//_s:テキスト

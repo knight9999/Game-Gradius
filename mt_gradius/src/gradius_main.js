@@ -3091,10 +3091,10 @@ class GameObject_SHOTS_LASER
 			return;
 		}
 
-		if(_MAP.isMapCollision(_map_x-1,_map_y)){
-			this.setLaserMaxX(_MAP.getMapXToPx(_map_x));
-			return;
-		}
+		// if(_MAP.isMapCollision(_map_x-1,_map_y)){
+		// 	this.setLaserMaxX(_MAP.getMapXToPx(_map_x));
+		// 	return;
+		// }
 
 		this.setLaserMaxX(_CANVAS.width);
 

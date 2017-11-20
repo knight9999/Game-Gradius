@@ -3033,7 +3033,7 @@ class GameObject_SHOTS_LASER
 		if(_t._c_col>=2){return;}
 		_CONTEXT.drawImage(
 			_t_img,
-			_t._laser_MaxX,
+			_t._laser_MaxX-_t_img.width,
 			_t.y-(_t_img.height/2),
 			_t_img.width,
 			_t_img.height

@@ -1161,7 +1161,7 @@ class GameObject_PLAYER_MAIN
 			return;
 		}
 		if(_GAME.isSqCollision(
-			"25,33,40,42",
+			"25,35,35,42",
 			this.x+","+this.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
@@ -1864,10 +1864,10 @@ class GameObject_SHOTS_MISSILE
 
 		//ミサイル衝突判定
 		let _s=_GAME.isSqCollision(
-			_t._img.width/4+","
-				+_t._img.height/4+","
-				+_t._img.width*3/4+","
-				+_t._img.height*3/4,
+			(0-_t._img.width/4)+","
+				+(0-_t._img.height/4)+","
+				+(_t._img.width*5/4)+","
+				+(_t._img.height*5/4),
 			_t.x+","+_t.y,
 			_e.shotColMap,
 			_e.x+","+_e.y

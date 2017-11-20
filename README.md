@@ -13,8 +13,10 @@
 5. デバッグ用ステージ
  
 対応端末
-- PC（Chrome、Safari）
-- iOS（iPhone,iPad over 11）
+- PC（Chrome、Safari最新版）
+- iPhone,iPad（Safari iOS11以上）  
+iOSでは、Safariから「ホーム画面に書き出し」でホーム画面にアイコンを作り、そこからゲームします。  
+直接Safariでゲームをすると、アドレスバー等で表示が隠れてしまいます。
 
 操作説明 
 - [A]→ショット＋ミサイル（連射付き）

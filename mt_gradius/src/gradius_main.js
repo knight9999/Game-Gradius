@@ -3033,7 +3033,7 @@ class GameObject_SHOTS_LASER
 		if(_t._c_col>=2){return;}
 		_CONTEXT.drawImage(
 			_t_img,
-			_t._l_x,
+			_t._laser_MaxX,
 			_t.y-(_t_img.height/2),
 			_t_img.width,
 			_t_img.height
@@ -3179,23 +3179,25 @@ class GameObject_SHOTS_LASER
 
 	//		console.log('_x+_t._sx:'+(_t._sx));
 	//		console.log('_x+_t._x:'+(_t.x));
+//			let _px=_p.x+_p.img.width;
+			let _px=_pl._x;
 			_CONTEXT.beginPath();
 			_CONTEXT.strokeStyle=_this.strokeStyle_u;
-			_CONTEXT.moveTo(_pl._x+_t._sx,_pl._y+1);
-			_CONTEXT.lineTo(_pl._x+_t.x,_pl._y+1);
+			_CONTEXT.moveTo(_px+_t._sx,_pl._y+1);
+			_CONTEXT.lineTo(_px+_t.x,_pl._y+1);
 			_CONTEXT.stroke();
 
 			_CONTEXT.beginPath();
 			_CONTEXT.strokeStyle=_this.strokeStyle;
-			_CONTEXT.moveTo(_pl._x+_t._sx,_pl._y);
-			_CONTEXT.lineTo(_pl._x+_t.x,_pl._y);
+			_CONTEXT.moveTo(_px+_t._sx,_pl._y);
+			_CONTEXT.lineTo(_px+_t.x,_pl._y);
 			_CONTEXT.stroke();
 
 			_this.setLaserLine(_t,
-								_pl._x+_t.x,
-								_pl._y,
-								_pl._x+_t._sx,
-								_pl._y);
+								_px+_t.x,
+								_p.y,
+								_px+_t._sx,
+								_p.y);
 
 			if(_t.x>0){_t._shot_alive=true;}
 
@@ -3873,7 +3875,7 @@ const _DRAW=function(){
 			if(_PLAYERS_MISSILE_ISALIVE){
 				_PLAYERS_MISSILE[_i].move();
 			}
-			_PLAYERS_SHOTS[_SHOTTYPE][_i].move();			
+			_PLAYERS_SHOTS[_SHOTTYPE][_i].move();
 		}
 		//自機からひもづくオプションを表示
 		for(let _i=0;_i<_PLAYERS_OPTION_MAX;_i++){

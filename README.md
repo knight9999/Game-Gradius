@@ -28,7 +28,7 @@ iOSでは、Safariから「ホーム画面に書き出し」でホーム画面�
 ## Demo
 1. モアイステージ(iPhone 8Plus iOS11)  
 ![](https://user-images.githubusercontent.com/12569855/32998659-680bf784-cde0-11e7-9323-f851cf1b9a57.gif)  
-リンク(https://www.youtube.com/watch?v=sur3x5MF6fg)
+リンク(https://www.youtube.com/watch?v=sur3x5MF6fg){:target="_blank"}
 2. 火山ステージ(iPadmini4 iOS11)  
 [![](http://img.youtube.com/vi/5dOtu4dOcZo/0.jpg)](https://www.youtube.com/watch?v=5dOtu4dOcZo)
 2. 火山ステージ、4. クリスタルステージ(iPadmini4 iOS11)  

@@ -2,6 +2,7 @@
 
 ## Description
 
+横スクロールのシューティングゲームです。  
 純粋にJavascript+CANVASで実装しています。 
 
 以下のゲームを楽しめます。

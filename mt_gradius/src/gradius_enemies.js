@@ -6,13 +6,13 @@
 'use strict';
 
 const _DEF_DIFFICULT=[
-	{_ENEMY_SHOT_RATE:0.0001,_ENEMY_SHOT_SPEED:1,_ENEMY_SPEED:1},
-	{_ENEMY_SHOT_RATE:0.0005,_ENEMY_SHOT_SPEED:2,_ENEMY_SPEED:1},
-	{_ENEMY_SHOT_RATE:0.001,_ENEMY_SHOT_SPEED:2,_ENEMY_SPEED:1},
-	{_ENEMY_SHOT_RATE:0.004,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
+	{_ENEMY_SHOT_RATE:0.0001,_ENEMY_SHOT_SPEED:4,_ENEMY_SPEED:1},
+	{_ENEMY_SHOT_RATE:0.0005,_ENEMY_SHOT_SPEED:4,_ENEMY_SPEED:1},
+	{_ENEMY_SHOT_RATE:0.001,_ENEMY_SHOT_SPEED:4,_ENEMY_SPEED:1},
+	{_ENEMY_SHOT_RATE:0.004,_ENEMY_SHOT_SPEED:4,_ENEMY_SPEED:1},
 	{_ENEMY_SHOT_RATE:0.1,_ENEMY_SHOT_SPEED:4,_ENEMY_SPEED:2}
 ];
-let _ENEMY_DIFFICULT=0;//主にデバッグ用。
+let _ENEMY_DIFFICULT=4;//主にデバッグ用。
 
 const _ENEMY_DEF_ANI_COL={//衝突アニメーション定義
 't0':{
@@ -575,6 +575,7 @@ class ENEMY_d extends GameObject_ENEMY{
 		super(_CANVAS_IMGS['enemy_d_1'].obj,_x,_y)
         let _this=this;
 		_this._status=1;
+		_this.speed=5;
 
 		_this._col_c=0;
 		_this.col=[//アニメ定義
@@ -602,11 +603,11 @@ class ENEMY_d extends GameObject_ENEMY{
 		_this.x-=(function(_t){
 			return (_t.x>_CANVAS.width)
 				?_MAPDEFS[_MAP_PETTERN]._speed
-				:_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SPEED*5;
+				:_this.speed;
 		}(_this));
 
 		let _d=_SCROLL_POSITION*0.5;//radのスピード
-		let _v=2*Math.cos(_d*Math.PI/180);//縦幅調整
+		let _v=Math.cos(_d*Math.PI/180);//縦幅調整
 		_this.y+=_v;
 
 		_this.img=(function(_t){
@@ -1244,7 +1245,9 @@ class ENEMY_p_small extends GameObject_ENEMY{
 		//衝突レーザー、リップルレーザーの判定設定
 		//_s_type:_SHOTTYPE
 		if(!_this.isCollision()){return;}
-		_this._status--;
+		_this._status=(_s_type===_SHOTTYPE_RIPPLE_LASER)
+			?_this._status-2
+			:_this._status-1;
 		if(!_this.isalive()){_SCORE.set(_this.getscore);}
 	}
 	map_collition(){
@@ -1783,23 +1786,32 @@ class ENEMY_BOSS_BOGCORE
 }
 
 
+//====================
+//　弾クラス
+//	_x:_x位置弾の開始位置(DEF:500)
+//	_y:_y位置弾の開始位置(DEF:300)
+//	_tx:相手の_x位置弾の開始位置(DEF:プレーヤーのx位置)
+//	_ty:相手の_y位置弾の開始位置(DEF:プレーヤーのy位置)
+//====================
 class GameObject_ENEMY_SHOT{
 	constructor(_x,_y,_tx,_ty){
 		let _this=this;
-		_this.img=_CANVAS_IMGS['enemy_bullet1'].obj;
 		_this.x=_x||500;
 		_this.y=_y||300;
-		_this._c=0;//アニメーションカウント
-		_this.speed=_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SHOT_SPEED;//定義：発射スピード
 		_this.tx=_tx||_PLAYERS_MAIN.getPlayerCenterPosition()._x;
 		_this.ty=_ty||_PLAYERS_MAIN.getPlayerCenterPosition()._y;
-		_this.deg=
-			Math.atan2((this.ty-this.y),(this.tx-this.x))
-			*180/Math.PI;
-		_this.rad=
-			Math.atan2((this.ty-this.y),(this.tx-this.x));
-		_this.sx=Math.cos(this.rad);
-		_this.sy=Math.sin(this.rad);
+
+		_this.img=_CANVAS_IMGS['enemy_bullet1'].obj;
+		_this._c=0;//アニメーションカウント
+		_this.speed=_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SHOT_SPEED;//定義：発射スピード
+		_this.rad=//自身と相手までのラジアン
+			Math.atan2(
+				(_this.ty-_this.y),
+				(_this.tx-_this.x));
+		_this.deg=//自身と相手までの角度
+			_this.rad*180/Math.PI;
+		_this.sx=Math.cos(_this.rad);//単位x
+		_this.sy=Math.sin(_this.rad);//単位y
 		_this._shot_alive=true;//発射中フラグ
 
 		_this.shotColMap=[
@@ -1818,7 +1830,7 @@ class GameObject_ENEMY_SHOT{
  		let _map_x=_MAP.getMapX(_this.x);
  		let _map_y=_MAP.getMapY(_this.y);
 		if(_MAP.isMapCollision(_map_x,_map_y)){
-			this.init();			
+			_this.init();			
 		}
 	}
 	getEnemyCenterPosition(){

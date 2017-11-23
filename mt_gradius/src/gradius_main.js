@@ -1873,16 +1873,12 @@ class GameObject_SHOTS_MISSILE
 			_e.x+","+_e.y
 			);
 		if(_s===_IS_SQ_NOTCOL){return;}
-		//前回衝突した敵と同じ場合は無視する。
-		if(_t._enemyid===_e.id){return;}
 		//爆発中は無視
 		if(_t._c>0){return;}
 		if(_t._c===0){_t._c=1;}
 		
 		if(_s===_IS_SQ_COL_NONE){return;}
 		_e.collision(_SHOTTYPE_MISSILE);
-		//衝突した敵を覚える
-		_t._enemyid=_e.id;
 
 	}
 	get_missile_status(_t){return _t._st;}
@@ -2250,9 +2246,6 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 			_e.x+","+_e.y
 			);
 		if(_s===_IS_SQ_NOTCOL){return;}
-
-		//前回衝突した敵と同じ場合は無視する。
-		if(_t._enemyid===_e.id){return;}
 		//爆発中は無視
 		if(_t._c>0){return;}
 
@@ -2265,8 +2258,6 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 		//敵を倒した場合は貫通させる。
 		if(!_e.isalive()){return;}
 		if(_t._c===0){_t._c=1;}
-		//衝突した敵を覚える
-		_t._enemyid=_e.id;
 
 	}
 }//GameObject_SHOTS_MISSILE_PHOTOM
@@ -2337,9 +2328,6 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 		if(_t._c===0){_t._c=1;}
 		if(_s===_IS_SQ_COL_NONE){return;}
 		_e.collision(_SHOTTYPE_MISSILE);
-		//衝突した敵を覚える
-		_t._enemyid=_e.id;
-
 	}
 	map_collition(_t){
 		//MAPの位置を取得
@@ -2452,16 +2440,12 @@ class GameObject_SHOTS_MISSILE_2WAY
 			_e.x+","+_e.y
 			);
 		if(_s===_IS_SQ_NOTCOL){return;}
-		//前回衝突した敵と同じ場合は無視する。
-		if(_t._enemyid===_e.id){return;}
 		//爆発中は無視
 		if(_t._c>0){return;}
 		if(_t._c===0){_t._c=1;}
 		
 		if(_s===_IS_SQ_COL_NONE){return;}		
 		_e.collision(_SHOTTYPE_MISSILE);
-		//衝突した敵を覚える
-		_t._enemyid=_e.id;
 
 	}
 	map_collition(_t){
@@ -2902,9 +2886,29 @@ class GameObject_SHOTS_RIPPLE_LASER
 					_e.x+","+_e.y
 				);
 			if(_s===_IS_SQ_NOTCOL){return;}
-			if(!_e.isalive()){return;}
 			if(_s===_IS_SQ_COL){
-				_e.collision(_SHOTTYPE_RIPPLE_LASER);				
+				_e.collision(_SHOTTYPE_RIPPLE_LASER);
+				(function(){
+					let _ens=_ENEMIES;
+					for(let _i=0;_i<_ens.length;_i++){
+					let _en=_ens[_i];
+					//既に倒した敵は無視する
+					if(!_en.isalive()){continue;}
+					//非表示は無視する
+					if(!_en.isshow()){continue;}
+
+					let _s1=_GAME.isSqCollision(
+						"0,0,"+(_t._width)+","+(_t._height*2),
+						_t.x+","+(_t.y-_t._height),
+						_en.shotColMap,
+						_en.x+","+_en.y
+					);
+					if(_s1===_IS_SQ_COL){
+						_en.collision(_SHOTTYPE_RIPPLE_LASER);						
+					}
+		
+					}//for
+				})();
 			}
 			_t._init();
 		}
@@ -3056,10 +3060,6 @@ class GameObject_SHOTS_LASER
 
 		//当たり判定
 		if(_s===_IS_SQ_NOTCOL){
-			if(_t._enemy===null){
-			}else if(_t._enemy===_e.id){
-				this.setLaserMaxX(_CANVAS.width);
-			}else{}
 			return;
 		}
 		if(_s===_IS_SQ_COL_NONE){
@@ -3070,7 +3070,6 @@ class GameObject_SHOTS_LASER
 		_e.collision(_SHOTTYPE_LASER);
 		if(_e.isalive()){
 			this.setLaserMaxX(_e.x+(_e.img.width/4));
-			_t._enemy=_e.id;
 			return;
 		}
 
@@ -3766,14 +3765,15 @@ const _IS_GET_POWERCAPSELL=function(){
 //自機ショット、また自機と敵による衝突判定
 const _IS_ENEMIES_COLLISION=function(){
 	if(!_PLAYERS_MAIN.isalive()){return;}
-	let _s=false;//衝突判定
-	let _e=_ENEMIES;
 
-	_e.sort(function(a,b){
-	    if(a.x<b.x) return -1;
-	    if(a.x>b.x) return 1;
-	    return 0;
-	});
+	// for(let _i=0;_i<_ENEMIES.length;_i++){
+	// 	//非表示は無視する
+	// 	if(!_ENEMIES[_i].isshow()){
+	// 		_ENEMIES.splice(_i,1);
+	// 	}
+	// }
+
+	let _e=_ENEMIES;
 
 	for(let _i=0;_i<_e.length;_i++){
 	//既に倒した敵は無視する
@@ -4541,9 +4541,9 @@ isSqCollision:function(_s1,_s1_n,_s2,_s2_n,_d){
 	//_d:デバッグ用(true)
 	//
 	// return
-	// true:衝突している、かつ、あたり判定とする。
-	// 2:衝突している、ただし、あたり判定はしない。
-	// false:衝突していない。
+	// _IS_SQ_COL(0):衝突している、かつ、あたり判定とする。
+	// _IS_SQ_COL_NONE(1):衝突している、ただし、あたり判定はしない。
+	// _IS_SQ_NOTCOL(2):衝突していない。
 	let _s1_n_x=parseInt((_s1_n===undefined)?0:_s1_n.split(',')[0]);
 	let _s1_n_y=parseInt((_s1_n===undefined)?0:_s1_n.split(',')[1]);
 	let _s2_n_x=parseInt((_s2_n===undefined)?0:_s2_n.split(',')[0]);

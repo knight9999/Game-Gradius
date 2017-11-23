@@ -119,7 +119,7 @@ class GameObject_ENEMY{
 		_this.shotColMap=[
 			"0,0,"+_this.img.width+","+_this.img.height
 		];
-		_this.col_date=new Date();//打たれた時間
+		_this.col_date=null;//打たれた時間
 		_this.col_canint=100;//連続ショット許可間隔
 	}
 	init(){
@@ -171,6 +171,11 @@ class GameObject_ENEMY{
 		//衝突判定フラグ
 		//250ミリ秒以内は無視する。
 		let _this=this;
+		if(_this.col_date===null){
+			//1発目は必ず当てる
+			_this.col_date=new Date();
+			return true;
+		}
 		let _date=new Date();
 		if(_date-_this.col_date>_this.col_canint){
 			_this.col_date=new Date();

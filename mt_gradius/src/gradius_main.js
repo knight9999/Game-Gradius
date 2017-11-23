@@ -3766,12 +3766,13 @@ const _IS_GET_POWERCAPSELL=function(){
 const _IS_ENEMIES_COLLISION=function(){
 	if(!_PLAYERS_MAIN.isalive()){return;}
 
-	// for(let _i=0;_i<_ENEMIES.length;_i++){
-	// 	//非表示は無視する
-	// 	if(!_ENEMIES[_i].isshow()){
-	// 		_ENEMIES.splice(_i,1);
-	// 	}
-	// }
+	for(let _i=0;_i<_ENEMIES.length;_i++){
+		//非表示は無視する
+		if(!_ENEMIES[_i].isshow()
+			&&!_ENEMIES[_i].isalive()){
+			_ENEMIES.splice(_i,1);
+		}
+	}
 
 	let _e=_ENEMIES;
 

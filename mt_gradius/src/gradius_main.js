@@ -1166,7 +1166,7 @@ class GameObject_PLAYER_MAIN
 			_e.shotColMap,
 			_e.x+","+_e.y
 			)===_IS_SQ_NOTCOL){return;}
-		_e.collision(undefined,this);
+		_e.collision();
 		this.setfalsealive();
 	}
 	enemy_shot_collision(_e){
@@ -2459,7 +2459,7 @@ class GameObject_SHOTS_MISSILE_2WAY
 		if(_t._c===0){_t._c=1;}
 		
 		if(_s===_IS_SQ_COL_NONE){return;}		
-		_e.collision(_SHOTTYPE_MISSILE,_t);
+		_e.collision(_SHOTTYPE_MISSILE);
 		//衝突した敵を覚える
 		_t._enemyid=_e.id;
 
@@ -2896,7 +2896,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 			if(!_t._shot_alive){continue;}
 
 			let _s=_GAME.isSqCollision(
-					"0,0,"+_t._width+","+_t._height*2,
+					"0,0,"+(_t._width)+","+(_t._height*2),
 					_t.x+","+(_t.y-_t._height),
 					_e.shotColMap,
 					_e.x+","+_e.y
@@ -2904,7 +2904,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 			if(_s===_IS_SQ_NOTCOL){return;}
 			if(!_e.isalive()){return;}
 			if(_s===_IS_SQ_COL){
-				_e.collision(_SHOTTYPE_RIPPLE_LASER,_t);				
+				_e.collision(_SHOTTYPE_RIPPLE_LASER);				
 			}
 			_t._init();
 		}
@@ -3010,7 +3010,7 @@ class GameObject_SHOTS_LASER
 				_init:function(){//初期化
 					this.x=0,
 					this.y=0,
-					this._c=0,
+					this._c_col=0,
 					this._laser_t=0,
 					this._laser_ts=0,
 					this._sx=0,
@@ -3048,7 +3048,7 @@ class GameObject_SHOTS_LASER
 		//		console.log('sx'+_t._l_sx);
 		
 		let _s=_GAME.isSqCollision(
-			"0,0,"+parseInt(_t._l_x-_t._l_sx)+",2",
+			"0,-4,"+parseInt(_t._l_x-_t._l_sx)+",4",
 			_t._l_sx+","+_t.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
@@ -3079,24 +3079,20 @@ class GameObject_SHOTS_LASER
 		}//_k
 	}
 	map_collition(_t){
+		let _this=this;
 		if(!_t._shot_alive){return;}
 
 		//プレーヤーの中心座標取得
-		let _pl=this.player.getPlayerCenterPosition();
+		let _pl=_this.player.getPlayerCenterPosition();
 
 		let _map_x=_MAP.getMapX(_t.x+_pl._x);
 		let _map_y=_MAP.getMapY(_t.y);
 		if(_MAP.isMapCollision(_map_x,_map_y)){
-			this.setLaserMaxX(_MAP.getMapXToPx(_map_x));
+			_this.setLaserMaxX(_MAP.getMapXToPx(_map_x));
 			return;
 		}
 
-		// if(_MAP.isMapCollision(_map_x-1,_map_y)){
-		// 	this.setLaserMaxX(_MAP.getMapXToPx(_map_x));
-		// 	return;
-		// }
-
-		this.setLaserMaxX(_CANVAS.width);
+		_this.setLaserMaxX(_CANVAS.width);
 
 	}
 	setLaserLine(_s,_l_x,_l_y,_l_sx,_l_sy){
@@ -3143,7 +3139,6 @@ class GameObject_SHOTS_LASER
 					//レーザーがキャンバスの右端に届いた時
 					_t._laser_t+=(1000/_FPS);
 					return _t._laser_MaxX-_pl._x;
-//					return _t._laser_MaxX;
 				}
 				return _i+_this.speed;
 			})(_t.x);

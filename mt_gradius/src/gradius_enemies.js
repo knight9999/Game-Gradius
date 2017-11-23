@@ -96,7 +96,7 @@ class GameObject_ENEMY{
 
 		_this.speed=1;
 		_this.getscore=200;
-		_this._status=2;
+		_this._status=2;//生存ステータス
 		_this._isshow=true;
 		_this.direct='up';//向きの設定
 
@@ -148,13 +148,19 @@ class GameObject_ENEMY{
 		);
 		_this.col_ani_c++;
 	}
-	collision(_s_type){
+	collision(_s_type,_num){
 		//衝突処理
 		//パラメータはあるが、デフォルトでは不要
 		//ショットタイプ別に処理を分ける際は、
 		//このクラスから継承する。
-		this._status-=1;
-		if(!this.isalive()){_SCORE.set(this.getscore);}
+		//_s_type:自機のショットタイプ
+		//_num:一度にヒットさせる値
+		let _this=this;
+		if(!_this.isCollision()){return;}		
+		let _n=_num||1;//デフォルトは1
+		_n=(_s_type===_SHOTTYPE_MISSILE)?2:_n;//ミサイルは2倍の判定
+		_this._status-=_n;//敵の生存ステータスを減らす
+		if(!_this.isalive()){_SCORE.set(_this.getscore);}
 	}
 	getEnemyCenterPosition(){
 		return {_x:this.x+(this.img.width/2),
@@ -1137,14 +1143,6 @@ class ENEMY_p extends GameObject_ENEMY{
 		this._isbroken=false;
 		this.isshot=false;
 	}
-	collision(_s_type){
-		//衝突レーザー、リップルレーザーの判定設定
-		//_s_type:_SHOTTYPE
-		let _this=this;
-		if(!_this.isCollision()){return;}
-		_this._status--;
-		if(!_this.isalive()){_SCORE.set(_this.getscore);}
-	}
 	map_collition(){
 		let _this=this;
 		//中心座標取得
@@ -1240,16 +1238,6 @@ class ENEMY_p_small extends GameObject_ENEMY{
 		_this.col_imgs=_ENEMY_DEF_ANI_COL.t1.imgs;//衝突アニメ画像
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t1.intv;//衝突アニメ間隔
 	}
-	collision(_s_type){
-		let _this=this;
-		//衝突レーザー、リップルレーザーの判定設定
-		//_s_type:_SHOTTYPE
-		if(!_this.isCollision()){return;}
-		_this._status=(_s_type===_SHOTTYPE_RIPPLE_LASER)
-			?_this._status-2
-			:_this._status-1;
-		if(!_this.isalive()){_SCORE.set(_this.getscore);}
-	}
 	map_collition(){
 		let _this=this;
 		//中心座標取得
@@ -1338,13 +1326,13 @@ class ENEMY_q extends GameObject_ENEMY{
 		];
 
 	}
-	collision(_s_type){
-		//衝突レーザー、リップルレーザーの判定設定
-		//_s_type:_SHOTTYPE
+	collision(_s_type,_num){
 		let _this=this;		
 		if(!_this._isopen){return;}
 		if(!_this.isCollision()){return;}
-		_this._status--;
+		let _n=_num||1;//デフォルトは1
+		_n=(_s_type===_SHOTTYPE_MISSILE)?2:_n;//ミサイルは2倍の判定
+		_this._status-=_n;//敵の生存ステータスを減らす
 		if(!_this.isalive()){_SCORE.set(_this.getscore);}
 	}
 	isShot(){
@@ -1496,14 +1484,6 @@ class ENEMY_qr extends GameObject_ENEMY{
 		_this.col_imgs=_ENEMY_DEF_ANI_COL.t2.imgs;//衝突アニメ画像
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t2.intv;//衝突アニメ間隔
 	}
-	collision(_s_type){
-		//衝突レーザー、リップルレーザーの判定設定
-		//_s_type:_SHOTTYPE
-		let _this=this;
-		if(!_this.isCollision()){return;}
-		_this._status--;
-		if(!_this.isalive()){_SCORE.set(_this.getscore);}
-	}
 	map_collition(){
 		let _this=this;
 		let _e=_this.getEnemyCenterPosition();
@@ -1543,6 +1523,15 @@ class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 		this._c=0;//アニメーションカウント
 	}
 	ani_col(){}
+	collision(_s_type,_num){
+		let _this=this;
+		if(!_this.is_able_collision){return;}
+		if(!_this.isCollision()){return;}
+		let _n=_num||1;//デフォルトは1
+		_n=(_s_type=_SHOTTYPE_MISSILE)?2:_n;//ミサイルは2倍の判定
+		_this._status-=_n;//敵の生存ステータスを減らす
+		if(!this.isalive()){_SCORE.set(this.getscore);}
+	}
 	init(){
 		let _this=this;
 		_this.starttime=new Date().getTime();
@@ -1641,16 +1630,6 @@ class ENEMY_BOSS_BOGCORE
 			_a.img.height*_a.scale
 		);
 		_this.col_ani9_c++;
-	}
-	collision(_s_type){
-		let _this=this;
-		if(!_this.is_able_collision){return;}
-//		console.log(_t);
-		if(!_this.isCollision()){return;}
-		//衝突レーザー、リップルレーザーの判定
-		//ボスの当たり判定を狭める
-		_this._status--;
-		if(!this.isalive()){_SCORE.set(this.getscore);}
 	}
 	showCollapes(){this.ani_col2();}
 	shot(){

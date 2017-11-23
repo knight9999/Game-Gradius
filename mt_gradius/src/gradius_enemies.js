@@ -120,7 +120,7 @@ class GameObject_ENEMY{
 			"0,0,"+_this.img.width+","+_this.img.height
 		];
 		_this.col_date=null;//打たれた時間
-		_this.col_canint=100;//連続ショット許可間隔
+		_this.col_canint=150;//連続ショット許可間隔
 	}
 	init(){
         _ENEMIES=new Array();

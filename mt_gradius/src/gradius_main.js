@@ -1685,12 +1685,12 @@ class GameObject_SHOTS{
 			//自機より後ろは無視する。
 			if(_e.x<this.player.x){continue;}
 			let _s=_GAME.isSqCollision(
-				"-10,-10,10,10",
+				"-12,-12,12,12",
 				_t.x+","+_t.y,
 				_e.shotColMap,
 				_e.x+","+_e.y
 			);
-			if(_s===_IS_SQ_NOTCOL){return;}
+			if(_s===_IS_SQ_NOTCOL){continue;}
 			if(_s===_IS_SQ_COL){
 				_e.collision(_SHOTTYPE_NORMAL);					
 			}
@@ -2880,7 +2880,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 			if(!_t._shot_alive){continue;}
 
 			let _s=_GAME.isSqCollision(
-					"0,0,"+(_t._width)+","+(_t._height*2),
+					"0,-20,"+(_t._width)+","+(_t._height*2+20),
 					_t.x+","+(_t.y-_t._height),
 					_e.shotColMap,
 					_e.x+","+_e.y
@@ -3052,7 +3052,7 @@ class GameObject_SHOTS_LASER
 		//		console.log('sx'+_t._l_sx);
 		
 		let _s=_GAME.isSqCollision(
-			"0,-4,"+parseInt(_t._l_x-_t._l_sx)+",4",
+			"0,-6,"+parseInt(_t._l_x-_t._l_sx)+",6",
 			_t._l_sx+","+_t.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
@@ -3767,7 +3767,7 @@ const _IS_ENEMIES_COLLISION=function(){
 	if(!_PLAYERS_MAIN.isalive()){return;}
 
 	for(let _i=0;_i<_ENEMIES.length;_i++){
-		//非表示は無視する
+		//非表示・かつ生存してない場合は、要素から外す
 		if(!_ENEMIES[_i].isshow()
 			&&!_ENEMIES[_i].isalive()){
 			_ENEMIES.splice(_i,1);
@@ -3781,7 +3781,8 @@ const _IS_ENEMIES_COLLISION=function(){
 	if(!_e[_i].isalive()){continue;}
 	//非表示は無視する
 	if(!_e[_i].isshow()){continue;}
-	if(_e[_i].x>_CANVAS.width-50){continue;}
+	//スタンバイ状態は無視する
+	if(_e[_i].isStandBy()){continue;}		
 	let _oe=_e[_i];
 	for(let _j=0;
 		_j<_PLAYERS_SHOTS[_SHOTTYPE].length;

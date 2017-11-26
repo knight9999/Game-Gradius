@@ -2885,7 +2885,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 					_e.shotColMap,
 					_e.x+","+_e.y
 				);
-			if(_s===_IS_SQ_NOTCOL){return;}
+			if(_s===_IS_SQ_NOTCOL){continue;}
 			if(_s===_IS_SQ_COL){
 				_e.collision(_SHOTTYPE_RIPPLE_LASER);
 				(function(){

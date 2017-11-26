@@ -132,14 +132,7 @@ class GameObject_ENEMY{
 		//_num:一度にヒットさせる値
 		let _this=this;
 		if(!_this.isCollision()){return;}
-		let _n=_num||1;//デフォルトは1
-		_n=(_s_type===_SHOTTYPE_MISSILE)?2:_n;//ミサイルは2倍の判定
-		_this._status-=_n;//敵の生存ステータスを減らす
-		if(!_this.isalive()){_SCORE.set(_this.getscore);}
-	}
-	getEnemyCenterPosition(){
-		return {_x:this.x+(this.img.width/2),
-				_y:this.y+(this.img.height/2)}
+		_this.setStatus(_s_type,_num);
 	}
 	isCollision(){
 		//衝突判定フラグ
@@ -156,6 +149,25 @@ class GameObject_ENEMY{
 			return true;
 		}
 		return false;
+	}
+	setStatus(_s_type,_num){
+		let _this=this;
+		_this._status-=(function(_n){
+			_n=_n||1;//デフォルトは1
+			if(_s_type===_SHOTTYPE_MISSILE){
+				//ミサイルは通常の2倍
+				return 2;
+			}else if(_s_type===_SHOTTYPE_RIPPLE_LASER){
+				//リップルレーザーは通常の1.5倍
+				return 1.5;
+			}
+			return _n;
+		})(_num);
+		if(!_this.isalive()){_SCORE.set(_this.getscore);}
+	}
+	getEnemyCenterPosition(){
+		return {_x:this.x+(this.img.width/2),
+				_y:this.y+(this.img.height/2)}
 	}
 	isalive(){return (this._status>0);}
 	isshow(){return this._isshow;}
@@ -1292,10 +1304,7 @@ class ENEMY_q extends GameObject_ENEMY{
 		//イオンリングを発したときに当たり判定させる
 		if(!_this._isopen){return;}
 		if(!_this.isCollision()){return;}
-		let _n=_num||1;//デフォルトは1
-		_n=(_s_type===_SHOTTYPE_MISSILE)?2:_n;//ミサイルは2倍の判定
-		_this._status-=_n;//敵の生存ステータスを減らす
-		if(!_this.isalive()){_SCORE.set(_this.getscore);}
+		_this.setStatus(_s_type,_num);
 	}
 	isShot(){
 		let _this=this;
@@ -1498,16 +1507,6 @@ class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 		this.starttime=0;
 		this._c=0;//アニメーションカウント
 	}
-	ani_col(){}
-	collision(_s_type,_num){
-		let _this=this;
-		if(!_this.is_able_collision){return;}
-		if(!_this.isCollision()){return;}
-		let _n=_num||1;//デフォルトは1
-		_n=(_s_type=_SHOTTYPE_MISSILE)?2:_n;//ミサイルは2倍の判定
-		_this._status-=_n;//敵の生存ステータスを減らす
-		if(!this.isalive()){_SCORE.set(this.getscore);}
-	}
 	init(){
 		let _this=this;
 		_this.starttime=new Date().getTime();
@@ -1523,16 +1522,16 @@ class ENEMY_BOSS_BOGCORE
 	constructor(_x,_y){
 		super(_CANVAS_IMGS['enemy_z'].obj,_x,_y);
 		let _this=this;
-		_this._status=50;
+		_this._status=70;
 		_this.speed=3;
 		_this.getscore=10000;
 		_this.img=_CANVAS_IMGS['enemy_z'].obj;
 		_this.wall_col={_x:0,_y:0};
 		_this.wall=[
-			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:40,isalive:true,x:65,y:7},
-			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:30,isalive:true,x:55,y:7},
-			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:20,isalive:true,x:45,y:7},
-			{img:_CANVAS_IMGS['enemy_z_2'].obj,cs:10,isalive:true,x:35,y:5},
+			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:60,isalive:true,x:65,y:7},
+			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:50,isalive:true,x:55,y:7},
+			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:40,isalive:true,x:45,y:7},
+			{img:_CANVAS_IMGS['enemy_z_2'].obj,cs:30,isalive:true,x:35,y:5},
 			{img:_CANVAS_IMGS['enemy_z_3'].obj,cs:0,isalive:true,x:15,y:14},
 		];
 

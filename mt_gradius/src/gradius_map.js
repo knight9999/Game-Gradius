@@ -610,7 +610,17 @@ class GameObject_MAP{
 				+_p_s[_l]
 				+_s_mapdef_col.substr(_mx+1+_p_s[_l].length);			
 		}//_l
-	}	
+	}
+	setMapY(_y){
+		//y軸スクロール時、y位置を転回する
+		if(_y>500){
+			return _y-1000;
+		}
+		if(_y<-500){
+			return _y+1000;
+		}
+		return _y-2;
+	}
 	setCollisionBit(_pb,_mcb){
 		let _this=this;
 		let _s='';
@@ -636,9 +646,13 @@ class GameObject_MAP{
 					(_x+_MAP_SCROLL_POSITION_X-this.initx)
 					/this.t);
 	}
-	getMapY(_y){
-//		console.log(parseInt((_y-_MAP_SCROLL_POSITION_Y)/this.t));
-		return parseInt(_y/this.t);
+	getMapY(_y,_d){
+		let _dy=_y+(1000-this.y);
+		_dy=(_dy>1000)?_dy-1000:_dy;
+//		console.log(parseInt((_y+_MAP_SCROLL_POSITION_Y)/this.t));
+//		return parseInt((_y+_MAP_SCROLL_POSITION_Y)/this.t);
+//		console.log(_d+'::::'+parseInt((_y+(1000-this.y))/this.t));
+		return parseInt(_dy/this.t);
 	}
 	isCollisionBit(_bit){
 		//衝突ビット判定フラグ
@@ -762,19 +776,27 @@ class GameObject_MAP{
 		let _maxXheight=_this.getMapYToPx(_this.mapdef.length)
 		_this.x-=_this.map_background_speed;
 		
-		_MAP_SCROLL_POSITION_Y+=
-			(_this.mapdef.length>(_CANVAS.height/_this.t))
-				?(_this.map_background_speed)*-3
-				:0;
+		// _MAP_SCROLL_POSITION_Y+=
+		// 	(_this.mapdef.length>(_CANVAS.height/_this.t))
+		// 		?(_this.map_background_speed)
+		// 		:0;
 		
-		_MAP_SCROLL_POSITION_Y=
-			(Math.abs(_MAP_SCROLL_POSITION_Y)>=_this.mapdef.length*_this.t)
-				?0
-				:_MAP_SCROLL_POSITION_Y;
+		// _MAP_SCROLL_POSITION_Y=
+		// 	(Math.abs(_MAP_SCROLL_POSITION_Y)>=_this.mapdef.length*_this.t)
+		// 		?0
+		// 		:_MAP_SCROLL_POSITION_Y;
 
-		_this.y=_MAP_SCROLL_POSITION_Y;
+		// _this.y=_MAP_SCROLL_POSITION_Y;
 				
-//		console.log(_MAP_SCROLL_POSITION_Y);
+//		console.log(_this.y);
+//		_this.y+=_this.map_background_speed;
+		_this.y-=2;
+		if(_this.y<0){
+			_this.y=1000;			
+		}
+		if(_this.y>1000){
+			_this.y=0;
+		}
 				
 		//MAPを表示
 		for(let _i=0;_i<_this.mapdef.length;_i++){
@@ -799,13 +821,13 @@ class GameObject_MAP{
 
 			if(_maxXheight<=_CANVAS.height){continue;}
 			//継ぎ目用の表示
-			let _copyimg_y=(_MAP_SCROLL_POSITION_Y<0)
-				?_maxXheight
-				:_maxXheight*-1
+			// let _copyimg_y=(_this.y<0)
+			// 	?_maxXheight
+			// 	:_maxXheight*-1
 			_CONTEXT.drawImage(
 				_img,
 				_this.x+(_p._mx(_j)*_this.t),
-				_this.y+(_p._my(_i)*_this.t)+_copyimg_y,
+				_this.y+(_p._my(_i)*_this.t)+((_this.y>0)?-1000:1000),
 				_img.width,
 				_img.height
 			);

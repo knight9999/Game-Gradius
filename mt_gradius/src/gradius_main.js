@@ -1196,7 +1196,7 @@ class GameObject_PLAYER_MAIN
 		let _pl=this.getPlayerCenterPosition();
 		//MAPの位置を取得
 		let _map_x=_MAP.getMapX(_pl._x);
-		let _map_y=_MAP.getMapY(_pl._y);
+		let _map_y=_MAP.getMapY(_pl._y,"v");
 
 		if(_MAP.isMapCollision(_map_x,_map_y)){
 			this.setfalsealive();
@@ -1949,7 +1949,7 @@ class GameObject_SHOTS_MISSILE
 			}
 //			console.log('_st8');
 			_t.x+=2;
-			_t.y=(_map_y*_MAP.t)+3;
+			_t.y=_MAP.getMapYToPx(_map_y)+3;
 			_this.set_missile_status(_t,'_st3');
 		}
 
@@ -3681,6 +3681,7 @@ class GameObject_POWERCAPSELL{
 		//すでにパワーカプセル取得済みは終了
 		if(_this.gotpc){return;}
 		_this.x-=_BACKGROUND_SPEED;
+		_this.y=_MAP.setMapY(_this.y);
 
 		//パワーカプセル所持の場合
 		let _img=(function(_t){

@@ -10,6 +10,11 @@ let _MAPDEF='';
 let _MAP_PETTERN=3;
 let _BACKGROUND_SPEED=0;
 
+let _MAP_SCROLL_POSITION_X=0;
+//_MAP_SCROLL_POSITION_Y
+// CANVASの初期左上が0として基点
+let _MAP_SCROLL_POSITION_Y=0;
+
 const _MAP_ENEMIES={
 _DEF_DIR:{//向き
 	_U:0,//上
@@ -478,7 +483,9 @@ class GameObject_MAP{
 	constructor(_pt){
 		this.pt=_pt||0;
 		this.initx=0;
+		this.inity=0;
 		this.x=this.initx;
+		this.y=this.inity;
 		this.collision=new RegExp('[1A-Z]');
 		this.collision_enemies=new RegExp('[a-z]','g');
 		this.collision_map=new RegExp('[A-Z]');
@@ -503,6 +510,7 @@ class GameObject_MAP{
 	init_stage_map(){
 		//ステージの初期設定
 		this.x=parseInt(_MAPDEFS[this.map_pettern]._initx);
+		this.y=this.inity;
 		this.initx=parseInt(_MAPDEFS[this.map_pettern]._initx);
 		this.mapdef=_MAPDEFS[this.map_pettern]._map;
 		this.map_difficult=parseInt(_MAPDEFS[this.map_pettern]._difficult)-1;
@@ -530,7 +538,6 @@ class GameObject_MAP{
 			let _d=(function(){//向きを取得する
 				//直上が1
 				let _r=_MAP_ENEMIES._setDir(_j,_i);
-//				let _e=_MAP_ENEMIES._ENEMIES[_md];
 				let _e=_MAP_THEME[_this.map_theme]._enemies[_md]
 				//直下が1（既に直上が1だったら、直上を向き決定にする）
 				_r=(_r===0)
@@ -623,12 +630,16 @@ class GameObject_MAP{
 	get_stage_map_pattern(_n){
 		return this.map_pettern;
 	}
-	getMapXToPx(_mx){return (_mx*this.t)+this.initx-_SCROLL_POSITION;}
+	getMapXToPx(_mx){return (_mx*this.t)+this.initx-_MAP_SCROLL_POSITION_X;}
 	getMapYToPx(_my){return _my*this.t;}
 	getMapX(_x){return parseInt(
-					(_x+_SCROLL_POSITION-this.initx)
-					/this.t);}
-	getMapY(_y){return parseInt(_y/this.t);}
+					(_x+_MAP_SCROLL_POSITION_X-this.initx)
+					/this.t);
+	}
+	getMapY(_y){
+//		console.log(parseInt((_y-_MAP_SCROLL_POSITION_Y)/this.t));
+		return parseInt(_y/this.t);
+	}
 	isCollisionBit(_bit){
 		//衝突ビット判定フラグ
 		return (_bit.match(this.collision)!==null);
@@ -748,8 +759,23 @@ class GameObject_MAP{
 	}//showMapForStageselect
 	move(){
 		let _this=this;
+		let _maxXheight=_this.getMapYToPx(_this.mapdef.length)
 		_this.x-=_this.map_background_speed;
+		
+		_MAP_SCROLL_POSITION_Y+=
+			(_this.mapdef.length>(_CANVAS.height/_this.t))
+				?(_this.map_background_speed)*-3
+				:0;
+		
+		_MAP_SCROLL_POSITION_Y=
+			(Math.abs(_MAP_SCROLL_POSITION_Y)>=_this.mapdef.length*_this.t)
+				?0
+				:_MAP_SCROLL_POSITION_Y;
 
+		_this.y=_MAP_SCROLL_POSITION_Y;
+				
+//		console.log(_MAP_SCROLL_POSITION_Y);
+				
 		//MAPを表示
 		for(let _i=0;_i<_this.mapdef.length;_i++){
 		for(let _j=0;_j<_this.mapdef[_i].length;_j++){
@@ -762,13 +788,28 @@ class GameObject_MAP{
 			}
 			let _p=_MAP_THEME[_this.map_theme]._p[_k];
 			let _img=_p._o.obj;
+//			console.log(_this.y+(_p._my(_i)*_this.t))
 			_CONTEXT.drawImage(
 				_img,
 				_this.x+(_p._mx(_j)*_this.t),
-				_p._my(_i)*_this.t,
+				_this.y+(_p._my(_i)*_this.t),
 				_img.width,
 				_img.height
 			);
+
+			if(_maxXheight<=_CANVAS.height){continue;}
+			//継ぎ目用の表示
+			let _copyimg_y=(_MAP_SCROLL_POSITION_Y<0)
+				?_maxXheight
+				:_maxXheight*-1
+			_CONTEXT.drawImage(
+				_img,
+				_this.x+(_p._mx(_j)*_this.t),
+				_this.y+(_p._my(_i)*_this.t)+_copyimg_y,
+				_img.width,
+				_img.height
+			);
+
 		}//_j
 		}//_i
 

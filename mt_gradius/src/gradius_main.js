@@ -36,8 +36,6 @@ let _CONTEXT;
 
 let _DRAW_IS_GAMECLEAR=false;//GameClearフラグ
 
-let _SCROLL_POSITION=0;
-
 const _SHOTTYPE_MISSILE='_SHOTTYPE_MISSILE';
 const _SHOTTYPE_NORMAL='_SHOTTYPE_NORMAL';
 const _SHOTTYPE_DOUBLE='_SHOTTYPE_DOUBLE';
@@ -3888,8 +3886,8 @@ const _DRAW=function(){
 		//SCOREを表示
 		_SCORE.show();
 
-		_SCROLL_POSITION+=_MAP.map_background_speed;
-		if(_SCROLL_POSITION-100<=
+		_MAP_SCROLL_POSITION_X+=_MAP.map_background_speed;
+		if(_MAP_SCROLL_POSITION_X-100<=
 			(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}
 
 		//MATCH_BOSS
@@ -4244,7 +4242,8 @@ const _DRAW_RESET_OBJECT=function(){
 
 	_POWERCAPSELLS=[];
 
-	_SCROLL_POSITION=0;
+	_MAP_SCROLL_POSITION_X=0;
+	_MAP_SCROLL_POSITION_Y=0;
 	_BACKGROUND_SPEED=1;
 
 	_DRAW_IS_MATCH_BOSS=false;

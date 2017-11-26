@@ -293,8 +293,9 @@ class GameObject_ENEMY{
 		let _this=this;
 		if(_this.x+_this.img.width<-100
 //			||_this.x+100>_CANVAS.width
-			||_this.y+_this.img.height<0
-			||_this.y>_CANVAS.height){
+//			||_this.y+_this.img.height<0
+//			||_this.y>_CANVAS.height
+		){
 			return true;
 		}
 		return false;
@@ -365,6 +366,7 @@ class ENEMY_a extends GameObject_ENEMY{
 		super(_CANVAS_IMGS['enemy_a_1'].obj,_x,_y)
         let _this=this;
 		_this._status=1;
+		_this.inity=_y;
         _this.direct=_d||_this._DEF_DIR._U;
         _this.defimg=[_CANVAS_IMGS['enemy_a_1'].obj,_CANVAS_IMGS['enemy_a_2'].obj];
 
@@ -404,8 +406,10 @@ class ENEMY_a extends GameObject_ENEMY{
 		_CONTEXT.restore();
 	}
 	moveDraw(){
+		console.log(this.y)
 		let _this=this;
 		_this.x-=_BACKGROUND_SPEED;
+		_this.y=_this.inity+_MAP_SCROLL_POSITION_Y;
 		_this.setDrawImage();
 		//弾の発射
 		_this.shot();

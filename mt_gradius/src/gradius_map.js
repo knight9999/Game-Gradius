@@ -479,24 +479,29 @@ const _MAP_THEME={//_parts要素番号0は空文字
 //				_DEF_ENEMY_DIFFICULTで難易度を設定
 // _initx:マップの開始表示位置（0〜）
 
+// _this.map_backgroundY_speed:Y軸スクロールスピード
+// _MAP_SCROLL_POSITION_Y（0-999）:主に衝突マップを使って当たり判定させる
 class GameObject_MAP{
 	constructor(_pt){
-		this.pt=_pt||0;
-		this.initx=0;
-		this.inity=0;
-		this.x=this.initx;
-		this.y=this.inity;
-		this.collision=new RegExp('[1A-Z]');
-		this.collision_enemies=new RegExp('[a-z]','g');
-		this.collision_map=new RegExp('[A-Z]');
-		this.collision_map_d=new RegExp('[BD]');//MAP衝突用
-		this.t=25;//単位
-		this.mapdef=new Array();//MAP表示用
-		this.mapdef_col=new Array();//MAP衝突用
-		this.map_theme=0;
-		this.map_pettern=0;
-		this.map_difficult=0;
-		this.map_background_speed=0;
+		let _this=this;
+		_this.pt=_pt||0;
+		_this.initx=0;
+		_this.inity=0;
+		_this.x=_this.initx;
+		_this.y=_this.inity;
+		_this.collision=new RegExp('[1A-Z]');
+		_this.collision_enemies=new RegExp('[a-z]','g');
+		_this.collision_map=new RegExp('[A-Z]');
+		_this.collision_map_d=new RegExp('[BD]');//MAP衝突用
+		_this.t=25;//単位
+		_this.mapdef=new Array();//MAP表示用
+		_this.mapdef_col=new Array();//MAP衝突用
+		_this.map_theme=0;
+		_this.map_pettern=0;
+		_this.map_difficult=0;
+		_this.map_background_speed=0;
+		_this.map_backgroundY_speed=0;
+		_this.map_loopY=true;
 	}
 	init(_cb){
 		_AJAX('./gradius_map.json','json',function(_d){
@@ -611,15 +616,30 @@ class GameObject_MAP{
 				+_s_mapdef_col.substr(_mx+1+_p_s[_l].length);			
 		}//_l
 	}
-	setMapY(_y){
+	setMoveOnPlayerY(_this){
+		let _this=this;
+		if(_this.map_loopY===false){return;}
+		if(_this._y<175){
+			_MAP.map_backgroundY_speed=_this._y*-1;
+			return _i;
+		}
+		if(_i>325){
+			_MAP.map_backgroundY_speed=_this._y*-1;
+			return _i;
+		}
+	}
+	setMoveOffPlayerY(_this){
+
+	}
+	getY(_y){
 		//y軸スクロール時、y位置を転回する
-		if(_y>500){
-			return _y-1000;
-		}
-		if(_y<-500){
-			return _y+1000;
-		}
-		return _y-2;
+		let _this=this;
+		if(_y<0){_y=_y+1000;}
+//console.log(_MAP_SCROLL_POSITION_Y)
+		return (_y+_MAP.map_backgroundY_speed)%1000;
+	}
+	getShotY(_y){
+		return _y+_MAP.map_backgroundY_speed;
 	}
 	setCollisionBit(_pb,_mcb){
 		let _this=this;
@@ -641,18 +661,23 @@ class GameObject_MAP{
 		return this.map_pettern;
 	}
 	getMapXToPx(_mx){return (_mx*this.t)+this.initx-_MAP_SCROLL_POSITION_X;}
-	getMapYToPx(_my){return _my*this.t;}
+	getMapYToPx(_my){return (_my*this.t)-this.y;}
 	getMapX(_x){return parseInt(
 					(_x+_MAP_SCROLL_POSITION_X-this.initx)
 					/this.t);
 	}
 	getMapY(_y,_d){
-		let _dy=_y+(1000-this.y);
-		_dy=(_dy>1000)?_dy-1000:_dy;
+		if(_d){
+			console.log(parseInt(
+				(_y+_MAP_SCROLL_POSITION_Y)
+				/this.t));
+		}
 //		console.log(parseInt((_y+_MAP_SCROLL_POSITION_Y)/this.t));
 //		return parseInt((_y+_MAP_SCROLL_POSITION_Y)/this.t);
 //		console.log(_d+'::::'+parseInt((_y+(1000-this.y))/this.t));
-		return parseInt(_dy/this.t);
+		return parseInt(
+				(_y+(1000-_MAP_SCROLL_POSITION_Y))
+				/this.t);
 	}
 	isCollisionBit(_bit){
 		//衝突ビット判定フラグ
@@ -773,31 +798,24 @@ class GameObject_MAP{
 	}//showMapForStageselect
 	move(){
 		let _this=this;
-		let _maxXheight=_this.getMapYToPx(_this.mapdef.length)
+//		let _maxXheight=_this.getMapYToPx(_this.mapdef.length)
+ 
 		_this.x-=_this.map_background_speed;
-		
-		// _MAP_SCROLL_POSITION_Y+=
-		// 	(_this.mapdef.length>(_CANVAS.height/_this.t))
-		// 		?(_this.map_background_speed)
-		// 		:0;
-		
-		// _MAP_SCROLL_POSITION_Y=
-		// 	(Math.abs(_MAP_SCROLL_POSITION_Y)>=_this.mapdef.length*_this.t)
-		// 		?0
-		// 		:_MAP_SCROLL_POSITION_Y;
+		_MAP_SCROLL_POSITION_X+=_this.map_background_speed;
 
-		// _this.y=_MAP_SCROLL_POSITION_Y;
-				
-//		console.log(_this.y);
-//		_this.y+=_this.map_background_speed;
-		_this.y-=2;
-		if(_this.y<0){
-			_this.y=1000;			
-		}
-		if(_this.y>1000){
-			_this.y=0;
-		}
-				
+		_this.y+=_this.map_backgroundY_speed;//正：上にスクロール
+		_this.y%=1000;
+		_MAP_SCROLL_POSITION_Y=(function(){
+			//戻す前に式評価させる。
+			let _posy=_MAP_SCROLL_POSITION_Y;
+			if(_posy+_this.map_backgroundY_speed<=0){
+				return 1000+(_posy+_this.map_backgroundY_speed);
+			}
+			return (_posy+_this.map_backgroundY_speed)%1000;
+		})();
+//console.log(_MAP_SCROLL_POSITION_Y)
+
+
 		//MAPを表示
 		for(let _i=0;_i<_this.mapdef.length;_i++){
 		for(let _j=0;_j<_this.mapdef[_i].length;_j++){
@@ -819,7 +837,7 @@ class GameObject_MAP{
 				_img.height
 			);
 
-			if(_maxXheight<=_CANVAS.height){continue;}
+//			if(_maxXheight<=_CANVAS.height){continue;}
 			//継ぎ目用の表示
 			// let _copyimg_y=(_this.y<0)
 			// 	?_maxXheight
@@ -827,7 +845,7 @@ class GameObject_MAP{
 			_CONTEXT.drawImage(
 				_img,
 				_this.x+(_p._mx(_j)*_this.t),
-				_this.y+(_p._my(_i)*_this.t)+((_this.y>0)?-1000:1000),
+				_this.y+(_p._my(_i)*_this.t)+((_this.map_backgroundY_speed>0)?-1000:1000),
 				_img.width,
 				_img.height
 			);
@@ -835,6 +853,7 @@ class GameObject_MAP{
 		}//_j
 		}//_i
 
+		
 		//MAPエリア外では衝突判定は行わない
 	}
 }

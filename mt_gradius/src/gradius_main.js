@@ -54,7 +54,8 @@ let _PLAYERS_OPTION_ISALIVE=0;//オプション表示数
 const _PLAYERS_OPTION_MAX=4;
 
 let _PLAYERS_MOVE_FLAG=false;
-let _PLAYERS_MOVE_DRAW=new Array();//自機移動分の配列
+let _PLAYERS_MOVE_DRAW_X=new Array();//自機移動分Xの配列
+let _PLAYERS_MOVE_DRAW_Y=new Array();//自機移動分Yの配列
 
 const _PLAYERS_MAX=5;
 const _PLAYERS_SHOTS_MAX=2;
@@ -1196,7 +1197,7 @@ class GameObject_PLAYER_MAIN
 		let _pl=this.getPlayerCenterPosition();
 		//MAPの位置を取得
 		let _map_x=_MAP.getMapX(_pl._x);
-		let _map_y=_MAP.getMapY(_pl._y,"v");
+		let _map_y=_MAP.getMapY(_pl._y);
 
 		if(_MAP.isMapCollision(_map_x,_map_y)){
 			this.setfalsealive();
@@ -1224,7 +1225,6 @@ class GameObject_PLAYER_MAIN
 		if(_PLAYERS_MOVE_FLAG){
 			//キーが押された場合
 			_this.x+=_this._x;
-			_this.y+=_this._y;
 			_this.x=(function(_i){
 				if(_i<50){
 					_this._x=0;
@@ -1237,6 +1237,17 @@ class GameObject_PLAYER_MAIN
 				return _i+_this._x;
 			})(_this.x);
 			_this.y=(function(_i){
+				/////////////////
+				console.log(_i)
+				if(_i<175){
+					_MAP.map_backgroundY_speed=_this._y*-1;
+					return _i;
+				}
+				if(_i>325){
+					_MAP.map_backgroundY_speed=_this._y*-1;
+					return _i;
+				}
+				//////////////////
 				if(_i<50-(_this.img.height/4)){
 					_this._y=0;
 					return 50-(_this.img.height/4);
@@ -1247,7 +1258,14 @@ class GameObject_PLAYER_MAIN
 				}
 				return _i+_this._y;
 			})(_this.y);
+
+			_PLAYERS_MOVE_DRAW_X.unshift(parseInt(_this.x+(_this.img.width/10)));
+			if(_MAP.map_backgroundY_speed===0){
+				_PLAYERS_MOVE_DRAW_Y.unshift(parseInt(_this.y+(_this.img.height/4)));
+			}
 		}else{
+			_this.y-=_this._y;
+			_MAP.map_backgroundY_speed=0;
 			_this._x=0;
 			_this._y=0;
 		}
@@ -1316,14 +1334,13 @@ class GameObject_PLAYER_MAIN
 
 		//位置を覚える
 		//多少の位置調整あり
-		if(_PLAYERS_MOVE_DRAW.length
+		if(_PLAYERS_MOVE_DRAW_X.length
 			===_PLAYERS_MOVE_DRAW_MAX){
-				_PLAYERS_MOVE_DRAW.pop();}
-		if(_PLAYERS_MOVE_FLAG){
-			_PLAYERS_MOVE_DRAW.unshift({
-				_x:parseInt(_this.x+(_this.img.width/10)),
-				_y:parseInt(_this.y+(_this.img.height/4))
-			});
+				_PLAYERS_MOVE_DRAW_X.pop();
+		}
+		if(_PLAYERS_MOVE_DRAW_Y.length
+			===_PLAYERS_MOVE_DRAW_MAX){
+				_PLAYERS_MOVE_DRAW_Y.pop();
 		}
 	}
 }
@@ -1381,10 +1398,12 @@ class GameObject_PLAYER_OPTION
 	}
 	move(_pmd_elem){
 		let _this=this;
-		if(_PLAYERS_MOVE_DRAW[_pmd_elem]
+		if(_PLAYERS_MOVE_DRAW_X[_pmd_elem]
 					===undefined){return;}
-		_this.x=_PLAYERS_MOVE_DRAW[_pmd_elem]._x;
-		_this.y=_PLAYERS_MOVE_DRAW[_pmd_elem]._y;
+		if(_PLAYERS_MOVE_DRAW_Y[_pmd_elem]
+					===undefined){return;}
+		_this.x=_PLAYERS_MOVE_DRAW_X[_pmd_elem];
+		_this.y=_PLAYERS_MOVE_DRAW_Y[_pmd_elem];
 
 		if(!_this._isalive){return;}
 		if(_this.x===undefined||
@@ -2024,14 +2043,14 @@ class GameObject_SHOTS_MISSILE
 		}
 
 		if(_this.get_missile_status(_t)==='_st1'){			
-			_map_y=_MAP.getMapY(_t.y+_t._img.height/2);
+			_map_y=_MAP.getMapY(_t.y+_t._img.height/2,true);
 			//自身、あるいはその下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x,_map_y)
 				||_MAP.isMapCollision(_map_x,_map_y+1)
 				||_MAP.isMapCollision(_map_x+1,_map_y+1)
 				){
 				//→st6→st7→st3への調整のためのy位置調整
-				_t.y=(_map_y*_MAP.t)-5;
+				_t.y=_MAP.getMapYToPx(_map_y)-5;
 				_this.set_missile_status(_t,'_st7');
 				return;
 			}
@@ -2063,7 +2082,7 @@ class GameObject_SHOTS_MISSILE
 				=_this.col_mis[_c-1].fs;
 		 	_CONTEXT.beginPath();
 			_CONTEXT.arc(_t.x,
-						_t.y+_pos,
+						_t.y,
 						_this.col_mis[_c-1].scale,
 						0,
 						Math.PI*2,false);
@@ -2081,6 +2100,7 @@ class GameObject_SHOTS_MISSILE
 			let _t=_this.shots[_j];
 			if(!_t._shot&&!_t._shot_alive){continue;}
 //			console.log(_j+':'+_t.y+':'+_t._st);
+			_t.y=_MAP.getShotY(_t.y);
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
 				_this.collapse_missile(_t,10);
@@ -2350,7 +2370,8 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 		for(let _j=0;_j<_this.shots.length;_j++){
 			let _t=_this.shots[_j];
 			if(!_t._shot&&!_t._shot_alive){continue;}
-//			console.log(_t._c);
+
+			_t.y=_MAP.getShotY(_t.y);
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
 				_this.collapse_missile(_t);
@@ -2491,6 +2512,7 @@ class GameObject_SHOTS_MISSILE_2WAY
 
 			if(!_t._shot_alive){continue;}
 
+			_t.y=_MAP.getShotY(_t.y);			
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
 				_this.collapse_missile(_t,10);
@@ -2618,6 +2640,7 @@ class GameObject_SHOTS_NORMAL
 			_t.y=(function(_i){
 				return (!_t._shot_alive)?_pl._y:_i;
 			})(_t.y);
+			_t.y=_MAP.getShotY(_t.y);
 
 			if (_t.x>_CANVAS.width){
 				_t._init();
@@ -2746,7 +2769,8 @@ class GameObject_SHOTS_DOUBLE
 					return (!_sa)?_pl._y-23:_i-23;
 				}
 			})(_t.y);
-
+			_t.y=_MAP.getShotY(_t.y);			
+			
 			if (this.shots[0].x>_CANVAS.width){
 				this.shots[0]._init();
 				continue;
@@ -2811,7 +2835,7 @@ class GameObject_SHOTS_TAILGUN
 			_t.y=(function(_i){
 				return (!_sa)?_pl._y:_i;
 			})(_t.y);
-
+			_t.y=_MAP.getShotY(_t.y);			
 
 			if (this.shots[0].x>_CANVAS.width){
 				this.shots[0]._init();
@@ -2942,7 +2966,8 @@ class GameObject_SHOTS_RIPPLE_LASER
 			_t.y=(function(_i){
 				return (!_t._shot_alive)?_pl._y:_i;
 			})(_t.y);
-
+			_t.y=_MAP.getShotY(_t.y);			
+			
 			if (_t.x>_CANVAS.width){
 				_t._init();
 				continue;
@@ -3681,7 +3706,7 @@ class GameObject_POWERCAPSELL{
 		//すでにパワーカプセル取得済みは終了
 		if(_this.gotpc){return;}
 		_this.x-=_BACKGROUND_SPEED;
-		_this.y=_MAP.setMapY(_this.y);
+		_this.y=_MAP.getY(_this.y);
 
 		//パワーカプセル所持の場合
 		let _img=(function(_t){
@@ -3887,7 +3912,7 @@ const _DRAW=function(){
 		//SCOREを表示
 		_SCORE.show();
 
-		_MAP_SCROLL_POSITION_X+=_MAP.map_background_speed;
+		
 		if(_MAP_SCROLL_POSITION_X-100<=
 			(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}
 
@@ -3900,6 +3925,7 @@ const _DRAW=function(){
 }
 
 const _DRAW_MATCH_BOSS=function(){
+	_MAP.map_backgroundY_speed=0;	
 	if(!_DRAW_IS_MATCH_BOSS){
 		let _e=new ENEMY_BOSS_BOGCORE(1300,200);
 		_ENEMIES=[];
@@ -4225,6 +4251,7 @@ const _DRAW_RESET_OBJECT=function(){
 
 	_PLAYERS_MAIN='';
 	_PLAYERS_MAIN_FORCE='';
+	_PLAYERS_MOVE_FLAG=false;
 	_PLAYERS_OPTION=[];
 	_PLAYERS_OPTION_ISALIVE=0;
 	_PLAYERS_SHOTS={
@@ -4234,7 +4261,8 @@ const _DRAW_RESET_OBJECT=function(){
 	};
 	_PLAYERS_MISSILE=[];
 	_PLAYERS_MISSILE_ISALIVE=false;
-	_PLAYERS_MOVE_DRAW=[];
+	_PLAYERS_MOVE_DRAW_X=[];
+	_PLAYERS_MOVE_DRAW_Y=[];
 	_ENEMIES=[];
 	_ENEMIES_BOUNDS=[];
 	_ENEMIES_SHOTS=[];

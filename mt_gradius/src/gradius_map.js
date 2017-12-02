@@ -501,13 +501,19 @@ class GameObject_MAP{
 		_this.map_difficult=0;
 		_this.map_background_speed=0;
 		_this.map_backgroundY_speed=0;
-		_this.map_loopY=true;
+		_this.map_infinite=true;
 	}
 	init(_cb){
 		_AJAX('./gradius_map.json','json',function(_d){
 			_MAPDEFS=_d;
 			_cb();
 		});
+	}
+	isInifinite(){
+		return _this.map_infinite;
+	}
+	setInifinite(_f){
+		this.map_infinite=_f;
 	}
 	set_stage_map_pattern(_n){
 		this.map_pettern=_n;
@@ -616,30 +622,14 @@ class GameObject_MAP{
 				+_s_mapdef_col.substr(_mx+1+_p_s[_l].length);			
 		}//_l
 	}
-	setMoveOnPlayerY(_this){
-		let _this=this;
-		if(_this.map_loopY===false){return;}
-		if(_this._y<175){
-			_MAP.map_backgroundY_speed=_this._y*-1;
-			return _i;
-		}
-		if(_i>325){
-			_MAP.map_backgroundY_speed=_this._y*-1;
-			return _i;
-		}
-	}
-	setMoveOffPlayerY(_this){
-
-	}
 	getY(_y){
 		//y軸スクロール時、y位置を転回する
 		let _this=this;
 		if(_y<0){_y=_y+1000;}
-//console.log(_MAP_SCROLL_POSITION_Y)
-		return (_y+_MAP.map_backgroundY_speed)%1000;
+		return (_y-_MAP.map_backgroundY_speed)%1000;
 	}
 	getShotY(_y){
-		return _y+_MAP.map_backgroundY_speed;
+		return _y-_MAP.map_backgroundY_speed;
 	}
 	setCollisionBit(_pb,_mcb){
 		let _this=this;
@@ -661,22 +651,14 @@ class GameObject_MAP{
 		return this.map_pettern;
 	}
 	getMapXToPx(_mx){return (_mx*this.t)+this.initx-_MAP_SCROLL_POSITION_X;}
-	getMapYToPx(_my){return (_my*this.t)-this.y;}
+	getMapYToPx(_my){return ((_my*this.t)+this.y)%1000;}
 	getMapX(_x){return parseInt(
 					(_x+_MAP_SCROLL_POSITION_X-this.initx)
 					/this.t);
 	}
-	getMapY(_y,_d){
-		if(_d){
-			console.log(parseInt(
-				(_y+_MAP_SCROLL_POSITION_Y)
-				/this.t));
-		}
-//		console.log(parseInt((_y+_MAP_SCROLL_POSITION_Y)/this.t));
-//		return parseInt((_y+_MAP_SCROLL_POSITION_Y)/this.t);
-//		console.log(_d+'::::'+parseInt((_y+(1000-this.y))/this.t));
+	getMapY(_y){
 		return parseInt(
-				(_y+(1000-_MAP_SCROLL_POSITION_Y))
+				(_y+_MAP_SCROLL_POSITION_Y)
 				/this.t);
 	}
 	isCollisionBit(_bit){
@@ -803,17 +785,18 @@ class GameObject_MAP{
 		_this.x-=_this.map_background_speed;
 		_MAP_SCROLL_POSITION_X+=_this.map_background_speed;
 
-		_this.y+=_this.map_backgroundY_speed;//正：上にスクロール
+		_this.y-=_this.map_backgroundY_speed;//正：上にスクロール
 		_this.y%=1000;
+//		console.log(_this.map_backgroundY_speed)
 		_MAP_SCROLL_POSITION_Y=(function(){
 			//戻す前に式評価させる。
-			let _posy=_MAP_SCROLL_POSITION_Y;
-			if(_posy+_this.map_backgroundY_speed<=0){
-				return 1000+(_posy+_this.map_backgroundY_speed);
+			let _posy=_MAP_SCROLL_POSITION_Y+_this.map_backgroundY_speed;
+			if(_posy<0){
+				return (1000+_posy)%1000;
 			}
-			return (_posy+_this.map_backgroundY_speed)%1000;
+			return _posy%1000;
 		})();
-//console.log(_MAP_SCROLL_POSITION_Y)
+//		console.log(_MAP_SCROLL_POSITION_Y)
 
 
 		//MAPを表示
@@ -845,7 +828,7 @@ class GameObject_MAP{
 			_CONTEXT.drawImage(
 				_img,
 				_this.x+(_p._mx(_j)*_this.t),
-				_this.y+(_p._my(_i)*_this.t)+((_this.map_backgroundY_speed>0)?-1000:1000),
+				_this.y+(_p._my(_i)*_this.t)+((_this.y>0)?-1000:1000),
 				_img.width,
 				_img.height
 			);

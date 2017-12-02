@@ -53,13 +53,13 @@ let _PLAYERS_OPTION=new Array();
 let _PLAYERS_OPTION_ISALIVE=0;//オプション表示数
 const _PLAYERS_OPTION_MAX=4;
 
+const _PLAYERS_MOVE_DRAW_MAX=100;
 let _PLAYERS_MOVE_FLAG=false;
 let _PLAYERS_MOVE_DRAW_X=new Array();//自機移動分Xの配列
 let _PLAYERS_MOVE_DRAW_Y=new Array();//自機移動分Yの配列
 
 const _PLAYERS_MAX=5;
 const _PLAYERS_SHOTS_MAX=2;
-const _PLAYERS_MOVE_DRAW_MAX=500;
 
 let _PLAYERS_SHOTS={
 	'_SHOTTYPE_NORMAL':new Array(),
@@ -1056,7 +1056,7 @@ class GameObject_PLAYER{
 		this.height=0;
 
 		this._c=0;
-		this.accel=2.0;
+		this.accel=3.0;
 
 		this.shotflag=false;//発射可否
 	}
@@ -1214,6 +1214,61 @@ class GameObject_PLAYER_MAIN
 			this.c_vv_ani+=2;
 		}
 	}
+	set_moveamount(){
+		let _this=this;
+		//移動量の設定
+		if(!_PLAYERS_MOVE_FLAG){
+			_MAP.map_backgroundY_speed=0;
+			_this._x=0;
+			_this._y=0;
+			return;
+		}
+		//キーが押された場合
+		//押下直後にx,yを移動させる
+//console.log(_this.y)
+		//移動量を元にx,y座標を設定
+		_this.x=(function(_i){
+			let _x=_i+_this._x;
+			if(_x<=50){
+				_this._x=0;
+				return 50;
+			}
+			if(_x>=_CANVAS.width-100){
+				_this._x=0;
+				return _CANVAS.width-100;
+			}
+			return _x;
+		})(_this.x);
+		_this.y=(function(_i){
+			let _y=_i+_this._y;
+			/////////////////
+//				console.log(_i)
+			if(_MAP.map_infinite){
+				if(_y<=100){
+					_MAP.map_backgroundY_speed=_this._y;
+					return 100;
+				}
+				if(_y>300){
+					_MAP.map_backgroundY_speed=_this._y;
+					return 300;
+				}
+//				_MAP.map_backgroundY_speed=0;				
+				return _i+_this._y;
+			}
+			//////////////////
+			if(_y<=50-(_this.img.height/4)){
+				_this._y=0;
+				return 50-(_this.img.height/4);
+			}
+			if(_y>=_CANVAS.height-75-(_this.img.height/4)){
+				_this._y=0;
+				return _CANVAS.height-75-(_this.img.height/4);
+			}
+			return _y;
+		})(_this.y);
+		//自機移動分配列をセット
+		_GAME._setPlayerMoveDraw();
+	}
 	move(){
 		let _this=this;
 
@@ -1222,53 +1277,7 @@ class GameObject_PLAYER_MAIN
 		_this.map_collition();
 
 		//移動量の設定
-		if(_PLAYERS_MOVE_FLAG){
-			//キーが押された場合
-			_this.x+=_this._x;
-			_this.x=(function(_i){
-				if(_i<50){
-					_this._x=0;
-					return 50;
-				}
-				if(_i>_CANVAS.width-100){
-					_this._x=0;
-					return _CANVAS.width-100;
-				}
-				return _i+_this._x;
-			})(_this.x);
-			_this.y=(function(_i){
-				/////////////////
-				console.log(_i)
-				if(_i<175){
-					_MAP.map_backgroundY_speed=_this._y*-1;
-					return _i;
-				}
-				if(_i>325){
-					_MAP.map_backgroundY_speed=_this._y*-1;
-					return _i;
-				}
-				//////////////////
-				if(_i<50-(_this.img.height/4)){
-					_this._y=0;
-					return 50-(_this.img.height/4);
-				}
-				if(_i>_CANVAS.height-75-(_this.img.height/4)){
-					_this._y=0;
-					return _CANVAS.height-75-(_this.img.height/4);
-				}
-				return _i+_this._y;
-			})(_this.y);
-
-			_PLAYERS_MOVE_DRAW_X.unshift(parseInt(_this.x+(_this.img.width/10)));
-			if(_MAP.map_backgroundY_speed===0){
-				_PLAYERS_MOVE_DRAW_Y.unshift(parseInt(_this.y+(_this.img.height/4)));
-			}
-		}else{
-			_this.y-=_this._y;
-			_MAP.map_backgroundY_speed=0;
-			_this._x=0;
-			_this._y=0;
-		}
+		_this.set_moveamount();
 
 		//本機のアニメーション設定
 		if(!_PLAYERS_MOVE_FLAG){
@@ -1330,18 +1339,6 @@ class GameObject_PLAYER_MAIN
 			_img_vb,_this.x,_this.y+22,
 				_img_vb.width,_img_vb.height
 		);
-
-
-		//位置を覚える
-		//多少の位置調整あり
-		if(_PLAYERS_MOVE_DRAW_X.length
-			===_PLAYERS_MOVE_DRAW_MAX){
-				_PLAYERS_MOVE_DRAW_X.pop();
-		}
-		if(_PLAYERS_MOVE_DRAW_Y.length
-			===_PLAYERS_MOVE_DRAW_MAX){
-				_PLAYERS_MOVE_DRAW_Y.pop();
-		}
 	}
 }
 
@@ -1398,12 +1395,11 @@ class GameObject_PLAYER_OPTION
 	}
 	move(_pmd_elem){
 		let _this=this;
-		if(_PLAYERS_MOVE_DRAW_X[_pmd_elem]
-					===undefined){return;}
-		if(_PLAYERS_MOVE_DRAW_Y[_pmd_elem]
-					===undefined){return;}
-		_this.x=_PLAYERS_MOVE_DRAW_X[_pmd_elem];
-		_this.y=_PLAYERS_MOVE_DRAW_Y[_pmd_elem];
+		let _x=_GAME._getPlayerMoveDrawX(_pmd_elem);
+		let _y=_GAME._getPlayerMoveDrawY(_pmd_elem);
+		if(_x===null||_y===null){return;}
+		_this.x=_x;
+		_this.y=_y;
 
 		if(!_this._isalive){return;}
 		if(_this.x===undefined||
@@ -1915,6 +1911,7 @@ class GameObject_SHOTS_MISSILE
 		let _map_x=_MAP.getMapX(_t.x+_t._img.width),
 			_map_y=_MAP.getMapY(_t.y);
 
+//console.log(_this.get_missile_status(_t))			
 		//MAPに入る手前は無視する
 		if(_MAP.isMapBefore(_map_x,_map_y)){return;}
 		//MAPから抜けた後のミサイルの状態
@@ -1950,9 +1947,10 @@ class GameObject_SHOTS_MISSILE
 			_this.set_missile_status(_t,'_st7');
 		}
 		if(_this.get_missile_status(_t)==='_st7'){
+//			console.log(_t.y)
 			_map_x=_MAP.getMapX(_t.x+_t._img.width);
 			//壁にぶつかる(壁中)
-			if(_MAP.isMapCollision(_map_x,_map_y)){
+ 			if(_MAP.isMapCollision(_map_x,_map_y)){
 				_t._init();
 				return;
 			}
@@ -2036,7 +2034,7 @@ class GameObject_SHOTS_MISSILE
 			if(_MAP.isMapCollision(_map_x,_map_y)
 				||_MAP.isMapCollision(_map_x,_map_y+1)
 				){
-				_t.y=(_map_y*_MAP.t)-8;
+				_t.y=_MAP.getMapYToPx(_map_y)-8;
 				_this.set_missile_status(_t,'_st6');
 				return;
 			}
@@ -2051,6 +2049,7 @@ class GameObject_SHOTS_MISSILE
 				){
 				//→st6→st7→st3への調整のためのy位置調整
 				_t.y=_MAP.getMapYToPx(_map_y)-5;
+				console.log(_t.y);
 				_this.set_missile_status(_t,'_st7');
 				return;
 			}
@@ -2082,7 +2081,7 @@ class GameObject_SHOTS_MISSILE
 				=_this.col_mis[_c-1].fs;
 		 	_CONTEXT.beginPath();
 			_CONTEXT.arc(_t.x,
-						_t.y,
+						_t.y+_pos,
 						_this.col_mis[_c-1].scale,
 						0,
 						Math.PI*2,false);
@@ -3254,11 +3253,11 @@ class GameObject_PM{
 				imgobj:new Image(),
 				name:'meter_c_speedup',
 				func:function(){
-					if(_PLAYERS_MAIN.accel>=6){
+					if(_PLAYERS_MAIN.accel>=18){
 						_this._set_meter_status();
 						return;
 					}
-					_PLAYERS_MAIN.accel++;
+					_PLAYERS_MAIN.accel+=2;
 				}
 			},
 			'n_16':{
@@ -3925,7 +3924,8 @@ const _DRAW=function(){
 }
 
 const _DRAW_MATCH_BOSS=function(){
-	_MAP.map_backgroundY_speed=0;	
+	_MAP.map_backgroundY_speed=0;
+	_MAP.setInifinite(false);
 	if(!_DRAW_IS_MATCH_BOSS){
 		let _e=new ENEMY_BOSS_BOGCORE(1300,200);
 		_ENEMIES=[];
@@ -4670,6 +4670,64 @@ _setTextToFont:function(_o,_str,_w){
 	}
 	_o.innerHTML=_s;
 },//_setTextToFont
+_getPlayerMoveDrawX(_elem){
+	if(_PLAYERS_MOVE_DRAW_X[_elem]
+			===undefined){return null;}
+	return _PLAYERS_MOVE_DRAW_X[_elem];
+},
+_getPlayerMoveDrawY(_elem){
+	if(_PLAYERS_MOVE_DRAW_Y[_elem]
+			===undefined){return null;}
+	return _PLAYERS_MOVE_DRAW_Y[_elem];
+},
+_setPlayerMoveDraw(){
+	//自機移動分配列をセットする。
+	//Y軸無限:配列0番目からY起点にして要素0番目からリフレッシュさせる
+	//Y軸有限:配列0番目から軸を流し込む
+	let _w=_PLAYERS_MAIN.img.width;
+	let _h=_PLAYERS_MAIN.img.height;
+	let _x=_PLAYERS_MAIN.x+parseInt(_w/10);
+	let _y=_PLAYERS_MAIN.y+parseInt(_h/4);
+	let _mgs=_MAP.map_backgroundY_speed*-1;
+	let _pmdy=_PLAYERS_MOVE_DRAW_Y;
+
+	//配列要素数が所定より大きい場合は、
+	//最後の要素を外す。
+	if(_PLAYERS_MOVE_DRAW_X.length
+		===_PLAYERS_MOVE_DRAW_MAX){
+			_PLAYERS_MOVE_DRAW_X.pop();
+	}
+	if(_PLAYERS_MOVE_DRAW_Y.length
+		===_PLAYERS_MOVE_DRAW_MAX){
+			_PLAYERS_MOVE_DRAW_Y.pop();
+	}
+
+	_PLAYERS_MOVE_DRAW_X.unshift(_x);
+	if(_mgs===0){
+		_pmdy.unshift(_y);
+		return;
+	}
+	//無限Y軸の処理
+//	console.log(_mgs);
+	for(let _i=0;_i<_PLAYERS_MOVE_DRAW_MAX;_i++){
+		if(_pmdy[_i]===undefined){
+			_pmdy.push(_y+(_mgs*_i));
+			continue;
+		}
+		if(_mgs>0){
+			_pmdy[_i]=(_pmdy[_i]>=_y+(_mgs*_i))
+						?_y+(_mgs*_i)
+						:_pmdy[_i]+_mgs;
+			continue;
+		}
+		if(_mgs<0){
+			_pmdy[_i]=(_pmdy[_i]<=_y+(_mgs*_i))
+						?_y+(_mgs*_i)
+						:_pmdy[_i]+_mgs;
+			continue;				
+		}
+	}
+},
 _multilineText(context, text, width) {
     let len=text.length,
     	strArray=[],

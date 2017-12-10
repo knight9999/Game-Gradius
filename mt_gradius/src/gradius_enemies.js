@@ -778,7 +778,8 @@ class ENEMY_f extends GameObject_ENEMY{
 	}
 	moveDraw(){
 		let _this=this;
-		_this.x+=_BACKGROUND_SPEED*2*_this.getDir();		
+//		console.log(_this.x)
+		_this.x+=4*_this.getDir();		
 		_this.y+=_this._v;
 		_this._v+=_this.speed;
 

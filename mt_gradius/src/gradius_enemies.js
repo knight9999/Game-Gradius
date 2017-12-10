@@ -253,7 +253,6 @@ class GameObject_ENEMY{
 	//===カスタマイズできる関数
 	ani_col(_x,_y){
 		let _this=this;
-//		_this.x-=_BACKGROUND_SPEED;
 		_x=_x||0;
 		_y=_y||0;
 		//大きめな爆発
@@ -324,7 +323,6 @@ class GameObject_ENEMY{
 		//・キャンバス外
 		//・生存しない
 		if(_this.isStandBy()){
-//			_this.x-=_BACKGROUND_SPEED;
 			return false;
 		}
 		if(_this.isCanvasOut()){
@@ -355,7 +353,7 @@ class GameObject_ENEMY{
 		//敵の処理メイン
 		//原則継承はしない
 		let _this=this;
-		_this.x-=_BACKGROUND_SPEED;
+		_this.x=_MAP.getX(_this.x);
 		_this.y=_MAP.getY(_this.y);
 		if(!_this.isMove()){return;}
 		_this.moveDraw();
@@ -396,7 +394,6 @@ class ENEMY_a extends GameObject_ENEMY{
 				_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.img.width,0);
 			}
 		}
-//		_this.x-=_BACKGROUND_SPEED;
 		_CONTEXT.drawImage(
 			_this.img,
 			_this.x,

@@ -509,9 +509,6 @@ class GameObject_MAP{
 			_cb();
 		});
 	}
-	isInifinite(){
-		return _this.map_infinite;
-	}
 	setInifinite(_f){
 		this.map_infinite=_f;
 	}
@@ -625,6 +622,9 @@ class GameObject_MAP{
 				+_s_mapdef_col.substr(_mx+1+_p_s[_l].length);			
 		}//_l
 	}
+	getX(_x){
+		return _x+(_BACKGROUND_SPEED*-1);
+	}
 	getY(_y){
 		//y軸スクロール時、y位置を転回する
 		let _this=this;
@@ -661,8 +661,15 @@ class GameObject_MAP{
 		return _s;
 	}
 	getCollisionFlag(){return this.collision;}
+	setBackGroundSpeedY(_v){
+		//Y軸の背景スピードの設定
+		this.map_backgroundY_speed=_v;
+	}
 	getBackGroundSpeed(){
 		return this.map_background_speed;
+	}
+	getBackGroundSpeedY(){
+		return this.map_backgroundY_speed;
 	}
 	get_stage_map_pattern(_n){
 		return this.map_pettern;
@@ -806,7 +813,6 @@ class GameObject_MAP{
 	map_draw(){
 		//MAPの表示
 		let _this=this;
-		//MAPを表示
 		for(let _i=0;_i<_this.mapdef.length;_i++){
 		for(let _j=0;_j<_this.mapdef[_i].length;_j++){
 			let _k=_this.mapdef[_i][_j];
@@ -844,8 +850,6 @@ class GameObject_MAP{
 	}
 	move(){
 		let _this=this;
-//		let _maxXheight=_this.getMapYToPx(_this.mapdef.length)
- 
 		_this.x-=_this.map_background_speed;
 		_MAP_SCROLL_POSITION_X+=_this.map_background_speed;
 

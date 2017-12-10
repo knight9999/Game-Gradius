@@ -1266,7 +1266,7 @@ class GameObject_PLAYER_MAIN
 	}
 	set_moveamount_reset(){
 		let _this=this;
-		_MAP.map_backgroundY_speed=0;
+		_MAP.setBackGroundSpeedY(0);
 		_this._x=0;
 		_this._y=0;
 		return;
@@ -1301,14 +1301,14 @@ class GameObject_PLAYER_MAIN
 			//Y軸ループの場合
 			if(_MAP.map_infinite){
 				if(_y<100){
-					_MAP.map_backgroundY_speed=_this._y;
+					_MAP.setBackGroundSpeedY(_this._y);
 					return 100;
 				}
 				if(_y>=100&&_y<=300){
-					_MAP.map_backgroundY_speed=0;
+					_MAP.setBackGroundSpeedY(0);
 				}
 				if(_y>300){
-					_MAP.map_backgroundY_speed=_this._y;
+					_MAP.setBackGroundSpeedY(_this._y);
 					return 300;
 				}
 				return _y;
@@ -3935,7 +3935,7 @@ const _DRAW=function(){
 }
 
 const _DRAW_MATCH_BOSS=function(){
-	_MAP.map_backgroundY_speed=0;
+	_MAP.setBackGroundSpeedY(0);
 	_MAP.setInifinite(false);
 	if(!_DRAW_IS_MATCH_BOSS){
 		let _e=new ENEMY_BOSS_BOGCORE(1300,200);
@@ -4699,7 +4699,7 @@ _setPlayerMoveDraw(){
 	let _h=_PLAYERS_MAIN.img.height;
 	let _x=_PLAYERS_MAIN.x+parseInt(_w/10);
 	let _y=_PLAYERS_MAIN.y+parseInt(_h/4);
-	let _mgs=_MAP.map_backgroundY_speed*-1;
+	let _mgs=_MAP.getBackGroundSpeedY()*-1;
 	let _pmdy=_PLAYERS_MOVE_DRAW_Y;
 
 	//配列要素数が所定より大きい場合は、

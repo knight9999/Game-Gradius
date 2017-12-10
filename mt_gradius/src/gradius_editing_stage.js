@@ -133,7 +133,7 @@ _setInitMap:function(_m){
 					+'draggable="true">';
 			if(_k.match(_MAP.collision_enemies)!==null){
 				//敵の表示
-				console.log(_k)
+//				console.log(_k)
 				let _o=_MAP_THEME[_m._theme]._enemies[_k]._o.obj;
 				let _st=_MAP_THEME[_m._theme]._enemies[_k]._st;
 				_s+='<img'+((_st==='')?'':' style="'+_st+'"')+' width="'+parseInt(_o.width*0.8)+'" height="'+parseInt(_o.height*0.8)+'" src="'+_o.src+'">';

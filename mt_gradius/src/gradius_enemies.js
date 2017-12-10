@@ -268,7 +268,7 @@ class GameObject_ENEMY{
 		_CONTEXT.drawImage(
 			_a.img,
 			_this.x+_x,
-			_this.y,
+			_this.y+_y,
 			_a.img.width*_a.scale,
 			_a.img.height*_a.scale
 		);

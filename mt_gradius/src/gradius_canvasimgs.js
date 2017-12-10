@@ -81,35 +81,35 @@ const _CANVAS_IMGS={
  		 obj:new Image()},
 	'missile1':
 		{src:'images/missile1.png',
-		 rate:0.48,
+		 rate:0.50,
 		 obj:new Image()},
 	'missile2':
 		{src:'images/missile2.png',
-		 rate:0.48,
+		 rate:0.50,
 		 obj:new Image()},
 	'missile3':
  		{src:'images/missile3.png',
- 		 rate:0.48,
+ 		 rate:0.50,
  		 obj:new Image()},
 	'missile4':
 		{src:'images/missile4.png',
-		 rate:0.48,
+		 rate:0.50,
 		 obj:new Image()},
 	'missile5':
  		{src:'images/missile5.png',
- 		 rate:0.48,
+ 		 rate:0.50,
  		 obj:new Image()},
 	'missile6':
   		{src:'images/missile6.png',
-  		 rate:0.48,
+  		 rate:0.50,
   		 obj:new Image()},
 	'missile7':
    		{src:'images/missile7.png',
-   		 rate:0.48,
+   		 rate:0.50,
    		 obj:new Image()},
 	'missile8':
    		{src:'images/missile8.png',
-   		 rate:0.48,
+   		 rate:0.50,
    		 obj:new Image()},
 
 	'shot1':

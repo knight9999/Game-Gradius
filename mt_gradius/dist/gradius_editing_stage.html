@@ -8,11 +8,8 @@
 <script src="http://localhost/mt/mt-static/data-api/v3/js/mt-data-api.min.js"></script>
 <script src="./gradius_editing_stage.min.js"></script>
 
-
 </head>
 <body onscroll="_GAME_STAGEEDIT_EVENTS._e_scroll();">
-
-
 <form>
 <h1>EDITING STAGE</h1>
 
@@ -107,6 +104,14 @@
 </datalist>
 </div>
 </div><!-- /#difficult -->
+<div id="map_infinite" class="form_group">
+<label class="col_l">infinite:</label>
+<div class="col_r">
+<div class="val">true</div>
+<label><span>false</span><input name="map_infinite" type="range" min="0" max="1"><span>true</span></label>
+</div>
+</div><!-- /#speed -->
+    
 
 </section><!-- /#form_inner -->
 </form>
@@ -123,8 +128,6 @@
 <a nohref="" class="next" onClick="_GAME_STAGEEDIT_EVENTS._e_entrylink_next(event);">next</a>
 </section><!-- /#menu_inner -->
 </section><!-- /#menu -->
-
-
 
 </body>
 </html>

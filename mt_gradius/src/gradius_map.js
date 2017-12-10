@@ -629,8 +629,7 @@ class GameObject_MAP{
 		//y軸スクロール時、y位置を転回する
 		let _this=this;
 		if(!_this.map_infinite){return _y;}
-//		console.log(_MAP_SCROLL_POSITION_Y)
-//		let y=_y-_MAP.map_backgroundY_speed;
+
 		//CANVAS表示エリアから上下250px
 		//-250〜750
 //		console.log('_y'+_y)
@@ -828,6 +827,10 @@ class GameObject_MAP{
 				_img.height
 			);
 
+			if(!_this.map_infinite){continue;}
+
+			//縦スクロールする場合は、スクロールをスムーズに表示させる為、
+			//マップを2倍に表示させる。
 			_CONTEXT.drawImage(
 				_img,
 				_this.x+(_p._mx(_j)*_this.t),

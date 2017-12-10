@@ -90,7 +90,6 @@ class GameObject_ENEMY{
 		_this.img=_o;
 		_this.x=_x||0;
 		_this.y=_y||0;
-		_this._moveY=0;
 		
 		_this.isshot=false;
 		_this._DEF_DIR={//向き
@@ -342,8 +341,6 @@ class GameObject_ENEMY{
 	moveDraw(){
 		//敵の描画メイン
 		let _this=this;
-//		_this._moveY+=_MAP.map_backgroundY_speed;
-//		_this._moveY%=500;
 		_CONTEXT.drawImage(
 			_this.img,
 			_this.x,

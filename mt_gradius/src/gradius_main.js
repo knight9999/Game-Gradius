@@ -565,9 +565,11 @@ const _KEYEVENT={
 	}
 
 },
+//ゲーム開始時
 'keydown_game':function(e){
-	if(!_PLAYERS_MAIN.isalive()){return false;}//撃たれたら機種操作不可
-
+	//撃たれたら機種操作不可
+	if(!_PLAYERS_MAIN.isalive()){return false;}
+//	console.log(_MAP.map_backgroundY_speed);	
 	if(e.key==='R'||e.key==='r'){
 		_DRAW_STOP_PLAYERS_SHOTS();
 		_DRAW_RESET_OBJECT();
@@ -708,12 +710,18 @@ const _KEYEVENT_SP={
 	clearInterval(_PLAYERS_SHOTS_SETINTERVAL);
 	_PLAYERS_SHOTS_SETINTERVAL=null;
 
-	let _rad=_SP_CONTROLLER._get_st(e)._rad;
+//	let _rad=_SP_CONTROLLER._get_st(e)._rad;
 	e.preventDefault(); // タッチによる画面スクロールを止める
+
+	let _r=_SP_CONTROLLER._get_st(e);
+	console.log(_EVENT_POWERMETER_FLAG);
 
 	if(_EVENT_POWERMETER_FLAG===true){return false;}
 	_EVENT_POWERMETER_FLAG=true;
-	if(_rad>-45&&_rad<=45){
+
+
+	if(_r===_SP_CONTROLLER._DEF_DIR._L){
+//	if(_rad>-45&&_rad<=45){
 //		 	console.log('left');
 		_POWERMETER._c_pmss=
 			(_POWERMETER._c_pmss<=0)
@@ -723,7 +731,8 @@ const _KEYEVENT_SP={
 		_POWERMETER.pms_select();
 		return false;
  	}
-	if(_rad>45&&_rad<=135){
+	if(_r===_SP_CONTROLLER._DEF_DIR._U){
+//	if(_rad>45&&_rad<=135){
 //		 	console.log('top');
 		_POWERMETER._c_pms=
 			(_POWERMETER._c_pms<=0)
@@ -732,8 +741,9 @@ const _KEYEVENT_SP={
 		_POWERMETER.pms_select();
 		return false;
  	}
-	if((_rad>135&&_rad<=180)
-		||(_rad<-135&&_rad>=-180)){
+	if(_r===_SP_CONTROLLER._DEF_DIR._R){
+	 // if((_rad>135&&_rad<=180)
+	// 	||(_rad<-135&&_rad>=-180)){
 //		 console.log('right');
 		_POWERMETER._c_pmss=
 			(_POWERMETER._c_pmss
@@ -743,8 +753,9 @@ const _KEYEVENT_SP={
 		_POWERMETER.pms_disp();
 		_POWERMETER.pms_select();
 		return false;
- 	}
-	if(_rad<-45&&_rad>=-135){
+	}
+	if(_r===_SP_CONTROLLER._DEF_DIR._D){	
+//	if(_rad<-45&&_rad>=-135){
 //		 console.log('bottom');
 		_POWERMETER._c_pms=
 			(_POWERMETER._c_pms>=_POWERMETER.pms_selected.length-1)
@@ -766,23 +777,30 @@ const _KEYEVENT_SP={
 //ステージ選択イベント
 'keymove_select_stage':function(e){
 	e.preventDefault(); // タッチによる画面スクロールを止める
-	let _rad=_SP_CONTROLLER._get_st(e)._rad;
-	let _dis=_SP_CONTROLLER._get_st(e)._dis;
+	// let _rad=_SP_CONTROLLER._get_st(e)._rad;
+	// let _dis=_SP_CONTROLLER._get_st(e)._dis;
 
 	if(_EVENT_SELECT_STAGE_FLAG){return;}
 	_EVENT_SELECT_STAGE_FLAG=true;
-	if(_rad>-45&&_rad<=45){
+
+	let _r=_SP_CONTROLLER._get_st(e);
+	if(!_r){return;}
+
+	if(_r===_SP_CONTROLLER._DEF_DIR._L){		
+//	if(_rad>-45&&_rad<=45){
 		// 	console.log('left');
 		_STAGESELECT.mapdef_status=
 			(_STAGESELECT.mapdef_status<=0)
 			?0
 			:_STAGESELECT.mapdef_status-1;
 	}
-	if(_rad>45&&_rad<=135){
+	if(_r===_SP_CONTROLLER._DEF_DIR._U){		
+//	if(_rad>45&&_rad<=135){
 		// 	console.log('top');
 	}
-	if((_rad>135&&_rad<=180)
-		||(_rad<-135&&_rad>=-180)){
+	if(_r===_SP_CONTROLLER._DEF_DIR._R){		
+	// if((_rad>135&&_rad<=180)
+	// 	||(_rad<-135&&_rad>=-180)){
 		// console.log('right');
 		_STAGESELECT.mapdef_status=
 			(_STAGESELECT.mapdef_status
@@ -791,7 +809,8 @@ const _KEYEVENT_SP={
 			:_STAGESELECT.mapdef_status+1;
 
 	}
-	if(_rad<-45&&_rad>=-135){
+	if(_r===_SP_CONTROLLER._DEF_DIR._U){
+//	if(_rad<-45&&_rad>=-135){
 		// console.log('bottom');
 	}
 
@@ -834,72 +853,78 @@ const _KEYEVENT_SP={
 	_DRAW_RESET_OBJECT();
 	_DRAW_STAGE_SELECT();
 	return false;
-},
-
+},//keydown_gameover_s
 'keymove_game_controller':function(e){
 	e.preventDefault(); // タッチによる画面スクロールを止める
-
-	_PLAYERS_MOVE_FLAG=true;
+	// let _rad=_SP_CONTROLLER._get_st(e)._rad;
+	// let _dis=_SP_CONTROLLER._get_st(e)._dis;
+	// if(_dis<5){return false;}
+	_PLAYERS_MOVE_FLAG=true;	
+	let _r=_SP_CONTROLLER._get_st(e);
+	if(_r===false){return;}
 	_PLAYERS_MAIN._x=0;
 	_PLAYERS_MAIN._y=0;
 
-	let _rad=_SP_CONTROLLER._get_st(e)._rad;
-	let _dis=_SP_CONTROLLER._get_st(e)._dis;
-	if(_dis<5){return false;}
-
-	if(_rad>-40&&_rad<=40){
-		// 	console.log('left');
+	if(_r===_SP_CONTROLLER._DEF_DIR._L){
+//	if(_rad>-40&&_rad<=40){
+			// 	console.log('left');
  		_PLAYERS_MAIN._x
- 			=_PLAYERS_MAIN.accel*-1;
+			 =_PLAYERS_MAIN.accel*-1;
  	}
-	if(_rad>40&&_rad<=50){
+	if(_r===_SP_CONTROLLER._DEF_DIR._LU){
+//	if(_rad>40&&_rad<=50){
 		// 	console.log('left-top');
  		_PLAYERS_MAIN._x
- 			=_PLAYERS_MAIN.accel*-0.75;
+ 			=_PLAYERS_MAIN.accel*-1;
 		_PLAYERS_MAIN._y
- 			=_PLAYERS_MAIN.accel*-0.75;
+ 			=_PLAYERS_MAIN.accel*-1;
 		_PLAYERS_MAIN.set_vv_ani('Up');
- 	}
-	if(_rad>50&&_rad<=130){
-		// 	console.log('top');
+	 }
+	if(_r===_SP_CONTROLLER._DEF_DIR._U){
+//	if(_rad>50&&_rad<=130){
+		_PLAYERS_MAIN._y
+ 			=_PLAYERS_MAIN.accel*-1;
+		_PLAYERS_MAIN.set_vv_ani('Up');
+	}
+	if(_r===_SP_CONTROLLER._DEF_DIR._RU){
+//	if(_rad>130&&_rad<=140){
+		// 	console.log('right-top');
+		_PLAYERS_MAIN._x
+ 			=_PLAYERS_MAIN.accel*1;
 		_PLAYERS_MAIN._y
  			=_PLAYERS_MAIN.accel*-1;
 		_PLAYERS_MAIN.set_vv_ani('Up');
  	}
-	if(_rad>130&&_rad<=140){
-		// 	console.log('right-top');
-		_PLAYERS_MAIN._x
- 			=_PLAYERS_MAIN.accel*0.75;
-		_PLAYERS_MAIN._y
- 			=_PLAYERS_MAIN.accel*-0.75;
-		_PLAYERS_MAIN.set_vv_ani('Up');
- 	}
-	if((_rad>140&&_rad<=180)
-		||(_rad<-140&&_rad>=-180)){
+	if(_r===_SP_CONTROLLER._DEF_DIR._R){
+		// if((_rad>140&&_rad<=180)
+		// ||(_rad<-140&&_rad>=-180)){
 		// console.log('right');
  		_PLAYERS_MAIN._x
  			=_PLAYERS_MAIN.accel;
  	}
-	if(_rad<-130&&_rad>=-140){
+	if(_r===_SP_CONTROLLER._DEF_DIR._RD){
+//		if(_rad<-130&&_rad>=-140){
 		// console.log('right-bottom');
 		_PLAYERS_MAIN._x
- 			=_PLAYERS_MAIN.accel*0.75;
+ 			=_PLAYERS_MAIN.accel*1;
  		_PLAYERS_MAIN._y
- 			=_PLAYERS_MAIN.accel*0.75;
+ 			=_PLAYERS_MAIN.accel*1;
 		_PLAYERS_MAIN.set_vv_ani('Down');
  	}
-	if(_rad<-50&&_rad>=-130){
+	if(_r===_SP_CONTROLLER._DEF_DIR._D){
+//	if(_rad<-50&&_rad>=-130){
 		// console.log('bottom');
  		_PLAYERS_MAIN._y
  			=_PLAYERS_MAIN.accel;
 		_PLAYERS_MAIN.set_vv_ani('Down');
- 	}
-	if(_rad<-40&&_rad>=-50){
+	}
+	if(_r===_SP_CONTROLLER._DEF_DIR._LD){
+//	if(_rad<-40&&_rad>=-50){
 		// console.log('left-bottom');
 		_PLAYERS_MAIN._x
- 			=_PLAYERS_MAIN.accel*-0.75;
+ 			=_PLAYERS_MAIN.accel*-1;
  		_PLAYERS_MAIN._y
- 			=_PLAYERS_MAIN.accel*0.75;
+ 			=_PLAYERS_MAIN.accel*1;
 		_PLAYERS_MAIN.set_vv_ani('Down');
  	}
 
@@ -908,6 +933,7 @@ const _KEYEVENT_SP={
 },//keymove_game_controller
 'keyend_game_controller':function(e){
 	_SP_CONTROLLER._set_reset();
+	_PLAYERS_MAIN.set_moveamount_reset();
 	_PLAYERS_MOVE_FLAG=false;
 },//keyend_game_controller
 
@@ -973,6 +999,16 @@ const _SP_CONTROLLER={
 	_sp_bt_s:new Object(),
 	_sp_bt_b:new Object(),
 	_sp_bt_a:new Object(),
+	_DEF_DIR:{//向き定義
+		_U:0,//上
+		_D:1,//下
+		_R:2,//右
+		_L:3,//左
+		_LU:4,//左上
+		_LD:5,//左下
+		_RU:6,//右上
+		_RD:7//右下
+	},
 	_get_st:function(e){
 		let _c1=this._sp_main_center;
 		let _c0=this._sp_main;
@@ -1005,11 +1041,24 @@ const _SP_CONTROLLER={
 		let _d=Math.sqrt(
 			Math.pow(_dx,2)+Math.pow(_dy,2)
 		);
-//		console.log(_d);
+		if(_d<10){return false;}
+//		console.log('_d:::'+_d);
 		let _a=parseInt(Math.atan2(_dy,_dx)*180/Math.PI);
-		return {'_rad':_a,'_dis':_d};
+//		console.log('_a:::'+_a);
+		
+
+		if(_a>-40&&_a<=40){return this._DEF_DIR._L;}
+		if(_a>40&&_a<=50){return this._DEF_DIR._LU;}
+		if(_a>50&&_a<=130){return this._DEF_DIR._U;}
+		if(_a>130&&_a<=140){return this._DEF_DIR._RU;}
+		if((_a>140&&_a<=180)||(_a<-140&&_a>=-180)){return this._DEF_DIR._R;}
+		if(_a<-130&&_a>=-140){return this._DEF_DIR._RD;}
+		if(_a<-50&&_a>=-130){return this._DEF_DIR._D;}
+		if(_a<-40&&_a>=-50){return this._DEF_DIR._LD;}
+		//		return {'_rad':_a,'_dis':_d};
 	},//_get_st
 	_set_reset(){
+		//コントローラーの位置を元に戻す
 		let _c1=
 			document
 				.querySelector('.sp_controller_main_center');
@@ -1214,18 +1263,23 @@ class GameObject_PLAYER_MAIN
 			this.c_vv_ani+=2;
 		}
 	}
+	set_moveamount_reset(){
+		let _this=this;
+		_MAP.map_backgroundY_speed=0;
+		_this._x=0;
+		_this._y=0;
+		return;
+	}
 	set_moveamount(){
 		let _this=this;
 		//移動量の設定
+//		console.log('======='+_this.y)
 		if(!_PLAYERS_MOVE_FLAG){
-			_MAP.map_backgroundY_speed=0;
-			_this._x=0;
-			_this._y=0;
+			_this.set_moveamount_reset();
 			return;
 		}
 		//キーが押された場合
 		//押下直後にx,yを移動させる
-//console.log(_this.y)
 		//移動量を元にx,y座標を設定
 		_this.x=(function(_i){
 			let _x=_i+_this._x;
@@ -1243,17 +1297,20 @@ class GameObject_PLAYER_MAIN
 			let _y=_i+_this._y;
 			/////////////////
 //				console.log(_i)
+			//Y軸ループの場合
 			if(_MAP.map_infinite){
-				if(_y<=100){
+				if(_y<100){
 					_MAP.map_backgroundY_speed=_this._y;
 					return 100;
+				}
+				if(_y>=100&&_y<=300){
+					_MAP.map_backgroundY_speed=0;
 				}
 				if(_y>300){
 					_MAP.map_backgroundY_speed=_this._y;
 					return 300;
 				}
-//				_MAP.map_backgroundY_speed=0;				
-				return _i+_this._y;
+				return _y;
 			}
 			//////////////////
 			if(_y<=50-(_this.img.height/4)){
@@ -1267,11 +1324,11 @@ class GameObject_PLAYER_MAIN
 			return _y;
 		})(_this.y);
 		//自機移動分配列をセット
+//		console.log('mgs==============:'+_MAP.map_backgroundY_speed);		
 		_GAME._setPlayerMoveDraw();
 	}
 	move(){
 		let _this=this;
-
 		//敵・弾に当たったら終了
 		if(!_this.isalive()){_this.collapes();return;}
 		_this.map_collition();
@@ -1739,7 +1796,7 @@ class GameObject_SHOTS_MISSILE
 				_t:0,//ミサイル発射後時間
 				_st:'_st1',//ミサイルのステータス
 				_img:new Image(),//ミサイルの画像
-				_c_mc:0,
+				_c_mc:0,//ミサイルのステータス切替カウント（間引き取る為）
 				_c:0,//爆風アニメーションカウント
 				_c_area:25,//ミサイル、爆風の当たり判定
 				_enemyid:null,//ミサイルに衝突した敵のオブジェクト
@@ -1778,92 +1835,41 @@ class GameObject_SHOTS_MISSILE
 			},
 			'_st2':function(_t){
 				//真下
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i;
-				})(_t.x);
-				_t.y=(function(_i){
-					return (!_t._shot_alive)?_p._y:_i+8;
-				})(_t.y);
+				_t.y+=8;
 				_t._img=_CANVAS_IMGS['missile2'].obj;
 			},
 			'_st3':function(_t){
+				_t.x+=8;
 				//真横
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+8;
-				})(_t.x);
-				_t.y=(function(_i){
-					return (!_t._shot_alive)?_p._y:_i;
-				})(_t.y);
 				_t._img=_CANVAS_IMGS['missile3'].obj;
 			},
 			'_st4':function(_t){
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+3;
- 				})(_t.x);
-				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+3;
- 				})(_t.y);
+				_t.x+=2;
+				_t.y+=1;
 				_t._img=_CANVAS_IMGS['missile4'].obj;
 			},
 			'_st5':function(_t){
 				//_st5→_st6
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+3;
- 				})(_t.x);
-				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+3;
- 				})(_t.y);
+				_t.x+=2;
+				_t.y+=2;
 				_t._img=_CANVAS_IMGS['missile5'].obj;
 			},
 			'_st6':function(_t){
 				//_st6→_st7
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+2;
- 				})(_t.x);
-				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+3;
- 				})(_t.y);
+				_t.x+=2;
+				_t.y+=3;
 				_t._img=_CANVAS_IMGS['missile1'].obj;
 			},
 			'_st7':function(_t){
 				//_st7→_st8
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+4;
- 				})(_t.x);
-				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+3;
- 				})(_t.y);
+				_t.x+=4;
+				_t.y+=2;
 				_t._img=_CANVAS_IMGS['missile5'].obj;
 			},
 			'_st8':function(_t){
 				//_st7→_st8
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+4;
- 				})(_t.x);
-				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+1;
- 				})(_t.y);
+				_t.x+=4;
+				_t.y+=1;
 				_t._img=_CANVAS_IMGS['missile4'].obj;
 			}
 		}
@@ -1896,6 +1902,8 @@ class GameObject_SHOTS_MISSILE
 	}
 	get_missile_status(_t){return _t._st;}
 	set_missile_status(_t,_st){
+		//ミサイルのステータス切り替え設定
+		//※少し間引きして切替をする。
 		if(this._st==='_st1'
 			||this._st==='_st2'
 			||this._st==='_st3'
@@ -1911,6 +1919,22 @@ class GameObject_SHOTS_MISSILE
 		let _map_x=_MAP.getMapX(_t.x+_t._img.width),
 			_map_y=_MAP.getMapY(_t.y);
 
+		var _setToSt3=function(){
+			_map_y=_MAP.getMapY(_t.y+_t._img.height);
+			if(_MAP.isMapCollision(_map_x,_map_y)){
+				if(_MAP.map_infinite===false){
+					var _a=parseInt(_t.y/25);
+					var _b=(_t.y%25<12.5)?_a:_a+1;
+					_t.y=_b*25;	
+				}
+				_this.set_missile_status(_t,'_st3');
+				return true;
+			}
+			return false;
+		};
+
+//			console.log(_t.y)
+			
 //console.log(_this.get_missile_status(_t))			
 		//MAPに入る手前は無視する
 		if(_MAP.isMapBefore(_map_x,_map_y)){return;}
@@ -1937,17 +1961,17 @@ class GameObject_SHOTS_MISSILE
 		//着座時、_st3が必ず壁より１マス上に
 		//配置する必要がある。
 		if(_this.get_missile_status(_t)==='_st6'){
+//			console.log('6')
 			_map_x=_MAP.getMapX(_t.x+_t._img.width);
 			//壁にぶつかる(壁中)
 			if(_MAP.isMapCollision(_map_x,_map_y)){
 				_t._init();
 				return;
 			}
-
 			_this.set_missile_status(_t,'_st7');
 		}
 		if(_this.get_missile_status(_t)==='_st7'){
-//			console.log(_t.y)
+//			console.log('7')
 			_map_x=_MAP.getMapX(_t.x+_t._img.width);
 			//壁にぶつかる(壁中)
  			if(_MAP.isMapCollision(_map_x,_map_y)){
@@ -1955,18 +1979,28 @@ class GameObject_SHOTS_MISSILE
 				return;
 			}
 			_t.x+=2;
+			if(_setToSt3()){return;}
 			_this.set_missile_status(_t,'_st8');
 		}
 		if(_this.get_missile_status(_t)==='_st8'){
+//			console.log('8');
+			
 			_map_x=_MAP.getMapX(_t.x+_t._img.width);
 			//壁にぶつかる(壁中)
 			if(_MAP.isMapCollision(_map_x,_map_y)){
 				_t._init();
 				return;
 			}
-//			console.log('_st8');
 			_t.x+=2;
-			_t.y=_MAP.getMapYToPx(_map_y)+3;
+//			let y=parseInt(_t.y/_MAP.t);
+//			console.log(_t.y)
+			// let _y=_MAP_SCROLL_POSITION_Y%_MAP.t;
+//			_t.y-=(_t.y%_MAP.t)+_MAP.map_backgroundY_speed;
+			// _t.y+=_y;
+//			_t.y=_MAP.getMapYToPx(_t.y);
+			//			_t.y=(_map_y*_MAP.t)+3;		
+//			_t.y=_t.y+_MAP.t-(_t.y%_MAP.t);
+			if(_setToSt3()){return;}
 			_this.set_missile_status(_t,'_st3');
 		}
 
@@ -1976,7 +2010,8 @@ class GameObject_SHOTS_MISSILE
 			//真下に衝突がある場合
 			if(_MAP.isMapCollision(_map_x,_map_y+1)){
 				//→st6→st7→st3への調整のためのy位置調整
-				_t.y=(_map_y*_MAP.t)-5;
+//				_t.y=_MAP.getMapYToPx(_t.y);			
+//				_t.y=(_map_y*_MAP.t)-5;
 				_this.set_missile_status(_t,'_st6');
 				return;
 			}
@@ -1984,8 +2019,7 @@ class GameObject_SHOTS_MISSILE
 			//真下に壁がない場合は落下
 			if(!_MAP.isMapCollision(_map_x,_map_y+1)){
 				_this.set_missile_status(_t,'_st2');
-				_t.x+=2;
-				_t.y+=5;
+				_t.x+=3;
 				return;
 			}
 
@@ -1999,7 +2033,10 @@ class GameObject_SHOTS_MISSILE
 
 		if(_this.get_missile_status(_t)==='_st3'){
 //			console.log('_st3');
+//			console.log('====='+(_MAP.y%25*-1));
+//			console.log(_t.y);			
 			_map_x=_MAP.getMapX(_t.x+_t._img.width);
+
 			//壁にぶつかる(壁中)
 			if(_MAP.isMapCollision(_map_x,_map_y)){
 				_t._init();
@@ -2029,28 +2066,42 @@ class GameObject_SHOTS_MISSILE
 
 		if(_this.get_missile_status(_t)==='_st2'){
 //			console.log('_st2');
-			_map_y=_MAP.getMapY(_t.y+_t._img.height/2);
+			_map_y=_MAP.getMapY(_t.y+_t._img.height+10);
 			//下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x,_map_y)
-				||_MAP.isMapCollision(_map_x,_map_y+1)
+//				||_MAP.isMapCollision(_map_x,_map_y+1)
 				){
-				_t.y=_MAP.getMapYToPx(_map_y)-8;
+//				_t.y-=(_t.y%_MAP.t);
 				_this.set_missile_status(_t,'_st6');
 				return;
 			}
 		}
 
-		if(_this.get_missile_status(_t)==='_st1'){			
-			_map_y=_MAP.getMapY(_t.y+_t._img.height/2,true);
+		if(_this.get_missile_status(_t)==='_st1'){
+			_map_y=_MAP.getMapY(_t.y+_t._img.height+10,true);
 			//自身、あるいはその下の壁にぶつかる
-			if(_MAP.isMapCollision(_map_x,_map_y)
-				||_MAP.isMapCollision(_map_x,_map_y+1)
-				||_MAP.isMapCollision(_map_x+1,_map_y+1)
-				){
-				//→st6→st7→st3への調整のためのy位置調整
-				_t.y=_MAP.getMapYToPx(_map_y)-5;
-				console.log(_t.y);
-				_this.set_missile_status(_t,'_st7');
+			if(_MAP.isMapCollision(_map_x+1,_map_y)){
+				// let _a=parseInt((_t.y+_t._img.height)/_MAP.t);
+				// let _b=parseInt((_t.y+_t._img.height+10)/_MAP.t);
+				// if(_a===_b){
+				// 	_t.y=((_a-1)*_MAP.t);
+				// }
+//				console.log('_st1_1:'+_a);
+//				console.log('_st1_2:'+_b);
+				_this.set_missile_status(_t,'_st6');
+				return;
+			}
+			if(_MAP.isMapCollision(_map_x,_map_y)){
+//				_t.y=_t.y-(25-_t.y%25);
+				// console.log('_st1_1:'+_MAP.getMapY(_t.y+_t._img.height));
+				// console.log('_st1_2:'+_MAP.getMapY(_t.y+_t._img.height+10));
+				//				console.log('_st1:'+_t.y+_t._img.height)
+//				_t.y=390;
+//				_t.y=parseInt(_MAP.getMapY(_t.y+_t._img.height)*_MAP.t)-10;
+//				console.log(_t.y);
+//				let _a=parseInt(_t.y/_MAP.t);
+//				_t.y=((_a+1)*_MAP.t)-7;
+				_this.set_missile_status(_t,'_st6');
 				return;
 			}
 		}
@@ -2128,6 +2179,15 @@ class GameObject_SHOTS_MISSILE
 				_t._img.width,
 				_t._img.height
 			);
+			// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
+			// _CONTEXT.beginPath();
+			// _CONTEXT.rect(
+			// 	_t.x,
+			// 	_t.y,
+			// 	_t._img.width,
+			// 	_t._img.height
+			// );
+			// _CONTEXT.stroke();
 
 			_t._shot_alive=true;
 //			console.log(_t._y);
@@ -2157,91 +2217,39 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 			},
 			'_st2':function(_t){
 				//真下
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i;
-				})(_t.x);
-				_t.y=(function(_i){
-					return (!_t._shot_alive)?_p._y:_i+8;
-				})(_t.y);
+				_t.y+=8;
 				_t._img=_CANVAS_IMGS['missile2'].obj;
 			},
 			'_st3':function(_t){
-				//真横
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+8;
-				})(_t.x);
-				_t.y=(function(_i){
-					return (!_t._shot_alive)?_p._y:_i;
-				})(_t.y);
+				_t.x+=8;
 				_t._img=_CANVAS_IMGS['missile3'].obj;
 			},
 			'_st4':function(_t){
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+3;
- 				})(_t.x);
-				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+3;
- 				})(_t.y);
+				_t.x+=2;
+				_t.y+=1;
 				_t._img=_CANVAS_IMGS['missile4'].obj;
 			},
 			'_st5':function(_t){
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+3;
- 				})(_t.x);
-				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+3;
- 				})(_t.y);
+				_t.x+=2;
+				_t.y+=2;
 				_t._img=_CANVAS_IMGS['missile5'].obj;
 			},
 			'_st6':function(_t){
 				//_st6→_st7
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+2;
- 				})(_t.x);
-				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+3;
- 				})(_t.y);
+				_t.x+=2;
+				_t.y+=3;
 				_t._img=_CANVAS_IMGS['missile1'].obj;
 			},
 			'_st7':function(_t){
 				//_st7→_st8
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+4;
- 				})(_t.x);
-				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+4;
- 				})(_t.y);
+				_t.x+=4;
+				_t.y+=2;
 				_t._img=_CANVAS_IMGS['missile5'].obj;
 			},
 			'_st8':function(_t){
 				//_st7→_st8
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+4;
- 				})(_t.x);
-				_t.y=(function(_i){
- 					return (!_t._shot_alive)?_p._y:_i+2;
- 				})(_t.y);
+				_t.x+=4;
+				_t.y+=1;
 				_t._img=_CANVAS_IMGS['missile4'].obj;
 			}
 		}
@@ -3878,7 +3886,9 @@ const _DRAW=function(){
 			if(_ENEMIES[_i]===undefined){continue;}
 			_ENEMIES[_i].move();
 		}
-
+		//MAP位置設定
+		_MAP.move();
+		
 		_IS_GET_POWERCAPSELL();
 		//MAP（衝突判定）
 		_MAP.isPlayersShotCollision();
@@ -3904,8 +3914,8 @@ const _DRAW=function(){
 		//自機を表示
 		_PLAYERS_MAIN_FORCE.move(_PLAYERS_MAIN);
 		_PLAYERS_MAIN.move();
-		//MAPを表示
-		_MAP.move();
+		//MAP表示設定
+		_MAP.map_draw();		
 		//DRAW POWER METERを表示
 		_POWERMETER.show();
 		//SCOREを表示
@@ -4703,30 +4713,55 @@ _setPlayerMoveDraw(){
 	}
 
 	_PLAYERS_MOVE_DRAW_X.unshift(_x);
-	if(_mgs===0){
+//	console.log(_pmdy);
+//	console.log('y==============:'+_PLAYERS_MAIN.y);
+//	console.log('mgs==============:'+_mgs);
+
+	//Y軸の処理（縦スクロールなし）
+	//Y軸では、縦スクロールが発生しない間は、
+	//要素0から順に自機移動座標を追加する。
+	if(!_MAP.map_infinite){
 		_pmdy.unshift(_y);
 		return;
 	}
-	//無限Y軸の処理
-//	console.log(_mgs);
+
+	//Y軸の処理（縦スクロール発生時）
+	if(_mgs===0){
+		//縦スクロールが発生しない場合は、
+		//要素0から追加
+		_pmdy.unshift(_y);
+		return;		
+	}
+
+	//この時点での、自機移動分配列を要素0から
+	//Y座標の値を参照し、必要に応じて上書きする。
+	//オプション1つ目：要素10
+	//オプション2つ目：要素20
+	//オプション3つ目：要素30
+	//オプション4つ目：要素40
 	for(let _i=0;_i<_PLAYERS_MOVE_DRAW_MAX;_i++){
 		if(_pmdy[_i]===undefined){
+			//要素内未定義の場合は、
+			//自機座標Yと移動分を加算させる
 			_pmdy.push(_y+(_mgs*_i));
 			continue;
 		}
 		if(_mgs>0){
+			//下スクロール時
 			_pmdy[_i]=(_pmdy[_i]>=_y+(_mgs*_i))
 						?_y+(_mgs*_i)
 						:_pmdy[_i]+_mgs;
 			continue;
 		}
 		if(_mgs<0){
+			//上スクロール時
 			_pmdy[_i]=(_pmdy[_i]<=_y+(_mgs*_i))
 						?_y+(_mgs*_i)
 						:_pmdy[_i]+_mgs;
 			continue;				
 		}
 	}
+//	console.log(_pmdy);
 },
 _multilineText(context, text, width) {
     let len=text.length,

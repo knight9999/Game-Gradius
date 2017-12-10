@@ -274,8 +274,10 @@ setDataForDataApi:function(){
 		_str+='"_body":"'+document.querySelector('#body textarea[name="body"]').value+'",';
 		_str+='"_initx":"'+document.querySelector('#init .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_speed":"'+document.querySelector('#speed .col_r .val').getAttribute('data-val')+'",';
-		_str+='"_difficult":"'+document.querySelector('#difficult .col_r .val').getAttribute('data-val')+'"';
-
+		_str+='"_difficult":"'+document.querySelector('#difficult .col_r .val').getAttribute('data-val')+'",';
+		_str+='"_map_infinite":"true"';
+//		_str+='"_mapinfinite":"'+document.querySelector('#mapinfinite .col_r .val').getAttribute('data-val')+'"';
+		
 		return _str;
 	})(_MAPDEFS[_MAP_PETTERN]);
 

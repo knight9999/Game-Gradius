@@ -90,7 +90,8 @@ class GameObject_ENEMY{
 		_this.img=_o;
 		_this.x=_x||0;
 		_this.y=_y||0;
-
+		_this._moveY=0;
+		
 		_this.isshot=false;
 		_this._DEF_DIR={//向き
 			_U:0,//上
@@ -253,7 +254,7 @@ class GameObject_ENEMY{
 	//===カスタマイズできる関数
 	ani_col(_x,_y){
 		let _this=this;
-		_this.x-=_BACKGROUND_SPEED;
+//		_this.x-=_BACKGROUND_SPEED;
 		_x=_x||0;
 		_y=_y||0;
 		//大きめな爆発
@@ -266,7 +267,6 @@ class GameObject_ENEMY{
 		let _a=_this.col_imgs[
 				parseInt(_this.col_ani_c/_this.col_intv)
 				];
-		_this.y=_MAP.getY(_this.y+_y);
 		_CONTEXT.drawImage(
 			_a.img,
 			_this.x+_x,
@@ -325,7 +325,7 @@ class GameObject_ENEMY{
 		//・キャンバス外
 		//・生存しない
 		if(_this.isStandBy()){
-			_this.x-=_BACKGROUND_SPEED;
+//			_this.x-=_BACKGROUND_SPEED;
 			return false;
 		}
 		if(_this.isCanvasOut()){
@@ -342,7 +342,8 @@ class GameObject_ENEMY{
 	moveDraw(){
 		//敵の描画メイン
 		let _this=this;
-		_this.x-=_BACKGROUND_SPEED;
+//		_this._moveY+=_MAP.map_backgroundY_speed;
+//		_this._moveY%=500;
 		_CONTEXT.drawImage(
 			_this.img,
 			_this.x,
@@ -357,6 +358,8 @@ class GameObject_ENEMY{
 		//敵の処理メイン
 		//原則継承はしない
 		let _this=this;
+		_this.x-=_BACKGROUND_SPEED;
+		_this.y=_MAP.getY(_this.y);
 		if(!_this.isMove()){return;}
 		_this.moveDraw();
 	}
@@ -396,7 +399,7 @@ class ENEMY_a extends GameObject_ENEMY{
 				_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.img.width,0);
 			}
 		}
-//		console.log(_this.y+'==========')
+//		_this.x-=_BACKGROUND_SPEED;
 		_CONTEXT.drawImage(
 			_this.img,
 			_this.x,
@@ -408,10 +411,6 @@ class ENEMY_a extends GameObject_ENEMY{
 	}
 	moveDraw(){
 		let _this=this;
-		_this.x-=_BACKGROUND_SPEED;
-		_this.y=_MAP.getY(_this.y);
-//		_this.y=_MAP.getY(_this.y);
-//		console.log(_this.y)
 		_this.setDrawImage();
 		//弾の発射
 		_this.shot();
@@ -645,8 +644,8 @@ class ENEMY_d extends GameObject_ENEMY{
 				?_MAPDEFS[_MAP_PETTERN]._speed
 				:_this.speed;
 		}(_this));
-
-		let _d=_SCROLL_POSITION*0.5;//radのスピード
+		
+		let _d=_MAP_SCROLL_POSITION_X*0.5;//radのスピード
 		let _v=Math.cos(_d*Math.PI/180);//縦幅調整
 		_this.y+=_v;
 
@@ -872,7 +871,6 @@ class ENEMY_m extends GameObject_ENEMY{
 			return;
 		}
 
-		_this.x-=_BACKGROUND_SPEED;
 		_this.img=(function(_t){
 			//画像オブジェクト設定（残り1）
 			let _t_col=(_t._status<=1)
@@ -967,7 +965,6 @@ class ENEMY_m_small extends GameObject_ENEMY{
 					return true;
 				}
 			}
-			_this._moveX=_BACKGROUND_SPEED*-1;
 			return false;
 		})();
 		_this._moveY=(function(){
@@ -982,11 +979,6 @@ class ENEMY_m_small extends GameObject_ENEMY{
 
 		_this.x+=_this._moveX;
 		_this.y+=_this._moveY;
-		
-		if(_this.x+_this.img.width<0){
-			_this._status=0;
-			return;
-		}
 
 		_this.img=(function(_t){
 			_t._col_c=
@@ -1023,7 +1015,6 @@ class ENEMY_n extends GameObject_ENEMY{
 	}
 	moveDraw(){
 		let _this=this;
-		_this.x-=_BACKGROUND_SPEED;
 		//オブジェクト追加
 		if(Math.random()>0.1){return;}
 		let _cls=new ENEMY_n_small(
@@ -1043,7 +1034,6 @@ class ENEMY_o extends ENEMY_n{
 	}
 	moveDraw(){
 		let _this=this;
-		_this.x-=_BACKGROUND_SPEED;
 		//オブジェクト追加
 		if(Math.random()>0.1){return;}
 		let _cls=new ENEMY_o_small(
@@ -1089,6 +1079,7 @@ class ENEMY_o_small extends GameObject_ENEMY{
 			+(_this.speedX*_this.flagX);
 		_this.y+=_this._v;
 		_this._v+=_this.speedY;
+		
 		_CONTEXT.drawImage(
 			_this.img,
 			_this.x,
@@ -1353,7 +1344,6 @@ class ENEMY_q extends GameObject_ENEMY{
 	}
 	ani_col(_x,_y){
 		let _this=this;
-		_this.x-=_BACKGROUND_SPEED;
 		_x=_x||0;
 		_y=_y||0;
 		//大きめな爆発
@@ -1402,8 +1392,7 @@ class ENEMY_q extends GameObject_ENEMY{
 	}
 	moveDraw(){
 		let _this=this;
-
-		_this.x-=_MAPDEFS[_MAP_PETTERN]._speed;
+//		console.log('enemy++++++:'+_this.y);
 		_this.setDrawImage();
 		//弾の発射
 		_this.shot();
@@ -1496,7 +1485,7 @@ class ENEMY_qr extends GameObject_ENEMY{
 	moveDraw(){
 		let _this=this;
 		_this.map_collition();
-		_this.x+=_this.sx*_MAPDEFS[_MAP_PETTERN]._speed-_BACKGROUND_SPEED;
+		_this.x+=_this.sx*_MAPDEFS[_MAP_PETTERN]._speed;
 		_this.y+=_this.sy*_MAPDEFS[_MAP_PETTERN]._speed;
 		_this.img=(function(_c){
 			_this.imgs_c=(_c>=(_this.imgs.length*10)-1)?0:_c+1;
@@ -1802,6 +1791,7 @@ class GameObject_ENEMY_SHOT{
 	move(){
 		let _this=this;
 		_this.map_collition();
+		_this.y=_MAP.getY(_this.y);		
 		if(_GAME.isEnemyCanvasOut(_this)){
 			_this.init();
 			return;
@@ -1811,7 +1801,7 @@ class GameObject_ENEMY_SHOT{
 
 		_this.x+=_this.sx*_this.speed;
 		_this.y+=_this.sy*_this.speed;
-
+		
 		_CONTEXT.drawImage(
 			_this.img,
 			_this.x-(_this.img.width/2),

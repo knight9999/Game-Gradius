@@ -564,7 +564,7 @@ class ENEMY_c extends GameObject_ENEMY{
 		if(this._c_walk>5000*Math.random()){
 			this._c_walk=0;
 			this.speed=(_p._x<this.x)
-				?(this.speed+_BACKGROUND_SPEED)*-1
+				?this.speed*-1
 				:Math.abs(this.speed);
 		}
 	}

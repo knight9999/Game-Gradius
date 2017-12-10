@@ -249,6 +249,12 @@ _setData:function(_pt){
 	$_difficult.value=_data._difficult;
 	$_difficult_v.setAttribute('data-val',_data._difficult);
 	_this._setTextToFont($_difficult_v,_data._difficult,20);
+	//map_infiniteを表示
+	const $_map_infinite=document.querySelector('#map_infinite input[name="map_infinite"]'),
+	$_map_infinite_v=document.querySelector('#map_infinite .col_r .val');
+	$_map_infinite.value=(_data._map_infinite==="true")?"1":"0";
+	$_map_infinite_v.setAttribute('data-val',_data._map_infinite);
+	_this._setTextToFont($_map_infinite_v,_data._map_infinite,20);
 
 },//_setData
 
@@ -275,8 +281,7 @@ setDataForDataApi:function(){
 		_str+='"_initx":"'+document.querySelector('#init .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_speed":"'+document.querySelector('#speed .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_difficult":"'+document.querySelector('#difficult .col_r .val').getAttribute('data-val')+'",';
-		_str+='"_map_infinite":"true"';
-//		_str+='"_mapinfinite":"'+document.querySelector('#mapinfinite .col_r .val').getAttribute('data-val')+'"';
+		_str+='"_map_infinite":"'+document.querySelector('#map_infinite .col_r .val').getAttribute('data-val')+'"';
 		
 		return _str;
 	})(_MAPDEFS[_MAP_PETTERN]);
@@ -438,7 +443,10 @@ _e_scroll:function(e){
 //レンジ設定
 _f_fg_range:function(e){
     let $_t_val=e.target.parentNode.previousElementSibling;
-    let _val=e.target.value;
+	let _val=(function(){
+		if(e.target.name!=="map_infinite"){return e.target.value;}
+		return (e.target.value==="1")?"true":"false";
+	})();
 	$_t_val.setAttribute('data-val',_val);
     $_t_val.innerText=_val;
     _GAME_STAGEEDIT._setTextToFont($_t_val,_val,20);

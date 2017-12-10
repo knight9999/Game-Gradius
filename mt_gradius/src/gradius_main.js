@@ -714,7 +714,7 @@ const _KEYEVENT_SP={
 	e.preventDefault(); // タッチによる画面スクロールを止める
 
 	let _r=_SP_CONTROLLER._get_st(e);
-	console.log(_EVENT_POWERMETER_FLAG);
+//	console.log(_EVENT_POWERMETER_FLAG);
 
 	if(_EVENT_POWERMETER_FLAG===true){return false;}
 	_EVENT_POWERMETER_FLAG=true;
@@ -784,6 +784,7 @@ const _KEYEVENT_SP={
 	_EVENT_SELECT_STAGE_FLAG=true;
 
 	let _r=_SP_CONTROLLER._get_st(e);
+	//所定の距離に達しない場合は無効
 	if(!_r){return;}
 
 	if(_r===_SP_CONTROLLER._DEF_DIR._L){		

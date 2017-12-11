@@ -2202,57 +2202,19 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 	constructor(_p){
 		super(_p);
 		let _this=this;
-		this.mis_status={
-			'_st1':function(_t){
-				//斜め下
-				let _p=_this.player//プレーヤーの中心座標取得
-						.getPlayerCenterPosition();
-				_t.x=(function(_i){
-					//撃ち始めは自機位置から放つ
-					return (!_t._shot_alive)?_p._x:_i+4;
-				})(_t.x);
-				_t.y=(function(_i){
-					return (!_t._shot_alive)?_p._y:_i+8;
-				})(_t.y);
-				_t._img=_CANVAS_IMGS['missile3'].obj;
-			},
-			'_st2':function(_t){
-				//真下
-				_t.y+=8;
-				_t._img=_CANVAS_IMGS['missile2'].obj;
-			},
-			'_st3':function(_t){
-				_t.x+=8;
-				_t._img=_CANVAS_IMGS['missile3'].obj;
-			},
-			'_st4':function(_t){
-				_t.x+=2;
-				_t.y+=1;
-				_t._img=_CANVAS_IMGS['missile4'].obj;
-			},
-			'_st5':function(_t){
-				_t.x+=2;
-				_t.y+=2;
-				_t._img=_CANVAS_IMGS['missile5'].obj;
-			},
-			'_st6':function(_t){
-				//_st6→_st7
-				_t.x+=2;
-				_t.y+=3;
-				_t._img=_CANVAS_IMGS['missile1'].obj;
-			},
-			'_st7':function(_t){
-				//_st7→_st8
-				_t.x+=4;
-				_t.y+=2;
-				_t._img=_CANVAS_IMGS['missile5'].obj;
-			},
-			'_st8':function(_t){
-				//_st7→_st8
-				_t.x+=4;
-				_t.y+=1;
-				_t._img=_CANVAS_IMGS['missile4'].obj;
-			}
+		//_st1のみ定義上書
+		_this.mis_status._st1=function(_t){
+			//斜め下
+			let _p=_this.player//プレーヤーの中心座標取得
+					.getPlayerCenterPosition();
+			_t.x=(function(_i){
+				//撃ち始めは自機位置から放つ
+				return (!_t._shot_alive)?_p._x:_i+4;
+			})(_t.x);
+			_t.y=(function(_i){
+				return (!_t._shot_alive)?_p._y:_i+8;
+			})(_t.y);
+			_t._img=_CANVAS_IMGS['missile3'].obj;
 		}
 	}
 	enemy_collision(_e,_t){
@@ -3037,9 +2999,7 @@ class GameObject_SHOTS_LASER
 				_laser_MaxX:_CANVAS.width,
 						//処理変数レーザー最大右端
 				_l_x:0,//処理変数：レーザー右端x
-				_l_y:0,//処理変数：レーザー右端y
 				_l_sx:0,//処理変数：レーザー左端x
-				_l_sy:0,//処理変数：レーザー左端y
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
 				_init:function(){//初期化
@@ -3125,11 +3085,9 @@ class GameObject_SHOTS_LASER
 		_this.setLaserMaxX(_CANVAS.width);
 
 	}
-	setLaserLine(_s,_l_x,_l_y,_l_sx,_l_sy){
+	setLaserLine(_s,_l_x,_l_sx){
 		_s._l_x=_l_x;
-		_s._l_y=_l_y;
 		_s._l_sx=_l_sx;
-		_s._l_sy=_l_sy;
 	}
 	setLaserMaxX(_v){
 //		console.log(this.shots.length);
@@ -3220,9 +3178,8 @@ class GameObject_SHOTS_LASER
 
 			_this.setLaserLine(_t,
 								_px+_t.x,
-								_p.y,
-								_px+_t._sx,
-								_p.y);
+								_px+_t._sx
+							);
 
 			if(_t.x>0){_t._shot_alive=true;}
 

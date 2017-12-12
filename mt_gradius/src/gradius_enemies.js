@@ -645,13 +645,8 @@ class ENEMY_d extends GameObject_ENEMY{
 	moveDraw(){
 		let _this=this;
 
-		_this.x-=(function(_t){
-			return (_t.x>_CANVAS.width)
-				?_MAPDEFS[_MAP_PETTERN]._speed
-				:_this.speed;
-		}(_this));
-		
-		let _d=_MAP_SCROLL_POSITION_X*0.5;//radのスピード
+		_this.x+=-2;
+		let _d=_this.x;//radのスピード
 		let _v=Math.cos(_d*Math.PI/180);//縦幅調整
 		_this.y+=_v;
 

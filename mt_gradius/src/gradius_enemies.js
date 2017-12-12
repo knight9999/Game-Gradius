@@ -628,7 +628,6 @@ class ENEMY_d extends GameObject_ENEMY{
 		super(_CANVAS_IMGS['enemy_d_1'].obj,_x,_y)
         let _this=this;
 		_this._status=1;
-		_this.speed=5;
 
 		_this._col_c=0;
 		_this.col=[//アニメ定義

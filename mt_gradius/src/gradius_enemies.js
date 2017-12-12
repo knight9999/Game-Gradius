@@ -454,7 +454,8 @@ class ENEMY_c extends GameObject_ENEMY{
 		let _p=_PLAYERS_MAIN;
 		
         _this._ene_status={
-			'_st1':function(){//walk
+		'_st1':{
+			_f:function(){//walk
 				if(_this._shot===true){return;}
 				_this._c_walkstep=
 					(_this._c_walkstep===20-1)
@@ -463,8 +464,13 @@ class ENEMY_c extends GameObject_ENEMY{
 				_this.img=_this.walkstep[parseInt(_this._c_walkstep/10)].img;
 
 				_this._c_walk++;
-            },//_st1
-			'_st2':function(){//shot
+			},
+			_setX:function(){
+				return _this.x+(_this.speed*2);
+			}
+        },//_st1
+		'_st2':{
+			_f:function(){//shot
 				if(_this.x>=_CANVAS.width){return;}
 				_this._shot=true;
 				if(_this._c_shotstep>=20-1){
@@ -477,7 +483,11 @@ class ENEMY_c extends GameObject_ENEMY{
 				_this._c_shotstep+=1;
 				_this.img=
 					_this.img=_this.shotstep[parseInt(_this._c_shotstep/10)].img;
-            }//_st2
+			},
+			_setX:function(){
+				return _this.x;
+			}
+		}//_st2
         }//_ene_status
 	}
 	map_collition(){
@@ -595,15 +605,17 @@ class ENEMY_c extends GameObject_ENEMY{
 			_this._shot)
 			?'_st2'
 			:'_st1';
-		_this._ene_status[_this._st]();
-
-		_this.x=(function(_t){
-			if(_t._st==='_st1'){
-				return _t.x+_this.speed-_BACKGROUND_SPEED;
-			}else if(_t._st==='_st2'){
-				return _t.x-_BACKGROUND_SPEED;
-			}
-		})(_this);
+		_this._ene_status[_this._st]._f();
+		_this.x=_this._ene_status[_this._st]._setX();		
+		// _this.x=(function(_t){
+		// 	if(_t._st==='_st1'){
+		// 		//walk
+		// 		return _t.x+(_this.speed*2);
+		// 	}else if(_t._st==='_st2'){
+		// 		//shot
+		// 		return _t.x;
+		// 	}
+		// })(_this);
 
 		_this.setDrawImage();
 
@@ -616,7 +628,6 @@ class ENEMY_d extends GameObject_ENEMY{
 		super(_CANVAS_IMGS['enemy_d_1'].obj,_x,_y)
         let _this=this;
 		_this._status=1;
-		_this.speed=5;
 
 		_this._col_c=0;
 		_this.col=[//アニメ定義
@@ -633,13 +644,8 @@ class ENEMY_d extends GameObject_ENEMY{
 	moveDraw(){
 		let _this=this;
 
-		_this.x-=(function(_t){
-			return (_t.x>_CANVAS.width)
-				?_MAPDEFS[_MAP_PETTERN]._speed
-				:_this.speed;
-		}(_this));
-		
-		let _d=_MAP_SCROLL_POSITION_X*0.5;//radのスピード
+		_this.x+=-2;
+		let _d=_this.x;//radのスピード
 		let _v=Math.cos(_d*Math.PI/180);//縦幅調整
 		_this.y+=_v;
 
@@ -1111,7 +1117,7 @@ class ENEMY_p extends GameObject_ENEMY{
 		super(
 			_CANVAS_IMGS['enemy_p_1'].obj,_x,_y
 		)
-		this._status=6;
+		this._status=4;
 		this.getscore=100;
 		this.speedx=_BACKGROUND_SPEED;
 		this.speedy=
@@ -1200,7 +1206,7 @@ class ENEMY_p_small extends GameObject_ENEMY{
     constructor(_d,_x,_y){
 		super(_d,_x,_y);
 		let _this=this;
-		_this._status=6;
+		_this._status=5;
 		_this.getscore=500;
 		_this.speedx=
 			_MAPDEFS[_MAP_PETTERN]._speed

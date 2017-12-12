@@ -2160,11 +2160,11 @@ class GameObject_SHOTS_MISSILE
 //console.log('_j:'+_j+'   _t.x:'+_t.x+'   _t.y:'+_t.y);
 //console.log('_map_x:'+_map_x);
 
-			if (_t.y>_CANVAS.height
-				||_t.x>_CANVAS.width){
+			if(_GAME.isShotCanvasOut(_t)){
 				_t._init();
 				continue;
 			}
+
 			_this.mis_status[_t._st](_t);
 			if(_this.get_missile_status(_t)==='_st1'
 				&&_MAP.isMapCollision(
@@ -2368,11 +2368,11 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 				return '_st1';
 			})();
 
-			if (_t.y>_CANVAS.height
-				||_t.x>_CANVAS.width){
+			if(_GAME.isShotCanvasOut(_t)){
 				_t._init();
 				continue;
 			}
+
 			_this.mis_status[_t._st](_t);
 			_CONTEXT.drawImage(
 				_t._img,
@@ -2506,13 +2506,11 @@ class GameObject_SHOTS_MISSILE_2WAY
 				}
 			})(_t.y);
 
+			if(_GAME.isShotCanvasOut(_t)){
+				_t._init();
+				continue;
+			}
 			if(_j===0){
-				if (_t.x>_CANVAS.width
-					||_t.y<0){
-					_t._init();
-					continue;
-				}
-
 				_t._st=(function(){
 					if(_t._t>20&&_t._t<30){
 						return '_st5';
@@ -2523,12 +2521,6 @@ class GameObject_SHOTS_MISSILE_2WAY
 					return '_st4';
 				})();
 			}else{
-				if (_t.x>_CANVAS.width
-					||_t.y>_CANVAS.height){
-					_t._init();
-					continue;
-				}
-
 				_t._st=(function(){
 					if(_t._t>20&&_t._t<30){
 						return '_st2';
@@ -2612,7 +2604,7 @@ class GameObject_SHOTS_NORMAL
 			})(_t.y);
 			_t.y=_MAP.getShotY(_t.y);
 
-			if (_t.x>_CANVAS.width){
+			if(_GAME.isShotCanvasOut(_t)){
 				_t._init();
 				continue;
 			}
@@ -2741,16 +2733,10 @@ class GameObject_SHOTS_DOUBLE
 			})(_t.y);
 			_t.y=_MAP.getShotY(_t.y);			
 			
-			if (this.shots[0].x>_CANVAS.width){
-				this.shots[0]._init();
+			if(_GAME.isShotCanvasOut(_t)){
+				_t._init();
 				continue;
 			}
-			if (this.shots[1].y<0||
-				this.shots[1].x>_CANVAS.width){
-				this.shots[1]._init();
-				continue;
-			}
-
 			_CONTEXT.drawImage(
 				_t._img,
 				_t.x,
@@ -2807,12 +2793,8 @@ class GameObject_SHOTS_TAILGUN
 			})(_t.y);
 			_t.y=_MAP.getShotY(_t.y);			
 
-			if (this.shots[0].x>_CANVAS.width){
-				this.shots[0]._init();
-				continue;
-			}
-			if (this.shots[1].x<0){
-				this.shots[1]._init();
+			if(_GAME.isShotCanvasOut(_t)){
+				_t._init();
 				continue;
 			}
 
@@ -2845,8 +2827,8 @@ class GameObject_SHOTS_RIPPLE_LASER
 		for(let _i=0;_i<_PLAYERS_SHOTS_MAX;_i++){
 			this.shots.push({
 				sid:_SHOTTYPE_LASER,
-				x:0,//処理変数：照射x軸
-				y:0,
+				x:0,//処理変数：X位置の中心点
+				y:0,//処理変数：Y位置の中心点
 				_t:0,//アニメーション時間ripple
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
@@ -2881,6 +2863,9 @@ class GameObject_SHOTS_RIPPLE_LASER
 			if(_s===_IS_SQ_COL){
 				_e.collision(_SHOTTYPE_RIPPLE_LASER);
 				(function(){
+					//RIPPLELASERでは、当たり判定後、
+					//画面内の全ての敵を参照し、
+					//RIPPLE範囲内の敵も当たり判定とみなす。
 					let _ens=_ENEMIES;
 					for(let _i=0;_i<_ens.length;_i++){
 					let _en=_ens[_i];
@@ -2938,7 +2923,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 			})(_t.y);
 			_t.y=_MAP.getShotY(_t.y);			
 			
-			if (_t.x>_CANVAS.width){
+			if(_GAME.isShotCanvasOut(_t)){
 				_t._init();
 				continue;
 			}
@@ -4500,16 +4485,12 @@ setUrlParams(){
 			this._url_params[_p[0]]=_p[1];
 	}
 },
-isEnemyCanvasXIn(_oe){
-	let _e=_oe.getEnemyCenterPosition();
-	if(_oe.x<_CANVAS.width){
-		return true;
-	}
-	return false;
-},
-isEnemyCanvasXOut(_oe){
-	let _e=_oe.getEnemyCenterPosition();
-	if(_e._x<-100){
+isShotCanvasOut(_t){
+	if(_t.x<-50
+		||_t.x>_CANVAS.width+50
+		||_t.y<-50
+		||_t.y>_CANVAS.height+50
+		){
 		return true;
 	}
 	return false;

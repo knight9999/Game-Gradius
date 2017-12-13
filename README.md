@@ -31,10 +31,10 @@ iOSでは、Safariから「ホーム画面に書き出し」でホーム画面�
 リンク(https://www.youtube.com/watch?v=sur3x5MF6fg)
 2. 火山ステージ(iPadmini4 iOS11)  
 [![](http://img.youtube.com/vi/5dOtu4dOcZo/0.jpg)](https://www.youtube.com/watch?v=5dOtu4dOcZo)
-2. 火山ステージ、4. クリスタルステージ(iPadmini4 iOS11)  
-[![](http://img.youtube.com/vi/l3_ZVcvrdLU/0.jpg)](https://www.youtube.com/watch?v=l3_ZVcvrdLU)
 3. スピードステージ(iPadmini4 iOS11)  
 [![](http://img.youtube.com/vi/XZ9qYV6dbwM/0.jpg)](https://www.youtube.com/watch?v=XZ9qYV6dbwM)
+4. クリスタルステージ(iPhone 8Plus iOS11) 
+[![](https://user-images.githubusercontent.com/12569855/33915058-994c9b94-dfe4-11e7-83c7-d65bc5240852.GIF)](https://www.youtube.com/watch?v=l3_ZVcvrdLU)
 
 ## Getting Started
 

@@ -28,13 +28,12 @@ iOSでは、Safariから「ホーム画面に書き出し」でホーム画面�
 ## Demo
 1. モアイステージ(iPhone 8Plus iOS11)  
 ![](https://user-images.githubusercontent.com/12569855/33947901-eed3961a-e068-11e7-98f4-6e28d981f127.GIF)  
-リンク(https://www.youtube.com/watch?v=sur3x5MF6fg)
 2. 火山ステージ(iPadmini4 iOS11)  
-[![](http://img.youtube.com/vi/5dOtu4dOcZo/0.jpg)](https://www.youtube.com/watch?v=5dOtu4dOcZo)
-3. スピードステージ(iPadmini4 iOS11)  
-[![](https://user-images.githubusercontent.com/12569855/33947902-ef16d6c8-e068-11e7-8ebd-aa3aba2d3bb5.GIF)
+![](http://img.youtube.com/vi/5dOtu4dOcZo/0.jpg)](https://www.youtube.com/watch?v=5dOtu4dOcZo)
+3. スピードステージ(iPhone 8Plus iOS11)  
+![](https://user-images.githubusercontent.com/12569855/33947902-ef16d6c8-e068-11e7-8ebd-aa3aba2d3bb5.GIF)
 4. クリスタルステージ(iPhone 8Plus iOS11)  
-[![](https://user-images.githubusercontent.com/12569855/33915058-994c9b94-dfe4-11e7-83c7-d65bc5240852.GIF)](https://www.youtube.com/watch?v=l3_ZVcvrdLU)
+![](https://user-images.githubusercontent.com/12569855/33915058-994c9b94-dfe4-11e7-83c7-d65bc5240852.GIF)  
 
 ## Getting Started
 

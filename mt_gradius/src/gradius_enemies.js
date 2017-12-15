@@ -87,9 +87,9 @@ class GameObject_ENEMY{
 		_this.id=_ENEMIES.length;//敵の当たり判定用ID
 		_this.bid=_ENEMIES_BOUNDS.length;//敵同士のバウンドID
 		_this.gid=0;//敵のグループID
-		_this.img=_o;
-		_this.x=_x||0;
-		_this.y=_y||0;
+		_this.img=_o;//画像オブジェクト
+		_this.x=_x||0;//X位置
+		_this.y=_y||0;//Y位置
 		
 		_this.isshot=false;
 		_this._DEF_DIR={//向き
@@ -222,24 +222,7 @@ class GameObject_ENEMY{
 	setDrawImage(){
 		let _this=this;
 		_CONTEXT.save();
-		// let rad = -180 * Math.PI/180; 
-		// var cx = _this.x + _this.img.width/2;
-        // var cy = _this.y + _this.img.height/2;
-        // // 画像を中心にして回転
-		// _CONTEXT.setTransform(Math.cos(rad), Math.sin(rad),
-		// 					-Math.sin(rad), Math.cos(rad),
-		// 					cx-cx*Math.cos(rad)+cy*Math.sin(rad),
-		// 					cy-cx*Math.sin(rad)-cy*Math.cos(rad));
-//		_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.img.width,0);
-		if(_this.direct===_this._DEF_DIR._U){
-			_CONTEXT.setTransform(1,0,0,-1,0,_this.y*2+_this.img.height);
-		}
-		if(_this.direct===_this._DEF_DIR._LU){
-			_CONTEXT.setTransform(-1,0,0,-1,_this.x*2+_this.img.width,_this.y*2+_this.img.height);
-		}
-		if(_this.direct===_this._DEF_DIR._LD){
-			_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.img.width,0);
-		}
+		_this.setDrawImageDirect();
 		_CONTEXT.drawImage(
 			_this.img,
 			_this.x,
@@ -251,6 +234,29 @@ class GameObject_ENEMY{
 	}
 	//===原則以下のメソッドのみ継承クラスが
 	//===カスタマイズできる関数
+	setDrawImageDirect(){
+		//_CONTEXTを使った向きの調整
+		// let rad = -180 * Math.PI/180; 
+		// var cx = _this.x + _this.img.width/2;
+        // var cy = _this.y + _this.img.height/2;
+        // // 画像を中心にして回転
+		// _CONTEXT.setTransform(Math.cos(rad), Math.sin(rad),
+		// 					-Math.sin(rad), Math.cos(rad),
+		// 					cx-cx*Math.cos(rad)+cy*Math.sin(rad),
+		// 					cy-cx*Math.sin(rad)-cy*Math.cos(rad));
+//		_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.img.width,0);
+		let _this=this;
+		if(_this.direct===_this._DEF_DIR._U){
+			_CONTEXT.setTransform(1,0,0,-1,0,_this.y*2+_this.img.height);
+		}
+		if(_this.direct===_this._DEF_DIR._LU){
+			_CONTEXT.setTransform(-1,0,0,-1,_this.x*2+_this.img.width,_this.y*2+_this.img.height);
+		}
+		if(_this.direct===_this._DEF_DIR._LD){
+			_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.img.width,0);
+		}
+		return;
+	}
 	ani_col(_x,_y){
 		let _this=this;
 		_x=_x||0;
@@ -339,13 +345,15 @@ class GameObject_ENEMY{
 	moveDraw(){
 		//敵の描画メイン
 		let _this=this;
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.x,
-			_this.y,
-			_this.img.width,
-			_this.img.height
-		);
+		
+		_this.setDrawImage();
+		// _CONTEXT.drawImage(
+		// 	_this.img,
+		// 	_this.x,
+		// 	_this.y,
+		// 	_this.img.width,
+		// 	_this.img.height
+		// );
 		//弾の発射
 		_this.shot();
 	}
@@ -372,13 +380,8 @@ class ENEMY_a extends GameObject_ENEMY{
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t2.intv;//衝突アニメ間隔
 
 	}
-	setDrawImage(){
+	setDrawImageDirect(){
 		let _this=this;
-		_CONTEXT.save();
-		//砲台の向き設定
-		_this.img=(Math.abs(_PLAYERS_MAIN.y-_this.y)>100)
-					?_this.defimg[0]
-					:_this.defimg[1];
 		//向き・表示の設定
 		if(_this.direct===_this._DEF_DIR._U){
 			if(_PLAYERS_MAIN.x<_this.x){
@@ -394,17 +397,14 @@ class ENEMY_a extends GameObject_ENEMY{
 				_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.img.width,0);
 			}
 		}
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.x,
-			_this.y,
-			_this.img.width,
-			_this.img.height
-		);
-		_CONTEXT.restore();
 	}
 	moveDraw(){
 		let _this=this;
+		//砲台の向き設定
+		_this.img=(Math.abs(_PLAYERS_MAIN.y-_this.y)>100)
+		?_this.defimg[0]
+		:_this.defimg[1];
+
 		_this.setDrawImage();
 		//弾の発射
 		_this.shot();
@@ -540,10 +540,8 @@ class ENEMY_c extends GameObject_ENEMY{
 		})(_this);
 
 	}
-	setDrawImage(){
+	setDrawImageDirect(){
 		let _this=this;
-		_CONTEXT.save();
-		//向き・表示の設定
 		if(_this.direct===_this._DEF_DIR._U){
 			if(_PLAYERS_MAIN.x<_this.x){
 				_CONTEXT.setTransform(1,0,0,-1,0,_this.y*2+_this.img.height);
@@ -558,14 +556,7 @@ class ENEMY_c extends GameObject_ENEMY{
 				_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.img.width,0);
 			}
 		}
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.x,
-			_this.y,
-			_this.img.width,
-			_this.img.height
-		);
-		_CONTEXT.restore();
+		return;
 	}
 	set_speed(){
 		let _p=

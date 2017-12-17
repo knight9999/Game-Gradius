@@ -6,7 +6,7 @@
 純粋にJavascript+CANVASで実装しています。 
 
 以下のゲームを楽しめます。
-1. モアイステージ
+1. モアイステージ（縦スクロール付）
 2. 火山ステージ
 3. スピードステージ
 4. クリスタルステージ
@@ -23,8 +23,56 @@ iOSでは、Safariから「ホーム画面に書き出し」でホーム画面�
 - [B]→装備
 - [P]→一時停止
 - [S]→ステージ選択に戻る
-- [R]→再度やり直し
+- [R]→再度やり直し  
+ 
+
+パワーアップ  
+<table border="1" class="wikitable" style="text-align: center">
+<tbody><tr>
+<th>自機</th>
+<th>イメージカラー</th>
+<th>SPEED UP</th>
+<th>MISSILE</th>
+<th>DOUBLE</th>
+<th>LASER</th>
+<th>OPTION</th>
+<th>&nbsp;?</th>
+</tr>
+<tr>
+<td>タイプ1</td>
+<td>青</td>
+<td rowspan="4">スピードアップ</td>
+<td>ミサイル</td>
+<td>ダブル</td>
+<td rowspan="2">レーザー</td>
+<td rowspan="4">オプション</td>
+<td rowspan="4">&nbsp;?（シールド）</td>
+</tr>
+<tr>
+<td>タイプ2</td>
+<td>橙</td>
+<td>スプレッドボム</td>
+<td>テイルガン</td>
+</tr>
+<tr>
+<td>タイプ3</td>
+<td>青</td>
+<td>フォトントゥーピド</td>
+<td>ダブル</td>
+<td rowspan="2">リップル<span class="nowrap">レーザー</span></td>
+</tr>
+<tr>
+<td>タイプ4</td>
+<td>橙</td>
+<td>2-WAYミサイル</td>
+<td>テイルガン</td>
+</tr>
+</tbody></table>
   
+ほぼほぼグラディウス2を踏襲しているので、以下ウィキペディアを参照
+https://ja.wikipedia.org/wiki/%E3%82%B0%E3%83%A9%E3%83%87%E3%82%A3%E3%82%A6%E3%82%B9II_-GOFER%E3%81%AE%E9%87%8E%E6%9C%9B-#パワーアップ
+  
+  
 ## Demo
 1. モアイステージ(iPhone 8Plus iOS11)  
 ![](https://user-images.githubusercontent.com/12569855/33947901-eed3961a-e068-11e7-98f4-6e28d981f127.GIF)  

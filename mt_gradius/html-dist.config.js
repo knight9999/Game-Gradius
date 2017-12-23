@@ -1,8 +1,7 @@
-var {link,script,googleAnalytics} = require('html-dist');
-
+var {link,script,googleAnalytics,args} = require('html-dist');
 module.exports = {
-  // where to write to 
-  outputFile: 'dist/gradius.html',
+  // where to write to
+//  outputFile: 'dist/gradius.html',
   // minify the HTML 
   minify: true,
   head:{

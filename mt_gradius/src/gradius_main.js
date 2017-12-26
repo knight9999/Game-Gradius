@@ -1851,7 +1851,7 @@ class GameObject_SHOTS_MISSILE
 			},
 			'_st5':function(_t){
 				//_st5→_st6
-				_t.x+=2;
+				_t.x+=1;
 				_t.y+=2;
 				_t._img=_CANVAS_IMGS['missile5'].obj;
 			},
@@ -1922,16 +1922,16 @@ class GameObject_SHOTS_MISSILE
 
 		var _setToSt3=function(){
 			_map_y=_MAP.getMapY(_t.y+_t._img.height);
-			if(_MAP.isMapCollision(_map_x,_map_y)){
-				if(_MAP.map_infinite===false){
-					var _a=parseInt(_t.y/25);
-					var _b=(_t.y%25<12.5)?_a:_a+1;
-					_t.y=_b*25;	
-				}
-				_this.set_missile_status(_t,'_st3');
-				return true;
+			if(!_MAP.isMapCollision(_map_x,_map_y)){return false;}
+			if(_MAP.map_infinite===false){
+				//_st3に入る際、このタイミングのmap_yの位置を調整
+				//_MAP.t単位で調整させる
+				var _a=parseInt(_t.y/_MAP.t);
+				var _b=(_t.y%_MAP.t<(_MAP.t/2))?_a:_a+1;
+				_t.y=_b*_MAP.t;	
 			}
-			return false;
+			_this.set_missile_status(_t,'_st3');
+			return true;
 		};
 
 //			console.log(_t.y)
@@ -1958,7 +1958,7 @@ class GameObject_SHOTS_MISSILE
 			_this.set_missile_status(_t,'_st5');
 		}
 
-		//ミサイル着地 _st1→_st6→_st7→_st3
+		//ミサイル着地 _st1→_st6→_st7→→_st8→_st3
 		//着座時、_st3が必ず壁より１マス上に
 		//配置する必要がある。
 		if(_this.get_missile_status(_t)==='_st6'){
@@ -1969,6 +1969,7 @@ class GameObject_SHOTS_MISSILE
 				_t._init();
 				return;
 			}
+			if(_setToSt3()){return;}
 			_this.set_missile_status(_t,'_st7');
 		}
 		if(_this.get_missile_status(_t)==='_st7'){
@@ -2016,19 +2017,15 @@ class GameObject_SHOTS_MISSILE
 				_this.set_missile_status(_t,'_st6');
 				return;
 			}
-
-			//真下に壁がない場合は落下
-			if(!_MAP.isMapCollision(_map_x,_map_y+1)){
-				_this.set_missile_status(_t,'_st2');
-				_t.x+=3;
-				return;
-			}
-
 			//真横に壁がある
 			if(_MAP.isMapCollision(_map_x+1,_map_y)){
 				_t._init();
 				return;
 			}
+
+			_this.set_missile_status(_t,'_st2');
+			_t.x+=3;
+
 		}
 
 
@@ -2044,7 +2041,7 @@ class GameObject_SHOTS_MISSILE
 				return;
 			}
 			//真下に壁がない場合
- 			if(!_MAP.isMapCollision(_map_x,_map_y+1)){
+ 			if(!_MAP.isMapCollision(_map_x+1,_map_y+1)){
  				_this.set_missile_status(_t,'_st4');
  				return;
  			}

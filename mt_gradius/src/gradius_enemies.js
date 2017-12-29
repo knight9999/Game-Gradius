@@ -1264,7 +1264,7 @@ class ENEMY_q extends GameObject_ENEMY{
 	constructor(_x,_y,_d){
 		super(_CANVAS_IMGS['enemy_m_a_1'].obj,_x,_y)
         let _this=this;
-		_this._status=4;
+		_this._status=2;
         _this.direct=_d||_this._DEF_DIR._U;
 		_this.getscore=500;
 		
@@ -1396,7 +1396,7 @@ class ENEMY_r extends ENEMY_q{
 	constructor(_x,_y,_d){
 		super(_x,_y,_d)
         let _this=this;
-		_this._status=10;
+		_this._status=2;
 		_this.direct=_d||_this._DEF_DIR._U;
 		_this.imgs=[
 			_CANVAS_IMGS['enemy_m_b_1'].obj,

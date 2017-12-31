@@ -1676,14 +1676,16 @@ class GameObject_SHIELD
 		}
 
 		//シールドの上端
-		_map_y=parseInt(this.y/_MAP.t);
+		_map_y=_MAP.getMapY(_this.y);
+//		_map_y=parseInt(this.y/_MAP.t);
 		if(_MAP.isMapCollision(_map_x,_map_y)){
 			_this.reduce();
 			return;
 		}
 
 		//シールドの下端
-		_map_y=parseInt((_pl._y-10+this.height)/_MAP.t);
+		_map_y=_MAP.getMapY(_pl._y-10+_this.height);
+//		_map_y=parseInt((_pl._y-10+this.height)/_MAP.t);
 		if(_MAP.isMapCollision(_map_x,_map_y)){
 			_this.reduce();
 			return;

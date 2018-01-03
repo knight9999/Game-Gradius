@@ -452,3 +452,46 @@ const _CANVAS_IMGS_INIT={
 	'gradius_powermeterselect_shield_1':
   		{src:'images/gradius_powermeterselect_shield_1.png',rate:0.28,obj:new Image()},
 };
+
+
+const _CANVAS_AUDIOS={
+	'shot_laser':
+		{src:'audios/shot_laser.mp3',
+		 volume:1.0,
+		 obj:new Audio('audios/shot_laser.mp3')},
+	'missile':
+		 {src:'audios/missile.mp3',
+		 volume:1.0,
+		 obj:new Audio('audios/missile.mp3')},
+	'shot_normal':
+		{src:'audios/shot_normal.mp3',
+		volume:1.0,
+		obj:new Audio('audios/shot_normal.mp3')},
+	'pc':
+		{src:'audios/pc.mp3',
+		volume:1.0,
+		obj:new Audio('audios/pc.mp3')},
+	'playerset':
+		{src:'audios/playerset.mp3',
+		volume:1.0,
+		obj:new Audio('audios/playerset.mp3')},
+
+	'pms_select':
+		{src:'audios/pms_select.mp3',
+		volume:1.0,
+		obj:new Audio('audios/pms_select.mp3')},
+
+	'enemy_collision1':
+		{src:'audios/enemy_collision1.mp3',
+		volume:1.0,
+		obj:new Audio('audios/enemy_collision1.mp3')},
+	'enemy_collision2':
+		{src:'audios/enemy_collision2.mp3',
+		volume:1.0,
+		obj:new Audio('audios/enemy_collision2.mp3')},
+	'enemy_collision3':
+		{src:'audios/enemy_collision3.mp3',
+		volume:1.0,
+		obj:new Audio('audios/enemy_collision3.mp3')}
+
+};

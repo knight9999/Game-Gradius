@@ -438,6 +438,7 @@ const _KEYEVENT={
 
 	if(e.key==="Enter"||e.key==="enter"){
 		_DRAW_SELECT_POWERMETER();
+		_GAME._setPlay(_CANVAS_AUDIOS['playerset'].obj);
 		return false;
 	}
 
@@ -445,29 +446,31 @@ const _KEYEVENT={
 		_POWERMETER._c_pms=
 			(_POWERMETER._c_pms<=0)
 			?0:_POWERMETER._c_pms-1;
-	}
+		}
 	if(e.key==='ArrowDown'||e.key==='Down'){
 		_POWERMETER._c_pms=
 			(_POWERMETER._c_pms>=_POWERMETER.pms_selected.length-1)
 			?_POWERMETER._c_pms
 			:_POWERMETER._c_pms+1;
-	}
+		}
 	if(e.key==='ArrowLeft'||e.key==='Left'){
 		_POWERMETER._c_pmss=
 			(_POWERMETER._c_pmss<=0)
 			?0
 			:_POWERMETER._c_pmss-1;
-	}
+		}
 	if(e.key==='ArrowRight'||e.key==='Right'){
 		_POWERMETER._c_pmss=
 			(_POWERMETER._c_pmss
 				>=_POWERMETER.pmss_selected.length-1)
 			?_POWERMETER._c_pmss
 			:_POWERMETER._c_pmss+1;
-	}
+		}
+
 	_POWERMETER.pms_disp();
 	_POWERMETER.pms_select();
-
+	_GAME._setPlay(_CANVAS_AUDIOS['pms_select'].obj);
+	
 },
 //ステージ選択イベント
 'keydown_select_stage':function(e){
@@ -1799,6 +1802,7 @@ class GameObject_SHOTS_MISSILE
 				_t:0,//ミサイル発射後時間
 				_st:'_st1',//ミサイルのステータス
 				_img:new Image(),//ミサイルの画像
+				_audio:_CANVAS_AUDIOS['missile'].obj,
 				_c_mc:0,//ミサイルのステータス切替カウント（間引き取る為）
 				_c:0,//爆風アニメーションカウント
 				_c_area:25,//ミサイル、爆風の当たり判定
@@ -2562,6 +2566,7 @@ class GameObject_SHOTS_NORMAL
 				x:0,//処理変数：照射x軸
 				y:0,
 				_img:_CANVAS_IMGS['shot1'].obj,
+				_audio:_CANVAS_AUDIOS['shot_normal'].obj,				
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
 				_init:function(){//初期化
@@ -2595,7 +2600,6 @@ class GameObject_SHOTS_NORMAL
 			let _t=this.shots[_j];
 			if(!_t._shot&&!_t._shot_alive){continue;}
 // 			console.log(_p._x);
-
 			let _s=this.speed;
 			_t.x=(function(_i){
 				//撃ち始めは自機位置から放つ
@@ -2640,6 +2644,7 @@ class GameObject_SHOTS_DOUBLE
 				_img:(_i===0)
 					?_CANVAS_IMGS['shot1'].obj
 					:_CANVAS_IMGS['shot2'].obj,
+				_audio:_CANVAS_AUDIOS['shot_normal'].obj,				
 				_enemyid:null,//敵ID
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
@@ -2989,6 +2994,7 @@ class GameObject_SHOTS_LASER
 				_l_sx:0,//処理変数：レーザー左端x
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
+				_audio:_CANVAS_AUDIOS['shot_laser'].obj,//ショット音LASER		
 				_init:function(){//初期化
 					this.x=0,
 					this.y=0,
@@ -3344,7 +3350,7 @@ class GameObject_PM{
 
 		//自機のパワーアップ演出
 		_PLAYERS_MAIN.set_equipped();
-
+		_GAME._setPlay(_CANVAS_AUDIOS['playerset'].obj)
 		this.meterdef_status=
 			this._get_bit(
 					(parseInt(this.meterdef_status,2)
@@ -3732,6 +3738,7 @@ const _IS_GET_POWERCAPSELL=function(){
 		if(_s){
 			_POWERMETER.move();
 			_pwc.getPowerCapcell();
+			_GAME._setPlay(_CANVAS_AUDIOS['pc'].obj)
 			_SCORE.set(300);
 			continue;
 		}
@@ -3953,25 +3960,50 @@ const _DRAW_PLAYERS_SHOTS=function(){
 		for(var _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
 			let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
 			if(!_ps.player._isalive){continue;}
+			//ここで同時ショットと
+			//個別ショットで判別させる
+			if(_SHOTTYPE===_SHOTTYPE_DOUBLE){
+				if(_ps.shots[0]._shot_alive||
+					_ps.shots[1]._shot_alive){continue;}
+				_ps.shots[0]._shot=true;
+				_ps.shots[1]._shot=true;
+				//最初の要素（自機）のみショット音をだす
+				if(_i!==0){continue;}
+				_GAME._setPlay(_ps.shots[0]._audio);
+				continue;
+			}
+
 			_ps._sq=
-				(_ps._sq===_ps.shots.length-1)
-					?0
-					:_ps._sq+1;
+			(_ps._sq===_ps.shots.length-1)
+				?0
+				:_ps._sq+1;
 			var _s=_ps.shots[_ps._sq];
-//				console.log(_i+':'+_s._shot_alive);
+
+			if(_s._shot_alive){continue;}
 			//ショット中は、ショットを有効にしない
-			if(!_s._shot_alive){_s._shot=true;}
+			_s._shot=true;
+
+			//最初の要素（自機）のみショット音をだす
+			if(_i!==0){continue;}
+			_GAME._setPlay(_s._audio);
 		}
+
+		if(!_PLAYERS_MISSILE_ISALIVE){return;}
 		//ミサイル
 		for(var _i=0;_i<_PLAYERS_MISSILE.length;_i++){
 			let _pm=_PLAYERS_MISSILE[_i];
+			if(!_pm.player._isalive){continue;}
 			_pm._sq=
 				(_pm._sq===_pm.shots.length-1)?
 					0
 					:_pm._sq+1;
 			var _sm=_pm.shots[_pm._sq];
 			//ショット中は、ショットを有効にしない
-			if(!_sm._shot_alive){_sm._shot=true;}
+			if(_sm._shot_alive){continue;}
+			_sm._shot=true;
+			//最初の要素（自機）のみショット音をだす
+			if(_i!==0){continue;}
+			_GAME._setPlay(_sm._audio);
 		}
 	}
 	_PLAYERS_SHOTS_SETINTERVAL=window.requestAnimationFrame(_loop);	
@@ -4421,6 +4453,17 @@ const _DRAW_STAGE_SELECT=function(){
 
 }
 
+const _DRAW_AUDIO_INIT=function(_obj,_func){
+	let _audioLoadedCount=0;
+	let _alertFlag=false;	
+	for(let _i in _obj){
+		let _o=_obj[_i];
+		_o.obj.load();
+		_o.obj.src=_obj[_i].src;
+		_o.obj.autoplay=false;
+		_o.obj.controls=false;
+	}
+}
 const _DRAW_INIT=function(_obj,_func){
 	let _imgLoadedCount=0;
 	let _alertFlag=false;
@@ -4704,6 +4747,11 @@ _setPlayerMoveDraw(){
 	}
 //	console.log(_pmdy);
 },
+_setPlay(_obj){
+	if(_obj===null||_obj===undefined){return;}
+	_obj.currentTime=0;
+	_obj.play();	
+},
 _multilineText(context, text, width) {
     let len=text.length,
     	strArray=[],
@@ -4761,6 +4809,7 @@ window.addEventListener('load',function(){
 			.classList.add('sp');
 	}
 
+	_DRAW_AUDIO_INIT(_CANVAS_AUDIOS,_GAME._init);
 	_DRAW_INIT(_CANVAS_IMGS_INIT,_GAME._init);
 });
 

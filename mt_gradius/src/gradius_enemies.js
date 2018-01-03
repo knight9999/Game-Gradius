@@ -88,6 +88,8 @@ class GameObject_ENEMY{
 		_this.bid=_ENEMIES_BOUNDS.length;//敵同士のバウンドID
 		_this.gid=0;//敵のグループID
 		_this.img=_o;//画像オブジェクト
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision1'].obj;
+		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision3'].obj;
 		_this.x=_x||0;//X位置
 		_this.y=_y||0;//Y位置
 		
@@ -163,7 +165,12 @@ class GameObject_ENEMY{
 			}
 			return _n;
 		})(_num);
-		if(!_this.isalive()){_SCORE.set(_this.getscore);}
+		if(!_this.isalive()){
+			_SCORE.set(_this.getscore);
+			_GAME._setPlay(_this.audio_collision);
+		}else{
+			_GAME._setPlay(_this.audio_alive);			
+		}
 	}
 	getEnemyCenterPosition(){
 		return {_x:this.x+(this.img.width/2),
@@ -1275,6 +1282,7 @@ class ENEMY_q extends GameObject_ENEMY{
 			_CANVAS_IMGS['enemy_m_a_1'].obj,
 			_CANVAS_IMGS['enemy_m_a_2'].obj
 		];
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision2'].obj;		
 		_this.col_imgs=_ENEMY_DEF_ANI_COL.t8.imgs;//衝突アニメ画像
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t8.intv;//衝突アニメ間隔
 

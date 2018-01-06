@@ -727,12 +727,12 @@ const _KEYEVENT_SP={
 		.classList.add('on');
 	//メイン画像を読み込んでステージセレクトに遷移
 	_DRAW_INIT(_CANVAS_IMGS)
-	.then(function(){
-		_DRAW_STAGE_SELECT();
-	})
-	.catch(function(){
-		alert('一部画像・または音声読込に失敗しました。再度立ち上げなおしてください');
-	});
+		.then(function(){
+			_DRAW_STAGE_SELECT();
+		})
+		.catch(function(){
+			alert('一部画像・または音声読込に失敗しました。再度立ち上げなおしてください');
+		});
 
 	_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
 },//keydown_start
@@ -4963,10 +4963,10 @@ window.addEventListener('load',function(){
 			_DRAW_AUDIO_INIT(_CANVAS_AUDIOS)
 		)
 		.then(function(){
-			_GAME._init()
+			_GAME._init();
 		})
 		.catch(function(){
-			alert('一部画像・または音声読込に失敗しました。再度立ち上げなおしてください');
+			alert('一部画像または音声読込に失敗しました。再度立ち上げなおしてください');
 		});
 });
 

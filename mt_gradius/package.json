@@ -4,7 +4,7 @@
   "description": "Gradius. You have to need packages, uglifyjs, uglifyes, uglifycss",
   "main": "index.js",
   "scripts": {
-    "watch": "npm run build:js & npm run build:css & npm run build:css & npm run build:html",
+    "watch": "npm run build:js & npm run build:css & npm run build:css & npm run build:html & cp ./src/audios/* ./dist/audios & cp ./src/*.json ./dist",
     "watchfull": "npm run build:js & npm run build:css & npm run build:css & npm run build:html & npm run build:images",
     "watch:edit": "npm run build:js_edit & npm run build:css_edit & npm run build:html_edit",
     "build:js": "uglifyjs ./src/gradius_canvasimgs.js ./src/gradius_enemies.js ./src/gradius_map.js ./src/gradius_main.js -o ./dist/gradius_main.min.js -c",

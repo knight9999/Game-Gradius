@@ -91,6 +91,11 @@ const _IS_SQ_COL=0;
 const _IS_SQ_COL_NONE=1;
 const _IS_SQ_NOTCOL=2;
 
+const _AUDIO_CONTEXT=new(
+	window.webkitAudioContext
+	||window.AudioContext
+)();
+	
 const _AJAX=function(_url,_type,_f,_t){
 let _r=new XMLHttpRequest();
 _r.onreadystatechange=function(){
@@ -354,6 +359,10 @@ const _KEYEVENT_MASTER={
 		   .addEventListener(
 		   _EVENT_KEYDOWN,
 		   _KEYEVENT_SP.keydown_gameclear_s);
+	   _SP_CONTROLLER._sp_bt_p
+		   .addEventListener(
+		   _EVENT_KEYDOWN,
+		   _KEYEVENT_SP.keydown_gameclear_p);
    }else{
 	   document.addEventListener(
 		   _EVENT_KEYDOWN,_KEYEVENT.keydown_gameclear);
@@ -371,7 +380,12 @@ const _KEYEVENT_MASTER={
 		   .removeEventListener(
 		   _EVENT_KEYDOWN,
 		   _KEYEVENT_SP.keydown_gameclear_s);
-   }else{
+		_SP_CONTROLLER._sp_bt_p
+		   .removeEventListener(
+		   _EVENT_KEYDOWN,
+		   _KEYEVENT_SP.keydown_gameclear_p);
+
+	}else{
 	   document.removeEventListener(
 		   _EVENT_KEYDOWN,_KEYEVENT.keydown_gameclear);
    }
@@ -427,7 +441,14 @@ const _KEYEVENT={
 			.classList.add('on');
 
 		//メイン画像を読み込んでステージセレクトに遷移
-		_DRAW_INIT(_CANVAS_IMGS,_DRAW_STAGE_SELECT);
+		_DRAW_INIT(_CANVAS_IMGS)
+		.then(function(){
+			_DRAW_STAGE_SELECT();
+		})
+		.catch(function(){
+			alert('一部画像・または音声読込に失敗しました。再度立ち上げなおしてください');
+		});
+		_GAME._setPlay(_CANVAS_AUDIOS['playerset']);		
 	}
 },//keydown_start
 
@@ -438,7 +459,7 @@ const _KEYEVENT={
 
 	if(e.key==="Enter"||e.key==="enter"){
 		_DRAW_SELECT_POWERMETER();
-		_GAME._setPlay(_CANVAS_AUDIOS['playerset'].obj);
+		_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
 		return false;
 	}
 
@@ -469,7 +490,7 @@ const _KEYEVENT={
 
 	_POWERMETER.pms_disp();
 	_POWERMETER.pms_select();
-	_GAME._setPlay(_CANVAS_AUDIOS['pms_select'].obj);
+	_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
 	
 },
 //ステージ選択イベント
@@ -477,6 +498,7 @@ const _KEYEVENT={
 	if(e.key==="Enter"||e.key==="enter"){
 		_MAP.set_stage_map_pattern(_STAGESELECT.mapdef_status);
 		_DRAW_POWER_METER_SELECT();
+		_GAME._setPlay(_CANVAS_AUDIOS['playerset']);		
 		return false;
 	}
 	if(e.key==='ArrowLeft'||e.key==='Left'){
@@ -495,6 +517,7 @@ const _KEYEVENT={
 	}
 	_STAGESELECT.set_map_status();
 	_STAGESELECT.disp_thumb_map();
+	_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);	
 },
 'keydown_gameclear':function(e){
 	if(e.key==='R'||e.key==='r'){
@@ -590,9 +613,13 @@ const _KEYEVENT={
 	if(e.key==='P'||e.key==='p'){
 		if(_DRAW_SETINTERVAL!==null){
 			_DRAW_STOP();
+			if(_DRAW_IS_GAMECLEAR){return false;}
+			_GAME._setStopOnBG();
 		}else{
 			_KEYSAFTERPAUSE=[];
 			_DRAW();
+			if(_DRAW_IS_GAMECLEAR){return false;}
+			_GAME._setPlayOnBG(_GAME._audio_now_obj_bg);			
 		}
 		return false;
 	}
@@ -699,12 +726,21 @@ const _KEYEVENT_SP={
 		.querySelector('#game_start_wrapper .text_loading')
 		.classList.add('on');
 	//メイン画像を読み込んでステージセレクトに遷移
-	_DRAW_INIT(_CANVAS_IMGS,_DRAW_STAGE_SELECT);
+	_DRAW_INIT(_CANVAS_IMGS)
+	.then(function(){
+		_DRAW_STAGE_SELECT();
+	})
+	.catch(function(){
+		alert('一部画像・または音声読込に失敗しました。再度立ち上げなおしてください');
+	});
+
+	_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
 },//keydown_start
 
 //パワーメーター選択イベント
 'keydown_select_powermeter_a':function(e){
 	_DRAW_SELECT_POWERMETER();
+	_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
 	return false;
 },
 
@@ -732,6 +768,7 @@ const _KEYEVENT_SP={
 			:_POWERMETER._c_pmss-1;
 		_POWERMETER.pms_disp();
 		_POWERMETER.pms_select();
+		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
 		return false;
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._U){
@@ -742,6 +779,7 @@ const _KEYEVENT_SP={
 			?0:_POWERMETER._c_pms-1;
 		_POWERMETER.pms_disp();
 		_POWERMETER.pms_select();
+		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
 		return false;
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._R){
@@ -755,6 +793,7 @@ const _KEYEVENT_SP={
 			:_POWERMETER._c_pmss+1;
 		_POWERMETER.pms_disp();
 		_POWERMETER.pms_select();
+		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
 		return false;
 	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._D){	
@@ -766,6 +805,7 @@ const _KEYEVENT_SP={
 			:_POWERMETER._c_pms+1;
 		_POWERMETER.pms_disp();
 		_POWERMETER.pms_select();
+		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
 		return false;
  	}
 
@@ -797,6 +837,7 @@ const _KEYEVENT_SP={
 			(_STAGESELECT.mapdef_status<=0)
 			?0
 			:_STAGESELECT.mapdef_status-1;
+		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
 	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._U){		
 //	if(_rad>45&&_rad<=135){
@@ -811,7 +852,7 @@ const _KEYEVENT_SP={
 				>=_MAPDEFS.length-1)
 			?_STAGESELECT.mapdef_status
 			:_STAGESELECT.mapdef_status+1;
-
+		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
 	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._U){
 //	if(_rad<-45&&_rad>=-135){
@@ -832,8 +873,10 @@ const _KEYEVENT_SP={
 'keydown_select_stage_a':function(e){
 	_MAP.set_stage_map_pattern(_STAGESELECT.mapdef_status);
 	_DRAW_POWER_METER_SELECT();
+	_GAME._setPlay(_CANVAS_AUDIOS['playerset']);	
 	return false;
 },//keydown_select_stage_a
+
 'keydown_gameclear_r':function(e){
 	_DRAW_STOP_PLAYERS_SHOTS();
 	_DRAW_RESET_OBJECT();
@@ -846,6 +889,16 @@ const _KEYEVENT_SP={
 	_DRAW_INIT_OBJECT();
 	return false;
 },//keydown_gameclear_s
+'keydown_gameclear_p':function(e){
+	if(_DRAW_SETINTERVAL!==null){
+		_DRAW_STOP();
+	}else{
+		_KEYSAFTERPAUSE=[];
+		_DRAW();
+	}
+	return false;
+},//keydown_gameclear_p
+
 'keydown_gameover_r':function(e){
 	_DRAW_STOP_PLAYERS_SHOTS();
 	_DRAW_RESET_OBJECT();
@@ -968,20 +1021,26 @@ const _KEYEVENT_SP={
 'keydown_game_p':function(e){
 	if(_DRAW_SETINTERVAL!==null){
 		_DRAW_STOP();
+		if(_DRAW_IS_GAMECLEAR){return false;}
+		_GAME._setStopOnBG();		
 	}else{
 		_KEYSAFTERPAUSE=[];
 		_DRAW();
+		if(_DRAW_IS_GAMECLEAR){return false;}
+		_GAME._setPlayOnBG(_GAME._audio_now_obj_bg);		
 	}
 	return false;
 },//keydown_game_p
 
 'keydown_game_a':function(e){
+	if(_DRAW_SETINTERVAL===null){return;}
 	if(_PLAYERS_SHOTS_SETINTERVAL!==null){return;}
 	_DRAW_PLAYERS_SHOTS();
 	return false;
 },//keydown_game_a
 'keydown_game_b':function(e){
 	//装備
+	if(_DRAW_SETINTERVAL===null){return;}
 	_POWERMETER.playerset();
 	return false;
 },//keydown_game_b
@@ -1202,6 +1261,7 @@ class GameObject_PLAYER_MAIN
 	collapes(){
 		let _this=this;
 		if(_DRAW_SETINTERVAL===null){return;}
+		_GAME._setStopOnBG();		
 		_DRAW_STOP();
 		_DRAW_PLAYER_COLLAPES();
 	//		console.log(this._col_ani_c)
@@ -1502,7 +1562,7 @@ class GameObject_FORCEFIELD{
 		this.type='forcefield';
 
 		this._c=0;
-		this._scale=0;
+		this._scale=0;//フォースのサイズ
 
 		this._eid=0;//敵ID
 
@@ -1524,7 +1584,6 @@ class GameObject_FORCEFIELD{
 	}
 	enemy_collision(_e){
 		let _this=this;
-		if(_this._scale===0){return;}
 		if(_GAME.isSqCollision(
 			parseInt(_this.width/8)
 			+","+parseInt(_this.height/8)
@@ -1534,12 +1593,12 @@ class GameObject_FORCEFIELD{
 			_e.shotColMap,
 			_e.x+","+_e.y
 			)===_IS_SQ_NOTCOL){return;}
-		_e.collision();
+
+ 		_e.collision();
 		_this.reduce();
 	}
 	enemy_shot_collision(_e){
 		let _this=this;
-		if(_this._scale===0){return;}
 		if(_GAME.isSqCollision(
 			parseInt(_this.width/8)
 			+","+parseInt(_this.height/8)
@@ -1549,6 +1608,7 @@ class GameObject_FORCEFIELD{
 			_e.shotColMap,
 			_e.x+","+_e.y
 			)===_IS_SQ_NOTCOL){return;}
+			
 		_e.init();
 		_this.reduce();
 	}
@@ -1565,9 +1625,12 @@ class GameObject_FORCEFIELD{
 		let _map_y=_MAP.getMapY(_pl._y);
 
 		if(!_MAP.isMapCollision(_map_x,_map_y)){return;}
+
 		this.reduce();
 	}
 	reduce(){
+		let _this=this;
+		if(!_this.isalive()){return;}
 		this._scale-=0.06;
 		//ある大きさになれば削除
 		if(this._scale<0.7){
@@ -1576,12 +1639,13 @@ class GameObject_FORCEFIELD{
 		}
 		this.width*=this._scale;
 		this.height*=this._scale;
+		_GAME._setPlay(_CANVAS_AUDIOS['vicviper_shield_reduce']);
+		
 	}
 	move(_GO){
 		let _this=this;
+		if(!_this.isalive()){return;}
 		_this.map_collition();
-		if(_this._scale===0){return;}
-
 		_this.x=_GO.getPlayerCenterPosition()._x
 					-(_this.width/2)
 					-6;
@@ -1598,6 +1662,16 @@ class GameObject_FORCEFIELD{
 			_img,_this.x,_this.y,
 				_this.width,_this.height
 		);
+
+		// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
+		// _CONTEXT.beginPath();
+		// _CONTEXT.rect(
+		// 	_this.x,
+		// 	_this.y,
+		// 	_this.width,
+		// 	_this.height
+		// );
+		// _CONTEXT.stroke();
 	}
 }
 
@@ -1643,7 +1717,6 @@ class GameObject_SHIELD
 		return (this._scale===0)?false:true;
 	}
 	enemy_collision(_e){
-		if(this._scale===0){return;}
 		if(_GAME.isSqCollision(
 			"0,0,"+this.width+","+(this.height*2),
 			parseInt(this.x)+","+parseInt(this.y),
@@ -1654,7 +1727,6 @@ class GameObject_SHIELD
 		this.reduce();
 	}
 	enemy_shot_collision(_e){
-		if(this._scale===0){return;}
 		if(_GAME.isSqCollision(
 			"0,0,"+this.width+","+(this.height*2),
 			parseInt(this.x)+","+parseInt(this.y),
@@ -1696,6 +1768,8 @@ class GameObject_SHIELD
 
 	}
 	reduce(){
+		let _this=this;
+		if(!_this.isalive()){return;}
 		this._scale-=0.01;
 		//ある大きさになれば削除
 		if(this._scale<0.86){
@@ -1704,13 +1778,12 @@ class GameObject_SHIELD
 		}
 		this.width*=this._scale;
 		this.height*=this._scale;
+		_GAME._setPlay(_CANVAS_AUDIOS['vicviper_shield_reduce']);
 	}
 	move(_p){
 		let _this=this;
-		if(_this._scale===0){return;}
-
+		if(!_this.isalive()){return;}
 		let _pl=_p.getPlayerCenterPosition();
-
 		_this.map_collition(_p);
 
 		let _img=(function(){
@@ -1802,7 +1875,7 @@ class GameObject_SHOTS_MISSILE
 				_t:0,//ミサイル発射後時間
 				_st:'_st1',//ミサイルのステータス
 				_img:new Image(),//ミサイルの画像
-				_audio:_CANVAS_AUDIOS['missile'].obj,
+				_audio:_CANVAS_AUDIOS['missile'],
 				_c_mc:0,//ミサイルのステータス切替カウント（間引き取る為）
 				_c:0,//爆風アニメーションカウント
 				_c_area:25,//ミサイル、爆風の当たり判定
@@ -2085,7 +2158,7 @@ class GameObject_SHOTS_MISSILE
 		}
 
 		if(_this.get_missile_status(_t)==='_st1'){
-			_map_y=_MAP.getMapY(_t.y+_t._img.height+16,true);
+			_map_y=_MAP.getMapY(_t.y+_t._img.height+16);
 			//自身、あるいはその下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x+1,_map_y)){
 				// let _a=parseInt((_t.y+_t._img.height)/_MAP.t);
@@ -2116,6 +2189,7 @@ class GameObject_SHOTS_MISSILE
 	}
 	collapse_missile(_t,_pos){
 		let _this=this;
+		_t.x+=_BACKGROUND_SPEED*-1;
 		_pos=_pos||-5
 		//爆風を表示
 		if(_t._c>=_this.col_mis.length*5){
@@ -2566,7 +2640,7 @@ class GameObject_SHOTS_NORMAL
 				x:0,//処理変数：照射x軸
 				y:0,
 				_img:_CANVAS_IMGS['shot1'].obj,
-				_audio:_CANVAS_AUDIOS['shot_normal'].obj,				
+				_audio:_CANVAS_AUDIOS['shot_normal'],				
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
 				_init:function(){//初期化
@@ -2644,7 +2718,7 @@ class GameObject_SHOTS_DOUBLE
 				_img:(_i===0)
 					?_CANVAS_IMGS['shot1'].obj
 					:_CANVAS_IMGS['shot2'].obj,
-				_audio:_CANVAS_AUDIOS['shot_normal'].obj,				
+				_audio:_CANVAS_AUDIOS['shot_normal'],				
 				_enemyid:null,//敵ID
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
@@ -2841,6 +2915,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 				_shot_alive:false,//処理変数：照射中フラグ
 				_width:0,//rippleの横幅
 				_height:0,//rippleの縦幅
+				_audio:_CANVAS_AUDIOS['shot_ripple'],
 				_init:function(){//初期化
 					this.x=0,
 					this.y=0,
@@ -2994,7 +3069,7 @@ class GameObject_SHOTS_LASER
 				_l_sx:0,//処理変数：レーザー左端x
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
-				_audio:_CANVAS_AUDIOS['shot_laser'].obj,//ショット音LASER		
+				_audio:_CANVAS_AUDIOS['shot_laser'],//ショット音LASER		
 				_init:function(){//初期化
 					this.x=0,
 					this.y=0,
@@ -3350,7 +3425,7 @@ class GameObject_PM{
 
 		//自機のパワーアップ演出
 		_PLAYERS_MAIN.set_equipped();
-		_GAME._setPlay(_CANVAS_AUDIOS['playerset'].obj)
+		_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
 		this.meterdef_status=
 			this._get_bit(
 					(parseInt(this.meterdef_status,2)
@@ -3738,7 +3813,7 @@ const _IS_GET_POWERCAPSELL=function(){
 		if(_s){
 			_POWERMETER.move();
 			_pwc.getPowerCapcell();
-			_GAME._setPlay(_CANVAS_AUDIOS['pc'].obj)
+			_GAME._setPlay(_CANVAS_AUDIOS['pc'])
 			_SCORE.set(300);
 			continue;
 		}
@@ -3896,6 +3971,8 @@ const _DRAW_MATCH_BOSS=function(){
 		_ENEMIES_BOUNDS=[];
 		_DRAW_SCROLL_STOP();
 		_DRAW_IS_MATCH_BOSS=true;
+		_GAME._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
+		
 		return;
 	}
 
@@ -3921,7 +3998,9 @@ const _DRAW_PLAYER_COLLAPES=function(){
 	if(_this===undefined){return;}
 	//自機の爆発表示
 	let _si=null;
-	let _pl=_this.getPlayerCenterPosition();	
+	let _pl=_this.getPlayerCenterPosition();
+	_GAME._setPlay(_CANVAS_AUDIOS['vicviper_bomb']);
+
 	const _loop=function(){
 		_si=window.requestAnimationFrame(_loop);		
 		if(_this._col_ani_c
@@ -3993,6 +4072,19 @@ const _DRAW_PLAYERS_SHOTS=function(){
 		for(var _i=0;_i<_PLAYERS_MISSILE.length;_i++){
 			let _pm=_PLAYERS_MISSILE[_i];
 			if(!_pm.player._isalive){continue;}
+			//ここで同時ショット(2WAY)と
+			//個別ショットで判別させる
+			if(_PLAYERS_POWER_METER===3){
+				if(_pm.shots[0]._shot_alive||
+					_pm.shots[1]._shot_alive){continue;}
+				_pm.shots[0]._shot=true;
+				_pm.shots[1]._shot=true;
+				//最初の要素（自機）のみショット音をだす
+				if(_i!==0){continue;}
+				_GAME._setPlay(_pm.shots[0]._audio);
+				continue;
+			}
+
 			_pm._sq=
 				(_pm._sq===_pm.shots.length-1)?
 					0
@@ -4068,6 +4160,7 @@ const _DRAW_GAMESTART=function(){
 		//	_DRAW_GAMESTART_SETINTERVAL=setInterval(function(){
 		if(_c>250){
 			_DRAW_STOP_GAMESTART();
+			_GAME._setPlayOnBG(_CANVAS_AUDIOS['bg_'+_MAP.map_bgmusic]);			
 			_DRAW();
 			return;
 		}
@@ -4110,6 +4203,7 @@ const _DRAW_GAMESTART=function(){
 		_c++;
 	};
 	_DRAW_GAMESTART_SETINTERVAL=window.requestAnimationFrame(_loop);
+	_GAME._setStopOnBG();
 }
 
 const _DRAW_GAMECLEAR=function(){
@@ -4450,21 +4544,34 @@ const _DRAW_STAGE_SELECT=function(){
 		_STAGESELECT=new GameObject_STAGESELECT();
 		_STAGESELECT.init();
 	});
-
+	_GAME._setPlayOnBG(_CANVAS_AUDIOS['bg_powermeterselect']);
 }
 
-const _DRAW_AUDIO_INIT=function(_obj,_func){
+const _DRAW_AUDIO_INIT=function(_obj){
+	return new Promise(function(_res,_rej){		
 	let _audioLoadedCount=0;
-	let _alertFlag=false;	
+	let _alertFlag=false;
 	for(let _i in _obj){
-		let _o=_obj[_i];
-		_o.obj.load();
-		_o.obj.src=_obj[_i].src;
-		_o.obj.autoplay=false;
-		_o.obj.controls=false;
+		let _r=new XMLHttpRequest();
+		_r.open('GET',_obj[_i].src,true);
+		_r.responseType='arraybuffer'; //ArrayBufferとしてロード
+		_r.onload=function(){
+			_audioLoadedCount++;
+			// contextにArrayBufferを渡し、decodeさせる
+			_AUDIO_CONTEXT.decodeAudioData(_r.response,function(buf) {
+				_obj[_i].buf=buf;
+			});
+			if(_audioLoadedCount>=
+				Object.keys(_obj).length){
+				_res();
+			}
+		};
+		_r.send();
 	}
+	});//promise
 }
-const _DRAW_INIT=function(_obj,_func){
+const _DRAW_INIT=function(_obj){
+	return new Promise(function(_res,_rej){
 	let _imgLoadedCount=0;
 	let _alertFlag=false;
 	for(let _i in _obj){
@@ -4477,18 +4584,18 @@ const _DRAW_INIT=function(_obj,_func){
 			if(_imgLoadedCount>=
 				Object.keys(_obj).length){
 //				alert(_imgLoadedCount);
-				//読み込み完了後にオブジェクト初期化
-				_func();
+				_res();
 			}
 		}
 		_o.obj.onabort=function(){
 		}
 		_o.obj.onerror=function(){
 			if(_alertFlag){return;}
-			alert('一部画像読み込みに失敗しました。再度立ち上げなおしてください');
 			_alertFlag=true;
+			_rej('一部画像読み込みに失敗しました。再度立ち上げなおしてください');
 		}
 	}
+	});//promise
 }
 
 
@@ -4502,6 +4609,9 @@ _init:function(){
 	_MAP=new GameObject_MAP();
 	_MAP.init(_GAME._showGameStart);
 },
+_audio_now_obj_bg:null,//バックグラウンド現在再生用
+_audio_context_source_bg:null,//バックグラウンド再生用
+_is_audio_context_source_bg:false,//バックグラウンド再生中判別フラグ
 _ac:{
 	//_DRAWのsetIntervalのアニメに併せ
 	//アニメカウントを調整させる
@@ -4631,7 +4741,14 @@ _showGameStart:function(){
 
 		_MAP.set_stage_map_pattern(_MAP_PETTERN);
 
-		_DRAW_INIT(_CANVAS_IMGS,_DRAW_POWER_METER_SELECT);
+//		_DRAW_INIT(_CANVAS_IMGS,_DRAW_POWER_METER_SELECT);
+		_DRAW_INIT(_CANVAS_IMGS)
+		.then(function(){
+			_DRAW_POWER_METER_SELECT();			
+		})
+		.catch(function(){
+			alert('一部画像・または音声読込に失敗しました。再度立ち上げなおしてください');
+		});
 		return;
 	}
 
@@ -4749,9 +4866,39 @@ _setPlayerMoveDraw(){
 },
 _setPlay(_obj){
 	if(_obj===null||_obj===undefined){return;}
-	_obj.currentTime=0;
-	_obj.play();	
+
+	var _s=_AUDIO_CONTEXT.createBufferSource();
+	_s.buffer=_obj.buf;
+	_s.loop=false;
+    _s.connect(_AUDIO_CONTEXT.destination);
+    _s.start(0);
+	
 },
+_setPlayOnBG(_obj){
+	//バックグラウンド用再生
+	if(_obj===null||_obj===undefined){return;}
+	
+	if(this._is_audio_context_source_bg){
+		this._audio_context_source_bg.stop();
+		this._is_audio_context_source_bg=false;
+	}
+    let _t=_AUDIO_CONTEXT.createBufferSource();
+	_t.buffer=_obj.buf;
+	this._audio_now_obj_bg=_obj;//バッファの一時保存用
+	_t.loop=true;
+	_t.loopStart=0;
+    _t.connect(_AUDIO_CONTEXT.destination);
+	_t.start(0);
+	
+	this._audio_context_source_bg=_t;
+	this._is_audio_context_source_bg=true;
+},
+_setStopOnBG(){
+	//バックグラウンド用停止
+	if(!this._is_audio_context_source_bg){return;}
+	this._audio_context_source_bg.stop();
+	this._is_audio_context_source_bg=false;
+},	
 _multilineText(context, text, width) {
     let len=text.length,
     	strArray=[],
@@ -4808,9 +4955,19 @@ window.addEventListener('load',function(){
 			.querySelector('body')
 			.classList.add('sp');
 	}
-
-	_DRAW_AUDIO_INIT(_CANVAS_AUDIOS,_GAME._init);
-	_DRAW_INIT(_CANVAS_IMGS_INIT,_GAME._init);
+	// _DRAW_AUDIO_INIT(_CANVAS_AUDIOS,_GAME._init);
+	// _DRAW_INIT(_CANVAS_IMGS_INIT,_GAME._init);
+//	_DRAW_AUDIO_INIT(_CANVAS_AUDIOS,_GAME._init);
+	_DRAW_INIT(_CANVAS_IMGS_INIT)
+		.then(
+			_DRAW_AUDIO_INIT(_CANVAS_AUDIOS)
+		)
+		.then(function(){
+			_GAME._init()
+		})
+		.catch(function(){
+			alert('一部画像・または音声読込に失敗しました。再度立ち上げなおしてください');
+		});
 });
 
 //touchmoveブラウザのスクロールを停止

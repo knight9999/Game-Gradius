@@ -88,8 +88,8 @@ class GameObject_ENEMY{
 		_this.bid=_ENEMIES_BOUNDS.length;//敵同士のバウンドID
 		_this.gid=0;//敵のグループID
 		_this.img=_o;//画像オブジェクト
-		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision1'].obj;
-		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision3'].obj;
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision1'];
+		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision3'];
 		_this.x=_x||0;//X位置
 		_this.y=_y||0;//Y位置
 		
@@ -152,6 +152,15 @@ class GameObject_ENEMY{
 		}
 		return false;
 	}
+	setAlive(){
+		let _this=this;
+		if(!_this.isalive()){
+			_SCORE.set(_this.getscore);
+			_GAME._setPlay(_this.audio_collision);
+		}else{
+			_GAME._setPlay(_this.audio_alive);			
+		}
+	}
 	setStatus(_s_type,_num){
 		let _this=this;
 		_this._status-=(function(_n){
@@ -165,12 +174,7 @@ class GameObject_ENEMY{
 			}
 			return _n;
 		})(_num);
-		if(!_this.isalive()){
-			_SCORE.set(_this.getscore);
-			_GAME._setPlay(_this.audio_collision);
-		}else{
-			_GAME._setPlay(_this.audio_alive);			
-		}
+		_this.setAlive();
 	}
 	getEnemyCenterPosition(){
 		return {_x:this.x+(this.img.width/2),
@@ -1124,6 +1128,12 @@ class ENEMY_p extends GameObject_ENEMY{
 		this._isbroken=false;
 		this.isshot=false;
 	}
+	setAlive(){
+		let _this=this;
+		if(_this.isalive()){return;}
+		_SCORE.set(_this.getscore);
+		_GAME._setPlay(_this.audio_collision);
+	}
 	map_collition(){
 		let _this=this;
 		//中心座標取得
@@ -1166,7 +1176,8 @@ class ENEMY_p extends GameObject_ENEMY{
 				_ENEMIES_BOUNDS.push(_cls);
 			}
 			_this._isbroken=true;
-			_this._isshow=false;			
+			_this._isshow=false;
+			_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision4']);
 			return;
 		}
 	}
@@ -1215,6 +1226,12 @@ class ENEMY_p_small extends GameObject_ENEMY{
 
 		_this.col_imgs=_ENEMY_DEF_ANI_COL.t1.imgs;//衝突アニメ画像
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t1.intv;//衝突アニメ間隔
+	}
+	setAlive(){
+		let _this=this;
+		if(_this.isalive()){return;}
+		_SCORE.set(_this.getscore);
+		_GAME._setPlay(_this.audio_collision);
 	}
 	map_collition(){
 		let _this=this;
@@ -1282,7 +1299,7 @@ class ENEMY_q extends GameObject_ENEMY{
 			_CANVAS_IMGS['enemy_m_a_1'].obj,
 			_CANVAS_IMGS['enemy_m_a_2'].obj
 		];
-		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision2'].obj;		
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision2'];		
 		_this.col_imgs=_ENEMY_DEF_ANI_COL.t8.imgs;//衝突アニメ画像
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t8.intv;//衝突アニメ間隔
 
@@ -1462,6 +1479,7 @@ class ENEMY_qr extends GameObject_ENEMY{
 			_CANVAS_IMGS['enemy_m_y_2'].obj
 		];
 		_this.img=_this.imgs[0];
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision2'];		
 		_this.tx=_PLAYERS_MAIN.getPlayerCenterPosition()._x;
 		_this.ty=_PLAYERS_MAIN.getPlayerCenterPosition()._y;
 		_this.rad=
@@ -1498,9 +1516,11 @@ class ENEMY_qr extends GameObject_ENEMY{
 class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 	constructor(_o,_x,_y){
 		super(_o,_x,_y);
-		this.speed=0;
-		this.starttime=0;
-		this._c=0;//アニメーションカウント
+		let _this=this;
+		_this.speed=0;
+		_this.starttime=0;
+		_this._c=0;//アニメーションカウント
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision6'];
 	}
 	init(){
 		let _this=this;
@@ -1614,6 +1634,7 @@ class ENEMY_BOSS_BOGCORE
 		_ENEMIES_SHOTS.push(
 			new ENEMY_SHOT_Z(_this.x,_this.y+105));
 		_this.speed=0;
+		_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);		
 		_this.tid=setTimeout(function(){
 			_this.speed=_s;
 			clearTimeout(_this.tid);
@@ -1699,6 +1720,7 @@ class ENEMY_BOSS_BOGCORE
 				_this.wall_col.y=_ec._y-_w.y;
 				_this.is_ani_col=true;
 				_SCORE.set(500);
+				_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision5']);		
 				_w.isalive=false;
 			}
 		}

@@ -1132,7 +1132,6 @@ class ENEMY_p extends GameObject_ENEMY{
 		let _this=this;
 		if(_this.isalive()){return;}
 		_SCORE.set(_this.getscore);
-		_GAME._setPlay(_this.audio_collision);
 	}
 	map_collition(){
 		let _this=this;
@@ -1215,6 +1214,7 @@ class ENEMY_p_small extends GameObject_ENEMY{
     constructor(_d,_x,_y){
 		super(_d,_x,_y);
 		let _this=this;
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];		
 		_this._status=5;
 		_this.getscore=500;
 		_this.speedx=
@@ -1231,7 +1231,7 @@ class ENEMY_p_small extends GameObject_ENEMY{
 		let _this=this;
 		if(_this.isalive()){return;}
 		_SCORE.set(_this.getscore);
-		_GAME._setPlay(_this.audio_collision);
+		_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision5']);
 	}
 	map_collition(){
 		let _this=this;
@@ -1299,7 +1299,7 @@ class ENEMY_q extends GameObject_ENEMY{
 			_CANVAS_IMGS['enemy_m_a_1'].obj,
 			_CANVAS_IMGS['enemy_m_a_2'].obj
 		];
-		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision2'];		
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];		
 		_this.col_imgs=_ENEMY_DEF_ANI_COL.t8.imgs;//衝突アニメ画像
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t8.intv;//衝突アニメ間隔
 

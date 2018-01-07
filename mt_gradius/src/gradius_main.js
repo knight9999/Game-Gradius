@@ -92,8 +92,8 @@ const _IS_SQ_COL_NONE=1;
 const _IS_SQ_NOTCOL=2;
 
 const _AUDIO_CONTEXT=new(
-	window.webkitAudioContext
-	||window.AudioContext
+	window.AudioContext
+	||window.webkitAudioContext
 )();
 	
 const _AJAX=function(_url,_type,_f,_t){
@@ -441,13 +441,7 @@ const _KEYEVENT={
 			.classList.add('on');
 
 		//メイン画像を読み込んでステージセレクトに遷移
-		_DRAW_INIT(_CANVAS_IMGS)
-		.then(function(){
-			_DRAW_STAGE_SELECT();
-		})
-		.catch(function(){
-			alert('一部画像・または音声読込に失敗しました。再度立ち上げなおしてください');
-		});
+		_DRAW_INIT(_CANVAS_IMGS,_DRAW_STAGE_SELECT);
 		_GAME._setPlay(_CANVAS_AUDIOS['playerset']);		
 	}
 },//keydown_start
@@ -726,14 +720,7 @@ const _KEYEVENT_SP={
 		.querySelector('#game_start_wrapper .text_loading')
 		.classList.add('on');
 	//メイン画像を読み込んでステージセレクトに遷移
-	_DRAW_INIT(_CANVAS_IMGS)
-		.then(function(){
-			_DRAW_STAGE_SELECT();
-		})
-		.catch(function(){
-			alert('一部画像・または音声読込に失敗しました。再度立ち上げなおしてください');
-		});
-
+	_DRAW_INIT(_CANVAS_IMGS,_DRAW_STAGE_SELECT);
 	_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
 },//keydown_start
 
@@ -4547,31 +4534,39 @@ const _DRAW_STAGE_SELECT=function(){
 	_GAME._setPlayOnBG(_CANVAS_AUDIOS['bg_powermeterselect']);
 }
 
-const _DRAW_AUDIO_INIT=function(_obj){
-	return new Promise(function(_res,_rej){		
+const _DRAW_AUDIO_INIT=function(_obj,_func){
 	let _audioLoadedCount=0;
 	let _alertFlag=false;
+	let _gsl_r=document.querySelector('#game_start_loading .rate');
+	
 	for(let _i in _obj){
 		let _r=new XMLHttpRequest();
 		_r.open('GET',_obj[_i].src,true);
 		_r.responseType='arraybuffer'; //ArrayBufferとしてロード
 		_r.onload=function(){
-			_audioLoadedCount++;
 			// contextにArrayBufferを渡し、decodeさせる
-			_AUDIO_CONTEXT.decodeAudioData(_r.response,function(buf) {
-				_obj[_i].buf=buf;
-			});
-			if(_audioLoadedCount>=
-				Object.keys(_obj).length){
-				_res();
-			}
+			_AUDIO_CONTEXT.decodeAudioData(
+				_r.response,
+				function(_buf){
+					_obj[_i].buf=_buf;
+					_audioLoadedCount++;
+					if(_audioLoadedCount>=
+						Object.keys(_obj).length){
+							_DRAW_INIT(_CANVAS_IMGS_INIT,_GAME._init);
+					}
+					//ローディングに進捗率を表示させる
+					_gsl_r.innerHTML=parseInt(_audioLoadedCount/Object.keys(_obj).length*100);
+				},
+				function(_error){
+					alert('一部音声読み込みに失敗しました。再度立ち上げなおしてください:'+_error);
+					return;
+				});
 		};
 		_r.send();
 	}
-	});//promise
 }
-const _DRAW_INIT=function(_obj){
-	return new Promise(function(_res,_rej){
+const _DRAW_INIT=function(_obj,_func){
+//	return new Promise(function(_res,_rej){
 	let _imgLoadedCount=0;
 	let _alertFlag=false;
 	for(let _i in _obj){
@@ -4583,8 +4578,10 @@ const _DRAW_INIT=function(_obj){
 			_imgLoadedCount++;
 			if(_imgLoadedCount>=
 				Object.keys(_obj).length){
+				_func();
 //				alert(_imgLoadedCount);
-				_res();
+//				_res();
+//				return;
 			}
 		}
 		_o.obj.onabort=function(){
@@ -4593,9 +4590,10 @@ const _DRAW_INIT=function(_obj){
 			if(_alertFlag){return;}
 			_alertFlag=true;
 			_rej('一部画像読み込みに失敗しました。再度立ち上げなおしてください');
+			return;
 		}
 	}
-	});//promise
+//	});//promise
 }
 
 
@@ -4609,6 +4607,7 @@ _init:function(){
 	_MAP=new GameObject_MAP();
 	_MAP.init(_GAME._showGameStart);
 },
+_audio_buffer_loader:null,
 _audio_now_obj_bg:null,//バックグラウンド現在再生用
 _audio_context_source_bg:null,//バックグラウンド再生用
 _is_audio_context_source_bg:false,//バックグラウンド再生中判別フラグ
@@ -4728,8 +4727,17 @@ isSqCollision:function(_s1,_s1_n,_s2,_s2_n,_d){
 	return _IS_SQ_NOTCOL;
 },
 _showGameStart:function(){
+	let _gsl=document
+	.querySelector('#game_start_loading');
+	_gsl.classList.remove('on');
+
 	//SPのみコントローラーのオブジェクトを取得
-	if(_ISSP){_SP_CONTROLLER._set_obj();}
+	if(_ISSP){
+		let _spc=document
+		.querySelector('#sp_controller');
+		_spc.classList.add('on');
+			_SP_CONTROLLER._set_obj();
+	}
 
 	if(_ISDEBUG){
 		let _gw=document
@@ -4741,14 +4749,8 @@ _showGameStart:function(){
 
 		_MAP.set_stage_map_pattern(_MAP_PETTERN);
 
-//		_DRAW_INIT(_CANVAS_IMGS,_DRAW_POWER_METER_SELECT);
-		_DRAW_INIT(_CANVAS_IMGS)
-		.then(function(){
-			_DRAW_POWER_METER_SELECT();			
-		})
-		.catch(function(){
-			alert('一部画像・または音声読込に失敗しました。再度立ち上げなおしてください');
-		});
+		_DRAW_INIT(_CANVAS_IMGS,_DRAW_POWER_METER_SELECT);
+
 		return;
 	}
 
@@ -4878,7 +4880,7 @@ _setPlayOnBG(_obj){
 	//バックグラウンド用再生
 	if(_obj===null||_obj===undefined){return;}
 	
-	if(this._is_audio_context_source_bg){
+	if(this._is_audio_context_source_bg===true){
 		this._audio_context_source_bg.stop();
 		this._is_audio_context_source_bg=false;
 	}
@@ -4955,19 +4957,8 @@ window.addEventListener('load',function(){
 			.querySelector('body')
 			.classList.add('sp');
 	}
-	// _DRAW_AUDIO_INIT(_CANVAS_AUDIOS,_GAME._init);
-	// _DRAW_INIT(_CANVAS_IMGS_INIT,_GAME._init);
-//	_DRAW_AUDIO_INIT(_CANVAS_AUDIOS,_GAME._init);
-	_DRAW_INIT(_CANVAS_IMGS_INIT)
-		.then(
-			_DRAW_AUDIO_INIT(_CANVAS_AUDIOS)
-		)
-		.then(function(){
-			_GAME._init();
-		})
-		.catch(function(){
-			alert('一部画像または音声読込に失敗しました。再度立ち上げなおしてください');
-		});
+	_DRAW_AUDIO_INIT(_CANVAS_AUDIOS);
+
 });
 
 //touchmoveブラウザのスクロールを停止

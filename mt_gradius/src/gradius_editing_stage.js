@@ -231,6 +231,14 @@ _setData:function(_pt){
 	//bodyを表示
 	const $_body=document.querySelector('#body textarea[name="body"]');
 	$_body.value=_data._body;
+	//BGM MUSICを表示
+	const $_bgmusic=document.querySelector('#bgmusic select');
+	for(let _i=0;_i<$_bgmusic.length;_i++){
+		if($_bgmusic[_i].value===_data._bgmusic){
+			$_bgmusic[_i].selected=true;
+			break;
+		}
+	}
 	//initを表示
 	const $_init=document.querySelector('#init input[name="init"]'),
 		$_init_v=document.querySelector('#init .col_r .val');
@@ -279,6 +287,7 @@ setDataForDataApi:function(){
 		_str+='"_theme":"'+_m._theme+'",';
 		_str+='"_body":"'+document.querySelector('#body textarea[name="body"]').value+'",';
 		_str+='"_initx":"'+document.querySelector('#init .col_r .val').getAttribute('data-val')+'",';
+		_str+='"_bgmusic":"'+document.querySelector('#bgmusic select').value+'",';
 		_str+='"_speed":"'+document.querySelector('#speed .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_difficult":"'+document.querySelector('#difficult .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_map_infinite":"'+document.querySelector('#map_infinite .col_r .val').getAttribute('data-val')+'"';
@@ -335,6 +344,27 @@ _init_images:function(_obj,_func){
 _init:function(){
 	//DataAPI読み込み完了後に実行
     const _this=_GAME_STAGEEDIT;
+	//入力画面 BG MUSICの選択ボックス作成
+	const $bgm=document.querySelector('#bgmusic select');
+	let _s='';
+	Object.keys(_CANVAS_AUDIOS).forEach(function(_k){
+		if(_k.indexOf('bg_type')===-1){return;}
+		var _op=document.createElement('option');
+		_op.setAttribute('value',_k.replace('bg_',''));
+		_op.innerHTML=_k.replace('bg_','');
+		$bgm.appendChild(_op);
+		
+	});
+// 	for(let _i in _CANVAS_AUDIOS){
+// 		let _ca=_CANVAS_AUDIOS[_i];
+// 		if(_ca.indexOf('bg_')===-1){continue;}
+// 		var _op=document.createElement('option');
+// 		_op.setAttribute('value',_ca.replace('bg_',''));
+// 		_op.innerHTML=_ca.replace('bg_','');
+// 		$bgm.appendChild(_op);
+// //		_s+='<option value="'+_ca.replace('bg_','')+'">'+_ca.replace('bg_','')+'</option>';
+// 	}
+//	$bgm.innerHTML=_s;
 
     //入力値をセット
     _MAP.init(function(){

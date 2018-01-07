@@ -502,6 +502,7 @@ class GameObject_MAP{
 		_this.map_background_speed=0;
 		_this.map_backgroundY_speed=0;
 		_this.map_infinite=false;
+		_this.map_bgmusic='';
 	}
 	init(_cb){
 		_AJAX('./gradius_map.json','json',function(_d){
@@ -533,7 +534,8 @@ class GameObject_MAP{
 		_MAP_PETTERN=_this.map_pettern;
 		_this.map_theme=_MAPDEFS[_this.map_pettern]._theme;
 		_this.map_infinite=(_MAPDEFS[_this.map_pettern]._map_infinite==='true')?true:false;
-
+		_this.map_bgmusic=_MAPDEFS[_this.map_pettern]._bgmusic;
+		
 		_this.init_mapdef_col();
 	}
 	init_enemies_location(){
@@ -684,7 +686,11 @@ class GameObject_MAP{
 					(_x+_MAP_SCROLL_POSITION_X-this.initx)
 					/this.t);
 	}
-	getMapY(_y,_t){
+	getMapY(_y,_debug){
+		if(_debug===true){
+			console.log('_y:'+_y)
+			console.log('_MAP_SCROLL_POSITION_Y:'+_MAP_SCROLL_POSITION_Y)
+		}
 		return parseInt(
 				((_y+_MAP_SCROLL_POSITION_Y)%1000)
 				/this.t);

@@ -452,3 +452,122 @@ const _CANVAS_IMGS_INIT={
 	'gradius_powermeterselect_shield_1':
   		{src:'images/gradius_powermeterselect_shield_1.png',rate:0.28,obj:new Image()},
 };
+
+
+const _CANVAS_AUDIOS={
+	'shot_laser':
+		{src:'audios/shot_laser.mp3',
+		 volume:1.0,
+		 obj:null,
+		 buf:new Object()},
+	'missile':
+		 {src:'audios/missile.mp3',
+		 volume:1.0,
+		 obj:null,
+		 buf:new Object()},
+	'shot_normal':
+		{src:'audios/shot_normal.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'shot_ripple':
+		{src:'audios/shot_ripple.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+	'vicviper_bomb':
+		{src:'audios/vicviper_bomb.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'vicviper_shield_reduce':
+		{src:'audios/vicviper_shield_reduce.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+
+	'pc':
+		{src:'audios/pc.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'playerset':
+		{src:'audios/playerset.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+	'pms_select':
+		{src:'audios/pms_select.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+
+	'enemy_bullet_laser':
+		{src:'audios/enemy_bullet_laser.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+	'enemy_collision1':
+		{src:'audios/enemy_collision1.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_collision2':
+		{src:'audios/enemy_collision2.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_collision3':
+		{src:'audios/enemy_collision3.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_collision4':
+		{src:'audios/enemy_collision4.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_collision5':
+		{src:'audios/enemy_collision5.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_collision6':
+		{src:'audios/enemy_collision6.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+
+	'bg_powermeterselect':
+		{src:'audios/bg_powermeterselect.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'bg_boss':
+		{src:'audios/bg_boss.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+	'bg_type1':
+		{src:'audios/bg_moai.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'bg_type2':
+		{src:'audios/bg_volcano.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'bg_type3':
+		{src:'audios/bg_crystal.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()}
+};

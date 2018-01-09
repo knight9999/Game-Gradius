@@ -3797,13 +3797,11 @@ const _IS_GET_POWERCAPSELL=function(){
 		);
 
 		let _s=(_a<_d/2)?true:false;
-		if(_s){
-			_POWERMETER.move();
-			_pwc.getPowerCapcell();
-			_GAME._setPlay(_CANVAS_AUDIOS['pc'])
-			_SCORE.set(300);
-			continue;
-		}
+		if(!_s){continue;}
+		_POWERMETER.move();
+		_pwc.getPowerCapcell();
+		_GAME._setPlay(_CANVAS_AUDIOS['pc'])
+		_SCORE.set(300);
 	}
 }
 

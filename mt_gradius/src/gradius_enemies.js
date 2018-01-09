@@ -347,6 +347,9 @@ class GameObject_ENEMY{
 			_this._isshow=false;			
 			return false;
 		}
+		if(!_this.isshow()){
+			return false;
+		}
 		if(!_this.isalive()){
 			_this.showCollapes();
 			return false;

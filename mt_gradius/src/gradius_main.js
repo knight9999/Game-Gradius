@@ -3701,24 +3701,39 @@ class GameObject_SCORE{
 
 class GameObject_POWERCAPSELL{
 	constructor(_x,_y){
-		this.x=_x||0;
-		this.y=_y||0;
-		this.getscore=300;
-		this.gotpc=false;
+		let _this=this;
+		_this.x=_x||0;
+		_this.y=_y||0;
+		_this.getscore=200;
+		_this.gotpc=false;
+		_this.type=(Math.random()>0.1)
+					?'red'
+					:'blue';
 
-		this._c_pc_ani=0;
-		this.pc_ani=[//パワーカプセルのアニメ定義
+		_this._c_pc_ani=0;
+		_this.pc_ani=[//パワーカプセル（赤）のアニメ定義
 			{img:_CANVAS_IMGS['pc1'].obj,scale:0.6},
 			{img:_CANVAS_IMGS['pc2'].obj,scale:0.6},
 			{img:_CANVAS_IMGS['pc3'].obj,scale:0.6},
 			{img:_CANVAS_IMGS['pc4'].obj,scale:0.6},
 			{img:_CANVAS_IMGS['pc5'].obj,scale:0.6}
 		];
-		this.img=this.pc_ani[0].img;
+		_this.pc_ani2=[//パワーカプセル（青）のアニメ定義
+			{img:_CANVAS_IMGS['pc11'].obj,scale:0.6},
+			{img:_CANVAS_IMGS['pc12'].obj,scale:0.6},
+			{img:_CANVAS_IMGS['pc13'].obj,scale:0.6},
+			{img:_CANVAS_IMGS['pc14'].obj,scale:0.6}
+		];
+		_this.img=
+			(_this.type==='red')
+				?_this.pc_ani
+				:_this.pc_ani2;
 	}
 	getPCCenterPosition(){
-		return {_x:this.x+(this.img.width/2),
-				_y:this.y+(this.img.height/2)}
+		let _this=this;
+		let _img=_this.img[0].img;
+		return {_x:this.x+(_img.width/2),
+				_y:this.y+(_img.height/2)}
 	}
 	getPowerCapcell(){this.gotpc=true;}
 	move(){
@@ -3731,9 +3746,9 @@ class GameObject_POWERCAPSELL{
 		//パワーカプセル所持の場合
 		let _img=(function(_t){
 			_this._c_pc_ani=
-				(_this._c_pc_ani>=(_this.pc_ani.length*5)-1)
+				(_this._c_pc_ani>=(_this.img.length*5)-1)
 				?0:_this._c_pc_ani+1;
-			return _this.pc_ani[parseInt(_this._c_pc_ani/5)].img;
+			return _this.img[parseInt(_this._c_pc_ani/5)].img;
 		})(_this);
 		_CONTEXT.drawImage(
 			_img,_this.x,_this.y,
@@ -3754,11 +3769,16 @@ class GameObject_BACKGROUND{
 				parseInt(Math.random()*255)+","+
 				Math.random()+")";
 		this.speed=Math.random()*5;
+
+		this.move_flash_count=0;
 	}
 	init(){
 		let _r=Math.random()+0.5;
 		this.width=_r;
 		this.height=_r;
+	}
+	move_flash(){
+		
 	}
 	move(){
 		let _t=this;
@@ -3779,6 +3799,11 @@ class GameObject_BACKGROUND{
 //自機とパワーカプセルの取得
 const _IS_GET_POWERCAPSELL=function(){
 //	if(!_PLAYERS_MAIN.isalive()){return;}
+	for(let _i=0;_i<_POWERCAPSELLS.length;_i++){
+		if(_POWERCAPSELLS[_i].gotpc){
+			_POWERCAPSELLS.splice(_i,1);
+		}
+	}
 
 	for(let _i=0;_i<_POWERCAPSELLS.length;_i++){
 		let _pwc=_POWERCAPSELLS[_i];
@@ -3798,10 +3823,28 @@ const _IS_GET_POWERCAPSELL=function(){
 
 		let _s=(_a<_d/2)?true:false;
 		if(!_s){continue;}
-		_POWERMETER.move();
+
 		_pwc.getPowerCapcell();
-		_GAME._setPlay(_CANVAS_AUDIOS['pc'])
-		_SCORE.set(300);
+		if(_pwc.type==='red'){
+			_POWERMETER.move();
+			_GAME._setPlay(_CANVAS_AUDIOS['pc']);
+			_SCORE.set(_pwc.getscore);
+			continue;
+		}
+		if(_pwc.type==='blue'){
+			for(let _i=0;_i<_ENEMIES.length;_i++){
+				let _e=_ENEMIES[_i];
+				if(_GAME.isEnemyCanvasOut(_e)){continue;}
+				_e._status-=1;
+			}
+			for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
+				let _es=_ENEMIES_SHOTS[_i];
+				if(_GAME.isEnemyCanvasOut(_es)){continue;}
+				_es.init();
+			}
+			_GAME._setPlay(_CANVAS_AUDIOS['enemy_all_out']);
+			continue;
+		}
 	}
 }
 
@@ -3856,6 +3899,14 @@ const _IS_ENEMIES_COLLISION=function(){
 //敵ショットによる衝突判定
 const _IS_ENEMIES_SHOT_COLLISION=function(){
 	if(!_PLAYERS_MAIN.isalive()){return;}
+
+	for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
+		//非表示・かつ生存してない場合は、要素から外す
+		if(!_ENEMIES_SHOTS[_i].isshow()
+			&&!_ENEMIES_SHOTS[_i].isalive()){
+			_ENEMIES_SHOTS.splice(_i,1);
+		}
+	}
 
 	let _s=false;//衝突判定
 	for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){

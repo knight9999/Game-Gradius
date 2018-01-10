@@ -306,6 +306,7 @@ class GameObject_ENEMY{
 	isCanvasOut(){
 		//敵位置がキャンバス以外に位置されてるか。
 		//※main.jsで、trueの場合は、
+		//_IS_ENEMIES_COLLISION、
 		//_ENEMIES内、インスタンスが削除される。
 		//true:外れてる
 		//false:外れていない
@@ -1788,12 +1789,17 @@ class GameObject_ENEMY_SHOT{
 		_this.sy=Math.sin(_this.rad);//単位y
 
 		_this._shot_alive=true;//発射中フラグ
+		_this._isshow=true;//弾の状態
 
 		_this.shotColMap=[
 			"0,0,"+_this.img.width+","+_this.img.height
 		];
 	}
-	init(){this._shot_alive=false;}
+	init(){
+		let _this=this;
+		_this._shot_alive=false;
+		_this._isshow=false;
+	}
 	ani_enemy_bullet(){
 		this.img=
 			_CANVAS_IMGS['enemy_bullet'+parseInt((this._c/4)+1)].obj;
@@ -1805,7 +1811,7 @@ class GameObject_ENEMY_SHOT{
  		let _map_x=_MAP.getMapX(_this.x);
  		let _map_y=_MAP.getMapY(_this.y);
 		if(_MAP.isMapCollision(_map_x,_map_y)){
-			_this.init();			
+			_this.init();	
 		}
 	}
 	getEnemyCenterPosition(){
@@ -1813,6 +1819,7 @@ class GameObject_ENEMY_SHOT{
 				_y:this.y+(this.img.height/2)}
 	}
 	isalive(){return this._shot_alive;}
+	isshow(){return this._isshow;}
 	move(){
 		let _this=this;
 		_this.map_collition();

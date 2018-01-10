@@ -337,7 +337,7 @@ const _CANVAS_IMGS={
 	'enemy_bullet_z':
   		{src:'images/gradius_enemy_bullet_z.png',rate:0.2,obj:new Image()},
 
-	//パワーカプセル
+	//パワーカプセル（赤）
 	'pc1':
   		{src:'images/gradius_pc1.png',rate:0.5,obj:new Image()},
 	'pc2':
@@ -348,6 +348,16 @@ const _CANVAS_IMGS={
   		{src:'images/gradius_pc4.png',rate:0.5,obj:new Image()},
 	'pc5':
   		{src:'images/gradius_pc5.png',rate:0.5,obj:new Image()},
+
+	//パワーカプセル（青）
+	'pc11':
+		{src:'images/gradius_pc11.png',rate:0.5,obj:new Image()},
+	'pc12':
+		{src:'images/gradius_pc12.png',rate:0.5,obj:new Image()},
+	'pc13':
+		{src:'images/gradius_pc13.png',rate:0.5,obj:new Image()},
+	'pc14':
+		{src:'images/gradius_pc14.png',rate:0.5,obj:new Image()},
 
 	//MAP
 	'map_c_A':
@@ -539,6 +549,11 @@ const _CANVAS_AUDIOS={
 		buf:new Object()},
 	'enemy_collision6':
 		{src:'audios/enemy_collision6.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_all_out':
+		{src:'audios/enemy_all_out.mp3',
 		volume:1.0,
 		obj:null,
 		buf:new Object()},

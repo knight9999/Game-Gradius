@@ -4604,7 +4604,7 @@ const _DRAW_AUDIO_INIT=function(_obj,_func){
 							_DRAW_INIT(_CANVAS_IMGS_INIT,_GAME._init);
 					}
 					//ローディングに進捗率を表示させる
-					_gsl_r.innerHTML=parseInt(_audioLoadedCount/Object.keys(_obj).length*100);
+					_gsl_r.innerHTML=parseInt(_audioLoadedCount/Object.keys(_obj).length*100)+'%';
 				},
 				function(_error){
 					alert('一部音声読み込みに失敗しました。再度立ち上げなおしてください:'+_error);

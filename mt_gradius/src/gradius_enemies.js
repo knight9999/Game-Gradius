@@ -200,6 +200,9 @@ class GameObject_ENEMY{
 				)
 			);
 	}
+	get_move_bound_val(){
+		return parseInt(Math.random()*(3-1)+1)*((Math.random()>0.5)?1:-1);
+	}
 	move_bounds(_e){
 		//バウンド定義
 		//敵同士ぶつかったときに跳ね返り動作をする
@@ -223,10 +226,10 @@ class GameObject_ENEMY{
 			let _s=(_a<_ms)?true:false;
 			if(_s){
 //				console.log(_a);
-				_this.speedx=Math.random()*(Math.random()>0.05)?1:-1;
-				_this.speedy=Math.random()*(Math.random()>0.5)?1:-1;
-				_eb[_i].speedx=Math.random()*(Math.random()>0.05)?1:-1;
-				_eb[_i].speedy=Math.random()*(Math.random()>0.5)?1:-1;
+				_this.speedx=_this.get_move_bound_val();
+				_this.speedy=_this.get_move_bound_val();
+				_eb[_i].speedx=_this.get_move_bound_val();
+				_eb[_i].speedy=_this.get_move_bound_val();
 			}
 		}
 	}
@@ -303,6 +306,7 @@ class GameObject_ENEMY{
 	isCanvasOut(){
 		//敵位置がキャンバス以外に位置されてるか。
 		//※main.jsで、trueの場合は、
+		//_IS_ENEMIES_COLLISION、
 		//_ENEMIES内、インスタンスが削除される。
 		//true:外れてる
 		//false:外れていない
@@ -1198,17 +1202,18 @@ class ENEMY_p extends GameObject_ENEMY{
 			if(_t.y<0){
 				_t.speedy=Math.abs(_t.speedy);
 			}else if(_t.y+_t.img.height>_CANVAS.height){
-				_t.speedy*=-1;
+				_t.speedy=-1;
+//				console.log(_t.speedy);
 			}
 			return _t.speedy;
 		})(_this);
 
 		_CONTEXT.drawImage(
-			this.img,
-			this.x,
-			this.y,
-			this.img.width,
-			this.img.height
+			_this.img,
+			_this.x,
+			_this.y,
+			_this.img.width,
+			_this.img.height
 		);
 	}
 }
@@ -1220,12 +1225,8 @@ class ENEMY_p_small extends GameObject_ENEMY{
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];		
 		_this._status=5;
 		_this.getscore=500;
-		_this.speedx=
-			_MAPDEFS[_MAP_PETTERN]._speed
-			*((Math.random()>0.5)?1:-1);
-		_this.speedy=
-			_MAPDEFS[_MAP_PETTERN]._speed
-			*((Math.random()>0.5)?1:-1);
+		_this.speedx=_this.get_move_bound_val();
+		_this.speedy=_this.get_move_bound_val();
 
 		_this.col_imgs=_ENEMY_DEF_ANI_COL.t1.imgs;//衝突アニメ画像
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t1.intv;//衝突アニメ間隔
@@ -1271,7 +1272,7 @@ class ENEMY_p_small extends GameObject_ENEMY{
 			if(_t.y<0){
 				_t.speedy=Math.abs(_t.speedy);
 			}else if(_t.y+_t.img.height>_CANVAS.height){
-				_t.speedy*=-1.0;
+				_t.speedy=-1.5;
 			}
 			return _t.speedy;
 		})(_this);
@@ -1788,12 +1789,17 @@ class GameObject_ENEMY_SHOT{
 		_this.sy=Math.sin(_this.rad);//単位y
 
 		_this._shot_alive=true;//発射中フラグ
+		_this._isshow=true;//弾の状態
 
 		_this.shotColMap=[
 			"0,0,"+_this.img.width+","+_this.img.height
 		];
 	}
-	init(){this._shot_alive=false;}
+	init(){
+		let _this=this;
+		_this._shot_alive=false;
+		_this._isshow=false;
+	}
 	ani_enemy_bullet(){
 		this.img=
 			_CANVAS_IMGS['enemy_bullet'+parseInt((this._c/4)+1)].obj;
@@ -1805,7 +1811,7 @@ class GameObject_ENEMY_SHOT{
  		let _map_x=_MAP.getMapX(_this.x);
  		let _map_y=_MAP.getMapY(_this.y);
 		if(_MAP.isMapCollision(_map_x,_map_y)){
-			_this.init();			
+			_this.init();	
 		}
 	}
 	getEnemyCenterPosition(){
@@ -1813,6 +1819,7 @@ class GameObject_ENEMY_SHOT{
 				_y:this.y+(this.img.height/2)}
 	}
 	isalive(){return this._shot_alive;}
+	isshow(){return this._isshow;}
 	move(){
 		let _this=this;
 		_this.map_collition();

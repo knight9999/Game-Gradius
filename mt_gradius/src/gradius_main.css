@@ -126,9 +126,25 @@ body *{box-sizing:border-box;}
 }
 #game_start .text_loading.on{opacity:1;animation:_flashing 0.1s infinite linear;}
 
-body:not(.sp) #sp_controller{display:none;}
+body #sp_controller{display:none;}
 body:not(.sp) #sp_landscapemode{display:none;}
 
+#game_start_loading{display:none;}	
+#game_start_loading.on{
+	color:rgba(255,255,255,1);
+	display:block;
+	height:100%;
+	width:100%;
+}
+#game_start_loading.on .text{	
+	font-size: 30px;
+	left: 50%;
+	position: absolute;
+	top: 50%;
+	transform: translate(-50%,-50%);
+	text-align: center;
+}
+#game_start_loading.on .text{opacity:1;animation:_flashing 0.1s infinite linear;}
 
 /************************************************
 以下はiPad、iPhone設定
@@ -164,7 +180,7 @@ body.sp section#game_wrapper.on{display:block;}
 body.sp section#game_wrapper #game{border:2px solid rgba(255,255,255,1);}
 body.sp section#game_start_wrapper #game_start{top:5%;}
 
-body.sp section#sp_controller{
+body.sp section#sp_controller.on{
     bottom:0px;
     display:block;
     height:130px;
@@ -246,7 +262,7 @@ body.sp section#game_start_wrapper{display:block;}
 body.sp section#game_start_wrapper #game_start{top:calc(50% - 250px);}
 
 
-body.sp section#sp_controller{height:250px;}
+body.sp section#sp_controller.on{height:250px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main{
 	height:200px;
 	top:40px;

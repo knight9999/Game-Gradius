@@ -81,35 +81,35 @@ const _CANVAS_IMGS={
  		 obj:new Image()},
 	'missile1':
 		{src:'images/missile1.png',
-		 rate:0.48,
+		 rate:0.50,
 		 obj:new Image()},
 	'missile2':
 		{src:'images/missile2.png',
-		 rate:0.48,
+		 rate:0.50,
 		 obj:new Image()},
 	'missile3':
  		{src:'images/missile3.png',
- 		 rate:0.48,
+ 		 rate:0.50,
  		 obj:new Image()},
 	'missile4':
 		{src:'images/missile4.png',
-		 rate:0.48,
+		 rate:0.50,
 		 obj:new Image()},
 	'missile5':
  		{src:'images/missile5.png',
- 		 rate:0.48,
+ 		 rate:0.50,
  		 obj:new Image()},
 	'missile6':
   		{src:'images/missile6.png',
-  		 rate:0.48,
+  		 rate:0.50,
   		 obj:new Image()},
 	'missile7':
    		{src:'images/missile7.png',
-   		 rate:0.48,
+   		 rate:0.50,
    		 obj:new Image()},
 	'missile8':
    		{src:'images/missile8.png',
-   		 rate:0.48,
+   		 rate:0.50,
    		 obj:new Image()},
 
 	'shot1':
@@ -337,7 +337,7 @@ const _CANVAS_IMGS={
 	'enemy_bullet_z':
   		{src:'images/gradius_enemy_bullet_z.png',rate:0.2,obj:new Image()},
 
-	//パワーカプセル
+	//パワーカプセル（赤）
 	'pc1':
   		{src:'images/gradius_pc1.png',rate:0.5,obj:new Image()},
 	'pc2':
@@ -348,6 +348,16 @@ const _CANVAS_IMGS={
   		{src:'images/gradius_pc4.png',rate:0.5,obj:new Image()},
 	'pc5':
   		{src:'images/gradius_pc5.png',rate:0.5,obj:new Image()},
+
+	//パワーカプセル（青）
+	'pc11':
+		{src:'images/gradius_pc11.png',rate:0.5,obj:new Image()},
+	'pc12':
+		{src:'images/gradius_pc12.png',rate:0.5,obj:new Image()},
+	'pc13':
+		{src:'images/gradius_pc13.png',rate:0.5,obj:new Image()},
+	'pc14':
+		{src:'images/gradius_pc14.png',rate:0.5,obj:new Image()},
 
 	//MAP
 	'map_c_A':
@@ -451,4 +461,128 @@ const _CANVAS_IMGS_INIT={
   		{src:'images/gradius_powermeterselect_shield_0.png',rate:0.28,obj:new Image()},
 	'gradius_powermeterselect_shield_1':
   		{src:'images/gradius_powermeterselect_shield_1.png',rate:0.28,obj:new Image()},
+};
+
+
+const _CANVAS_AUDIOS={
+	'shot_laser':
+		{src:'audios/shot_laser.mp3',
+		 volume:1.0,
+		 obj:null,
+		 buf:new Object()},
+	'missile':
+		 {src:'audios/missile.mp3',
+		 volume:1.0,
+		 obj:null,
+		 buf:new Object()},
+	'shot_normal':
+		{src:'audios/shot_normal.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'shot_ripple':
+		{src:'audios/shot_ripple.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+	'vicviper_bomb':
+		{src:'audios/vicviper_bomb.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'vicviper_shield_reduce':
+		{src:'audios/vicviper_shield_reduce.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+
+	'pc':
+		{src:'audios/pc.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'playerset':
+		{src:'audios/playerset.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+	'pms_select':
+		{src:'audios/pms_select.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+
+	'enemy_bullet_laser':
+		{src:'audios/enemy_bullet_laser.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+	'enemy_collision1':
+		{src:'audios/enemy_collision1.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_collision2':
+		{src:'audios/enemy_collision2.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_collision3':
+		{src:'audios/enemy_collision3.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_collision4':
+		{src:'audios/enemy_collision4.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_collision5':
+		{src:'audios/enemy_collision5.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_collision6':
+		{src:'audios/enemy_collision6.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_all_out':
+		{src:'audios/enemy_all_out.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+
+	'bg_powermeterselect':
+		{src:'audios/bg_powermeterselect.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'bg_boss':
+		{src:'audios/bg_boss.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
+	'bg_type1':
+		{src:'audios/bg_moai.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'bg_type2':
+		{src:'audios/bg_volcano.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'bg_type3':
+		{src:'audios/bg_crystal.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()}
 };

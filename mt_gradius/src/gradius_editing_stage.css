@@ -108,8 +108,7 @@ form #map #area{
     margin-bottom:2em;
 	margin-left:30px;
 	margin-right:30px;
-    overflow:hidden;
-    overflow-x:auto;
+    overflow:auto;
     position:relative;
     -khtml-user-drag:element;
 }
@@ -177,7 +176,13 @@ form #area .area_blocks_rows .area_block.over{background-color:rgba(255,255,255,
 
 
 
-
+form .form_group select{
+	background-color:rgba(0,0,0,1);
+    color:rgba(255,255,255,1);
+    height:40px;
+    width: 30%;
+    font-size:20px;
+}
 form .form_group input[type="text"] {
     background-color:rgba(0,0,0,1);
     border:1px solid rgba(255,255,255,1);
@@ -198,7 +203,7 @@ form .form_group textarea {
 }
 form .form_group input[type="range"] {
     margin:0px 20px;
-    width: 50%;
+    width: 40%;
 }
 
 
@@ -214,7 +219,7 @@ form .form_group .col_r .val{
     margin-right:20px;
 	padding:10px;
 	text-align:center;
-    width:100px;
+    width:140px;
 }
 form .form_group .col_r.range{margin-right:5%;width:10%;}
 

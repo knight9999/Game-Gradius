@@ -70,7 +70,46 @@ const _ENEMY_DEF_ANI_COL={//衝突アニメーション定義
 		{img:_CANVAS_IMGS['enemy_collapes96'].obj,scale:1.0}
 	]
 }//t9
-};
+}//_ENEMY_DEF_ANI_COL;
+
+class GameObject_ENEMY_COLLISION{
+	constructor(_x,_y,_type_ENEMY_DEF_ANI_COL){
+		let _this=this;
+		_this._c_anime_collosion=0;
+		_this.x=_x||0;
+		_this.y=_y||0;
+		_this.type=_type_ENEMY_DEF_ANI_COL||'t0';
+		_this._status=true;
+
+	}
+	isalive(){
+		return this._status;
+	}
+	move(){
+		let _this=this;
+		let _imgs=_ENEMY_DEF_ANI_COL[_this.type].imgs;
+		let _intv=_ENEMY_DEF_ANI_COL[_this.type].intv;
+//		let _scale=ENEMY_DEF_ANI_COL[_this.type].scale;
+		if(_this._c_anime_collosion>=
+			_imgs.length*_intv-1){
+			//アニメーションが終わったら終了
+			_this._status=false;
+			return;
+		}
+
+		let _a=_imgs[parseInt(_this._c_anime_collosion/_intv)];
+		_this.x=_MAP.getX(_this.x);
+		_this.y=_MAP.getY(_this.y);
+		_CONTEXT.drawImage(
+			_a.img,
+			_this.x-parseInt(_a.img.width*_a.scale/2),
+			_this.y-parseInt(_a.img.height*_a.scale/2),
+			_a.img.width*_a.scale,
+			_a.img.height*_a.scale
+		);
+		_this._c_anime_collosion++;
+	}
+}
 
 //===========================================
 //敵クラス
@@ -117,6 +156,8 @@ class GameObject_ENEMY{
 		_this.col_ani_c=0;
 		_this.col_imgs=_ENEMY_DEF_ANI_COL.t0.imgs;//衝突アニメ画像
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t0.intv;//衝突アニメ間隔
+
+		_this._collision_type='t0';
 
 		_this.shotColMap=[
 			"0,0,"+_this.img.width+","+_this.img.height
@@ -273,35 +314,16 @@ class GameObject_ENEMY{
 	}
 	ani_col(_x,_y){
 		let _this=this;
-		_x=_x||0;
-		_y=_y||0;
-		//大きめな爆発
-		if(_this.col_ani_c
-				>=_this.col_imgs.length*_this.col_intv-1){
-			//アニメーションが終わったら終了
-			_this._isshow=false;
-			return;
-		}
-		let _a=_this.col_imgs[
-				parseInt(_this.col_ani_c/_this.col_intv)
-				];
-		_CONTEXT.drawImage(
-			_a.img,
-			_this.x+_x,
-			_this.y+_y,
-			_a.img.width*_a.scale,
-			_a.img.height*_a.scale
-		);
-		_this.col_ani_c++;
+		if(!_this._isshow){return;}
+		_ENEMIES_COLLISIONS.push(
+			new GameObject_ENEMY_COLLISION
+			(_this.x+(_this.img.width/2),
+				_this.y+(_this.img.height/2),
+				_this._collision_type));
+		_this._isshow=false;
 	}
 	isStandBy(){
-		let _this=this;
-		if(!_this.standby){return false;}
-		if(_this.x>_CANVAS.width-20){
-			return true;
-		}
-		_this.standby=false;
-		return false;
+		return this.standby;
 	}
 	isCanvasOut(){
 		//敵位置がキャンバス以外に位置されてるか。
@@ -323,18 +345,22 @@ class GameObject_ENEMY{
 	showCollapes(_x,_y){
 		let _this=this;
 		//敵を倒した場合
+		//自身はクローズ
+		_this._isshow=false;
 		if(_this.haspc){
 			//パワーカプセルを持ってる場合は、
 			//パワーカプセルを表示
 			_POWERCAPSELLS.push(
 				(new GameObject_POWERCAPSELL(_this.x,_this.y))
 			);
-			//自身はクローズ
-			_this._isshow=false;			
 			return;
 		}
 		//爆発して終了
-		_this.ani_col(_x,_y);
+		_ENEMIES_COLLISIONS.push(
+			new GameObject_ENEMY_COLLISION
+			(_this.x+(_this.img.width/2),
+				_this.y+(_this.img.height/2),
+				_this._collision_type));
 	}
 	isMove(){
 		let _this=this;
@@ -344,6 +370,7 @@ class GameObject_ENEMY{
 		//・キャンバス外
 		//・生存しない
 		if(_this.isStandBy()){
+			_this.move_standby();
 			return false;
 		}
 		if(_this.isCanvasOut()){
@@ -362,18 +389,16 @@ class GameObject_ENEMY{
 	}
 	moveDraw(){
 		//敵の描画メイン
-		let _this=this;
-		
+		let _this=this;		
 		_this.setDrawImage();
-		// _CONTEXT.drawImage(
-		// 	_this.img,
-		// 	_this.x,
-		// 	_this.y,
-		// 	_this.img.width,
-		// 	_this.img.height
-		// );
 		//弾の発射
 		_this.shot();
+	}
+	move_standby(){
+		let _this=this;
+		if(_this.x<_CANVAS.width-20){
+			_this.standby=false;
+		}
 	}
 	move(){
 		//敵の処理メイン
@@ -393,10 +418,6 @@ class ENEMY_a extends GameObject_ENEMY{
 		_this._status=1;
         _this.direct=_d||_this._DEF_DIR._U;
         _this.defimg=[_CANVAS_IMGS['enemy_a_1'].obj,_CANVAS_IMGS['enemy_a_2'].obj];
-
-		_this.col_imgs=_ENEMY_DEF_ANI_COL.t2.imgs;//衝突アニメ画像
-		_this.col_intv=_ENEMY_DEF_ANI_COL.t2.intv;//衝突アニメ間隔
-
 	}
 	setDrawImageDirect(){
 		let _this=this;
@@ -453,8 +474,7 @@ class ENEMY_c extends GameObject_ENEMY{
 		_this._status=2;//ライフステータス
         _this.direct=_d||_this._DEF_DIR._U;
 
-		_this.col_imgs=_ENEMY_DEF_ANI_COL.t1.imgs;//衝突アニメ画像
-		_this.col_intv=_ENEMY_DEF_ANI_COL.t1.intv;//衝突アニメ間隔
+		_this._collision_type='t1';
 
 		_this.speed=
 			_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SPEED;
@@ -647,8 +667,6 @@ class ENEMY_d extends GameObject_ENEMY{
 			{img:_CANVAS_IMGS['enemy_d_3'].obj,scale:1},
 			{img:_CANVAS_IMGS['enemy_d_2'].obj,scale:1}
 		];
-		_this.col_imgs=_ENEMY_DEF_ANI_COL.t0.imgs;//衝突アニメ画像
-		_this.col_intv=_ENEMY_DEF_ANI_COL.t0.intv;//衝突アニメ間隔
 	}
 	moveDraw(){
 		let _this=this;
@@ -712,9 +730,6 @@ class ENEMY_f extends GameObject_ENEMY{
 				{img:_CANVAS_IMGS['enemy_f_3'].obj,scale:1},
 				{img:_CANVAS_IMGS['enemy_f_4'].obj,scale:1}
 			];
-
-		_this.col_imgs=_ENEMY_DEF_ANI_COL.t2.imgs;//衝突アニメ画像
-		_this.col_intv=_ENEMY_DEF_ANI_COL.t2.intv;//衝突アニメ間隔
 	}
 	getDir(){
 		return (this.x>_CANVAS.width/2)?-1:0.5;
@@ -841,6 +856,7 @@ class ENEMY_m extends GameObject_ENEMY{
 		super(_CANVAS_IMGS['enemy_m_1'].obj,_x,_y)
 		let _this=this;
 		_this._status=4;
+		_this._collision_type='t1';
         _this.direct=_d||_this._DEF_DIR._U;//向きの設定		
 		_this.getscore=200;
 		_this._col_c=0;
@@ -868,8 +884,6 @@ class ENEMY_m extends GameObject_ENEMY{
 			{img:_CANVAS_IMGS['enemy_m_5'].obj,scale:1}
 		];
 
-		_this.col_imgs=_ENEMY_DEF_ANI_COL.t1.imgs;//衝突アニメ画像
-		_this.col_intv=_ENEMY_DEF_ANI_COL.t1.intv;//衝突アニメ間隔
 	}
 	moveDraw(){
 		let _this=this;
@@ -943,11 +957,7 @@ class ENEMY_m_small extends GameObject_ENEMY{
 			{img:_CANVAS_IMGS['enemy_m_15'].obj,scale:1},
 			{img:_CANVAS_IMGS['enemy_m_16'].obj,scale:1},
 			{img:_CANVAS_IMGS['enemy_m_17'].obj,scale:1}
-		];
-
-		_this.col_imgs=_ENEMY_DEF_ANI_COL.t2.imgs;//衝突アニメ画像
-		_this.col_intv=_ENEMY_DEF_ANI_COL.t2.intv;//衝突アニメ間隔
- 
+		]; 
 		_this._change=false;
 		_this._moveX=0;
 		_this._moveY=0;
@@ -1068,8 +1078,7 @@ class ENEMY_o_small extends GameObject_ENEMY{
 		_this.speedY=0.2;//火山スピード(Y軸)
 		_this._v=-10;//火山の高さ調整
 
-		_this.col_imgs=_ENEMY_DEF_ANI_COL.t2.imgs;//衝突アニメ画像
-		_this.col_intv=_ENEMY_DEF_ANI_COL.t2.intv;//衝突アニメ間隔
+		_this._collision_type='t2';
 	}
 	map_collition(){
 		let _this=this;
@@ -1228,8 +1237,7 @@ class ENEMY_p_small extends GameObject_ENEMY{
 		_this.speedx=_this.get_move_bound_val();
 		_this.speedy=_this.get_move_bound_val();
 
-		_this.col_imgs=_ENEMY_DEF_ANI_COL.t1.imgs;//衝突アニメ画像
-		_this.col_intv=_ENEMY_DEF_ANI_COL.t1.intv;//衝突アニメ間隔
+		_this._collision_type='t1';
 	}
 	setAlive(){
 		let _this=this;
@@ -1304,8 +1312,9 @@ class ENEMY_q extends GameObject_ENEMY{
 			_CANVAS_IMGS['enemy_m_a_2'].obj
 		];
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];		
-		_this.col_imgs=_ENEMY_DEF_ANI_COL.t8.imgs;//衝突アニメ画像
-		_this.col_intv=_ENEMY_DEF_ANI_COL.t8.intv;//衝突アニメ間隔
+		_this._collision_type='t8';
+		//衝突時のY座標アニメーション
+		_this._collision_posy=(_this.direct===_this._DEF_DIR._D)?25:0;
 
 		_this.shotColMap=[
 			(function(){
@@ -1363,57 +1372,33 @@ class ENEMY_q extends GameObject_ENEMY{
 		);
 //		console.log(_this._open_count)
 	}
-	ani_col(_x,_y){
-		let _this=this;
-		_x=_x||0;
-		_y=_y||0;
-		//大きめな爆発
-		if(_this.col_ani_c
-				>=_this.col_imgs.length*_this.col_intv-1){
-			//アニメーションが終わったら終了
-			return;
-		}
-		let _a=_this.col_imgs[
-				parseInt(_this.col_ani_c/_this.col_intv)
-				];
-		_CONTEXT.drawImage(
-			_a.img,
-			_this.x+_x,
-			_this.y+_y,
-			_a.img.width*_a.scale,
-			_a.img.height*_a.scale
-		);
-		_this.col_ani_c++;
-	}
 	showCollapes(){
 		let _this=this;
-		//爆発して終了
-		_this.ani_col(
-			0,
-			((_this.direct===_this._DEF_DIR._D)?25:0)
-			);
-
 		_this.img=_CANVAS_IMGS['enemy_m_z'].obj;
 		_this.setDrawImage();
 	
 		//爆発後にMAP衝突用の内容を変更する
 		if(_this._isSetMapDefCol){return;}
 		_MAP.set_mapdef_col(
-			_MAP.getMapX(_this.x),
-			_MAP.getMapY(_this.y),
-			(function(){
-				if(_this.direct===_this._DEF_DIR._D){return "0000,0000,0000,1111";}
-				if(_this.direct===_this._DEF_DIR._U){return "1111,0000,0000,0000";}
-				if(_this.direct===_this._DEF_DIR._LD){return "0000,0000,0000,1111";}
-				if(_this.direct===_this._DEF_DIR._LU){return "1111,0000,0000,0000";}
-				})()
+		_MAP.getMapX(_this.x),
+		_MAP.getMapY(_this.y),
+		(function(){
+			if(_this.direct===_this._DEF_DIR._D){return "0000,0000,0000,1111";}
+			if(_this.direct===_this._DEF_DIR._U){return "1111,0000,0000,0000";}
+			if(_this.direct===_this._DEF_DIR._LD){return "0000,0000,0000,1111";}
+			if(_this.direct===_this._DEF_DIR._LU){return "1111,0000,0000,0000";}
+			})()
 		);
-
+		_ENEMIES_COLLISIONS.push(
+			new GameObject_ENEMY_COLLISION
+			(_this.x+(_this.img.width/2),
+				_this.y+(_this.img.height/2)+_this._collision_posy,
+				_this._collision_type));
+	
 		_this._isSetMapDefCol=true;
 	}
 	moveDraw(){
 		let _this=this;
-//		console.log('enemy++++++:'+_this.y);
 		_this.setDrawImage();
 		//弾の発射
 		_this.shot();
@@ -1436,37 +1421,15 @@ class ENEMY_r extends ENEMY_q{
 		_this.col_imgs=_ENEMY_DEF_ANI_COL.t8.imgs;//衝突アニメ画像
 		_this.col_intv=_ENEMY_DEF_ANI_COL.t8.intv;//衝突アニメ間隔
 
+		//衝突時のY座標アニメーション
+		_this._collision_posy=(_this.direct===_this._DEF_DIR._D)?-10:0;
+
 		_this.shotColMap=[
 			(function(){
 				if(_this.direct===_this._DEF_DIR._D){return "20,40,50,85";}
 				if(_this.direct===_this._DEF_DIR._U){return "20,25,50,70";}
 				})()
 			];
-	}
-	showCollapes(){
-		let _this=this;
-		//爆発して終了
-		_this.ani_col(
-			0,
-			((_this.direct===_this._DEF_DIR._D)?-10:0)
-			);
-
-		_this.img=_CANVAS_IMGS['enemy_m_z'].obj;
-		_this.setDrawImage();
-	
-		//爆発後にMAP衝突用の内容を変更する
-		if(_this._isSetMapDefCol){return;}
-		_MAP.set_mapdef_col(
-			_MAP.getMapX(_this.x),
-			_MAP.getMapY(_this.y),
-			(function(){
-				if(_this.direct===_this._DEF_DIR._D){return "0000,0000,0000,1111";}
-				if(_this.direct===_this._DEF_DIR._U){return "1111,0000,0000,0000";}
-				if(_this.direct===_this._DEF_DIR._LD){return "0000,0000,0000,1111";}
-				if(_this.direct===_this._DEF_DIR._LU){return "1111,0000,0000,0000";}
-				})()
-		);
-		_this._isSetMapDefCol=true;
 	}
 }
 
@@ -1492,8 +1455,8 @@ class ENEMY_qr extends GameObject_ENEMY{
 		_this.sy=Math.sin(_this.rad);
 		_this.speed=1;
 
-		_this.col_imgs=_ENEMY_DEF_ANI_COL.t2.imgs;//衝突アニメ画像
-		_this.col_intv=_ENEMY_DEF_ANI_COL.t2.intv;//衝突アニメ間隔
+		_this._collision_type='t2';
+		((_this.direct===_this._DEF_DIR._D)?-10:0);
 	}
 	map_collition(){
 		let _this=this;
@@ -1525,6 +1488,9 @@ class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 		_this.starttime=0;
 		_this._c=0;//アニメーションカウント
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision6'];
+
+		_this.is_done_move_init=false;//初期移動フラグ
+		_this.is_able_collision=false;//衝突可能フラグ
 	}
 	init(){
 		let _this=this;
@@ -1533,102 +1499,120 @@ class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 	}
 	shot(){}
 	move_init(){}
+	setWallCollision(){
+		//壁を壊す
+		let _this=this;
+//		console.log(_this._status)
+		if(_this.wall===undefined){return;}
+		for(let _i=0;_i<_this.wall.length;_i++){
+			let _w=_this.wall[_i];
+			if(!_w.isalive){continue;}
+			let _ec=_this.getEnemyCenterPosition();
+			//壁を表示
+			_CONTEXT.drawImage(
+				_w.img,
+				_this.x+_w.x,
+				_this.y+_w.y,
+				_w.img.width,
+				_w.img.height
+			);
+			//壁を壊した場合
+			if(_w.cs>=_this._status){
+				_ENEMIES_COLLISIONS.push(
+					new GameObject_ENEMY_COLLISION
+					(_this.x+_w.x,_this.y+_w.y));
+				_SCORE.set(500);
+				_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision5']);		
+				_w.isalive=false;
+			}
+		}
+	}
+	moveDraw(){
+		//画像を表示
+		let _this=this;
+		_CONTEXT.drawImage(
+			_this.img,
+			_this.x,
+			_this.y,
+			_this.img.width,
+			_this.img.height
+		);
+	}
+	isMove(){
+		let _this=this;
+		//move()判定処理
+		//以下false（moveしない）
+		//・スタンバイ中
+		//・キャンバス外
+		//・生存しない
+		if(_this.isStandBy()){
+			_this.move_standby();
+			return false;
+		}
+		// if(_this.isCanvasOut()){
+		// 	_this._status=0;
+		// 	_this._isshow=false;			
+		// 	return false;
+		// }
+		if(!_this.isshow()){
+			return false;
+		}
+		if(!_this.isalive()){
+			_this.showCollapes();
+			return false;
+		}
+		return true;
+	}
 	move(){}
 }
 
-class ENEMY_BOSS_BOGCORE
+
+//====================
+//　ボス ビックコア
+//	_x:ボスの初期x位置
+//	_y:ボスの初期y位置
+//====================
+class ENEMY_BOSS_BIGCORE
 			extends GameObject_ENEMY_BOSS{
 	constructor(_x,_y){
-		super(_CANVAS_IMGS['enemy_z'].obj,_x,_y);
+		super(_CANVAS_IMGS['enemy_bigcore'].obj,_x,_y);
 		let _this=this;
 		_this._status=70;
-		_this.speed=3;
 		_this.getscore=10000;
-		_this.img=_CANVAS_IMGS['enemy_z'].obj;
-		_this.wall_col={_x:0,_y:0};
-		_this.wall=[
-			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:60,isalive:true,x:65,y:7},
-			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:50,isalive:true,x:55,y:7},
-			{img:_CANVAS_IMGS['enemy_z_1'].obj,cs:40,isalive:true,x:45,y:7},
-			{img:_CANVAS_IMGS['enemy_z_2'].obj,cs:30,isalive:true,x:35,y:5},
-			{img:_CANVAS_IMGS['enemy_z_3'].obj,cs:0,isalive:true,x:15,y:14},
+		_this.speed=3;
+		_this.img=_CANVAS_IMGS['enemy_bigcore'].obj;
+ 		_this.wall=[
+			{img:_CANVAS_IMGS['enemy_bigcore_1'].obj,cs:60,isalive:true,x:15,y:50},
+			{img:_CANVAS_IMGS['enemy_bigcore_1'].obj,cs:50,isalive:true,x:25,y:50},
+			{img:_CANVAS_IMGS['enemy_bigcore_1'].obj,cs:40,isalive:true,x:35,y:50},
+			{img:_CANVAS_IMGS['enemy_bigcore_2'].obj,cs:30,isalive:true,x:45,y:53},
+			{img:_CANVAS_IMGS['enemy_bigcore_3'].obj,cs:0,isalive:true,x:70,y:43},
 		];
 
 		//攻撃無効を表示させる画像
 		_this.c_z4_ani=30;
 		_this.z4_ani=[
-			{img:_CANVAS_IMGS['enemy_z_4_1'].obj,al:1},
-			{img:_CANVAS_IMGS['enemy_z_4_2'].obj,al:0.8},
-			{img:_CANVAS_IMGS['enemy_z_4_3'].obj,al:0.6},
-			{img:_CANVAS_IMGS['enemy_z_4_4'].obj,al:0.4},
-			{img:_CANVAS_IMGS['enemy_z_4_5'].obj,al:0.2}
+			{img:_CANVAS_IMGS['enemy_bigcore_4_1'].obj,al:1},
+			{img:_CANVAS_IMGS['enemy_bigcore_4_2'].obj,al:0.8},
+			{img:_CANVAS_IMGS['enemy_bigcore_4_3'].obj,al:0.6},
+			{img:_CANVAS_IMGS['enemy_bigcore_4_4'].obj,al:0.4},
+			{img:_CANVAS_IMGS['enemy_bigcore_4_5'].obj,al:0.2}
 		];
-
-		_this.is_ani_col=false;
 		_this.tid=null;
-
-		_this.is_done_move_init=false;
-		_this.is_able_collision=false;
-		_this.init();
-
-		_this.col_ani_c=0;
-		_this.col_ani=_ENEMY_DEF_ANI_COL.t0.imgs;
-		_this.col_ani9_c=0;
-		_this.col_ani9=_ENEMY_DEF_ANI_COL.t9.imgs;
+		_this._moveYStop=false;
 
 		_this.shotColMap=[
 			"0,40,100,70",
 			"50,0,169,40,false",
 			"50,70,169,114,false"
 		];
+		_this._collision_type='t9';
 
 	}
-	ani_col(){
-		let _this=this;
-		if(!_this.is_ani_col){return;}
-		let _c=_this.col_ani_c;
-		if(_c>=_this.col_ani.length*3-1){
-			//アニメーションが終わったら終了
-			_this.col_ani_c=0;
-			_this.is_ani_col=false;
-			return;
-		}
-
-		let _a=_this.col_ani[parseInt(_this.col_ani_c/3)];
-		let _ec=_this.getEnemyCenterPosition();
-		_CONTEXT.drawImage(
-			_a.img,
-			_this.wall_col.x,
-			_this.wall_col.y,
-			_a.img.width*_a.scale,
-			_a.img.height*_a.scale
-		);
-		_this.col_ani_c++;
-	}
-	ani_col2(){
-		let _this=this;
-		let _c=_this.col_ani9_c;
-		//大きめな爆発
-		if(_c>=_this.col_ani9.length*4-1){
-			//アニメーションが終わったら終了
-			return;
-		}
-
-		let _a=_this.col_ani9[parseInt(_c/4)];
-		let _ec=_this.getEnemyCenterPosition();
-		_CONTEXT.drawImage(
-			_a.img,
-			_ec._x-parseInt(_a.img.width*_a.scale/2),
-			_ec._y-parseInt(_a.img.height*_a.scale/2),
-			_a.img.width*_a.scale,
-			_a.img.height*_a.scale
-		);
-		_this.col_ani9_c++;
-	}
-	showCollapes(){this.ani_col2();}
 	shot(){
 		let _this=this;
-		let _s=_this.speed;
+		if(Math.random()>0.02){return;}
+		_this._moveYStop=true;
 		_ENEMIES_SHOTS.push(
 			new ENEMY_SHOT_Z(_this.x,_this.y));
 		_ENEMIES_SHOTS.push(
@@ -1637,101 +1621,39 @@ class ENEMY_BOSS_BOGCORE
 			new ENEMY_SHOT_Z(_this.x,_this.y+70));
 		_ENEMIES_SHOTS.push(
 			new ENEMY_SHOT_Z(_this.x,_this.y+105));
-		_this.speed=0;
 		_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);		
 		_this.tid=setTimeout(function(){
-			_this.speed=_s;
+			_this._moveYStop=false;
 			clearTimeout(_this.tid);
-			_this.tid=null;
 		},100);
 	}
-	move_init(){
+	move_standby(){
+		//スタンバイ状態
 		let _this=this;
 		_this.x-=4;
 
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.x,
-			_this.y,
-			_this.img.width,
-			_this.img.height
-		);
-
-		for(let _i=0;_i<_this.wall.length;_i++){
-			let _w=_this.wall[_i];
-			let _ec=_this.getEnemyCenterPosition();
-			_CONTEXT.drawImage(
-				_w.img,
-				_ec._x-_w.x,
-				_ec._y-_w.y,
-				_w.img.width,
-				_w.img.height
-			);
-		}
+		_this.moveDraw();
+		_this.setWallCollision();
 
 		if(_this.x<_CANVAS.width-_this.img.width-80){
-			_this.is_done_move_init=true;
+			_this.standby=false;
 			_this.is_able_collision=true;
 		}
-
 	}
 	move(){
 		let _this=this;
-//		console.log(_this.is_done_move_init);
-		if(!_this.is_done_move_init){_this.move_init();return;}
+		if(!_this.isMove()){return;}
 
-		if(_this._status<=0){
-			_this.showCollapes();
-			return;
-		}
-
-		(function(){
-			if(Math.random()>0.02){return;}
-			if(_this.tid!==null){return;}
-			_this.shot();
-		})();
-
+		_this.shot();
+			
+		_this.y+=(_this._moveYStop)?0:_this.speed;
 		_this.speed=(_this.y<50
 					||_this.y+_this.img.height>450)
 					?_this.speed*-1
 					:_this.speed;
-		_this.y+=_this.speed;
 
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.x,
-			_this.y,
-			_this.img.width,
-			_this.img.height
-		);
-
-		for(let _i=0;_i<_this.wall.length;_i++){
-			let _w=_this.wall[_i];
-			if(!_w.isalive){continue;}
-			let _ec=_this.getEnemyCenterPosition();
-			//壁を表示
-			_CONTEXT.drawImage(
-				_w.img,
-				_ec._x-_w.x,
-				_ec._y-_w.y,
-				_w.img.width,
-				_w.img.height
-			);
-
-			//壁を壊した場合
-			if(_w.cs>=_this._status){
-				_this.wall_col.x=_ec._x-_w.x;
-				_this.wall_col.y=_ec._y-_w.y;
-				_this.is_ani_col=true;
-				_SCORE.set(500);
-				_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision5']);		
-				_w.isalive=false;
-			}
-		}
-		_this.ani_col();//壁の爆発はここで表示
-
-		if(!_this.is_done_move_init){return;}
-//		console.log((new Date().getTime())-_this.starttime);
+		_this.moveDraw();
+		_this.setWallCollision();
 
 		//自爆準備
 		if(_this._c>=3000){
@@ -1760,6 +1682,316 @@ class ENEMY_BOSS_BOGCORE
 	}
 }
 
+//========================================
+//　ボス クリスタルコア
+//	_x:ボスの初期x位置
+//	_y:ボスの初期y位置
+//	_countは触手と連動させている
+//	  0〜200：クロスする
+//	  200〜400：広げる
+//	_count->800〜1200　本体レーザーの連射
+//	　※連射完了後は_countを0にリセットさせ、
+//	   繰り返す
+//========================================
+class ENEMY_BOSS_CRYSTALCORE
+			extends GameObject_ENEMY_BOSS{
+	constructor(_x,_y){
+		super(_CANVAS_IMGS['enemy_cristalcore'].obj,_x,_y);
+		let _this=this;
+		_this._status=70;
+		_this.speed=2;
+		_this.speed_hands=2;
+
+		_this.getscore=10000;
+		_this.wall=[
+			{img:_CANVAS_IMGS['enemy_cristalcore_wall1'].obj,cs:60,isalive:true,x:47,y:116},
+			{img:_CANVAS_IMGS['enemy_cristalcore_wall2'].obj,cs:50,isalive:true,x:62,y:116},
+			{img:_CANVAS_IMGS['enemy_cristalcore_wall2'].obj,cs:40,isalive:true,x:77,y:116},
+			{img:_CANVAS_IMGS['enemy_cristalcore_wall2'].obj,cs:30,isalive:true,x:92,y:116},
+			{img:_CANVAS_IMGS['enemy_bigcore_3'].obj,cs:0,isalive:true,x:102,y:115},
+		];
+
+		//攻撃無効を表示させる画像
+		_this.c_z4_ani=30;
+		_this.z4_ani=[
+			{img:_CANVAS_IMGS['enemy_bigcore_4_1'].obj,al:1},
+			{img:_CANVAS_IMGS['enemy_bigcore_4_2'].obj,al:0.8},
+			{img:_CANVAS_IMGS['enemy_bigcore_4_3'].obj,al:0.6},
+			{img:_CANVAS_IMGS['enemy_bigcore_4_4'].obj,al:0.4},
+			{img:_CANVAS_IMGS['enemy_bigcore_4_5'].obj,al:0.2}
+		];
+
+		_this._collision_type='t9';
+		_this.is_able_collision=false;
+
+		_this._count=0;
+		_this._shot_count=0;
+		_this.shotColMap=[
+			"25,110,100,152",
+			"25,0,227,110,false",
+			"25,152,227,250,false",
+			"135,110,227,250,false"
+		];
+
+		_this.hands_up=[
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":80,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,10","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":80,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,185,5","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":80,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,-10","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":80,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,175,-25","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":80,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,170,-40","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":80,"_cmr":106,"_cmsr":160,"_initRad":190,"_data":"0,0,165,-55","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_img":_CANVAS_IMGS['enemy_cristalcore_hand2'].obj,
+												"_initx":50,"_inity":80,"_cmr":115,"_cmsr":170,"_initRad":215,"_data":"0,0,160,-70","_change":true})
+		];
+		for(let _i=0;_i<_this.hands_up.length;_i++){
+			_ENEMIES.push(_this.hands_up[_i]);		
+		}
+
+		_this.hands_down=[
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":155,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,-10","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":155,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,175,-5","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":155,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,10","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":155,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,185,25","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":155,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,190,40","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":155,"_cmr":106,"_cmsr":160,"_initRad":190,"_data":"0,0,195,55","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_img":_CANVAS_IMGS['enemy_cristalcore_hand2'].obj,
+												"_initx":50,"_inity":155,"_cmr":115,"_cmsr":170,"_initRad":215,"_data":"0,0,200,70","_change":false})
+		];
+		for(let _i=0;_i<_this.hands_down.length;_i++){
+			_ENEMIES.push(_this.hands_down[_i]);		
+		}
+
+	}
+	init(){
+	}
+	setDrawImageDirect(){
+	}
+	shot(){
+		let _this=this;
+
+		_this._shot_count++;
+		if(_this._count>1200){_this._count=0;return;}
+		if(_this._count>800){
+			if(_this._shot_count<10){return;}			
+		}else if(_this._count<=800){
+			if(_this._shot_count<50){return;}
+		}
+		_this._shot_count=0;
+		_ENEMIES_SHOTS.push(
+			new ENEMY_SHOT_Z(_this.x,_this.y+111));
+		_ENEMIES_SHOTS.push(
+			new ENEMY_SHOT_Z(_this.x,_this.y+140));
+		_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);
+	}
+	showCollapes(_x,_y){
+		let _this=this;
+		//敵を倒した場合
+		//爆発して終了
+		_this.ani_col(_x,_y);
+		//触手の上を表示
+		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
+			_this.hands_up[_i].showCollapes(
+				_this.hands_up[_i].x,
+				_this.hands_up[_i].y
+			);
+			_this.hands_up[_i].init();
+		}
+		//触手の下を表示
+		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
+			_this.hands_down[_i].showCollapes(
+				_this.hands_down[_i].x,
+				_this.hands_down[_i].y
+			);
+			_this.hands_down[_i].init();
+		}
+	}
+	move_standby(){
+		//スタンバイ状態
+		let _this=this;
+		_this.y-=4;
+
+		//触手の上を表示
+		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
+			_this.hands_up[_i].moveDraw(_this);
+		}
+		//触手の下を表示
+		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
+			_this.hands_down[_i].moveDraw(_this);
+		}
+
+		_this.moveDraw();
+		_this.setWallCollision();
+
+		if(_this.y<200){
+			_this.standby=false;
+			_this.is_able_collision=true;
+		}
+	}
+	move(){
+		let _this=this;
+		_this._count++;
+		if(!_this.isMove()){return;}
+		_this.x=700;
+		_this.y+=_this.speed;
+		if(_this.y+_this.img.height>_CANVAS.height
+			||_this.y<0){
+			_this.speed*=-1;
+		}
+		// _CONTEXT.strokeStyle='rgb(200,200,255)';
+		// _CONTEXT.beginPath();
+		// _CONTEXT.rect(
+		// 	_this.x,
+		// 	_this.y,
+		// 	_this.img.width,
+		// 	_this.img.height
+		// );
+		// _CONTEXT.stroke();
+		//触手の上を表示
+		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
+			_this.hands_up[_i].moveDraw(_this);
+		}
+		//触手の下を表示
+		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
+			_this.hands_down[_i].moveDraw(_this);
+		}
+
+		_this.shot();
+		_this.moveDraw();
+		_this.setWallCollision();
+
+		//自爆
+		if(_this._c>=4000){_this._status=0;return;}
+		_this._c++;
+	}
+}
+//クリスタルコアの手定義
+class ENEMY_BOSS_CRYSTALCORE_HANDS
+	extends GameObject_ENEMY{
+	constructor(_d){
+		super(_CANVAS_IMGS['enemy_cristalcore_hand1'].obj,_d._initx,_d._inity);
+		let _this=this;
+		_this._initx=_d._initx||0;//初期位置x
+		_this._inity=_d._inity||0;//初期位置y
+		//移動→自転の動き
+		_this._c_move_round=_d._cmr||0;//移動maxカウント
+		_this._c_move_self_round=_d._cmsr||0;//自転maxカウント
+		_this._initRad=_d._initRad||0;//移動半径
+		_this._data=_d._data||"0,0,0,0";//動き処理データ
+					//x:移動分
+					//y:移動分
+					//rad:中心からの角度
+					//srad:自身の角度
+		_this.img=_d._img||_CANVAS_IMGS['enemy_cristalcore_hand1'].obj;//手の画像
+
+		_this._count=0;//アニメーションカウント
+		_this._count_turn=0;
+		_this._change=_d._change;
+
+		_this.standby=false;
+
+		//ここでは先端のオブジェクトだけ、
+		//ショットさせる
+		_this.isshot=(_d._img===undefined)?false:true;
+		_this._shot_count=0;
+		//衝突タイプ
+		_this._collision_type='t1';
+
+		_this._boss=new Object();
+	}
+	init(){
+		this._isshow=false;
+		this._status=0;
+	}
+	collision(_s_type,_num){}
+	setStatus(){this._status=0;}
+	shot(){
+		let _this=this;
+		if(_this.isshot===false){return;}
+		_this._shot_count++;
+		if(_this._shot_count<20){return;}
+		_this._shot_count=0;
+		let _d=_this._data.split(',');
+		_ENEMIES_SHOTS.push(
+			new ENEMY_SHOT_CRYSTALCORE(
+				_this.x,
+				_this.y,
+				parseInt(_d[3])
+			)
+		);
+	}
+	moveDraw(_boss){
+		let _this=this;
+		_this._boss=_boss;
+		_this._count++;
+		_this.shot();
+
+		let _d=_this._data.split(',');
+		let _ix=_this._initx;
+		let _iy=_this._inity;
+		let rad=parseInt(_d[3])*Math.PI/180;
+		var cx=_this._boss.x+parseInt(_d[0])+_ix+_this.img.width;
+		var cy=_this._boss.y+parseInt(_d[1])+_iy+parseInt(_this.img.height/1.5);
+		// 画像を中心にして回転
+//			_CONTEXT.beginPath();
+		_CONTEXT.save();
+		_CONTEXT.setTransform(Math.cos(rad),Math.sin(rad),
+							-Math.sin(rad),Math.cos(rad),
+							cx-cx*Math.cos(rad)+cy*Math.sin(rad),
+							cy-cx*Math.sin(rad)-cy*Math.cos(rad));
+		_CONTEXT.drawImage(
+			_this.img,
+			_this._boss.x+parseInt(_d[0])+_ix,
+			_this._boss.y+parseInt(_d[1])+_iy,
+			_this.img.width,
+			_this.img.height
+		);
+
+		_CONTEXT.restore();
+		_this.x=_this._boss.x+parseInt(_d[0])+_ix;
+		_this.y=_this._boss.y+parseInt(_d[1])+_iy;
+	}
+	move(){
+		let _this=this;
+//		console.log(_this._count_turn)
+		if(_this._count_turn>=4){
+			if(_this._count>400){
+				_this._count=0;
+				_this._count_turn=0;	
+			}
+			return;
+		}
+
+		if(_this._count>200){
+			_this._count=0;
+			_this._count_turn++;
+			_this._change=(_this._change)?false:true;
+			if(_this._count_turn>=4){return;}
+		}
+
+		let _sp=_this._data.split(',');
+		let _cmr=_this._c_move_round;
+		let _cmsr=_this._c_move_self_round;
+//		console.log(_this._data);
+		//停止
+		if(_this._count>_cmsr){
+			return;
+		}
+		//自転のみ	
+		if(_this._count<=_cmsr&&_this._count>_cmr){
+			let _deg=parseInt(_sp[3])+((_this._change)?1:-1);
+			_this._data=_sp[0]+','+_sp[1]+','+_sp[2]+','+_deg;
+			return;
+		}
+		//動きと自転
+//			console.log(_this.hands_up[0] );
+//			console.log(_deg);
+		let _deg=parseInt(_sp[2])+((_this._change)?1:-1);
+		let _x=_this._initRad*Math.cos(_deg*(Math.PI/180));
+		let _y=_this._initRad*Math.sin(_deg*(Math.PI/180));
+		let _z=parseInt(_sp[3])+((_this._change)?1:-1);
+		_this._data=_x+','+_y+','+_deg+','+_z;
+	}
+}
 
 //====================
 //　弾クラス
@@ -1820,6 +2052,25 @@ class GameObject_ENEMY_SHOT{
 	}
 	isalive(){return this._shot_alive;}
 	isshow(){return this._isshow;}
+	setDrawImageDirect(){
+		let _this=this;
+		let rad=_this.rad;
+//		console.log(rad);
+		var cx=_this.x+_this.img.width;
+        var cy=_this.y+_this.img.height;
+		_CONTEXT.setTransform(Math.cos(rad),Math.sin(rad),
+							-Math.sin(rad),Math.cos(rad),
+							cx-cx*Math.cos(rad)+cy*Math.sin(rad),
+							cy-cx*Math.sin(rad)-cy*Math.cos(rad));	
+
+		_CONTEXT.drawImage(
+			_this.img,
+			_this.x+_this.img.width,
+			_this.y+_this.img.height,
+			_this.img.width,
+			_this.img.height
+		);
+	}
 	move(){
 		let _this=this;
 		_this.map_collition();
@@ -1831,8 +2082,8 @@ class GameObject_ENEMY_SHOT{
 		if(!_this._shot_alive){return;}
 		_this.ani_enemy_bullet();
 
-		_this.x+=_this.sx*_this.speed;
-		_this.y+=_this.sy*_this.speed;
+		_this.x+=_this.speed;
+		_this.y+=_this.speed;
 		
 		_CONTEXT.drawImage(
 			_this.img,
@@ -1865,7 +2116,7 @@ class ENEMY_SHOT_Z
 	move(){
 		let _this=this;
 		if(_GAME.isEnemyCanvasOut(_this)){
-			_this._shot_alive=false;
+			_this.init();
 			return;
 		}
 		if(!_this._shot_alive){return;}
@@ -1880,5 +2131,37 @@ class ENEMY_SHOT_Z
 			_this.img.height
 		);
 
+	}
+}
+
+
+class ENEMY_SHOT_CRYSTALCORE
+	extends GameObject_ENEMY_SHOT{
+	constructor(_x,_y,_deg){
+		super(_x,_y);
+		let _this=this;
+		_this.img=_CANVAS_IMGS['enemy_cristalcore_shot'].obj;
+		_this.speed=10;
+		_this.deg=_deg||0;
+		_this.rad=_this.deg*Math.PI/180;
+		_this.sx=Math.cos(_this.rad);//単位x
+		_this.sy=Math.sin(_this.rad);//単位y
+	}
+	move(){
+		let _this=this;
+		if(_GAME.isEnemyCanvasOut(_this)){
+			_this.init();
+			return;
+		}
+		if(!_this._shot_alive){return;}
+		_this.map_collition();
+
+//		console.log(_this.rad);
+		_this.x-=_this.sx*_this.speed;
+		_this.y-=_this.sy*_this.speed;
+
+		_CONTEXT.save();
+		_this.setDrawImageDirect();
+		_CONTEXT.restore();
 	}
 }

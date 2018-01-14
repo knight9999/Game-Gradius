@@ -138,6 +138,16 @@ _ENEMIES:{
 }//_ENEMIES
 }
 
+const _MAP_ENEMIES_BOSS={
+	'enemy_cristalcore':{
+		_f:function(){return new ENEMY_BOSS_CRYSTALCORE(700,800)}
+	},
+	'enemy_bigcore':{
+		_f:function(){return new ENEMY_BOSS_BIGCORE(1300,200)}
+	}
+};
+
+
 const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME1':{//なし
 	'_p':{
@@ -503,6 +513,7 @@ class GameObject_MAP{
 		_this.map_backgroundY_speed=0;
 		_this.map_infinite=false;
 		_this.map_bgmusic='';
+		_this.map_boss='';
 	}
 	init(_cb){
 		_AJAX('./gradius_map.json','json',function(_d){
@@ -535,6 +546,7 @@ class GameObject_MAP{
 		_this.map_theme=_MAPDEFS[_this.map_pettern]._theme;
 		_this.map_infinite=(_MAPDEFS[_this.map_pettern]._map_infinite==='true')?true:false;
 		_this.map_bgmusic=_MAPDEFS[_this.map_pettern]._bgmusic;
+		_this.map_boss=_MAPDEFS[_this.map_pettern]._boss;
 		
 		_this.init_mapdef_col();
 	}

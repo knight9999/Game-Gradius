@@ -3838,7 +3838,7 @@ const _IS_GET_POWERCAPSELL=function(){
 			for(let _i=0;_i<_ENEMIES.length;_i++){
 				let _e=_ENEMIES[_i];
 				if(_GAME.isEnemyCanvasOut(_e)){continue;}
-				_e._status-=1;
+				_e.setStatus(_SHOTTYPE_NORMAL,1);
 			}
 			for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
 				let _es=_ENEMIES_SHOTS[_i];
@@ -4407,6 +4407,7 @@ const _DRAW_RESET_OBJECT=function(){
 	_ENEMIES=[];
 	_ENEMIES_BOUNDS=[];
 	_ENEMIES_SHOTS=[];
+	_ENEMIES_COLLISIONS=[];
 	_POWERMETER='';
 	_SHOTTYPE=_SHOTTYPE_NORMAL;
 

@@ -2082,9 +2082,12 @@ class GameObject_ENEMY_SHOT{
 		if(!_this._shot_alive){return;}
 		_this.ani_enemy_bullet();
 
-		_this.x+=_this.speed;
-		_this.y+=_this.speed;
-		
+		_this.x+=_this.sx*_this.speed;
+		_this.y+=_this.sy*_this.speed;
+
+		// _CONTEXT.save();
+		// _this.setDrawImageDirect();
+		// _CONTEXT.restore();
 		_CONTEXT.drawImage(
 			_this.img,
 			_this.x-(_this.img.width/2),

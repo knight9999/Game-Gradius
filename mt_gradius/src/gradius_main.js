@@ -72,8 +72,9 @@ let _PLAYERS_MISSILE_ISALIVE=false;
 let _ENEMIES=new Array();
 let _ENEMIES_SHOTS=new Array();
 let _ENEMIES_BOUNDS=new Array();
+let _ENEMIES_COLLISIONS=new Array();//敵衝突の表示
 
-let _POWERCAPSELLS=new Array();
+let _POWERCAPSELLS=new Array();//パワーカプセルの表示
 
 let _POWERMETER='';
 let _STAGESELECT='';
@@ -607,12 +608,10 @@ const _KEYEVENT={
 	if(e.key==='P'||e.key==='p'){
 		if(_DRAW_SETINTERVAL!==null){
 			_DRAW_STOP();
-			if(_DRAW_IS_GAMECLEAR){return false;}
 			_GAME._setStopOnBG();
 		}else{
 			_KEYSAFTERPAUSE=[];
 			_DRAW();
-			if(_DRAW_IS_GAMECLEAR){return false;}
 			_GAME._setPlayOnBG(_GAME._audio_now_obj_bg);			
 		}
 		return false;
@@ -1008,12 +1007,10 @@ const _KEYEVENT_SP={
 'keydown_game_p':function(e){
 	if(_DRAW_SETINTERVAL!==null){
 		_DRAW_STOP();
-		if(_DRAW_IS_GAMECLEAR){return false;}
 		_GAME._setStopOnBG();		
 	}else{
 		_KEYSAFTERPAUSE=[];
 		_DRAW();
-		if(_DRAW_IS_GAMECLEAR){return false;}
 		_GAME._setPlayOnBG(_GAME._audio_now_obj_bg);		
 	}
 	return false;
@@ -3106,20 +3103,21 @@ class GameObject_SHOTS_LASER
 
 		//当たり判定
 		if(_s===_IS_SQ_NOTCOL){
+//			this.setLaserMaxX(_t,_CANVAS.width);
 			return;
 		}
 		if(_s===_IS_SQ_COL_NONE){
-			this.setLaserMaxX(_e.x+(_e.img.width/4));
-			return;			
+			this.setLaserMaxX(_t,_e.x+(_e.img.width/4));
+//			console.log(_t._laser_MaxX);
+			return;
 		}
 		
 		_e.collision(_SHOTTYPE_LASER);
 		if(_e.isalive()){
-			this.setLaserMaxX(_e.x+(_e.img.width/4));
+			this.setLaserMaxX(_t,_e.x+(_e.img.width/4));
 			return;
 		}
 
-		this.setLaserMaxX(_CANVAS.width);
 		
 		}//_k
 	}
@@ -3133,26 +3131,29 @@ class GameObject_SHOTS_LASER
 		let _map_x=_MAP.getMapX(_t.x+_pl._x);
 		let _map_y=_MAP.getMapY(_t.y);
 		if(_MAP.isMapCollision(_map_x,_map_y)){
-			_this.setLaserMaxX(_MAP.getMapXToPx(_map_x));
+			_this.setLaserMaxX(_t,_MAP.getMapXToPx(_map_x));
 			return;
 		}
 
-		_this.setLaserMaxX(_CANVAS.width);
+		_this.setLaserMaxX(_t,_CANVAS.width);
 
 	}
 	setLaserLine(_s,_l_x,_l_sx){
 		_s._l_x=_l_x;
 		_s._l_sx=_l_sx;
 	}
-	setLaserMaxX(_v){
-//		console.log(this.shots.length);
+	setLaserMaxX(_t,_v){
 		let _this=this;
-		for(let _i=0;_i<_this.shots.length;_i++){
-			_this.shots[_i]._laser_MaxX=_v;
-			if(_this.shots[_i]._laser_MaxX<_CANVAS.width){
-				_this.laser_collision(_this.shots[_i]);
-			}
+		_t._laser_MaxX=_v;
+		if(_t._laser_MaxX<_CANVAS.width){
+			_this.laser_collision(_t);
 		}
+		// for(let _i=0;_i<_this.shots.length;_i++){
+		// 	_this.shots[_i]._laser_MaxX=_v;
+		// 	if(_this.shots[_i]._laser_MaxX<_CANVAS.width){
+		// 		_this.laser_collision(_this.shots[_i]);
+		// 	}
+		// }
 	}
 	move(){
 		let _this=this;
@@ -3179,7 +3180,7 @@ class GameObject_SHOTS_LASER
 			//照射開始
 			_t.x=(function(_i){
 	  			if(_i>=_t._laser_MaxX-_pl._x){
-					//レーザーがキャンバスの右端に届いた時
+					//レーザーが右端に届いた時
 					_t._laser_t+=(1000/_FPS);
 					return _t._laser_MaxX-_pl._x;
 				}
@@ -3215,10 +3216,12 @@ class GameObject_SHOTS_LASER
 
 			if(_t.x<_t._sx||Math.abs(_t.x-_t._sx)<50){return;}
 
-	//		console.log('_x+_t._sx:'+(_t._sx));
-	//		console.log('_x+_t._x:'+(_t.x));
+//			console.log('_x:'+(_t.x));
+//			console.log('_sx:'+(_t._sx));
+//			console.log('_max:'+(_t._laser_MaxX));
 //			let _px=_p.x+_p.img.width;
 			let _px=_pl._x;
+//			console.log('_px+_t.x:'+(_px+_t.x));
 			_CONTEXT.beginPath();
 			_CONTEXT.strokeStyle=_this.strokeStyle_u;
 			_CONTEXT.moveTo(_px+_t._sx,_pl._y+1);
@@ -3918,7 +3921,6 @@ const _IS_ENEMIES_SHOT_COLLISION=function(){
 	}
 }
 
-
 //===========================================
 //	_DRAW系の処理
 //	以下の処理に統一させる
@@ -3956,13 +3958,16 @@ const _DRAW=function(){
 		//MAP（衝突判定）
 		_MAP.isPlayersShotCollision();
  		//敵、衝突判定
-		 _IS_ENEMIES_SHOT_COLLISION();
-		 _IS_ENEMIES_COLLISION();
+		_IS_ENEMIES_SHOT_COLLISION();
+		_IS_ENEMIES_COLLISION();
+		//敵、衝突表示
+		_DRAW_ENEMIES_COLLISIONS();
  
 		//パワーカプセルを表示
 		for(let _i=0;_i<_POWERCAPSELLS.length;_i++){
 			_POWERCAPSELLS[_i].move();			
 		}
+
 		//ショットを表示
 		for(let _i=0;_i<_PLAYERS_MAX;_i++){
 			if(_PLAYERS_MISSILE_ISALIVE){
@@ -4000,12 +4005,18 @@ const _DRAW_MATCH_BOSS=function(){
 	_MAP.setBackGroundSpeedY(0);
 	_MAP.setInifinite(false);
 	if(!_DRAW_IS_MATCH_BOSS){
-		let _e=new ENEMY_BOSS_BOGCORE(1300,200);
+		if(_MAP.map_boss===''
+			||_MAP.map_boss===undefined
+			||_MAP_ENEMIES_BOSS[_MAP.map_boss]===undefined){
+			_DRAW_GAMECLEAR();
+		}
+		_DRAW_SCROLL_STOP();
 		_ENEMIES=[];
-		_ENEMIES.push(_e);
 		_ENEMIES_SHOTS=[];
 		_ENEMIES_BOUNDS=[];
-		_DRAW_SCROLL_STOP();
+		_ENEMIES.push(
+			_MAP_ENEMIES_BOSS[_MAP.map_boss]._f()
+		);
 		_DRAW_IS_MATCH_BOSS=true;
 		_GAME._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
 		
@@ -4017,10 +4028,10 @@ const _DRAW_MATCH_BOSS=function(){
 		_bit+=((_ENEMIES[_i].isalive())?'0':'1');
 	}
 	if(_bit.indexOf('0')!==-1){return;}
-	_DRAW_SCROLL_RESUME();
 	if(_DRAW_IS_MATCH_BOSS_COUNT>100){
 		//GAMECLEAR
 		_DRAW_GAMECLEAR();
+		_DRAW_SCROLL_RESUME();
 	}else{
 		_DRAW_IS_MATCH_BOSS_COUNT++;
 	}
@@ -4325,6 +4336,19 @@ const _DRAW_GAMEOVER=function(){
 			0.15
 		);
 }// _DRAW_GAMEOVER
+
+//敵衝突表示
+const _DRAW_ENEMIES_COLLISIONS=function(){
+	for(let _i=0;_i<_ENEMIES_COLLISIONS.length;_i++){
+		if(!_ENEMIES_COLLISIONS[_i].isalive()){
+			_ENEMIES_COLLISIONS.splice(_i,1);
+		}
+	}
+
+	for(let _i=0;_i<_ENEMIES_COLLISIONS.length;_i++){
+		_ENEMIES_COLLISIONS[_i].move();
+	}
+}//_DRAW_ENEMIES_COLLISIONS
 
 const _DRAW_DISP_TXT=function(_s,_x,_y,_r){
 	//_s:テキスト

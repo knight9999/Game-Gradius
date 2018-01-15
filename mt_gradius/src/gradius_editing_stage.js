@@ -239,6 +239,14 @@ _setData:function(_pt){
 			break;
 		}
 	}
+	//BOSSを表示
+	const $_boss=document.querySelector('#boss select');
+	for(let _i=0;_i<$_boss.length;_i++){
+		if($_boss[_i].value===_data._boss){
+			$_boss[_i].selected=true;
+			break;
+		}
+	}
 	//initを表示
 	const $_init=document.querySelector('#init input[name="init"]'),
 		$_init_v=document.querySelector('#init .col_r .val');
@@ -288,6 +296,7 @@ setDataForDataApi:function(){
 		_str+='"_body":"'+document.querySelector('#body textarea[name="body"]').value+'",';
 		_str+='"_initx":"'+document.querySelector('#init .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_bgmusic":"'+document.querySelector('#bgmusic select').value+'",';
+		_str+='"_boss":"'+document.querySelector('#boss select').value+'",';
 		_str+='"_speed":"'+document.querySelector('#speed .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_difficult":"'+document.querySelector('#difficult .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_map_infinite":"'+document.querySelector('#map_infinite .col_r .val').getAttribute('data-val')+'"';
@@ -346,7 +355,6 @@ _init:function(){
     const _this=_GAME_STAGEEDIT;
 	//入力画面 BG MUSICの選択ボックス作成
 	const $bgm=document.querySelector('#bgmusic select');
-	let _s='';
 	Object.keys(_CANVAS_AUDIOS).forEach(function(_k){
 		if(_k.indexOf('bg_type')===-1){return;}
 		var _op=document.createElement('option');
@@ -355,16 +363,18 @@ _init:function(){
 		$bgm.appendChild(_op);
 		
 	});
-// 	for(let _i in _CANVAS_AUDIOS){
-// 		let _ca=_CANVAS_AUDIOS[_i];
-// 		if(_ca.indexOf('bg_')===-1){continue;}
-// 		var _op=document.createElement('option');
-// 		_op.setAttribute('value',_ca.replace('bg_',''));
-// 		_op.innerHTML=_ca.replace('bg_','');
-// 		$bgm.appendChild(_op);
-// //		_s+='<option value="'+_ca.replace('bg_','')+'">'+_ca.replace('bg_','')+'</option>';
-// 	}
-//	$bgm.innerHTML=_s;
+
+	const $boss=document.querySelector('#boss select');
+	Object.keys(_CANVAS_IMGS).forEach(function(_k){
+		if(_MAP_ENEMIES_BOSS[_k]===undefined){return;}
+		// if(_k!=='enemy_bigcore'
+		// 	&&_k!=='enemy_cristalcore'){return;}
+		var _op=document.createElement('option');
+		_op.setAttribute('value',_k);
+		_op.innerHTML=_k;
+		$boss.appendChild(_op);
+		
+	});
 
     //入力値をセット
     _MAP.init(function(){

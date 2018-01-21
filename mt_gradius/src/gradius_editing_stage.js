@@ -21,7 +21,7 @@ const _AJAX=function(_url,_type,_f){
             }
         }
     }
-    _r.open('GET',_url);
+    _r.open('GET',_url+'?date='+(new Date().getTime()));
     _r.responseType=_type||'json';
     _r.send(null);
 }// _AJAX

@@ -1469,19 +1469,28 @@ class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 		super(_o,_x,_y);
 		let _this=this;
 		_this.speed=0;
-		_this.starttime=0;
 		_this._c=0;//アニメーションカウント
+		_this._c_self_collision=4000;//アニメーションカウントを使って、自爆までのカウント
+
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision6'];
 
 		_this.is_able_collision=false;//衝突可能フラグ
+
 	}
 	init(){
 		let _this=this;
-		_this.starttime=new Date().getTime();
 		_this.move();
 	}
 	shot(){}
 	move_init(){}
+	setSelfCollision(){
+		//アニメーションカウントを用いて自爆処理
+		let _this=this;
+		if(_this._c>=_this._c_self_collision){
+			_this._status=0;
+			_GAME._setPlay(_this.audio_collision);
+		}		
+	}
 	setWallCollision(){
 		//壁を壊す
 		let _this=this;
@@ -1657,7 +1666,7 @@ class ENEMY_BOSS_BIGCORE
 
 		}
 		//自爆
-		if(_this._c>=4000){_this._status=0;return;}
+		_this.setSelfCollision();
 
 //		console.log(_this._c);
 		_this._c++;
@@ -1879,11 +1888,8 @@ class ENEMY_BOSS_CRYSTALCORE
 		_this.setWallCollision();
 
 		//自爆
-		if(_this._c>=4000){
-			_this._status=0;
-			_this._isshow=false;
-			return;
-		}
+		_this.setSelfCollision();
+
 		_this._c++;
 	}
 }

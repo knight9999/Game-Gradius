@@ -464,7 +464,7 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(_o);
 			},
 			'_st':'transform:scale(-1,1);',
-			'_s':'0000,1100,0110,1111',
+			'_s':'0000,1100,1110,1111',
 			'_o':_CANVAS_IMGS['enemy_m_a_1']
 		},
 		'r':{
@@ -473,7 +473,7 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(_o);
 			},
 			'_st':'transform:scale(-1,-1);',
-			'_s':'1111,0110,1100,0000',		
+			'_s':'1111,1110,1100,0000',		
 			'_o':_CANVAS_IMGS['enemy_m_a_1']
 		}
 	}

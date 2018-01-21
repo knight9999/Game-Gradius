@@ -1305,10 +1305,10 @@ class ENEMY_q extends GameObject_ENEMY{
 
 		_this.shotColMap=[
 			(function(){
-			if(_this.direct===_this._DEF_DIR._D){return "0,50,45,85";}
-			if(_this.direct===_this._DEF_DIR._U){return "0,25,45,60";}
-			if(_this.direct===_this._DEF_DIR._LD){return "65,50,100,85";}
-			if(_this.direct===_this._DEF_DIR._LU){return "65,25,100,60";}
+			if(_this.direct===_this._DEF_DIR._D){return "0,50,35,85";}//右下
+			if(_this.direct===_this._DEF_DIR._U){return "0,25,35,50";}//右上
+			if(_this.direct===_this._DEF_DIR._LD){return "75,55,100,70";}//左下
+			if(_this.direct===_this._DEF_DIR._LU){return "75,35,100,50";}//左上
 			})()
 		];
 
@@ -1349,7 +1349,7 @@ class ENEMY_q extends GameObject_ENEMY{
 		}
 
 		if(_this._open_count<=0){return;}
-		if(_this._open_count%15!==0){return;}		
+		if(_this._open_count%10!==0){return;}		
 		_ENEMIES.push(
 			new ENEMY_qr(
 				_CANVAS_IMGS['enemy_m_y_1'].obj,

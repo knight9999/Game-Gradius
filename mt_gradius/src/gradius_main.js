@@ -4732,13 +4732,18 @@ const _DRAW_INIT=function(_obj,_func){
 //				_res();
 //				return;
 			}
+			let _s=parseInt(_imgLoadedCount/Object.keys(_obj).length*100);
+			//ローディングに進捗率を表示させる
+			_GAME._setTextToFont(
+				document.querySelector('#game_start>.text_loading'),
+				 'now loading '+_s+' per',30);
 		}
 		_o.obj.onabort=function(){
 		}
 		_o.obj.onerror=function(){
 			if(_alertFlag){return;}
 			_alertFlag=true;
-			_rej('一部画像読み込みに失敗しました。再度立ち上げなおしてください');
+			alert('一部画像読み込みに失敗しました。再度立ち上げなおしてください');
 			return;
 		}
 	}

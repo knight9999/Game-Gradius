@@ -3156,8 +3156,8 @@ class GameObject_SHOTS_LASER
 
 		let _map_x=_MAP.getMapX(_t.x+_pl._x);
 		let _map_y=_MAP.getMapY(_t.y);
-		if(_MAP.isMapCollision(_map_x,_map_y)){
-//			console.log('mc')
+		if(_MAP.isMapCollision(_map_x,_map_y)
+			||_MAP.isMapCollision(_map_x-1,_map_y)){
 			_this.setLaserMaxX(_t,_MAP.getMapXToPx(_map_x));
 			return;
 		}

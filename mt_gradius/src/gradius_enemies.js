@@ -1693,7 +1693,7 @@ class ENEMY_BOSS_BIGCORE2
 	constructor(_x,_y){
 		super(_CANVAS_IMGS['enemy_bigcore2'].obj,_x,_y);
 		let _this=this;
-		_this._status=70;
+		_this._status=1;
 		_this.getscore=10000;
 		_this.speed=2;
 		_this.img=_CANVAS_IMGS['enemy_bigcore2'].obj;
@@ -1977,7 +1977,7 @@ class ENEMY_BOSS_BIGCORE2
 		//上の壁を表示
 		for(let _i=0;_i<_this.wall_up.length;_i++){
 			if(_this.wall_up[_i-1]===undefined
-				||_this.wall_up[_i-1]._status===0){
+				||_this.wall_up[_i-1]._status<=0){
 				//直前の壁が破壊されない間、
 				//自身のダメージは不可。
 				_this.wall_up[_i].is_able_collision=true;
@@ -1987,7 +1987,7 @@ class ENEMY_BOSS_BIGCORE2
 		//下の壁を表示
 		for(let _i=0;_i<_this.wall_down.length;_i++){
 			if(_this.wall_down[_i-1]===undefined
-				||_this.wall_down[_i-1]._status===0){
+				||_this.wall_down[_i-1]._status<=0){
 				//直前の壁が破壊されない間、
 				//自身のダメージは不可。
 				_this.wall_down[_i].is_able_collision=true;
@@ -2092,13 +2092,13 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 			if(_this.direct===_this._DEF_DIR._U){//上
 				return [["90,30,250,70,false","25,70,250,100,false"],
 						["180,30,250,90,false"],
-						["25,30,225,70,false"]
+						["25,10,225,20,false"]
 					];
 			}
 			if(_this.direct===_this._DEF_DIR._D){//下
 				return [["25,30,250,70,false","90,70,250,100,false"],
 						["180,20,250,60,false"],
-						["25,40,225,80,false"]
+						["25,90,225,100,false"]
 					];
 			}
 			})();
@@ -2139,7 +2139,11 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 			_this.shotColMap.push(_shotColAr[_i]);
 		}
 //		console.log(_this.shotColMap)
-		if(_this._c>=_this.imgs.length*6-1){_this.isHandsOpen=false;return;}
+		if(_this._c>=_this.imgs.length*6-1){
+			_this._c=_this.imgs.length*6-1;
+			_this.isHandsOpen=false;
+			return;
+		}
 		_this._c++;
 	}
 	move_hands_close(){
@@ -2159,7 +2163,11 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 			_this.shotColMap.push(_shotColAr[_i]);
 		}
 		//		_this.shotColMap[0]=_this.shotColMapTmp[parseInt(_this._c/6)];
-		if(_this._c<0){_this.isHandsClose=false;}
+		if(_this._c<=0){
+			_this._c=0;
+			_this.isHandsClose=false;
+			return;
+		}
 		_this._c--;
 //		_this.isHandsClose=false;
 	}
@@ -2174,6 +2182,7 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		let _this=this;
 		_this.move_hands_open();
 		_this.move_hands_close();
+//		console.log(_this._c)
 	}
 }
 //ビックコアマーク2の壁・コア定義

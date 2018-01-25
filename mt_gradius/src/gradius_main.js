@@ -3931,8 +3931,7 @@ const _IS_ENEMIES_COLLISION=function(){
 //	console.log('101:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 	for(let _i=0;_i<_e.length;_i++){
 	//スタンバイ状態は無視する
-	if(_e[_i].isStandBy()
-		&&_e[_i].isAbleCollision()){continue;}
+	if(_e[_i].isStandBy()){continue;}
 	if(!_e[_i].isalive()){continue;}
 	let _oe=_e[_i];
 
@@ -4098,6 +4097,10 @@ const _DRAW_MATCH_BOSS=function(){
 		return;
 	}
 
+	//================================
+	//ボスがもつ_statusが全て0だった場合に
+	//ゲームクリアとなる。
+	//================================
 	let _bit='';
 	for(let _i=0;_i<_ENEMIES.length;_i++){
 		_bit+=((_ENEMIES[_i].isalive())?'0':'1');

@@ -294,6 +294,20 @@ const _CANVAS_IMGS={
 	'enemy_cristalcore_wall2':{src:'images/gradius_enemy_cristalcore_wall2.png',rate:1.00,obj:new Image()},
 	'enemy_cristalcore_shot':{src:'images/gradius_enemy_cristalcore_shot.png',rate:0.20,obj:new Image()},
 
+	'enemy_bigcore2':{src:'images/gradius_enemy_bigcore2.png',rate:1.0,obj:new Image()},
+	'enemy_bigcore2_hand1':{src:'images/gradius_enemy_bigcore2_hand1.png',rate:1.0,obj:new Image()},
+	'enemy_bigcore2_hand2':{src:'images/gradius_enemy_bigcore2_hand2.png',rate:1.0,obj:new Image()},
+	'enemy_bigcore2_hand3':{src:'images/gradius_enemy_bigcore2_hand3.png',rate:1.0,obj:new Image()},
+	'enemy_bigcore2_wall':{src:'images/gradius_enemy_bigcore2_wall.png',rate:1.00,obj:new Image()},
+	'enemy_bigcore2_core':{src:'images/gradius_enemy_bigcore2_core.png',rate:1.00,obj:new Image()},
+
+	'enemy_bigcore2_back1':{src:'images/gradius_enemy_bigcore2_back1.png',rate:1.00,obj:new Image()},
+	'enemy_bigcore2_back2':{src:'images/gradius_enemy_bigcore2_back2.png',rate:1.00,obj:new Image()},
+	'enemy_bigcore2_back3':{src:'images/gradius_enemy_bigcore2_back3.png',rate:1.00,obj:new Image()},
+	'enemy_bigcore2_back4':{src:'images/gradius_enemy_bigcore2_back4.png',rate:1.00,obj:new Image()},
+	'enemy_bigcore2_back5':{src:'images/gradius_enemy_bigcore2_back5.png',rate:1.00,obj:new Image()},
+	'enemy_bigcore2_back6':{src:'images/gradius_enemy_bigcore2_back6.png',rate:1.00,obj:new Image()},
+
 	'enemy_collapes1':
  		{src:'images/gradius_enemy_collapes1.png',rate:1,obj:new Image()},
 	'enemy_collapes2':
@@ -343,6 +357,8 @@ const _CANVAS_IMGS={
   		{src:'images/gradius_enemy_bullet2.png',rate:0.8,obj:new Image()},
 	'enemy_bullet_z':
   		{src:'images/gradius_enemy_bullet_z.png',rate:0.2,obj:new Image()},
+	'enemy_bullet_laser':
+  		{src:'images/gradius_enemy_bullet_laser.png',rate:0.25,obj:new Image()},
 
 	//パワーカプセル（赤）
 	'pc1':

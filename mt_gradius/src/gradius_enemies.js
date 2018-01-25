@@ -2139,7 +2139,11 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 			_this.shotColMap.push(_shotColAr[_i]);
 		}
 //		console.log(_this.shotColMap)
-		if(_this._c>=_this.imgs.length*6-1){_this.isHandsOpen=false;return;}
+		if(_this._c>=_this.imgs.length*6-1){
+			_this._c=_this.imgs.length*6-1;
+			_this.isHandsOpen=false;
+			return;
+		}
 		_this._c++;
 	}
 	move_hands_close(){
@@ -2159,7 +2163,11 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 			_this.shotColMap.push(_shotColAr[_i]);
 		}
 		//		_this.shotColMap[0]=_this.shotColMapTmp[parseInt(_this._c/6)];
-		if(_this._c<0){_this.isHandsClose=false;}
+		if(_this._c<=0){
+			_this._c=0;
+			_this.isHandsClose=false;
+			return;
+		}
 		_this._c--;
 //		_this.isHandsClose=false;
 	}
@@ -2174,6 +2182,7 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		let _this=this;
 		_this.move_hands_open();
 		_this.move_hands_close();
+//		console.log(_this._c)
 	}
 }
 //ビックコアマーク2の壁・コア定義

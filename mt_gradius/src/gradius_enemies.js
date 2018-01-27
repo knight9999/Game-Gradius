@@ -1571,6 +1571,10 @@ class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 //========================================
 //　ボス 壁クラス
 //	moveDraw()を使って表示させる
+//	ボスオブジェクトを利用して、ボスの左上座標を起点に、
+//	相対的に_x,_yで配置を調整できる
+//	ボスオブジェクトが存在しない場合は、
+//	CANVASを起点とした座標で処理する。
 //	_o:ボス壁画像オブジェクト
 //	_o_boss:ボスオブジェクト
 //	_x:ボス壁の初期x位置
@@ -1588,7 +1592,7 @@ class ENEMY_BOSS_WALL
 		_this.getscore=500;//倒した時のスコア
 		_this.standby=false;
 		_this.is_able_collision=false;
-		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision1'];
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];
 	}
 	moveDraw(){
 		let _this=this;
@@ -1695,7 +1699,6 @@ class ENEMY_BOSS_BIGCORE
 		_this.x-=4;
 
 		_this.moveDraw();
-//		_this.setWallCollision();
 		_this.set_wall_status();
 		_this.show_walls(_this.wall);
 

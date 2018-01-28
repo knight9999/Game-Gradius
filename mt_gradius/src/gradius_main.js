@@ -3764,7 +3764,7 @@ class GameObject_POWERCAPSELL{
 		let _this=this;
 		//すでにパワーカプセル取得済みは終了
 		if(_this.gotpc){return;}
-		_this.x-=_BACKGROUND_SPEED;
+		_this.x=_MAP.getX(_this.x);
 		_this.y=_MAP.getY(_this.y);
 
 		//パワーカプセル所持の場合
@@ -3856,14 +3856,17 @@ const _IS_GET_POWERCAPSELL=function(){
 			continue;
 		}
 		if(_pwc.type==='blue'){
+			//CANVAS内の敵を外す
 			for(let _i=0;_i<_ENEMIES.length;_i++){
 				let _e=_ENEMIES[_i];
 				if(_GAME.isEnemyCanvasOut(_e)){continue;}
+				if(_e.isStandBy()){continue;}
 				_e._status--;
 				if(_e.isalive()){continue;}
 				_e.showCollapes();
 				_SCORE.set(_e.getscore);
 			}
+			//CANVAS内の敵のショットを全て外す
 			for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
 				let _es=_ENEMIES_SHOTS[_i];
 				if(_GAME.isEnemyCanvasOut(_es)){continue;}

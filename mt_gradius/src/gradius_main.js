@@ -4806,16 +4806,23 @@ isShotCanvasOut(_t){
 	}
 	return false;
 },
-isEnemyCanvasOut(_oe){
+isEnemyCanvasOut(_oe,_dir){
+	//_dir {up,right,down,left}
+	//	trueまたはfalseを指定
 	let _e=_oe.getEnemyCenterPosition();
-	if(_e._x<-100
-		||_e._x>_CANVAS.width+100
-		||_e._y<-100
-		||_e._y>_CANVAS.height+100
+	let _d=_dir||{up:true,down:true,left:true,right:true}
+	let _e_w=_oe.img.width;
+	let _e_h=_oe.img.height;
+
+	if((_e._x<0-_e_w&&_d.left===true)
+		||(_e._x>_CANVAS.width+_e_w&&_d.right===true)
+		||(_e._y<0-_e_h&&_d.up===true)
+		||(_e._y>_CANVAS.height+_e_h&&_d.down===true)
 		){
-		return true;
-	}
+			return true;
+		}
 	return false;
+
 },
 isSqCollision:function(_s1,_s1_n,_s2,_s2_n,_d){
 	return (this.isSqCollision_laser(_s1,_s1_n,_s2,_s2_n,_d)).ret;

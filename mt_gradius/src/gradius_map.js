@@ -138,12 +138,16 @@ _ENEMIES:{
 }//_ENEMIES
 }
 
+//マップ用ボス定義
 const _MAP_ENEMIES_BOSS={
 	'enemy_cristalcore':{
 		_f:function(){return new ENEMY_BOSS_CRYSTALCORE(700,800)}
 	},
 	'enemy_bigcore':{
 		_f:function(){return new ENEMY_BOSS_BIGCORE(1300,200)}
+	},
+	'enemy_bigcore_pt2':{
+		_f:function(){return new ENEMY_BOSS_BIGCORE_PT2(1300,200)}
 	},
 	'enemy_bigcore2':{
 		_f:function(){return new ENEMY_BOSS_BIGCORE2(1300,200)}

@@ -1784,16 +1784,111 @@ class ENEMY_BOSS_BIGCORE
 	}
 }
 
+
+//====================
+//　ボス ビックコアパターン2
+//	_x:ボスの初期x位置
+//	_y:ボスの初期y位置
+//====================
+class ENEMY_BOSS_BIGCORE_PT2
+			extends ENEMY_BOSS_BIGCORE{
+	constructor(_x,_y){
+		super(_x,_y);
+		let _this=this;
+		_this._c=0;
+		_this._standby=false;
+	}
+	move_standby(){
+		//スタンバイ状態。クリスタルを放つ
+
+	}
+	move(){
+		let _this=this;
+		if(!_this.isMove()){return;}
+
+		if(_this._c%40===0){
+			_ENEMIES.push(
+				new ENEMY_BOSS_BIGCORE_PT2_(
+					_CANVAS_IMGS['enemy_a_1'].obj,
+					1000,
+					(Math.random()*(500-100))+50
+				)
+			);
+		}
+		_this._c++;
+	}
+}
+
+class ENEMY_BOSS_BIGCORE_PT2_
+		extends GameObject_ENEMY{
+	constructor(_o,_x,_y){
+		super(_o,_x,_y);
+		let _this=this;
+		_this._standby=false;
+		_this._c=0;
+		_this._status=10;
+		_this.speed=5;
+		_this.change_speed_c=parseInt(Math.random()*(200-50))+50;
+
+		//自機に向かう用の変数
+		_this.tx=0;
+		_this.ty=0;
+		_this.rad=0//自身と相手までのラジアン
+		_this.deg=0//自身と相手までの角度
+		_this.sx=0;//単位x
+		_this.sy=0;//単位y
+
+	}
+	moveDraw(){
+		let _this=this;
+		_CONTEXT.strokeStyle='rgb(200,200,255)';
+		_CONTEXT.beginPath();
+		_CONTEXT.rect(
+			_this.x,
+			_this.y,
+			50,
+			50
+		);
+		_CONTEXT.stroke();
+	}
+	move(){
+		let _this=this;
+		if(!_this.isMove()){return;}
+		_this.moveDraw();
+
+		if(_this.x<0||_this.y<0||_this.y+50>_CANVAS.height){return;}
+		if(_this._c<_this.change_speed_c){_this.x-=_this.speed;}
+		if(_this._c===_this.change_speed_c){
+			_this.tx=_PLAYERS_MAIN.getPlayerCenterPosition()._x;
+			_this.ty=_PLAYERS_MAIN.getPlayerCenterPosition()._y;
+			_this.rad=//自身と相手までのラジアン
+				Math.atan2(
+					(_this.ty-_this.y),
+					(_this.tx-_this.x));
+			_this.deg=//自身と相手までの角度
+				_this.rad*180/Math.PI;
+			_this.sx=Math.cos(_this.rad);//単位x
+			_this.sy=Math.sin(_this.rad);//単位y
+		}
+		if(_this._c>_this.change_speed_c){
+			_this.x+=_this.sx*15;
+			_this.y+=_this.sy*15;
+		}
+		
+		_this._c++;
+	}
+}
+
 //========================================
 //　ボス ビックコアマーク2
 //	_x:ボスの初期x位置
 //	_y:ボスの初期y位置
-//	_countは触手と連動させている
-//	  0〜200：クロスする
-//	  200〜400：広げる
-//	_count->800〜1200　本体レーザーの連射
-//	　※連射完了後は_countを0にリセットさせ、
-//	   繰り返す
+//	_cで0〜150単位で動く
+//	_cが4000に達したら自爆
+//	  50〜99：止める
+//	  51：両腕を広げる
+//	  70：ショットを放つ
+//	  110：両腕を閉じる
 //========================================
 class ENEMY_BOSS_BIGCORE2
 			extends GameObject_ENEMY_BOSS{

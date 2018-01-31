@@ -1620,9 +1620,12 @@ class ENEMY_BOSS_WALL
 		_this._boss=_o_boss;
 		_this._status=10;
 		_this.getscore=500;//倒した時のスコア
-		_this._standby=false;
+		_this._standby=true;
 		_this.is_able_collision=false;
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];
+	}
+	setStandBy(){
+		this._standby=true;
 	}
 	moveDraw(){
 		let _this=this;
@@ -1684,6 +1687,12 @@ class ENEMY_BOSS_BIGCORE
 		_this._collision_type='t9';
 
 	}
+	set_wall_standBy(){
+		let _this=this;
+		for(let _i=0;_i<_this.wall.length;_i++){
+			_this.wall[_i].setStandBy();
+		}		
+	}
 	set_wall_status(){
 		//壁オブジェクトのステータスを取得して変数に設定する。
 		let _this=this;
@@ -1735,6 +1744,7 @@ class ENEMY_BOSS_BIGCORE
 		if(_this.x<_CANVAS.width-_this.img.width-80){
 			_this._standby=false;
 			_this.is_able_collision=true;
+			_this.set_wall_standBy();
 		}
 	}
 	move(){
@@ -1806,14 +1816,18 @@ class ENEMY_BOSS_BIGCORE_PT2
 		let _this=this;
 		if(!_this.isMove()){return;}
 
+		if(_ENEMIES_BOUNDS.length>=100){
+			return;
+		}
+		//クリスタルを放つ
 		if(_this._c%40===0){
-			_ENEMIES.push(
-				new ENEMY_BOSS_BIGCORE_PT2_(
-					_CANVAS_IMGS['enemy_a_1'].obj,
-					1000,
-					(Math.random()*(500-100))+50
-				)
-			);
+			let _c=new ENEMY_BOSS_BIGCORE_PT2_(
+				_CANVAS_IMGS['enemy_a_1'].obj,
+				1000,
+				(Math.random()*(500-100))+50
+			)
+			_ENEMIES.push(_c);
+//			_ENEMIES_BOUNDS.push(_c);
 		}
 		_this._c++;
 	}
@@ -1829,6 +1843,8 @@ class ENEMY_BOSS_BIGCORE_PT2_
 		_this._status=10;
 		_this.speed=5;
 		_this.change_speed_c=parseInt(Math.random()*(200-50))+50;
+		_this.shotColMap=["10,10,40,40"];
+		_this._stop=false;
 
 		//自機に向かう用の変数
 		_this.tx=0;
@@ -1838,6 +1854,31 @@ class ENEMY_BOSS_BIGCORE_PT2_
 		_this.sx=0;//単位x
 		_this.sy=0;//単位y
 
+	}
+	collision(){
+		//衝突処理しない
+		return;
+	}
+	move_bounds(){
+		let _this=this;
+		let _eb=_ENEMIES;
+		for(let _i=0;_i<_eb.length;_i++){
+			if(!ENEMY_BOSS_BIGCORE_PT2_.prototype.isPrototypeOf(_eb[_i])){continue;}
+			if(!_eb[_i].isalive()){continue;}//生きていない場合は無視
+			if(_eb[_i].x>_CANVAS.width){continue;}//キャンバスに入る前は無視
+			if(_this.id===_eb[_i].id){continue;}//自身の判定はしない
+//			console.log(_eb[_i]._stop)
+			if(!_eb[_i]._stop){continue;}
+
+			let _r=_GAME.isSqCollision(
+				"10,10,40,40",
+				_this.x+','+_this.y,
+				_eb[_i].shotColMap,
+				_eb[_i].x+','+_eb[_i].y
+			);
+			if(_r!==_IS_SQ_NOTCOL){return true;}
+		}
+		return false;
 	}
 	moveDraw(){
 		let _this=this;
@@ -1856,7 +1897,14 @@ class ENEMY_BOSS_BIGCORE_PT2_
 		if(!_this.isMove()){return;}
 		_this.moveDraw();
 
-		if(_this.x<0||_this.y<0||_this.y+50>_CANVAS.height){return;}
+		if(_this.x<0
+			||_this.y<0
+			||_this.y+50>_CANVAS.height
+			||_this.move_bounds()){
+//				_this._status=0;
+				_this._stop=true;
+				return;
+		}
 		if(_this._c<_this.change_speed_c){_this.x-=_this.speed;}
 		if(_this._c===_this.change_speed_c){
 			_this.tx=_PLAYERS_MAIN.getPlayerCenterPosition()._x;
@@ -1869,10 +1917,11 @@ class ENEMY_BOSS_BIGCORE_PT2_
 				_this.rad*180/Math.PI;
 			_this.sx=Math.cos(_this.rad);//単位x
 			_this.sy=Math.sin(_this.rad);//単位y
+			_this.speed=8;
 		}
 		if(_this._c>_this.change_speed_c){
-			_this.x+=_this.sx*15;
-			_this.y+=_this.sy*15;
+			_this.x+=_this.sx*_this.speed;
+			_this.y+=_this.sy*_this.speed;
 		}
 		
 		_this._c++;
@@ -2025,6 +2074,12 @@ class ENEMY_BOSS_BIGCORE2
 		this._isshow=false;
 		this._status=0;
 	}
+	set_wall_standBy(){
+		let _this=this;
+		for(let _i=0;_i<_this.wall.length;_i++){
+			_this.wall[_i].setStandBy();
+		}		
+	}
 	set_wall_status(){
 		//壁オブジェクトのステータスを取得して変数に設定する。
 		let _this=this;
@@ -2152,6 +2207,7 @@ class ENEMY_BOSS_BIGCORE2
 				-80){
 			_this._standby=false;
 			_this.is_able_collision=true;
+			_this.set_wall_standBy();
 		}
 	}
 	move(){
@@ -2479,6 +2535,12 @@ class ENEMY_BOSS_CRYSTALCORE
 	}
 	setDrawImageDirect(){
 	}
+	set_wall_standBy(){
+		let _this=this;
+		for(let _i=0;_i<_this.wall.length;_i++){
+			_this.wall[_i].setStandBy();
+		}		
+	}
 	set_wall_status(){
 		//壁オブジェクトのステータスを取得して変数に設定する。
 		let _this=this;
@@ -2565,6 +2627,7 @@ class ENEMY_BOSS_CRYSTALCORE
 		if(_this.y<200){
 			_this._standby=false;
 			_this.is_able_collision=true;
+			_this.set_wall_standBy();
 		}
 	}
 	move(){

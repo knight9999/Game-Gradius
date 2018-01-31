@@ -71,7 +71,6 @@ let _PLAYERS_MISSILE_ISALIVE=false;
 
 let _ENEMIES=new Array();
 let _ENEMIES_SHOTS=new Array();
-let _ENEMIES_BOUNDS=new Array();
 let _ENEMIES_COLLISIONS=new Array();//敵衝突の表示
 
 let _POWERCAPSELLS=new Array();//パワーカプセルの表示
@@ -4090,7 +4089,6 @@ const _DRAW_MATCH_BOSS=function(){
 		_DRAW_SCROLL_STOP();
 		_ENEMIES=[];
 		_ENEMIES_SHOTS=[];
-		_ENEMIES_BOUNDS=[];
 		_ENEMIES.push(
 			_MAP_ENEMIES_BOSS[_MAP.map_boss]._f()
 		);
@@ -4337,9 +4335,6 @@ const _DRAW_GAMESTART=function(){
 const _DRAW_GAMECLEAR=function(){
 	var _img=_CANVAS_IMGS_INIT['font_0'].obj;
 	//クリアしたら敵を全て消す
-//	_ENEMIES=new Array();
-//	_ENEMIES_BOUNDS=new Array();
-
 	let _s='gameclear';
 	_DRAW_DISP_TXT(
 			_s,
@@ -4486,7 +4481,6 @@ const _DRAW_RESET_OBJECT=function(){
 	_PLAYERS_MOVE_DRAW_X=[];
 	_PLAYERS_MOVE_DRAW_Y=[];
 	_ENEMIES=[];
-	_ENEMIES_BOUNDS=[];
 	_ENEMIES_SHOTS=[];
 	_ENEMIES_COLLISIONS=[];
 	_POWERMETER='';

@@ -124,7 +124,6 @@ class GameObject_ENEMY{
 	constructor(_o,_x,_y){
 		let _this=this;
 		_this.id=_ENEMIES.length;//敵の当たり判定用ID
-		_this.bid=_ENEMIES_BOUNDS.length;//敵同士のバウンドID
 		_this.gid=0;//敵のグループID
 		_this.img=_o;//画像オブジェクト
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision1'];
@@ -252,36 +251,6 @@ class GameObject_ENEMY{
 	}
 	get_move_bound_val(){
 		return parseInt(Math.random()*(3-1)+1)*((Math.random()>0.5)?1:-1);
-	}
-	move_bounds(_e){
-		//バウンド定義
-		//敵同士ぶつかったときに跳ね返り動作をする
-		let _this=this;
-		let _eb=_ENEMIES_BOUNDS;
-		if(!_this.isalive()){return;}
-		if(_this.x>_CANVAS.width){return;}
-
-		for(let _i=0;_i<_eb.length;_i++){
-			if(!_eb[_i].isalive()){continue;}//生きていない場合は無視
-			if(_eb[_i].x>_CANVAS.width){continue;}//キャンバスに入る前は無視
-			if(_this.bid===_eb[_i].bid){continue;}//自身の判定はしない
-
-			let _a=Math.sqrt(
-				Math.pow(_this.getEnemyCenterPosition()._x
-					-_eb[_i].getEnemyCenterPosition()._x,2)+
-				Math.pow(_this.getEnemyCenterPosition()._y
-					-_eb[_i].getEnemyCenterPosition()._y,2)
-			);
-			let _ms=_this.img.width/2;
-			let _s=(_a<_ms)?true:false;
-			if(_s){
-//				console.log(_a);
-				_this.speedx=_this.get_move_bound_val();
-				_this.speedy=_this.get_move_bound_val();
-				_eb[_i].speedx=_this.get_move_bound_val();
-				_eb[_i].speedy=_this.get_move_bound_val();
-			}
-		}
 	}
 	setDrawImage(){
 		let _this=this;
@@ -1161,6 +1130,34 @@ class ENEMY_p extends GameObject_ENEMY{
 		}
 
 	}
+	move_bounds(){
+		//バウンド定義
+		//敵同士ぶつかったときに跳ね返り動作をする
+		let _this=this;
+		let _eb=_ENEMIES;
+		if(!_this.isalive()){return;}
+
+		for(let _i=0;_i<_eb.length;_i++){
+			if(!ENEMY_p.prototype.isPrototypeOf(_eb[_i])){continue;}
+			if(!_eb[_i].isalive()){continue;}//生きていない場合は無視
+			if(_eb[_i].x>_CANVAS.width){continue;}//キャンバスに入る前は無視
+			if(_this.id===_eb[_i].id){continue;}//自身の判定はしない
+
+			let _r=_GAME.isSqCollision(
+				_this.shotColMap[0],
+				_this.x+','+_this.y,
+				_eb[_i].shotColMap,
+				_eb[_i].x+','+_eb[_i].y
+			);
+			if(_r!==_IS_SQ_NOTCOL){
+//				console.log(_a);
+				_this.speedx=_this.get_move_bound_val();
+				_this.speedy=_this.get_move_bound_val();
+				_eb[_i].speedx=_this.get_move_bound_val();
+				_eb[_i].speedy=_this.get_move_bound_val();
+			}
+		}
+	}
 	showCollapes(){
 		let _this=this;
 		let _cp=_this.getEnemyCenterPosition();
@@ -1177,15 +1174,14 @@ class ENEMY_p extends GameObject_ENEMY{
 								'enemy_p_5',
 								'enemy_p_5'])[_i]
 							].obj,
-						_cp._x+([-60,-30,-10,10,30,60])[_i],
-						_cp._y+([-60,-30,-10,10,30,60])[_i]
+						_cp._x+([-30,0,30,-30,0,30])[_i],
+						_cp._y+([-30,-30,-30,30,30,30])[_i]
 						);
 				_ENEMIES.push(_cls);
-				_ENEMIES_BOUNDS.push(_cls);
 			}
 			_this._isbroken=true;
-			_this._isshow=false;
 			_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision4']);
+			_this.init();
 			return;
 		}
 	}
@@ -1230,13 +1226,46 @@ class ENEMY_p_small extends GameObject_ENEMY{
 		_this.speedx=_this.get_move_bound_val();
 		_this.speedy=_this.get_move_bound_val();
 
+		_this.col_date=new Date();
 		_this._collision_type='t1';
+		
 	}
 	setAlive(){
 		let _this=this;
 		if(_this.isalive()){return;}
 		_SCORE.set(_this.getscore);
 		_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision5']);
+	}
+	move_bounds(){
+		//バウンド定義
+		//敵同士ぶつかったときに跳ね返り動作をする
+		let _this=this;
+
+		let _date=new Date();
+		if(_date-_this.col_date<1000){return;}
+
+		let _eb=_ENEMIES;
+		if(!_this.isalive()){return;}
+
+		for(let _i=0;_i<_eb.length;_i++){
+			if(!ENEMY_p_small.prototype.isPrototypeOf(_eb[_i])){continue;}
+			if(!_eb[_i].isalive()){continue;}//生きていない場合は無視
+			if(_eb[_i].x>_CANVAS.width){continue;}//キャンバスに入る前は無視
+			if(_this.id===_eb[_i].id){continue;}//自身の判定はしない
+
+			let _r=_GAME.isSqCollision(
+				_this.shotColMap[0],
+				_this.x+','+_this.y,
+				_eb[_i].shotColMap,
+				_eb[_i].x+','+_eb[_i].y
+			);
+			if(_r!==_IS_SQ_NOTCOL){
+				_this.speedx=_this.get_move_bound_val();
+				_this.speedy=_this.get_move_bound_val();
+				_eb[_i].speedx=_this.get_move_bound_val();
+				_eb[_i].speedy=_this.get_move_bound_val();
+			}
+		}
 	}
 	map_collition(){
 		let _this=this;

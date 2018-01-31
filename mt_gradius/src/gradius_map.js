@@ -128,7 +128,6 @@ _ENEMIES:{
 		'_f':function(_mx,_my,_md){
 			let _o=new ENEMY_p(_mx,_my);
 			_ENEMIES.push(_o);
-			_ENEMIES_BOUNDS.push(_o);			
 			},
 		'_st':'',
 		'_s':'000,000,000',		

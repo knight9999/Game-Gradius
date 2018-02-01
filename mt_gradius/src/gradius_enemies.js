@@ -1056,9 +1056,7 @@ class ENEMY_o_small extends GameObject_ENEMY{
 	moveDraw(){
 		let _this=this;
 		_this.map_collition();
-		_this.x-=
-			_BACKGROUND_SPEED
-			+(_this.speedX*_this.flagX);
+		_this.x-=(_this.speedX*_this.flagX);
 		_this.y+=_this._v;
 		_this._v+=_this.speedY;
 		

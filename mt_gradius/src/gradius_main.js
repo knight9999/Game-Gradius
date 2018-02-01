@@ -2173,7 +2173,7 @@ class GameObject_SHOTS_MISSILE
 	}
 	collapse_missile(_t,_pos){
 		let _this=this;
-		_t.x+=_BACKGROUND_SPEED*-1;
+		_t.x=_MAP.getX(_t.x);
 		_pos=_pos||-5
 		//爆風を表示
 		if(_t._c>=_this.col_mis.length*5){
@@ -3804,13 +3804,12 @@ class GameObject_BACKGROUND{
 		
 	}
 	move(){
-		let _t=this;
-		this.x=(function(_i){
-			if(_BACKGROUND_SPEED===0){return _i;}
-			return (_i<0)
+		let _this=this;
+//		_this.x=_MAP.getX(_this.x);
+		_this.x=(_this.x<0)
 					?_CANVAS.width
-					:_i-_t.speed;
-		})(this.x);
+					:_this.x;
+		_this.x-=(_BACKGROUND_SPEED===0)?0:_this.speed;
 
 		_CONTEXT.beginPath();
         _CONTEXT.arc(this.x,this.y,2,0,Math.PI*2,true);
@@ -4066,8 +4065,9 @@ const _DRAW=function(){
 		_SCORE.show();
 
 		
-		if(_MAP_SCROLL_POSITION_X-100<=
-			(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}
+		// if(_MAP_SCROLL_POSITION_X-100<=
+		// 	(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}
+		if(!_MAP.isboss){return;}
 
 		//MATCH_BOSS
 		_DRAW_MATCH_BOSS();
@@ -4447,9 +4447,11 @@ const _DRAW_DISP_TXT=function(_s,_x,_y,_r){
 		);
 	}
 }
-const _DRAW_SCROLL_STOP=function(){_BACKGROUND_SPEED=0;}
+const _DRAW_SCROLL_STOP=function(){
+	_MAP.set_scroll_off_x();
+}
 const _DRAW_SCROLL_RESUME=function(){
-	_BACKGROUND_SPEED=_MAP.getBackGroundSpeed();
+	_MAP.set_scroll_on_x();
 }
 
 const _DRAW_RESET_OBJECT=function(){
@@ -4490,7 +4492,6 @@ const _DRAW_RESET_OBJECT=function(){
 
 	_MAP_SCROLL_POSITION_X=0;
 	_MAP_SCROLL_POSITION_Y=0;
-	_BACKGROUND_SPEED=1;
 
 	_DRAW_IS_MATCH_BOSS=false;
 	_DRAW_IS_MATCH_BOSS_COUNT=0;

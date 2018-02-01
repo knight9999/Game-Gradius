@@ -520,6 +520,7 @@ class GameObject_MAP{
 		_this.map_infinite=false;
 		_this.map_bgmusic='';
 		_this.map_boss='';
+		_this.isboss=false;
 	}
 	init(_cb){
 		_AJAX('./gradius_map.json','json',function(_d){
@@ -553,7 +554,8 @@ class GameObject_MAP{
 		_this.map_infinite=(_MAPDEFS[_this.map_pettern]._map_infinite==='true')?true:false;
 		_this.map_bgmusic=_MAPDEFS[_this.map_pettern]._bgmusic;
 		_this.map_boss=_MAPDEFS[_this.map_pettern]._boss;
-		
+		_this.isboss=false;
+
 		_this.init_mapdef_col();
 	}
 	init_enemies_location(){
@@ -872,10 +874,28 @@ class GameObject_MAP{
 		}//_j
 		}//_i
 	}
+	set_scroll_on_x(){
+		let _this=this;
+		_BACKGROUND_SPEED=_this.map_background_speed;
+	}
+	set_scroll_off_x(){
+		let _this=this;
+		_BACKGROUND_SPEED=0;
+	}
 	move(){
 		let _this=this;
-		_this.x-=_this.map_background_speed;
-		_MAP_SCROLL_POSITION_X+=_this.map_background_speed;
+
+		//MAPからX軸よりCANVAS幅手前に達したらボスを表示させる
+		if(_MAP_SCROLL_POSITION_X+_CANVAS.width>
+			(_this.mapdef[0].length*_this.t)+_this.initx){
+			_this.isboss=true;
+		}
+
+		//X軸のMAPを超えたらマップ自体はこれ以上進めない
+		if(_MAP_SCROLL_POSITION_X-100>(_this.mapdef[0].length*_this.t)+_this.initx){_BACKGROUND_SPEED=0;}
+
+ 		_this.x+=_BACKGROUND_SPEED*-1;
+		_MAP_SCROLL_POSITION_X+=_BACKGROUND_SPEED;
 
 		_this.y=_this.getY(_this.y);
 //		_this.y-=_this.map_backgroundY_speed;//0<：上にスクロール

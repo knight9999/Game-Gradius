@@ -2777,8 +2777,8 @@ class ENEMY_BOSS_BIGCORE_PT2
 		if(_c===100){_this.alpha=0.3;}
 		if(_c===150){_this.alpha=0;}
 		if(_this.alpha===0){
+			_MAP.set_mapdef_col_clear();
 			return false;
-
 		}
 		_this._standby_count++;
 		return true;

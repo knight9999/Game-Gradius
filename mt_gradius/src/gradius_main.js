@@ -3796,7 +3796,7 @@ class GameObject_BACKGROUND{
 		this.move_flash_count=0;
 	}
 	init(){
-		let _r=Math.random()+0.5;
+		let _r=Math.random()+0.3;
 		this.width=_r;
 		this.height=_r;
 	}
@@ -3809,7 +3809,9 @@ class GameObject_BACKGROUND{
 		_this.x=(_this.x<0)
 					?_CANVAS.width
 					:_this.x;
-		_this.x-=(_BACKGROUND_SPEED===0)?0:_this.speed;
+		_this.x-=(_BACKGROUND_SPEED===0)
+					?0
+					:_this.speed;
 
 		_CONTEXT.beginPath();
         _CONTEXT.arc(this.x,this.y,2,0,Math.PI*2,true);

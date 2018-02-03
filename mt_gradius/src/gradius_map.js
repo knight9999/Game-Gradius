@@ -137,12 +137,16 @@ _ENEMIES:{
 }//_ENEMIES
 }
 
+//マップ用ボス定義
 const _MAP_ENEMIES_BOSS={
 	'enemy_cristalcore':{
 		_f:function(){return new ENEMY_BOSS_CRYSTALCORE(700,800)}
 	},
 	'enemy_bigcore':{
 		_f:function(){return new ENEMY_BOSS_BIGCORE(1300,200)}
+	},
+	'enemy_bigcore_pt2':{
+		_f:function(){return new ENEMY_BOSS_BIGCORE_PT2(1300,200)}
 	},
 	'enemy_bigcore2':{
 		_f:function(){return new ENEMY_BOSS_BIGCORE2(1300,200)}
@@ -869,6 +873,13 @@ class GameObject_MAP{
 
 		}//_j
 		}//_i
+	}
+	set_mapdef_col_clear(){
+		let _this=this;
+		for(let _i=0;_i<_this.mapdef_col.length;_i++){
+			let _m=_this.mapdef_col[_i];
+			_this.mapdef_col[_i]=_m.replace(/1/ig,'0');
+		}
 	}
 	set_scroll_on_x(){
 		let _this=this;

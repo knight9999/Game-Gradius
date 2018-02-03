@@ -143,6 +143,8 @@ class GameObject_ENEMY{
 			_RD:7//右下
 		}
 
+		_this.alpha=1;//表示透明度（1〜0。1:表示、0:非表示）
+
 		_this.speed=1;//敵のスピード
 		_this.getscore=200;//倒した時のスコア
 		_this.direct=_this._DEF_DIR._U;//向きの設定
@@ -252,6 +254,21 @@ class GameObject_ENEMY{
 	get_move_bound_val(){
 		return parseInt(Math.random()*(3-1)+1)*((Math.random()>0.5)?1:-1);
 	}
+	setDrawImageAlpha(_alpha){
+		//透明に設定する
+		let _this=this;
+		_CONTEXT.save();
+		_CONTEXT.globalAlpha=_alpha;
+		_CONTEXT.drawImage(
+			_this.img,
+			_this.x,
+			_this.y,
+			_this.img.width,
+			_this.img.height
+			);
+		_CONTEXT.restore();
+		_this.alpha=_alpha;
+	}
 	setDrawImage(){
 		let _this=this;
 		_CONTEXT.save();
@@ -301,16 +318,6 @@ class GameObject_ENEMY{
 		return _GAME.isEnemyCanvasOut(
 			this,{up:false,down:false,left:true,right:false}
 		);
-
-// 		let _this=this;
-// 		if(_this.x+_this.img.width<-100
-// //			||_this.x+100>_CANVAS.width
-// //			||_this.y+_this.img.height<0
-// //			||_this.y>_CANVAS.height
-// 		){
-// 			return true;
-// 		}
-// 		return false;
 	}
 	showCollapes(_x,_y){
 		let _this=this;
@@ -1412,14 +1419,14 @@ class ENEMY_q extends GameObject_ENEMY{
 		//爆発後にMAP衝突用の内容を変更する
 		if(_this._isSetMapDefCol){return;}
 		_MAP.set_mapdef_col(
-		_MAP.getMapX(_this.x),
-		_MAP.getMapY(_this.y),
-		(function(){
-			if(_this.direct===_this._DEF_DIR._D){return "0000,0000,0000,1111";}
-			if(_this.direct===_this._DEF_DIR._U){return "1111,0000,0000,0000";}
-			if(_this.direct===_this._DEF_DIR._LD){return "0000,0000,0000,1111";}
-			if(_this.direct===_this._DEF_DIR._LU){return "1111,0000,0000,0000";}
-			})()
+			_MAP.getMapX(_this.x),
+			_MAP.getMapY(_this.y),
+			(function(){
+				if(_this.direct===_this._DEF_DIR._D){return "0000,0000,0000,1111";}
+				if(_this.direct===_this._DEF_DIR._U){return "1111,0000,0000,0000";}
+				if(_this.direct===_this._DEF_DIR._LD){return "0000,0000,0000,1111";}
+				if(_this.direct===_this._DEF_DIR._LU){return "1111,0000,0000,0000";}
+				})()
 		);
 		_ENEMIES_COLLISIONS.push(
 			new GameObject_ENEMY_COLLISION
@@ -1623,6 +1630,7 @@ class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 		}
 		return true;
 	}
+	move_before(){return false;}
 	move(){}
 }
 //========================================
@@ -1652,7 +1660,7 @@ class ENEMY_BOSS_WALL
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];
 	}
 	setStandBy(){
-		this._standby=true;
+		this._standby=false;
 	}
 	moveDraw(){
 		let _this=this;
@@ -1759,9 +1767,11 @@ class ENEMY_BOSS_BIGCORE
 			clearTimeout(_this.tid);
 		},100);
 	}
+	move_before(){return false;}
 	move_standby(){
 		//スタンバイ状態
 		let _this=this;
+		if(_this.move_before()){return;}
 		_this.x-=4;
 
 		_this.moveDraw();
@@ -1822,139 +1832,6 @@ class ENEMY_BOSS_BIGCORE
 }
 
 
-//====================
-//　ボス ビックコアパターン2
-//	_x:ボスの初期x位置
-//	_y:ボスの初期y位置
-//====================
-class ENEMY_BOSS_BIGCORE_PT2
-			extends ENEMY_BOSS_BIGCORE{
-	constructor(_x,_y){
-		super(_x,_y);
-		let _this=this;
-		_this._c=0;
-		_this._standby=false;
-	}
-	move_standby(){
-		//スタンバイ状態。クリスタルを放つ
-
-	}
-	move(){
-		let _this=this;
-		if(!_this.isMove()){return;}
-
-		if(_ENEMIES_BOUNDS.length>=100){
-			return;
-		}
-		//クリスタルを放つ
-		if(_this._c%40===0){
-			let _c=new ENEMY_BOSS_BIGCORE_PT2_(
-				_CANVAS_IMGS['enemy_a_1'].obj,
-				1000,
-				(Math.random()*(500-100))+50
-			)
-			_ENEMIES.push(_c);
-//			_ENEMIES_BOUNDS.push(_c);
-		}
-		_this._c++;
-	}
-}
-
-class ENEMY_BOSS_BIGCORE_PT2_
-		extends GameObject_ENEMY{
-	constructor(_o,_x,_y){
-		super(_o,_x,_y);
-		let _this=this;
-		_this._standby=false;
-		_this._c=0;
-		_this._status=10;
-		_this.speed=5;
-		_this.change_speed_c=parseInt(Math.random()*(200-50))+50;
-		_this.shotColMap=["10,10,40,40"];
-		_this._stop=false;
-
-		//自機に向かう用の変数
-		_this.tx=0;
-		_this.ty=0;
-		_this.rad=0//自身と相手までのラジアン
-		_this.deg=0//自身と相手までの角度
-		_this.sx=0;//単位x
-		_this.sy=0;//単位y
-
-	}
-	collision(){
-		//衝突処理しない
-		return;
-	}
-	move_bounds(){
-		let _this=this;
-		let _eb=_ENEMIES;
-		for(let _i=0;_i<_eb.length;_i++){
-			if(!ENEMY_BOSS_BIGCORE_PT2_.prototype.isPrototypeOf(_eb[_i])){continue;}
-			if(!_eb[_i].isalive()){continue;}//生きていない場合は無視
-			if(_eb[_i].x>_CANVAS.width){continue;}//キャンバスに入る前は無視
-			if(_this.id===_eb[_i].id){continue;}//自身の判定はしない
-//			console.log(_eb[_i]._stop)
-			if(!_eb[_i]._stop){continue;}
-
-			let _r=_GAME.isSqCollision(
-				"10,10,40,40",
-				_this.x+','+_this.y,
-				_eb[_i].shotColMap,
-				_eb[_i].x+','+_eb[_i].y
-			);
-			if(_r!==_IS_SQ_NOTCOL){return true;}
-		}
-		return false;
-	}
-	moveDraw(){
-		let _this=this;
-		_CONTEXT.strokeStyle='rgb(200,200,255)';
-		_CONTEXT.beginPath();
-		_CONTEXT.rect(
-			_this.x,
-			_this.y,
-			50,
-			50
-		);
-		_CONTEXT.stroke();
-	}
-	move(){
-		let _this=this;
-		if(!_this.isMove()){return;}
-		_this.moveDraw();
-
-		if(_this.x<0
-			||_this.y<0
-			||_this.y+50>_CANVAS.height
-			||_this.move_bounds()){
-//				_this._status=0;
-				_this._stop=true;
-				return;
-		}
-		if(_this._c<_this.change_speed_c){_this.x-=_this.speed;}
-		if(_this._c===_this.change_speed_c){
-			_this.tx=_PLAYERS_MAIN.getPlayerCenterPosition()._x;
-			_this.ty=_PLAYERS_MAIN.getPlayerCenterPosition()._y;
-			_this.rad=//自身と相手までのラジアン
-				Math.atan2(
-					(_this.ty-_this.y),
-					(_this.tx-_this.x));
-			_this.deg=//自身と相手までの角度
-				_this.rad*180/Math.PI;
-			_this.sx=Math.cos(_this.rad);//単位x
-			_this.sy=Math.sin(_this.rad);//単位y
-			_this.speed=8;
-		}
-		if(_this._c>_this.change_speed_c){
-			_this.x+=_this.sx*_this.speed;
-			_this.y+=_this.sy*_this.speed;
-		}
-		
-		_this._c++;
-	}
-}
-
 //========================================
 //　ボス ビックコアマーク2
 //	_x:ボスの初期x位置
@@ -2001,6 +1878,7 @@ class ENEMY_BOSS_BIGCORE2
 			{img:_CANVAS_IMGS['enemy_bigcore2_back6'].obj}
 		];
 		//噴射画像の表示定義（上）
+		//3はアニメーションインターバル
 		_this.back_img_up={
 			//x:x座標
 			//y:y座標
@@ -2103,8 +1981,11 @@ class ENEMY_BOSS_BIGCORE2
 	}
 	set_wall_standBy(){
 		let _this=this;
-		for(let _i=0;_i<_this.wall.length;_i++){
-			_this.wall[_i].setStandBy();
+		for(let _i=0;_i<_this.wall_up.length;_i++){
+			_this.wall_up[_i].setStandBy();
+		}		
+		for(let _i=0;_i<_this.wall_down.length;_i++){
+			_this.wall_down[_i].setStandBy();
 		}		
 	}
 	set_wall_status(){
@@ -2637,8 +2518,9 @@ class ENEMY_BOSS_CRYSTALCORE
 	move_standby(){
 		//スタンバイ状態
 		let _this=this;
-		_this.y-=4;
+		if(_this.move_before()){return;}
 
+		_this.y-=4;
 		//触手の上を表示
 		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
 			_this.hands_up[_i].moveDraw(_this);
@@ -2836,6 +2718,216 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		_this._data=_x+','+_y+','+_deg+','+_z;
 	}
 }
+
+
+//====================
+//　ボス パターン2
+//	_x:ボスの初期x位置
+//	_y:ボスの初期y位置
+//====================
+class ENEMY_BOSS_BIGCORE_PT2
+			extends ENEMY_BOSS_BIGCORE{
+	constructor(_x,_y){
+		super(_x,_y);
+		let _this=this;
+		_this._c=0;
+		_this._standby=true;
+		_this._showout_cube=0;
+		_this._standby_count=0;
+		_this._complete_cube_count=0;
+		_this._map_col_reset=false;
+	}
+	move_before(){
+		//スタンバイ状態。
+		//クリスタルを放つ
+		let _this=this;
+		let _as='';
+		let _f=function(){
+			//透明つき画像表示と
+			//全クリスタルのステータスを取得する。
+			let _e=_ENEMIES;
+			for(let _i=0;_i<_e.length;_i++){
+				if(!ENEMY_BOSS_CUBE.prototype.isPrototypeOf(_e[_i])){continue;}
+				_e[_i].setDrawImageAlpha(_this.alpha);
+				_as+=(_e[_i]._stop===true)?'1':'0';
+			}
+		}
+
+		_f(_this.alpha);
+//		console.log(_as)
+		if(_as.indexOf('0')!==-1){
+			//0が一つもない（全て停止状態時）
+			//透明をコントロールさせる
+			_this._complete_cube_count=_this._standby_count;
+		}
+		//クリスタルを放つ
+		if(_this._standby_count%40===0){
+			if(_this._showout_cube<100){
+				let _c=new ENEMY_BOSS_CUBE(
+					_CANVAS_IMGS['enemy_a_1'].obj,
+					1000,
+					(Math.random()*(500-100))+50
+				)
+				_ENEMIES.push(_c);
+				_this._showout_cube++;	
+			}
+		}
+		let _c=_this._standby_count-_this._complete_cube_count;
+		if(_c===50){_this.alpha=0.7;}
+		if(_c===100){_this.alpha=0.3;}
+		if(_c===150){_this.alpha=0;}
+		if(_this.alpha===0){
+			return false;
+
+		}
+		_this._standby_count++;
+		return true;
+	}
+}
+
+class ENEMY_BOSS_CUBE
+		extends GameObject_ENEMY{
+	constructor(_o,_x,_y){
+		super(_o,_x,_y);
+		let _this=this;
+		_this._standby=false;
+		_this._c=0;
+		_this._status=1;
+		_this.speed=5;
+		_this.change_speed_c=parseInt(Math.random()*(180-10))+10;
+		_this._stop=false;
+		_this.is_able_collision=false;
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_cube'];
+
+		_this._col_c=0;
+		_this.col=[//アニメ定義
+			{img:_CANVAS_IMGS['enemy_cube1'].obj,scale:1},
+			{img:_CANVAS_IMGS['enemy_cube2'].obj,scale:1},
+			{img:_CANVAS_IMGS['enemy_cube3'].obj,scale:1},
+			{img:_CANVAS_IMGS['enemy_cube4'].obj,scale:1}
+		];
+		_this.img=_this.col[0].img;
+
+		_this.shotColMap=[
+			'10,10,'+
+			parseInt(_this.img.width-10)+','+
+			parseInt(_this.img.height-10)
+		];
+
+		//自機に向かう用の変数
+		_this.tx=0;
+		_this.ty=0;
+		_this.rad=0//自身と相手までのラジアン
+		_this.deg=0//自身と相手までの角度
+		_this.sx=0;//単位x
+		_this.sy=0;//単位y
+
+	}
+	isCanvasOut(){
+		return _GAME.isEnemyCanvasOut(
+			this,{up:true,down:true,left:true,right:true}
+		);
+	}
+	isMove(){
+		//生存判定を外した形で
+		//オーバーライド		
+		let _this=this;
+		if(_this.isStandBy()){
+			_this.move_standby();
+			return false;
+		}
+		if(_this.isCanvasOut()){
+			_this._status=0;
+			_this._isshow=false;			
+			return false;
+		}
+		if(!_this.isshow()){
+			return false;
+		}
+		return true;
+	}
+	move_bounds(){
+		//自身と相手クリスタル間の衝突判定
+		let _this=this;
+		let _eb=_ENEMIES;
+		for(let _i=0;_i<_eb.length;_i++){
+			if(!ENEMY_BOSS_CUBE.prototype.isPrototypeOf(_eb[_i])){continue;}
+//			if(!_eb[_i].isalive()){continue;}//生きていない場合は無視
+//			if(_eb[_i].x>_CANVAS.width){continue;}//キャンバスに入る前は無視
+			if(_this.id===_eb[_i].id){continue;}//自身の判定はしない
+//			console.log(_eb[_i]._stop)
+			if(!_eb[_i]._stop){continue;}
+
+			let _r=_GAME.isSqCollision(
+				_this.shotColMap[0],
+				_this.x+','+_this.y,
+				_eb[_i].shotColMap,
+				_eb[_i].x+','+_eb[_i].y
+			);
+			if(_r!==_IS_SQ_NOTCOL){return true;}
+		}
+		return false;
+	}
+	moveDraw(){
+		let _this=this;
+		if(_this.alpha===0){_this.init();return;}
+		//衝突完了済み
+		if(_this._stop===true){return;}
+		//衝突判定
+		if(_this.x<0
+			||_this.y<0
+			||_this.y+50>_CANVAS.height
+			||_this.move_bounds()){
+				_MAP.set_mapdef_col(
+					_MAP.getMapX(_this.x),
+					_MAP.getMapY(_this.y),
+					'1,1'
+				);
+				_this._status=0;
+				_this._stop=true;
+				_GAME._setPlay(_this.audio_collision);
+				return;
+		}
+		if(_this._c<_this.change_speed_c){
+			_this.x-=_this.speed;
+		}
+		if(_this._c===_this.change_speed_c){
+			_this.tx=_PLAYERS_MAIN.getPlayerCenterPosition()._x;
+			_this.ty=_PLAYERS_MAIN.getPlayerCenterPosition()._y;
+			_this.rad=//自身と相手までのラジアン
+				Math.atan2(
+					(_this.ty-_this.y),
+					(_this.tx-_this.x));
+			_this.deg=//自身と相手までの角度
+				_this.rad*180/Math.PI;
+			_this.sx=Math.cos(_this.rad);//単位x
+			_this.sy=Math.sin(_this.rad);//単位y
+			_this.speed=8;
+		}
+		if(_this._c>_this.change_speed_c){
+			_this.x+=_this.sx*_this.speed;
+			_this.y+=_this.sy*_this.speed;
+		}
+
+		_this.img=(function(_t){
+			_t._col_c=
+				(_t._col_c>=(_t.col.length*8)-1)?0:_t._col_c+1;
+			return _t.col[parseInt(_t._col_c/8)].img;
+		})(_this)
+
+		_this._c++;
+	}
+	move(){
+		let _this=this;
+		if(!_this.isMove()){return;}
+		if(_this.alpha===0){_this.init();return;}
+		_this.moveDraw();
+	}
+}
+
+
+
+
 
 //====================
 //　弾クラス

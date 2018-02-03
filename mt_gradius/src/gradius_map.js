@@ -874,6 +874,13 @@ class GameObject_MAP{
 		}//_j
 		}//_i
 	}
+	set_mapdef_col_clear(){
+		let _this=this;
+		for(let _i=0;_i<_this.mapdef_col.length;_i++){
+			let _m=_this.mapdef_col[_i];
+			_this.mapdef_col[_i]=_m.replace(/1/ig,'0');
+		}
+	}
 	set_scroll_on_x(){
 		let _this=this;
 		_BACKGROUND_SPEED=_this.map_background_speed;

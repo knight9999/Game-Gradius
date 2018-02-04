@@ -1,6 +1,6 @@
 article, aside, dialog, figure, footer, header, hgroup, menu, nav, section { display: block; }
 h1, h2, h3, p{margin:0px;padding:0px;}
-*,*::after,*::before{
+*,*::after,*::before,*:hover{
 	box-sizing:border-box;
 }
 
@@ -207,8 +207,13 @@ form .form_group input[type="range"] {
 }
 
 
-form .form_group{margin-bottom:30px;}
+form .form_group{border: 2px solid rgba(255,255,255,0);margin-bottom:10px;padding:20px;}
 form .form_group:after{clear:both;content:'';display:table;}
+form .form_group:hover{
+	border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 10px;
+	background-color: rgba(255,255,255,0.2);
+}
 form .form_group .col_l{float:left;margin-top:15px;margin-right:3%;text-align:right;width:20%;}
 form .form_group .col_r{float:left;width:77%;}
 form .form_group .col_r .val{
@@ -224,8 +229,8 @@ form .form_group .col_r .val{
 form .form_group .col_r.range{margin-right:5%;width:10%;}
 
 body #menu{
-	background-color:rgba(12,47,13,1);
-	border-top:1px solid rgb(195, 255, 130);
+    background: linear-gradient(to bottom left, #2d2d2d 0%, #000000 100%), linear-gradient(to left, rgba(255, 255, 255, 0.12) 0%, rgba(0, 0, 0, 0.12) 100%);
+	border-top:3px solid rgb(200, 200, 200);
     position:relative;
 	transition:0.3s all;
 	transform: translateY(145px);
@@ -234,7 +239,7 @@ body #menu{
 body #menu_inner{margin:0px auto;padding:40px 0px;text-align:center;width:1000px;}
 body #menu_inner a{
 	background-color:rgba(220,220,220,0.3);
-	border:2px solid rgba(255,255,255,1);
+	border:1px solid rgba(255,255,255,1);
 	border-radius:10px;
     cursor:pointer;
 	display:inline-block;

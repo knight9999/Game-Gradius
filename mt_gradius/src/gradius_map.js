@@ -146,7 +146,7 @@ const _MAP_ENEMIES_BOSS={
 		_f:function(){return new ENEMY_BOSS_BIGCORE(1300,200)}
 	},
 	'enemy_bigcore_pt2':{
-		_f:function(){return new ENEMY_BOSS_BIGCORE_PT2(1300,200)}
+		_f:function(){return new ENEMY_BOSS_BIGCORE_PT2(700,800)}
 	},
 	'enemy_bigcore2':{
 		_f:function(){return new ENEMY_BOSS_BIGCORE2(1300,200)}

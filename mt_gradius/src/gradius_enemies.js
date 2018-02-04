@@ -2852,10 +2852,7 @@ class ENEMY_BOSS_CUBE
 		let _eb=_ENEMIES;
 		for(let _i=0;_i<_eb.length;_i++){
 			if(!ENEMY_BOSS_CUBE.prototype.isPrototypeOf(_eb[_i])){continue;}
-//			if(!_eb[_i].isalive()){continue;}//生きていない場合は無視
-//			if(_eb[_i].x>_CANVAS.width){continue;}//キャンバスに入る前は無視
 			if(_this.id===_eb[_i].id){continue;}//自身の判定はしない
-//			console.log(_eb[_i]._stop)
 			if(!_eb[_i]._stop){continue;}
 
 			let _r=_GAME.isSqCollision(
@@ -2878,10 +2875,11 @@ class ENEMY_BOSS_CUBE
 			||_this.y<0
 			||_this.y+50>_CANVAS.height
 			||_this.move_bounds()){
+				let _ec=_this.getEnemyCenterPosition();
 				_MAP.set_mapdef_col(
-					_MAP.getMapX(_this.x),
-					_MAP.getMapY(_this.y),
-					'1,1'
+					_MAP.getMapX(_ec._x),
+					_MAP.getMapY(_ec._y),
+					'1'
 				);
 				_this._status=0;
 				_this._stop=true;

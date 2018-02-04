@@ -1256,7 +1256,7 @@ class GameObject_PLAYER_MAIN
 			return;
 		}
 		if(_GAME.isSqCollision(
-			"25,35,35,42",
+			"25,26,35,32",
 			this.x+","+this.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
@@ -3642,18 +3642,18 @@ class GameObject_STAGESELECT{
 			_CONTEXT.fillText(_ar[_i],400,190+(_i*26));
 		}
 
-		_DRAW_DISP_TXT(('difficult:'+this.mapdef._difficult),400,250,0.2);
-		_CONTEXT.moveTo(400,290);
-		_CONTEXT.lineTo(950,290);
+		_DRAW_DISP_TXT(('difficult:'+this.mapdef._difficult),400,220,0.2);
+		_CONTEXT.moveTo(400,260);
+		_CONTEXT.lineTo(950,260);
 		_CONTEXT.stroke();
 
-		_DRAW_DISP_TXT('detail',400,320,0.2);
-		_CONTEXT.moveTo(400,360);
-		_CONTEXT.lineTo(950,360);
+		_DRAW_DISP_TXT('detail',400,290,0.2);
+		_CONTEXT.moveTo(400,330);
+		_CONTEXT.lineTo(950,330);
 		_CONTEXT.stroke();
-		_ar=_GAME._multilineText(_CONTEXT,this.mapdef._body,550);
+		_ar=_GAME._multilineText(_CONTEXT,this.mapdef._body,520);
 		for(let _i=0;_i<((_ar.length>4)?4:_ar.length);_i++){
-			_CONTEXT.fillText(_ar[_i],400,390+(_i*30));
+			_CONTEXT.fillText(_ar[_i],400,360+(_i*30));
 		}
 
 	}

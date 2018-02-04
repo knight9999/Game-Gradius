@@ -365,10 +365,7 @@ _init:function(){
 	});
 
 	const $boss=document.querySelector('#boss select');
-	Object.keys(_CANVAS_IMGS).forEach(function(_k){
-		if(_MAP_ENEMIES_BOSS[_k]===undefined){return;}
-		// if(_k!=='enemy_bigcore'
-		// 	&&_k!=='enemy_cristalcore'){return;}
+	Object.keys(_MAP_ENEMIES_BOSS).forEach(function(_k){
 		var _op=document.createElement('option');
 		_op.setAttribute('value',_k);
 		_op.innerHTML=_k;

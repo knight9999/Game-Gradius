@@ -2351,7 +2351,6 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		let _this=this;
 		_this.move_hands_open();
 		_this.move_hands_close();
-//		console.log(_this._c)
 	}
 }
 
@@ -2372,8 +2371,7 @@ class ENEMY_BOSS_CRYSTALCORE
 		super(_CANVAS_IMGS['enemy_cristalcore'].obj,_x,_y);
 		let _this=this;
 		_this._status=70;
-		_this.speed=2;
-		_this.speed_hands=2;
+		_this.speed=3;
 
 		_this.wall=[
 			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_cristalcore_wall1'].obj,_this,47,116),
@@ -2397,7 +2395,7 @@ class ENEMY_BOSS_CRYSTALCORE
 		_this._collision_type='t9';
 		_this.is_able_collision=false;
 
-		_this._count=0;
+//		_this._count=0;
 		_this._shot_count=0;
 		_this.shotColMap=[
 			"25,0,227,10,false",
@@ -2471,13 +2469,14 @@ class ENEMY_BOSS_CRYSTALCORE
 		}
 	}
 	shot(){
+		//レーザーを発射する
 		let _this=this;
 
 		_this._shot_count++;
-		if(_this._count>1200){_this._count=0;return;}
-		if(_this._count>800){
+//		if(_this._count>1200){_this._count=0;return;}
+		if(_this._c%1200>800){
 			if(_this._shot_count<10){return;}			
-		}else if(_this._count<=800){
+		}else if(_this._c%1200<=800){
 			if(_this._shot_count<50){return;}
 		}
 		_this._shot_count=0;
@@ -2541,13 +2540,13 @@ class ENEMY_BOSS_CRYSTALCORE
 	}
 	move(){
 		let _this=this;
-		_this._count++;
+//		console.log(_this._c)
 		if(!_this.isMove()){return;}
 		_this.y+=_this.speed;
 
-		if(_this._count>800){
+		if(_this._c%1200>800){
 			//連射中はバウンドタイミングを変更させる
-			if(_this._count%45===0){
+			if(_this._c%45===0){
 				_this.speed*=-1;
 			}
 		}
@@ -2586,8 +2585,8 @@ class ENEMY_BOSS_CRYSTALCORE
 
 		//自爆
 		_this.setSelfCollision();
-
 		_this._c++;
+//		_this._count++;
 	}
 }
 //クリスタルコアの手定義
@@ -2610,7 +2609,6 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 					//srad:自身の角度
 		_this.img=_d._img||_CANVAS_IMGS['enemy_cristalcore_hand1'].obj;//手の画像
 
-		_this._count=0;//親機で連射が完了されるまでのアニメーションカウント
 		_this._count_turn=0;//手をふる回数
 		_this._change=_d._change;//true:上向き,false:下向き
 		_this._standby=_d._standby||false;
@@ -2621,6 +2619,15 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		_this._shot_count=0;
 		//衝突タイプ
 		_this._collision_type='t1';
+		_this._c=0;
+
+		//_this._dataの初期設定
+		let _sp=_this._data.split(',');
+		let _deg=parseInt(_sp[2])+((_this._change)?1:-1);
+		let _x=_this._initRad*Math.cos(_deg*(Math.PI/180));
+		let _y=_this._initRad*Math.sin(_deg*(Math.PI/180));
+		let _z=parseInt(_sp[3])+((_this._change)?1:-1);
+		_this._data=_x+','+_y+','+_deg+','+_z;
 
 	}
 	init(){
@@ -2644,11 +2651,53 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 			)
 		);
 	}
-	moveDraw(){
+	move_hands(){
+		let _this=this;
+		//4回手を振り払ったら親機からレーザーを
+		//連射させるため、その状態を作る
+		if(_this._count_turn>=4){
+			//カウントが400を超えた場合
+			//連射が終了された場合カウントをリセットさせる
+			if(_this._c>400){
+				_this._c=0;
+				_this._count_turn=0;	
+			}
+			return;
+		}
+
+		//カウントが200に達したら手の向きを切り替える
+		if(_this._c>200){
+			_this._c=0;
+			_this._count_turn++;
+			_this._change=(_this._change)?false:true;
+		}
+
+		//手の位置を調整する。
+		let _sp=_this._data.split(',');
+		let _cmr=_this._c_move_round;
+		let _cmsr=_this._c_move_self_round;
+//		console.log(_this._data);
+		//停止
+		if(_this._c>_cmsr){
+			return;
+		}
+		//自転のみ	
+		if(_this._c<=_cmsr&&_this._c>_cmr){
+			let _deg=parseInt(_sp[3])+((_this._change)?1:-1);
+			_this._data=_sp[0]+','+_sp[1]+','+_sp[2]+','+_deg;
+			return;
+		}
+		//動きと自転
+		let _deg=parseInt(_sp[2])+((_this._change)?1:-1);
+		let _x=_this._initRad*Math.cos(_deg*(Math.PI/180));
+		let _y=_this._initRad*Math.sin(_deg*(Math.PI/180));
+		let _z=parseInt(_sp[3])+((_this._change)?1:-1);
+		_this._data=_x+','+_y+','+_deg+','+_z;
+	}
+	moveDraw(_o){
 		//move()によって調整された状態からCANVASに描画する。
 		let _this=this;
-		_this._count++;
-		_this.shot();
+//		console.log(_this._count_turn)
 
 		let _d=_this._data.split(',');
 		let _ix=_this._initx;
@@ -2674,63 +2723,25 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		_CONTEXT.restore();
 		_this.x=_this._boss.x+parseInt(_d[0])+_ix;
 		_this.y=_this._boss.y+parseInt(_d[1])+_iy;
+
+		if(_o._standby){return;}
+		_this.shot();
+		_this.move_hands();
+		_this._c++;
 	}
+	//moveはmain.jsから処理させない
 	move(){
-		//手の位置を調整する。
-		let _this=this;
-//		console.log(_this._count_turn)
-		//4回手を振り払ったら親機からレーザーを
-		//連射させるため、その状態を作る
-		if(_this._count_turn>=4){
-			//カウントが400を超えた場合
-			//連射が終了された場合カウントをリセットさせる
-			if(_this._count>400){
-				_this._count=0;
-				_this._count_turn=0;	
-			}
-			return;
-		}
 
-		//カウントが200に達したら手の向きを切り替える
-		if(_this._count>200){
-			_this._count=0;
-			_this._count_turn++;
-			_this._change=(_this._change)?false:true;
-		}
-
-		//手の位置を調整する。
-		let _sp=_this._data.split(',');
-		let _cmr=_this._c_move_round;
-		let _cmsr=_this._c_move_self_round;
-//		console.log(_this._data);
-		//停止
-		if(_this._count>_cmsr){
-			return;
-		}
-		//自転のみ	
-		if(_this._count<=_cmsr&&_this._count>_cmr){
-			let _deg=parseInt(_sp[3])+((_this._change)?1:-1);
-			_this._data=_sp[0]+','+_sp[1]+','+_sp[2]+','+_deg;
-			return;
-		}
-		//動きと自転
-//			console.log(_this.hands_up[0] );
-//			console.log(_deg);
-		let _deg=parseInt(_sp[2])+((_this._change)?1:-1);
-		let _x=_this._initRad*Math.cos(_deg*(Math.PI/180));
-		let _y=_this._initRad*Math.sin(_deg*(Math.PI/180));
-		let _z=parseInt(_sp[3])+((_this._change)?1:-1);
-		_this._data=_x+','+_y+','+_deg+','+_z;
 	}
 }
 
 
 //====================
-//　ボス パターン2
+//　ボスクリスタルコア パターン2
 //	_x:ボスの初期x位置
 //	_y:ボスの初期y位置
 //====================
-class ENEMY_BOSS_BIGCORE_PT2
+class ENEMY_BOSS_CRYSTALCORE_PT2
 			extends ENEMY_BOSS_CRYSTALCORE{
 	constructor(_x,_y){
 		super(_x,_y);
@@ -2766,7 +2777,7 @@ class ENEMY_BOSS_BIGCORE_PT2
 		}
 		//クリスタルを放つ
 		if(_this._standby_count%40===0){
-			if(_this._showout_cube<5){
+			if(_this._showout_cube<1){
 				let _c=new ENEMY_BOSS_CUBE(
 					_CANVAS_IMGS['enemy_a_1'].obj,
 					1000,

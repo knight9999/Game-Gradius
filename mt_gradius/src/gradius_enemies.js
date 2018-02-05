@@ -1550,8 +1550,8 @@ class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 		_this.is_able_collision=false;//衝突可能フラグ
 	}
 	init(){
-		let _this=this;
-		_this.move();
+		this._isshow=false;
+		this._status=0;
 	}
 	shot(){}
 	move_init(){}
@@ -2351,7 +2351,6 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		let _this=this;
 		_this.move_hands_open();
 		_this.move_hands_close();
-//		console.log(_this._c)
 	}
 }
 
@@ -2372,8 +2371,7 @@ class ENEMY_BOSS_CRYSTALCORE
 		super(_CANVAS_IMGS['enemy_cristalcore'].obj,_x,_y);
 		let _this=this;
 		_this._status=70;
-		_this.speed=2;
-		_this.speed_hands=2;
+		_this.speed=3;
 
 		_this.wall=[
 			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_cristalcore_wall1'].obj,_this,47,116),
@@ -2397,7 +2395,7 @@ class ENEMY_BOSS_CRYSTALCORE
 		_this._collision_type='t9';
 		_this.is_able_collision=false;
 
-		_this._count=0;
+//		_this._count=0;
 		_this._shot_count=0;
 		_this.shotColMap=[
 			"25,0,227,10,false",
@@ -2411,13 +2409,13 @@ class ENEMY_BOSS_CRYSTALCORE
 		}
 
 		_this.hands_up=[
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_standby":true,"_initx":50,"_inity":80,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,10","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_standby":true,"_initx":50,"_inity":80,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,185,5","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":80,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,-10","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":80,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,175,-25","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":80,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,170,-40","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":80,"_cmr":106,"_cmsr":160,"_initRad":190,"_data":"0,0,165,-55","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_img":_CANVAS_IMGS['enemy_cristalcore_hand2'].obj,
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_standby":true,"_initx":50,"_inity":80,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,10","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_standby":true,"_initx":50,"_inity":80,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,185,5","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":80,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,-10","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":80,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,175,-25","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":80,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,170,-40","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":80,"_cmr":106,"_cmsr":160,"_initRad":190,"_data":"0,0,165,-55","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_img":_CANVAS_IMGS['enemy_cristalcore_hand2'].obj,
 												"_initx":50,"_inity":80,"_cmr":115,"_cmsr":170,"_initRad":215,"_data":"0,0,160,-70","_change":true})
 		];
 		for(let _i=0;_i<_this.hands_up.length;_i++){
@@ -2425,13 +2423,13 @@ class ENEMY_BOSS_CRYSTALCORE
 		}
 
 		_this.hands_down=[
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_standby":true,"_initx":50,"_inity":155,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,-10","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_standby":true,"_initx":50,"_inity":155,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,175,-5","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":155,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,10","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":155,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,185,25","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":155,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,190,40","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_initx":50,"_inity":155,"_cmr":106,"_cmsr":160,"_initRad":190,"_data":"0,0,195,55","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_img":_CANVAS_IMGS['enemy_cristalcore_hand2'].obj,
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_standby":true,"_initx":50,"_inity":155,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,-10","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_standby":true,"_initx":50,"_inity":155,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,175,-5","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":155,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,10","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":155,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,185,25","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":155,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,190,40","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":155,"_cmr":106,"_cmsr":160,"_initRad":190,"_data":"0,0,195,55","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_img":_CANVAS_IMGS['enemy_cristalcore_hand2'].obj,
 												"_initx":50,"_inity":155,"_cmr":115,"_cmsr":170,"_initRad":215,"_data":"0,0,200,70","_change":false})
 		];
 		for(let _i=0;_i<_this.hands_down.length;_i++){
@@ -2471,13 +2469,14 @@ class ENEMY_BOSS_CRYSTALCORE
 		}
 	}
 	shot(){
+		//レーザーを発射する
 		let _this=this;
 
 		_this._shot_count++;
-		if(_this._count>1200){_this._count=0;return;}
-		if(_this._count>800){
+//		if(_this._count>1200){_this._count=0;return;}
+		if(_this._c%1200>800){
 			if(_this._shot_count<10){return;}			
-		}else if(_this._count<=800){
+		}else if(_this._c%1200<=800){
 			if(_this._shot_count<50){return;}
 		}
 		_this._shot_count=0;
@@ -2541,14 +2540,13 @@ class ENEMY_BOSS_CRYSTALCORE
 	}
 	move(){
 		let _this=this;
-		_this._count++;
+//		console.log(_this._c)
 		if(!_this.isMove()){return;}
-		_this.x=700;
 		_this.y+=_this.speed;
 
-		if(_this._count>800){
+		if(_this._c%1200>800){
 			//連射中はバウンドタイミングを変更させる
-			if(_this._count%45===0){
+			if(_this._c%45===0){
 				_this.speed*=-1;
 			}
 		}
@@ -2587,8 +2585,8 @@ class ENEMY_BOSS_CRYSTALCORE
 
 		//自爆
 		_this.setSelfCollision();
-
 		_this._c++;
+//		_this._count++;
 	}
 }
 //クリスタルコアの手定義
@@ -2599,6 +2597,7 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		let _this=this;
 		_this._initx=_d._initx||0;//初期位置x
 		_this._inity=_d._inity||0;//初期位置y
+		_this._boss=_d._boss;//ボスのオブジェクト
 		//移動→自転の動き
 		_this._c_move_round=_d._cmr||0;//移動maxカウント
 		_this._c_move_self_round=_d._cmsr||0;//自転maxカウント
@@ -2610,10 +2609,10 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 					//srad:自身の角度
 		_this.img=_d._img||_CANVAS_IMGS['enemy_cristalcore_hand1'].obj;//手の画像
 
-		_this._count=0;//アニメーションカウント
-		_this._count_turn=0;
-		_this._change=_d._change;
-		_this._standby=_d._standby||false;
+		_this._count_turn=0;//手をふる回数
+		_this._change=_d._change;//true:上向き,false:下向き
+		_this._standby=true;
+		_this._standby_tmp=_d._standby||false;
 
 		//ここでは先端のオブジェクトだけ、
 		//ショットさせる
@@ -2621,8 +2620,16 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		_this._shot_count=0;
 		//衝突タイプ
 		_this._collision_type='t1';
+		_this._c=0;
 
-		_this._boss=new Object();
+		//_this._dataの初期設定
+		let _sp=_this._data.split(',');
+		let _deg=parseInt(_sp[2])+((_this._change)?1:-1);
+		let _x=_this._initRad*Math.cos(_deg*(Math.PI/180));
+		let _y=_this._initRad*Math.sin(_deg*(Math.PI/180));
+		let _z=parseInt(_sp[3])+((_this._change)?1:-1);
+		_this._data=_x+','+_y+','+_deg+','+_z;
+
 	}
 	init(){
 		this._isshow=false;
@@ -2645,11 +2652,53 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 			)
 		);
 	}
-	moveDraw(_boss){
+	move_hands(){
 		let _this=this;
-		_this._boss=_boss;
-		_this._count++;
-		_this.shot();
+		//4回手を振り払ったら親機からレーザーを
+		//連射させるため、その状態を作る
+		if(_this._count_turn>=4){
+			//カウントが400を超えた場合
+			//連射が終了された場合カウントをリセットさせる
+			if(_this._c>400){
+				_this._c=0;
+				_this._count_turn=0;	
+			}
+			return;
+		}
+
+		//カウントが200に達したら手の向きを切り替える
+		if(_this._c>200){
+			_this._c=0;
+			_this._count_turn++;
+			_this._change=(_this._change)?false:true;
+		}
+
+		//手の位置を調整する。
+		let _sp=_this._data.split(',');
+		let _cmr=_this._c_move_round;
+		let _cmsr=_this._c_move_self_round;
+//		console.log(_this._data);
+		//停止
+		if(_this._c>_cmsr){
+			return;
+		}
+		//自転のみ	
+		if(_this._c<=_cmsr&&_this._c>_cmr){
+			let _deg=parseInt(_sp[3])+((_this._change)?1:-1);
+			_this._data=_sp[0]+','+_sp[1]+','+_sp[2]+','+_deg;
+			return;
+		}
+		//動きと自転
+		let _deg=parseInt(_sp[2])+((_this._change)?1:-1);
+		let _x=_this._initRad*Math.cos(_deg*(Math.PI/180));
+		let _y=_this._initRad*Math.sin(_deg*(Math.PI/180));
+		let _z=parseInt(_sp[3])+((_this._change)?1:-1);
+		_this._data=_x+','+_y+','+_deg+','+_z;
+	}
+	moveDraw(_o){
+		//move()によって調整された状態からCANVASに描画する。
+		let _this=this;
+//		console.log(_this._count_turn)
 
 		let _d=_this._data.split(',');
 		let _ix=_this._initx;
@@ -2675,63 +2724,31 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		_CONTEXT.restore();
 		_this.x=_this._boss.x+parseInt(_d[0])+_ix;
 		_this.y=_this._boss.y+parseInt(_d[1])+_iy;
+
+		if(_o._standby){return;}
+		_this.shot();
+		_this.move_hands();
+		_this._standby=_this._standby_tmp;
+		_this._c++;
 	}
+	//moveはmain.jsから処理させない
 	move(){
-		let _this=this;
-//		console.log(_this._count_turn)
-		if(_this._count_turn>=4){
-			if(_this._count>400){
-				_this._count=0;
-				_this._count_turn=0;	
-			}
-			return;
-		}
 
-		if(_this._count>200){
-			_this._count=0;
-			_this._count_turn++;
-			_this._change=(_this._change)?false:true;
-			if(_this._count_turn>=4){return;}
-		}
-
-		let _sp=_this._data.split(',');
-		let _cmr=_this._c_move_round;
-		let _cmsr=_this._c_move_self_round;
-//		console.log(_this._data);
-		//停止
-		if(_this._count>_cmsr){
-			return;
-		}
-		//自転のみ	
-		if(_this._count<=_cmsr&&_this._count>_cmr){
-			let _deg=parseInt(_sp[3])+((_this._change)?1:-1);
-			_this._data=_sp[0]+','+_sp[1]+','+_sp[2]+','+_deg;
-			return;
-		}
-		//動きと自転
-//			console.log(_this.hands_up[0] );
-//			console.log(_deg);
-		let _deg=parseInt(_sp[2])+((_this._change)?1:-1);
-		let _x=_this._initRad*Math.cos(_deg*(Math.PI/180));
-		let _y=_this._initRad*Math.sin(_deg*(Math.PI/180));
-		let _z=parseInt(_sp[3])+((_this._change)?1:-1);
-		_this._data=_x+','+_y+','+_deg+','+_z;
 	}
 }
 
 
 //====================
-//　ボス パターン2
+//　ボスクリスタルコア パターン2
 //	_x:ボスの初期x位置
 //	_y:ボスの初期y位置
 //====================
-class ENEMY_BOSS_BIGCORE_PT2
-			extends ENEMY_BOSS_BIGCORE{
+class ENEMY_BOSS_CRYSTALCORE_PT2
+			extends ENEMY_BOSS_CRYSTALCORE{
 	constructor(_x,_y){
 		super(_x,_y);
 		let _this=this;
 		_this._c=0;
-		_this._standby=true;
 		_this._showout_cube=0;
 		_this._standby_count=0;
 		_this._complete_cube_count=0;
@@ -2772,7 +2789,8 @@ class ENEMY_BOSS_BIGCORE_PT2
 				_this._showout_cube++;	
 			}
 		}
-		let _c=_this._standby_count-_this._complete_cube_count;
+		let _c=_this._standby_count
+				-_this._complete_cube_count;
 		if(_c===50){_this.alpha=0.7;}
 		if(_c===100){_this.alpha=0.3;}
 		if(_c===150){_this.alpha=0;}
@@ -2867,7 +2885,6 @@ class ENEMY_BOSS_CUBE
 	}
 	moveDraw(){
 		let _this=this;
-		if(_this.alpha===0){_this.init();return;}
 		//衝突完了済み
 		if(_this._stop===true){return;}
 		//衝突判定

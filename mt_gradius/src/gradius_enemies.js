@@ -2611,7 +2611,8 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 
 		_this._count_turn=0;//手をふる回数
 		_this._change=_d._change;//true:上向き,false:下向き
-		_this._standby=_d._standby||false;
+		_this._standby=true;
+		_this._standby_tmp=_d._standby||false;
 
 		//ここでは先端のオブジェクトだけ、
 		//ショットさせる
@@ -2727,6 +2728,7 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		if(_o._standby){return;}
 		_this.shot();
 		_this.move_hands();
+		_this._standby=_this._standby_tmp;
 		_this._c++;
 	}
 	//moveはmain.jsから処理させない
@@ -2777,7 +2779,7 @@ class ENEMY_BOSS_CRYSTALCORE_PT2
 		}
 		//クリスタルを放つ
 		if(_this._standby_count%40===0){
-			if(_this._showout_cube<1){
+			if(_this._showout_cube<100){
 				let _c=new ENEMY_BOSS_CUBE(
 					_CANVAS_IMGS['enemy_a_1'].obj,
 					1000,

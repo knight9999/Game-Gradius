@@ -179,10 +179,14 @@ class GameObject_ENEMY{
 		//このクラスから継承する。
 		//_s_type:自機のショットタイプ
 		//_num:一度にヒットさせる値
+		//戻り値
+		//true:当たり判定あり
+		//false:当たり判定なし
 		let _this=this;
-		if(!_this.is_able_collision){return;}
-		if(!_this.isCollision()){return;}
+		if(!_this.is_able_collision){return true;}
+		if(!_this.isCollision()){return false;}
 		_this.setStatus(_s_type,_num);
+		return true;
 	}
 	isAbleCollision(){
 		return this.is_able_collision;
@@ -1488,7 +1492,7 @@ class ENEMY_qr extends GameObject_ENEMY{
 			Math.atan2((_this.ty-_this.y),(_this.tx-_this.x));
 		_this.sx=Math.cos(_this.rad);
 		_this.sy=Math.sin(_this.rad);
-		_this.speed=_MAPDEFS[_MAP_PETTERN]._speed;
+		_this.speed=_MAPDEFS[_MAP_PETTERN]._speed*1.5;
 
 		_this._collision_type='t2';
 		((_this.direct===_this._DEF_DIR._D)?-10:0);
@@ -1688,6 +1692,7 @@ class ENEMY_BOSS_BIGCORE
 		let _this=this;
 		_this._status=1;
 		_this.speed=3;
+		_this.is_able_collision=false;
 
 		_this.wall=[
 			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore_1'].obj,_this,15,50),
@@ -1780,7 +1785,6 @@ class ENEMY_BOSS_BIGCORE
 
 		if(_this.x<_CANVAS.width-_this.img.width-80){
 			_this._standby=false;
-			_this.is_able_collision=true;
 			_this.set_wall_standBy();
 		}
 	}
@@ -1850,6 +1854,7 @@ class ENEMY_BOSS_BIGCORE2
 		let _this=this;
 		_this._status=1;
 		_this.speed=2;
+		_this.is_able_collision=false;
 		_this.img=_CANVAS_IMGS['enemy_bigcore2'].obj;
 		_this.wall_up=[
 			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore2_wall'].obj,_this,90,38),
@@ -2114,7 +2119,6 @@ class ENEMY_BOSS_BIGCORE2
 				-_this.img.width
 				-80){
 			_this._standby=false;
-			_this.is_able_collision=true;
 			_this.set_wall_standBy();
 		}
 	}
@@ -2534,7 +2538,6 @@ class ENEMY_BOSS_CRYSTALCORE
 
 		if(_this.y<200){
 			_this._standby=false;
-			_this.is_able_collision=true;
 			_this.set_wall_standBy();
 		}
 	}

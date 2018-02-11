@@ -32,7 +32,7 @@ _blog_id:3,
 _init:function(){
 	let _this=this;
 	_this._data_api=new MT.DataAPI({
-		baseUrl:"http://localhost/mt/mt-data-api.cgi",
+		baseUrl:"http://localhost:8080/mt6/mt-data-api.cgi",
 		clientId:"api11entries"
 	});
 

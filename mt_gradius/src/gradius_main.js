@@ -1577,8 +1577,8 @@ class GameObject_FORCEFIELD{
 			_e.x+","+_e.y
 			)===_IS_SQ_NOTCOL){return;}
 
- 		_e.collision();
-		_this.reduce();
+		let _r=_e.collision();
+		if(_r){_this.reduce();}
 	}
 	enemy_shot_collision(_e){
 		let _this=this;
@@ -1700,14 +1700,15 @@ class GameObject_SHIELD
 		return (this._scale===0)?false:true;
 	}
 	enemy_collision(_e){
+		let _this=this;
 		if(_GAME.isSqCollision(
-			"0,0,"+this.width+","+(this.height*2),
-			parseInt(this.x)+","+parseInt(this.y),
+			"0,0,"+_this.width+","+(_this.height*2),
+			parseInt(_this.x)+","+parseInt(_this.y),
 			_e.shotColMap,
 			_e.x+","+_e.y
 			)===_IS_SQ_NOTCOL){return;}
-		_e.collision();
-		this.reduce();
+		let _r=_e.collision();
+		if(_r){_this.reduce();}
 	}
 	enemy_shot_collision(_e){
 		if(_GAME.isSqCollision(

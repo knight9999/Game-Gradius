@@ -289,8 +289,8 @@ setDataForDataApi:function(){
 		_str+=((_i===$_abr.length-1)?'"':'",');
 		}//_i
 		_str+='],';
-		_str+='"_title":"'+document.querySelector('#title input[name="title"]').value+'",';
-		_str+='"_eid":"'+_m._eid+'",';
+//		_str+='"_title":"'+document.querySelector('#title input[name="title"]').value+'",';
+//		_str+='"_eid":"'+_m._eid+'",';
 		_str+='"_theme":"'+_m._theme+'",';
 		_str+='"_body":"'+document.querySelector('#body textarea[name="body"]').value+'",';
 		_str+='"_initx":"'+document.querySelector('#init .col_r .val').getAttribute('data-val')+'",';

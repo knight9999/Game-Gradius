@@ -470,6 +470,10 @@ class ENEMY_c extends GameObject_ENEMY{
 			];
 		_this._c_walk=0;
 		let _p=_PLAYERS_MAIN;
+		_this.shotColMap=
+				(_d===_this._DEF_DIR._D)
+					?["10,10,43,42"]
+					:["0,0,43,32"];
 		
         _this._ene_status={
 		'_st1':{
@@ -1665,6 +1669,24 @@ class ENEMY_BOSS_WALL
 	}
 	setStandBy(){
 		this._standby=false;
+	}
+	setStatus(_s_type,_num){
+		let _this=this;
+		_this._status-=(function(_n){
+			_n=_n||1;//デフォルトは1
+			if(_s_type===_SHOTTYPE_MISSILE){
+				//ミサイルは通常の2倍
+				return 2;
+			}else if(_s_type===_SHOTTYPE_RIPPLE_LASER){
+				//リップルレーザーは通常の1.5倍
+				return 1.5;
+			}else if(_s_type===_SHOTTYPE_LASER){
+				//レーザーは通常の0.5倍
+				return 0.5;
+			}
+			return _n;
+		})(_num);
+		_this.setAlive();
 	}
 	moveDraw(){
 		let _this=this;

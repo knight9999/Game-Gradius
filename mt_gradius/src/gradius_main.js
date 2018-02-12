@@ -3900,6 +3900,7 @@ const _IS_ENEMIES_COLLISION=function(){
 			_j++){
 		let _os=_PLAYERS_SHOTS[_SHOTTYPE][_j];
 		let _ma=_CANVAS.width;
+		let _now_laser_MaxX=_os.shots[0]._laser_MaxX;
 		// レーザーでは敵全部を回して、
 		// 自機から一番近い耐久性がある敵まで
 		// レーザーを表示させる。
@@ -3913,7 +3914,12 @@ const _IS_ENEMIES_COLLISION=function(){
 			_ma=(_ma>_m)?_m:_ma;
 	//		console.log(_ma);
 		}//_i
-		_os.shots[0]._laser_MaxX=_ma;
+		//衝突はあったが、すでにレーザーが進んでる場合は、
+		//そのまま突き進む
+		_os.shots[0]._laser_MaxX=
+			(_os.shots[0].x<_ma)
+				?_ma
+				:_os.shots[0]._laser_MaxX;
 		}//_j
 	}else if(_SHOTTYPE!==_SHOTTYPE_LASER){
 		for(let _j=0;
@@ -4853,59 +4859,52 @@ isSqCollision_laser:function(_s1,_s1_n,_s2,_s2_n,_d){
 	let _s1_p=_s1.split(',');//s1ポイント
 	let _s1_w=parseInt(_s1_p[2])-parseInt(_s1_p[0]);//幅
 	let _s1_h=parseInt(_s1_p[3])-parseInt(_s1_p[1]);//高
-	// let _s1_l=Math.sqrt(
-	// 			Math.pow(_s1_w,2)+Math.pow(_s1_h,2)
-	// 			);//斜辺
+	let _s1_l=Math.sqrt(
+				Math.pow(_s1_w,2)+Math.pow(_s1_h,2)
+			);//斜辺
 	let _s1_c_x=(_s1_w/2)+_s1_n_x+parseInt(_s1_p[0]);//_s1の中心点x
 	let _s1_c_y=(_s1_h/2)+_s1_n_y+parseInt(_s1_p[1]);//_s1の中心点y
 	if(_d){
 		console.log(_s1_c_x+":"+_s1_c_y);
 	}
+	//敵の複数衝突マップ分ループさせる
 	for(let _i=0;_i<_s2.length;_i++){
 		let _s2_p=_s2[_i].split(',');
+		//1衝突マップの幅
 		let _s2_w=parseInt(_s2_p[2])-parseInt(_s2_p[0]);
+		//1衝突マップの高さ
 		let _s2_h=parseInt(_s2_p[3])-parseInt(_s2_p[1]);
-		//衝突後の当たり判定フラグ
+		//1衝突マップの当たり判定フラグ
 		let _s2_col=(function(_f){
 			if(_f===undefined){return true;}
 			if(_f==='false'){return false;}
 			return false;
 		})(_s2_p[4]);
 
+		//1衝突マップの斜辺
 		let _s2_l=Math.sqrt(
 			Math.pow(_s2_w,2)+Math.pow(_s2_h,2)
-			);//斜辺
+		);//斜辺
 			
 		let _s2_c_x=(_s2_w/2)+_s2_n_x+parseInt(_s2_p[0]);//_s2の中心点x
 		let _s2_c_y=(_s2_h/2)+_s2_n_y+parseInt(_s2_p[1]);//_s2の中心点y
 				
-		//_s1と_s2中心点の距離
+		//_s1（自機）と_s2（1衝突）中心点の距離とその斜辺
 		let _d_x=Math.abs(_s2_c_x-_s1_c_x);
 		let _d_y=Math.abs(_s2_c_y-_s1_c_y);
+		let _d_l=Math.sqrt(
+			Math.pow(_d_x,2)+Math.pow(_d_y,2)
+		);//斜辺
 
+		//衝突判定
 		let _tmpx=_s2_n_x+parseInt(_s2_p[0]);
+//		if(_d_l<(_s1_l/2)+(_s2_l/2)){
 		if((_s1_w/2)+(_s2_w/2)>_d_x
 			&&(_s1_h/2)+(_s2_h/2)>_d_y){
-//			return _tmpx+10;
-// 			if(_s2_col){
-// 				_e.collision(_SHOTTYPE_LASER);
-// 				if(_e.isalive()){
-// 					return _tmpx+10;
-// 				}
-// 				return _CANVAS.width;
-// 			}else{
-// //					console.log(_t);
-// 				return _tmpx+10;
-// 			}
 			return (_s2_col)
 				?{ret:_IS_SQ_COL,val:_tmpx+10}
 				:{ret:_IS_SQ_COL_NONE,val:_tmpx+10};
 		}
-		// let _td=Math.sqrt(
-		// 	Math.pow(_s2_c_x-_s1_c_x,2)+
-		// 	Math.pow(_s2_c_y-_s1_c_y,2)
-		// );
-		// if(_td<(_s1_l/2)+(_s2_l/2)){return true;}							
 	}//_i
 	return {ret:_IS_SQ_NOTCOL,val:_CANVAS.width};
 },

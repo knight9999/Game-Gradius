@@ -3862,10 +3862,7 @@ const _IS_GET_POWERCAPSELL=function(){
 				let _e=_ENEMIES[_i];
 				if(_GAME.isEnemyCanvasOut(_e)){continue;}
 				if(_e.isStandBy()){continue;}
-				_e._status--;
-				if(_e.isalive()){continue;}
-				_e.showCollapes();
-				_SCORE.set(_e.getscore);
+				_e.collision();
 			}
 			//CANVAS内の敵のショットを全て外す
 			for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){

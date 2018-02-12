@@ -226,6 +226,7 @@ class GameObject_ENEMY{
 	}
 	setStatus(_s_type,_num){
 		let _this=this;
+		//自機・ショットによって判定を識別させる
 		_this._status-=(function(){
 			if(_s_type===undefined){return 1;}
 			if(_this._DEF_SHOTSTATUS[_s_type]===undefined){return 1;}

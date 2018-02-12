@@ -141,7 +141,15 @@ class GameObject_ENEMY{
 			_LD:5,//左下
 			_RU:6,//右上
 			_RD:7//右下
-		}
+		};
+		_this._DEF_SHOTSTATUS={
+			//main.jsよりショットによる衝突判定を設定
+			_SHOTTYPE_NORMAL:1,
+			_SHOTTYPE_MISSILE:2,
+			_SHOTTYPE_DOUBLE:1,
+			_SHOTTYPE_RIPPLE_LASER:1.5,
+			_SHOTTYPE_LASER:1
+		};
 
 		_this.alpha=1;//表示透明度（1〜0。1:表示、0:非表示）
 
@@ -218,17 +226,11 @@ class GameObject_ENEMY{
 	}
 	setStatus(_s_type,_num){
 		let _this=this;
-		_this._status-=(function(_n){
-			_n=_n||1;//デフォルトは1
-			if(_s_type===_SHOTTYPE_MISSILE){
-				//ミサイルは通常の2倍
-				return 2;
-			}else if(_s_type===_SHOTTYPE_RIPPLE_LASER){
-				//リップルレーザーは通常の1.5倍
-				return 1.5;
-			}
-			return _n;
-		})(_num);
+		_this._status-=(function(){
+			if(_s_type===undefined){return 1;}
+			if(_this._DEF_SHOTSTATUS[_s_type]===undefined){return 1;}
+			return _this._DEF_SHOTSTATUS[_s_type];
+		})();
 		_this.setAlive();
 	}
 	getEnemyCenterPosition(){
@@ -1351,6 +1353,9 @@ class ENEMY_q extends GameObject_ENEMY{
 		//衝突時のY座標アニメーション
 		_this._collision_posy=(_this.direct===_this._DEF_DIR._D)?25:0;
 
+		//レーザーのみ当たり判定を通常の半分にする。
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
+
 		_this.shotColMap=[
 			(function(){
 			if(_this.direct===_this._DEF_DIR._D){return "0,50,35,85";}//右下
@@ -1497,6 +1502,9 @@ class ENEMY_qr extends GameObject_ENEMY{
 		_this.sx=Math.cos(_this.rad);
 		_this.sy=Math.sin(_this.rad);
 		_this.speed=_MAPDEFS[_MAP_PETTERN]._speed*1.5;
+
+		//レーザーのみ当たり判定を通常の半分にする。
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 
 		_this._collision_type='t2';
 		((_this.direct===_this._DEF_DIR._D)?-10:0);
@@ -1666,27 +1674,12 @@ class ENEMY_BOSS_WALL
 		_this._standby=true;
 		_this.is_able_collision=false;
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];
+
+		//レーザーのみ当たり判定を通常の半分にする。
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 	}
 	setStandBy(){
 		this._standby=false;
-	}
-	setStatus(_s_type,_num){
-		let _this=this;
-		_this._status-=(function(_n){
-			_n=_n||1;//デフォルトは1
-			if(_s_type===_SHOTTYPE_MISSILE){
-				//ミサイルは通常の2倍
-				return 2;
-			}else if(_s_type===_SHOTTYPE_RIPPLE_LASER){
-				//リップルレーザーは通常の1.5倍
-				return 1.5;
-			}else if(_s_type===_SHOTTYPE_LASER){
-				//レーザーは通常の0.5倍
-				return 0.5;
-			}
-			return _n;
-		})(_num);
-		_this.setAlive();
 	}
 	moveDraw(){
 		let _this=this;

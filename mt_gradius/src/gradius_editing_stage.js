@@ -11,15 +11,14 @@ _MAP_PETTERN=0;
 const _AJAX=function(_url,_type,_f){
     let _r=new XMLHttpRequest();
     _r.onreadystatechange=function(){
-        if(_r.readyState===4){//通信の完了時
-            if(_r.status===200) {//通信の成功時
-                console.log('OK');
-                _f(_r.response);
-            }else{
-                //connecting
-                console.log('NG');
-            }
-        }
+        if(_r.readyState!==4){return;}//通信の完了時
+		if(_r.status===200) {//通信の成功時
+			console.log('OK');
+			_f(_r.response);
+		}else{
+			//connecting
+			console.log('NG');
+		}
     }
     _r.open('GET',_url+'?date='+(new Date().getTime()));
     _r.responseType=_type||'json';

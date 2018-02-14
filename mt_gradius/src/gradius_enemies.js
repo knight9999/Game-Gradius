@@ -164,7 +164,7 @@ class GameObject_ENEMY{
 		_this.haspc=false;//パワーカプセル所持フラグ
 
 		_this._collision_type='t0';
-		_this.is_able_collision=true;//衝突可能フラグ
+		_this.is_able_collision=true;//敵衝突可能フラグ（falseは無敵）
 
 		//衝突判定座標(x1,y1,x2,y2)
 		//左上：x1,y1
@@ -191,7 +191,6 @@ class GameObject_ENEMY{
 		//true:当たり判定あり
 		//false:当たり判定なし
 		let _this=this;
-		if(!_this.is_able_collision){return true;}
 		if(!_this.isCollision()){return false;}
 		_this.setStatus(_s_type,_num);
 		return true;
@@ -201,7 +200,11 @@ class GameObject_ENEMY{
 	}
 	isCollision(){
 		//衝突判定フラグ
+		//_statusを下げる判定フラグ
 		let _this=this;
+
+		//無敵は_statusを下げない
+		if(!_this.is_able_collision){return false;}
 		//250ミリ秒以内は無視する。
 		if(_this.col_date===null){
 			//1発目は必ず当てる
@@ -227,11 +230,8 @@ class GameObject_ENEMY{
 	setStatus(_s_type,_num){
 		let _this=this;
 		//自機・ショットによって判定を識別させる
-		_this._status-=(function(){
-			if(_s_type===undefined){return 1;}
-			if(_this._DEF_SHOTSTATUS[_s_type]===undefined){return 1;}
-			return _this._DEF_SHOTSTATUS[_s_type];
-		})();
+		_this._status-=
+			_this._DEF_SHOTSTATUS[_s_type]||1;
 		_this.setAlive();
 	}
 	getEnemyCenterPosition(){
@@ -1108,19 +1108,21 @@ class ENEMY_n_small extends ENEMY_o_small{
 	}
 }
 
-//クリスタル
+//クリスタル（大）
 class ENEMY_p extends GameObject_ENEMY{
     constructor(_x,_y,_d){
-		super(
-			_CANVAS_IMGS['enemy_p_1'].obj,_x,_y
-		)
-		this._status=4;
-		this.getscore=100;
-		this.speedx=_BACKGROUND_SPEED;
-		this.speedy=
+		super(_CANVAS_IMGS['enemy_p_1'].obj,_x,_y)
+		let _this=this;
+		_this._status=4;
+		_this.getscore=100;
+		_this.speedx=_BACKGROUND_SPEED;
+		_this.speedy=
 			(Math.random()+1)
 			*((Math.random()>0.5)?1:-1);
-		this._isbroken=false;
+		_this._isbroken=false;
+		//レーザーのみ当たり判定を通常の半分にする。
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
+
 	}
 	setAlive(){
 		let _this=this;
@@ -1554,8 +1556,15 @@ class ENEMY_qr extends GameObject_ENEMY{
 //
 //	_c:自爆までのカウント数
 //	is_able_collision:最初は衝突無効
+//
+//	ステータスは以下の順番で実行させる
+//	move_before：ボス登場前に敵を倒すシーン
+//	move_standby：ボスが登場する直前まで
+//	move_Allset：ボスが登場して自機へ攻撃する直前まで
+//	move：ボスが自機へ攻撃する状態
 //========================================
-class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
+class GameObject_ENEMY_BOSS
+		extends GameObject_ENEMY{
 	constructor(_o,_x,_y){
 		super(_o,_x,_y);
 		let _this=this;
@@ -1565,6 +1574,9 @@ class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 		_this._c_self_collision=4000;//アニメーションカウントを使って、自爆までのカウント
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision6'];
 		_this.is_able_collision=false;//衝突可能フラグ
+
+		//スタンバイ完了後ショット自機を攻撃する準備完了フラグ
+		_this.is_all_set=false;
 	}
 	init(){
 		this._isshow=false;
@@ -1621,6 +1633,16 @@ class GameObject_ENEMY_BOSS extends GameObject_ENEMY{
 			_this.img.width,
 			_this.img.height
 		);
+	}
+	move_Allset(){}
+	isAllset(){
+		let _this=this;
+		if(_this.is_all_set){
+			_this.set_wall_standBy();
+			return true;
+		}
+		_this.move_Allset();
+		return false;
 	}
 	isMove(){
 		let _this=this;
@@ -1679,7 +1701,8 @@ class ENEMY_BOSS_WALL
 		//レーザーのみ当たり判定を通常の半分にする。
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 	}
-	setStandBy(){
+	setStandByDone(){
+		//スタンバイ完了
 		this._standby=false;
 	}
 	moveDraw(){
@@ -1746,7 +1769,7 @@ class ENEMY_BOSS_BIGCORE
 	set_wall_standBy(){
 		let _this=this;
 		for(let _i=0;_i<_this.wall.length;_i++){
-			_this.wall[_i].setStandBy();
+			_this.wall[_i].setStandByDone();
 		}		
 	}
 	set_wall_status(){
@@ -1775,18 +1798,31 @@ class ENEMY_BOSS_BIGCORE
 		if(Math.random()>0.02){return;}
 		_this._moveYStop=true;
 		_ENEMIES_SHOTS.push(
-			new ENEMY_SHOT_Z(_this.x,_this.y));
+			new ENEMY_SHOT_LASER(_this.x,_this.y,_CANVAS_IMGS['enemy_bullet_z'].obj));
 		_ENEMIES_SHOTS.push(
-			new ENEMY_SHOT_Z(_this.x,_this.y+35));
+			new ENEMY_SHOT_LASER(_this.x,_this.y+35,_CANVAS_IMGS['enemy_bullet_z'].obj));
 		_ENEMIES_SHOTS.push(
-			new ENEMY_SHOT_Z(_this.x,_this.y+70));
+			new ENEMY_SHOT_LASER(_this.x,_this.y+70,_CANVAS_IMGS['enemy_bullet_z'].obj));
 		_ENEMIES_SHOTS.push(
-			new ENEMY_SHOT_Z(_this.x,_this.y+105));
+			new ENEMY_SHOT_LASER(_this.x,_this.y+105,_CANVAS_IMGS['enemy_bullet_z'].obj));
 		_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);		
 		_this.tid=setTimeout(function(){
 			_this._moveYStop=false;
 			clearTimeout(_this.tid);
 		},100);
+	}
+	move_Allset(){
+		let _this=this;
+		_this.x-=4;
+
+		_this.moveDraw();
+		_this.set_wall_status();
+		_this.show_walls(_this.wall);
+
+		if(_this.x<_CANVAS.width
+			-_this.img.width-80){
+			_this.is_all_set=true;
+		}
 	}
 	move_before(){return false;}
 	move_standby(){
@@ -1794,25 +1830,20 @@ class ENEMY_BOSS_BIGCORE
 		let _this=this;
 		if(_this.move_before()){return;}
 		_this.x-=4;
-
-		_this.moveDraw();
-		_this.set_wall_status();
-		_this.show_walls(_this.wall);
-
-		if(_this.x<_CANVAS.width-_this.img.width-80){
+		if(_this.x<_CANVAS.width){
 			_this._standby=false;
-			_this.set_wall_standBy();
 		}
 	}
 	move(){
 		let _this=this;
 		if(!_this.isMove()){return;}
-			
+		if(!_this.isAllset()){return;}
+
 		_this.y+=(_this._moveYStop)?0:_this.speed;
 		_this.speed=(_this.y<50
-					||_this.y+_this.img.height>450)
-					?_this.speed*-1
-					:_this.speed;
+						||_this.y+_this.img.height>450)
+						?_this.speed*-1
+						:_this.speed;
 
 		_this.shot();
 		_this.moveDraw();
@@ -2003,10 +2034,10 @@ class ENEMY_BOSS_BIGCORE2
 	set_wall_standBy(){
 		let _this=this;
 		for(let _i=0;_i<_this.wall_up.length;_i++){
-			_this.wall_up[_i].setStandBy();
+			_this.wall_up[_i].setStandByDone();
 		}		
 		for(let _i=0;_i<_this.wall_down.length;_i++){
-			_this.wall_down[_i].setStandBy();
+			_this.wall_down[_i].setStandByDone();
 		}		
 	}
 	set_wall_status(){
@@ -2103,8 +2134,7 @@ class ENEMY_BOSS_BIGCORE2
 			}			
 		}
 	}
-	move_standby(){
-		//スタンバイ状態
+	move_Allset(){
 		let _this=this;
 		_this.x-=4;
 		_this.moveDraw();
@@ -2134,13 +2164,22 @@ class ENEMY_BOSS_BIGCORE2
 		if(_this.x<_CANVAS.width
 				-_this.img.width
 				-80){
+			_this.is_all_set=true;
+		}
+	}
+	move_standby(){
+		//スタンバイ状態
+		let _this=this;
+		if(_this.move_before()){return;}
+		_this.x-=4;
+		if(_this.x<_CANVAS.width){
 			_this._standby=false;
-			_this.set_wall_standBy();
 		}
 	}
 	move(){
 		let _this=this;
 		if(!_this.isMove()){return;}
+		if(!_this.isAllset()){return;}
 			
 //		console.log(_this._moveYStop)
 		_this.y+=(_this._moveYStop)?0:_this.speed;
@@ -2464,7 +2503,7 @@ class ENEMY_BOSS_CRYSTALCORE
 	set_wall_standBy(){
 		let _this=this;
 		for(let _i=0;_i<_this.wall.length;_i++){
-			_this.wall[_i].setStandBy();
+			_this.wall[_i].setStandByDone();
 		}		
 	}
 	set_wall_status(){
@@ -2493,7 +2532,6 @@ class ENEMY_BOSS_CRYSTALCORE
 		let _this=this;
 
 		_this._shot_count++;
-//		if(_this._count>1200){_this._count=0;return;}
 		if(_this._c%1200>800){
 			if(_this._shot_count<10){return;}			
 		}else if(_this._c%1200<=800){
@@ -2534,11 +2572,19 @@ class ENEMY_BOSS_CRYSTALCORE
 				_this.y+(_this.img.height/2),
 				_this._collision_type));
 	}
-	move_standby(){
-		//スタンバイ状態
+	isAllset(){
+		//準備完了判定処理
 		let _this=this;
-		if(_this.move_before()){return;}
-
+		if(_this.is_all_set){
+			_this.set_wall_standBy();
+			return true;
+		}
+		_this.move_Allset();
+		return false;
+	}
+	move_Allset(){
+		//準備完了状態
+		let _this=this;
 		_this.y-=4;
 		//触手の上を表示
 		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
@@ -2553,16 +2599,25 @@ class ENEMY_BOSS_CRYSTALCORE
 		_this.show_walls(_this.wall);
 
 		if(_this.y<200){
+			_this.is_all_set=true;
+		}
+	}
+	move_standby(){
+		//スタンバイ状態
+		let _this=this;
+		if(_this.move_before()){return;}
+		_this.y-=4;
+		if(_this.y<_CANVAS.height){
 			_this._standby=false;
-			_this.set_wall_standBy();
 		}
 	}
 	move(){
 		let _this=this;
 //		console.log(_this._c)
 		if(!_this.isMove()){return;}
-		_this.y+=_this.speed;
+		if(!_this.isAllset()){return;}
 
+		_this.y+=_this.speed;
 		if(_this._c%1200>800){
 			//連射中はバウンドタイミングを変更させる
 			if(_this._c%45===0){
@@ -2632,6 +2687,7 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		_this._change=_d._change;//true:上向き,false:下向き
 		_this._standby=true;
 		_this._standby_tmp=_d._standby||false;
+		_this.isAbleCollision=false;
 
 		//ここでは先端のオブジェクトだけ、
 		//ショットさせる
@@ -2649,10 +2705,6 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		let _z=parseInt(_sp[3])+((_this._change)?1:-1);
 		_this._data=_x+','+_y+','+_deg+','+_z;
 
-	}
-	init(){
-		this._isshow=false;
-		this._status=0;
 	}
 	collision(_s_type,_num){}
 	setStatus(){this._status=0;}
@@ -2744,7 +2796,7 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		_this.x=_this._boss.x+parseInt(_d[0])+_ix;
 		_this.y=_this._boss.y+parseInt(_d[1])+_iy;
 
-		if(_o._standby){return;}
+		if(!_o.is_all_set){return;}
 		_this.shot();
 		_this.move_hands();
 		_this._standby=_this._standby_tmp;
@@ -3078,40 +3130,11 @@ class GameObject_ENEMY_SHOT2 extends
 	}
 }
 
-
-class ENEMY_SHOT_Z
-	extends GameObject_ENEMY_SHOT{
-	constructor(_x,_y){
-		super(_x,_y);
-		this.img=_CANVAS_IMGS['enemy_bullet_z'].obj;
-		this.speed=10;
-	}
-	move(){
-		let _this=this;
-		if(_GAME.isEnemyCanvasOut(_this)){
-			_this.init();
-			return;
-		}
-		if(!_this._shot_alive){return;}
-		_this.map_collition();
-
-		_this.x-=_this.speed;
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.x,
-			_this.y,
-			_this.img.width,
-			_this.img.height
-		);
-
-	}
-}
-
 class ENEMY_SHOT_LASER
 	extends GameObject_ENEMY_SHOT{
-	constructor(_x,_y){
+	constructor(_x,_y,_img){
 		super(_x,_y);
-		this.img=_CANVAS_IMGS['enemy_bullet_laser'].obj;
+		this.img=_img||_CANVAS_IMGS['enemy_bullet_laser'].obj;
 		this.speed=10;
 	}
 	move(){

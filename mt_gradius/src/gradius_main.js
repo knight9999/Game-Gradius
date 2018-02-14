@@ -1577,8 +1577,8 @@ class GameObject_FORCEFIELD{
 			_e.x+","+_e.y
 			)===_IS_SQ_NOTCOL){return;}
 
-		let _r=_e.collision();
-		if(_r){_this.reduce();}
+		_e.collision();
+		_this.reduce();
 	}
 	enemy_shot_collision(_e){
 		let _this=this;
@@ -1707,18 +1707,19 @@ class GameObject_SHIELD
 			_e.shotColMap,
 			_e.x+","+_e.y
 			)===_IS_SQ_NOTCOL){return;}
-		let _r=_e.collision();
-		if(_r){_this.reduce();}
+		_e.collision();
+		_this.reduce();
 	}
 	enemy_shot_collision(_e){
+		let _this=this;
 		if(_GAME.isSqCollision(
-			"0,0,"+this.width+","+(this.height*2),
-			parseInt(this.x)+","+parseInt(this.y),
+			"0,0,"+_this.width+","+(_this.height*2),
+			parseInt(_this.x)+","+parseInt(_this.y),
 			_e.shotColMap,
 			_e.x+","+_e.y
 			)===_IS_SQ_NOTCOL){return;}
 		_e.init();
-		this.reduce();
+		_this.reduce();
 	}
 	map_collition(_p){
 		let _this=this;
@@ -3064,9 +3065,7 @@ class GameObject_SHOTS_LASER
 					this._sx=0,
 					this._enemy=null,
 					this._l_x=0,//処理変数：レーザー右端x
-					this._l_y=0,//処理変数：レーザー右端y
 					this._l_sx=0,//処理変数：レーザー左端x
-					this._l_sy=0,//処理変数：レーザー左端y
 					this._laser_MaxX=_CANVAS.width,
 					this._shot=false,
 					this._shot_alive=false
@@ -3113,9 +3112,6 @@ class GameObject_SHOTS_LASER
  		if(!_e.isalive()){
 			 return _CANVAS.width;
 		}
-		// _t._laser_MaxX=
-		// 	(_s<_t._laser_MaxX)
-		// 		?_s:_t._laser_MaxX;
 		return _s.val;
 
 //		console.log(_s+':'+_t._laser_MaxX);
@@ -3142,9 +3138,7 @@ class GameObject_SHOTS_LASER
 //			this.setLaserMaxX(_t,_t._l_x);
 //			this.setLaserMaxX(_t,_e.x+(_e.img.width/4));
 //			return;
-//		}
-
-		
+//		}		
 		}//_k
 	}
 	map_collition(_t){
@@ -3862,7 +3856,12 @@ const _IS_GET_POWERCAPSELL=function(){
 				let _e=_ENEMIES[_i];
 				if(_GAME.isEnemyCanvasOut(_e)){continue;}
 				if(_e.isStandBy()){continue;}
-				_e.collision();
+				_e._status-=1;
+				if(!_e.isalive()){
+					_SCORE.set(_e.getscore);
+					_e.showCollapes();
+				}
+//				_e.collision();
 			}
 			//CANVAS内の敵のショットを全て外す
 			for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
@@ -3903,8 +3902,7 @@ const _IS_ENEMIES_COLLISION=function(){
 		// レーザーを表示させる。
 		for(let _i=0;_i<_e.length;_i++){
 			//スタンバイ状態は無視する
-			if(_e[_i].isStandBy()
-				&&_e[_i].isAbleCollision()){continue;}
+			if(_e[_i].isStandBy()){continue;}
 			if(!_e[_i].isalive()){continue;}
 			let _oe=_e[_i];
 			let _m=_os.enemy_collision(_oe);
@@ -3925,8 +3923,7 @@ const _IS_ENEMIES_COLLISION=function(){
 		let _os=_PLAYERS_SHOTS[_SHOTTYPE][_j];
 		for(let _i=0;_i<_e.length;_i++){
 			//スタンバイ状態は無視する
-			if(_e[_i].isStandBy()
-				&&_e[_i].isAbleCollision()){continue;}		
+			if(_e[_i].isStandBy()){continue;}		
 			if(!_e[_i].isalive()){continue;}
 			let _oe=_e[_i];
 			_os.enemy_collision(_oe);
@@ -3937,10 +3934,10 @@ const _IS_ENEMIES_COLLISION=function(){
 	
 //	console.log('101:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 	for(let _i=0;_i<_e.length;_i++){
-	//スタンバイ状態は無視する
-	if(_e[_i].isStandBy()){continue;}
-	if(!_e[_i].isalive()){continue;}
 	let _oe=_e[_i];
+	//スタンバイ状態は無視する
+	if(_oe.isStandBy()){continue;}
+	if(!_oe.isalive()){continue;}
 
 	//自機衝突判定
 	_PLAYERS_MAIN.enemy_collision(_oe);

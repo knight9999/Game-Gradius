@@ -180,7 +180,7 @@ form .form_group select{
 	background-color:rgba(0,0,0,1);
     color:rgba(255,255,255,1);
     height:40px;
-    width: 30%;
+    min-width: 70%;
     font-size:20px;
 }
 form .form_group input[type="text"] {

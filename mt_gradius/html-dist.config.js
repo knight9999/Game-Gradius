@@ -8,17 +8,14 @@ module.exports = {
     remove:'script,link',
     appends:[
       link({rel:'apple-touch-icon',href:'images/homeicon.jpg'}),
-      link({rel:'stylesheet',href:'gradius_main.min.css'}),
-      script({src:'gradius_main.min.js'})
+      link({rel:'stylesheet',href:args.cssFile})
     ]
  },
  body: {
    // append the following things to the body 
-//    appends: [
-//      script({
-//        src: 'bundle.js'
-//      }),
-//      googleAnalytics('UA-1234')
-//    ]
+   remove:'script',
+   appends: [
+    script({src:args.jsFile})
+   ]
  }
 }

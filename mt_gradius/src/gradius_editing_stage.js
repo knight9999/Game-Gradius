@@ -645,13 +645,11 @@ _f_pb_dragstart:function(e){
 
 
 
-window.onload=function(){
-    $_pb=document.getElementsByClassName('parts_block');
-    $_ab=document.getElementsByClassName('area_block');
-    $_mp=document.querySelector('#menu .prev');
-    $_mn=document.querySelector('#menu .next');    
-    _DATAAPI._init();    
-};
+$_pb=document.getElementsByClassName('parts_block');
+$_ab=document.getElementsByClassName('area_block');
+$_mp=document.querySelector('#menu .prev');
+$_mn=document.querySelector('#menu .next');    
+_DATAAPI._init();    
 //_GAME_STAGEEDIT._init();
 
 // const _area=document.querySelector('#area');

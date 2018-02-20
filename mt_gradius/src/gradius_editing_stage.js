@@ -5,6 +5,7 @@ let $_pb=null;
 let $_ab=null;
 let $_mp=null;
 let $_mn=null;
+let $_bm=null;
 
 _MAP_PETTERN=0;
 
@@ -29,7 +30,7 @@ const _DATAAPI={
 _data_api:'',
 _blog_id:3,
 _init:function(){
-	let _this=this;
+	let _this=_DATAAPI;
 	_this._data_api=new MT.DataAPI({
 		baseUrl:"http://localhost:8080/mt6/mt-data-api.cgi",
 		clientId:"api11entries"
@@ -88,6 +89,12 @@ _set_entryupdate:function(_ed){
 			    $_fg_range[_i].addEventListener('change',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
 			}
 
+			//BG MUSICによる音再生イベント設定
+			const $_fg_bg_play=document.querySelector('a.bgmusic_play');
+			$_fg_bg_play.addEventListener('click',_GAME_STAGEEDIT_EVENTS._f_bgmusic_play);
+			const $_fg_bg_stop=document.querySelector('a.bgmusic_stop');
+			$_fg_bg_stop.addEventListener('click',_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop);
+
 			//設定が全て終わったらページを表示させる
 			document.body.classList.add('on');
 			document.body.classList.add('ismenu');
@@ -110,6 +117,8 @@ _set_entryupdate:function(_ed){
 }//_DATAAPI
 
 const _GAME_STAGEEDIT={
+_ac:new window.AudioContext(),
+_as:null,
 _theme:0,
 _setInitMap:function(_m){
 	//初期表示
@@ -154,6 +163,57 @@ _setInitMap:function(_m){
 		.innerHTML=_str;
 
 },//_setInitMap
+
+_setAudioInit:function(_obj,_func){
+	let _audioLoadedCount=0;
+	let _alertFlag=false;
+	for(let _i in _obj){
+		let _r=new XMLHttpRequest();
+		_r.open('GET',_obj[_i].src,true);
+		_r.responseType='arraybuffer'; //ArrayBufferとしてロード
+		_r.onload=function(){
+			// contextにArrayBufferを渡し、decodeさせる
+			_GAME_STAGEEDIT._ac.decodeAudioData(
+				_r.response,
+				function(_buf){
+					_obj[_i].buf=_buf;
+					_audioLoadedCount++;
+					if(_audioLoadedCount>=
+						Object.keys(_obj).length){
+						_func();
+					}
+					//ローディングに進捗率を表示させる
+//					_gsl_r.innerHTML=parseInt(_audioLoadedCount/Object.keys(_obj).length*100)+'%';
+				},
+				function(_error){
+					alert('一部音声読み込みに失敗しました。再度立ち上げなおしてください:'+_error);
+					return;
+				});
+		};
+		_r.send();
+	}
+
+},// _setAudioInit
+
+_setAudioStop(_obj){
+	let _this=this;
+	if(_this._as===null){return;}
+	_this._as.stop();
+
+},//_setAudioPlay
+
+_setAudioPlay(_obj){
+	let _this=this;
+	if(_obj===null||_obj===undefined){return;}
+
+	var _s=_this._ac.createBufferSource();
+	_s.buffer=_obj.buf;
+	_s.loop=false;
+    _s.connect(_this._ac.destination);
+	_s.start(0);
+	_this._as=_s;
+	
+},//_setAudioPlay
 
 _setInitPartsBlocksWrapper:function(_m){
 	let _mo=_m._map;
@@ -238,6 +298,9 @@ _setData:function(_pt){
 			break;
 		}
 	}
+	$_bgmusic.addEventListener('click',function(){
+		_GAME_STAGEEDIT._setAudioStop();
+	})
 	//BOSSを表示
 	const $_boss=document.querySelector('#boss select');
 	for(let _i=0;_i<$_boss.length;_i++){
@@ -386,6 +449,12 @@ _init:function(){
 		    $_fg_range[_i].addEventListener('input',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
 		    $_fg_range[_i].addEventListener('change',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
 		}
+
+		//BG MUSICによる音再生イベント設定
+		const $_fg_bg_play=document.querySelector('a.bgmusic_play');
+		$_fg_bg_play.addEventListener('click',_GAME_STAGEEDIT_EVENTS._f_bgmusic_play);
+		const $_fg_bg_stop=document.querySelector('a.bgmusic_stop');
+		$_fg_bg_stop.addEventListener('click',_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop);
 
 		//設定が全て終わったらページを表示させる
 		document.body.classList.add('on');
@@ -640,7 +709,19 @@ _f_pb_dragstart:function(e){
 	_GAME_STAGEEDIT_EVENTS.$_start_area_parts_obj=e.currentTarget;
 	e.dataTransfer.setData("text",e.currentTarget.parentNode.getAttribute('data-val'));
 	e.currentTarget.parentNode.setAttribute('data-val',0);
-}//_f_pb_dragstart
+},//_f_pb_dragstart
+
+//====================
+//	audio playing events
+//====================
+_f_bgmusic_play:function(e){
+	let _b=document.querySelector('#bgmusic select').value;
+	_GAME_STAGEEDIT._setAudioPlay(_CANVAS_AUDIOS['bg_'+_b]);
+},//_f_bgmusic_play
+_f_bgmusic_stop:function(e){
+	_GAME_STAGEEDIT._setAudioStop();
+}//_f_bgmusic_stop
+
 };//_GAME_STAGEEDIT_EVENTS
 
 
@@ -648,8 +729,12 @@ _f_pb_dragstart:function(e){
 $_pb=document.getElementsByClassName('parts_block');
 $_ab=document.getElementsByClassName('area_block');
 $_mp=document.querySelector('#menu .prev');
-$_mn=document.querySelector('#menu .next');    
-_DATAAPI._init();    
+$_mn=document.querySelector('#menu .next'); 
+$_bm=document.querySelector('#bgmusic');
+_GAME_STAGEEDIT._setAudioInit(
+	_CANVAS_AUDIOS,
+	_DATAAPI._init
+);
 //_GAME_STAGEEDIT._init();
 
 // const _area=document.querySelector('#area');

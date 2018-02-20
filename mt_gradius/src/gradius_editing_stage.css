@@ -205,8 +205,6 @@ form .form_group input[type="range"] {
     margin:0px 20px;
     width: 40%;
 }
-
-
 form .form_group{border: 2px solid rgba(255,255,255,0);margin-bottom:10px;padding:20px;}
 form .form_group:after{clear:both;content:'';display:table;}
 form .form_group:hover{
@@ -227,6 +225,34 @@ form .form_group .col_r .val{
     width:140px;
 }
 form .form_group .col_r.range{margin-right:5%;width:10%;}
+
+/* bgmusic */
+form .form_group#bgmusic .col_r{display:flex;}
+form .form_group#bgmusic .col_r>*{margin-right:10px;}
+form .form_group#bgmusic .col_r>a{
+	background-color: rgba(150,150,150,1);
+    border:1px solid rgba(255,255,255,0.7);
+	border-radius:5px;
+ 	cursor:pointer;
+	display:block;
+	height:40px;
+	position: relative;
+	width:40px;
+}
+form .form_group#bgmusic .col_r>a span {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    margin: auto;
+    height: 1em;
+    width: 1em;
+    line-height: 1em;
+    font-size: 150%;
+}
+
+
 
 body #menu{
     background: linear-gradient(to bottom left, #2d2d2d 0%, #000000 100%), linear-gradient(to left, rgba(255, 255, 255, 0.12) 0%, rgba(0, 0, 0, 0.12) 100%);

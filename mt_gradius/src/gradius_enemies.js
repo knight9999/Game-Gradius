@@ -192,6 +192,8 @@ class GameObject_ENEMY{
 		//false:当たり判定なし
 		let _this=this;
 		if(!_this.isCollision()){return false;}
+		//無敵は_statusを下げないが衝突させる
+		if(!_this.is_able_collision){return true;}
 		_this.setStatus(_s_type,_num);
 		return true;
 	}
@@ -202,9 +204,6 @@ class GameObject_ENEMY{
 		//衝突判定フラグ
 		//_statusを下げる判定フラグ
 		let _this=this;
-
-		//無敵は_statusを下げない
-		if(!_this.is_able_collision){return false;}
 		//250ミリ秒以内は無視する。
 		if(_this.col_date===null){
 			//1発目は必ず当てる
@@ -454,7 +453,7 @@ class ENEMY_c extends GameObject_ENEMY{
 			:_y;
 		_this._st='_st1';
 		_this._shot=false;
-		_this._status=2;//ライフステータス
+		_this._status=1;//ライフステータス
         _this.direct=_d||_this._DEF_DIR._U;
 
 		_this._collision_type='t1';

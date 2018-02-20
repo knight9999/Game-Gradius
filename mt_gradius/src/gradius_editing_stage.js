@@ -412,7 +412,7 @@ _init_images:function(_obj,_func){
 		}
 	}
 },
-_init:function(){
+_init:()=>{
 	//DataAPI読み込み完了後に実行
     const _this=_GAME_STAGEEDIT;
 	//入力画面 BG MUSICの選択ボックス作成
@@ -436,7 +436,7 @@ _init:function(){
 	});
 
     //入力値をセット
-    _MAP.init(function(){
+    _MAP.init(()=>{
         console.log('success');
 		_this._setData(_MAP_PETTERN);
 
@@ -726,15 +726,21 @@ _f_bgmusic_stop:function(e){
 
 
 
-$_pb=document.getElementsByClassName('parts_block');
-$_ab=document.getElementsByClassName('area_block');
-$_mp=document.querySelector('#menu .prev');
-$_mn=document.querySelector('#menu .next'); 
-$_bm=document.querySelector('#bgmusic');
-_GAME_STAGEEDIT._setAudioInit(
-	_CANVAS_AUDIOS,
-	_DATAAPI._init
-);
+
+document.addEventListener('scroll',()=>{
+	_GAME_STAGEEDIT_EVENTS._e_scroll();
+});
+window.addEventListener('load',()=>{
+	$_pb=document.getElementsByClassName('parts_block');
+	$_ab=document.getElementsByClassName('area_block');
+	$_mp=document.querySelector('#menu .prev');
+	$_mn=document.querySelector('#menu .next'); 
+	$_bm=document.querySelector('#bgmusic');
+	_GAME_STAGEEDIT._setAudioInit(
+		_CANVAS_AUDIOS,
+		_DATAAPI._init
+	);	
+});
 //_GAME_STAGEEDIT._init();
 
 // const _area=document.querySelector('#area');

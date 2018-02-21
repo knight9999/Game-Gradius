@@ -29,8 +29,7 @@ const _AJAX=function(_url,_type,_f){
 const _DATAAPI={
 _data_api:'',
 _blog_id:3,
-_init:function(){
-	let _this=_DATAAPI;
+_init:function(_this){
 	_this._data_api=new MT.DataAPI({
 		baseUrl:"http://localhost:8080/mt6/mt-data-api.cgi",
 		clientId:"api11entries"
@@ -117,7 +116,10 @@ _set_entryupdate:function(_ed){
 }//_DATAAPI
 
 const _GAME_STAGEEDIT={
-_ac:new window.AudioContext(),
+_ac:new(
+	window.AudioContext
+	||window.webkitAudioContext
+)(),
 _as:null,
 _theme:0,
 _setInitMap:function(_m){
@@ -165,6 +167,7 @@ _setInitMap:function(_m){
 },//_setInitMap
 
 _setAudioInit:function(_obj,_func){
+	let _this=this;
 	let _audioLoadedCount=0;
 	let _alertFlag=false;
 	for(let _i in _obj){
@@ -173,14 +176,14 @@ _setAudioInit:function(_obj,_func){
 		_r.responseType='arraybuffer'; //ArrayBufferとしてロード
 		_r.onload=function(){
 			// contextにArrayBufferを渡し、decodeさせる
-			_GAME_STAGEEDIT._ac.decodeAudioData(
+			_this._ac.decodeAudioData(
 				_r.response,
 				function(_buf){
 					_obj[_i].buf=_buf;
 					_audioLoadedCount++;
 					if(_audioLoadedCount>=
 						Object.keys(_obj).length){
-						_func();
+						_func(_DATAAPI);
 					}
 					//ローディングに進捗率を表示させる
 //					_gsl_r.innerHTML=parseInt(_audioLoadedCount/Object.keys(_obj).length*100)+'%';
@@ -199,12 +202,14 @@ _setAudioStop(_obj){
 	let _this=this;
 	if(_this._as===null){return;}
 	_this._as.stop();
+	_this._as=null;
 
 },//_setAudioPlay
 
 _setAudioPlay(_obj){
 	let _this=this;
 	if(_obj===null||_obj===undefined){return;}
+	if(_this._as!==null){return;}
 
 	var _s=_this._ac.createBufferSource();
 	_s.buffer=_obj.buf;

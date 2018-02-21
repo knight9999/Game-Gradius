@@ -3789,11 +3789,10 @@ class GameObject_BACKGROUND{
 		this.speed=Math.random()*5;
 
 		this.move_flash_count=0;
+		this._r=1;
 	}
 	init(){
-		let _r=Math.random()+0.3;
-		this.width=_r;
-		this.height=_r;
+		this._r=Math.random()+this._r;
 	}
 	move_flash(){
 		
@@ -3809,7 +3808,7 @@ class GameObject_BACKGROUND{
 					:_this.speed;
 
 		_CONTEXT.beginPath();
-        _CONTEXT.arc(this.x,this.y,2,0,Math.PI*2,true);
+        _CONTEXT.arc(_this.x,_this.y,_this._r,0,Math.PI*2,true);
         _CONTEXT.fillStyle=this.rgba;
         _CONTEXT.fill();
 	}

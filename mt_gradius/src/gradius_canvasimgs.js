@@ -427,7 +427,21 @@ const _CANVAS_IMGS={
 	'map_f_O':
 		{src:'images/gradius_map_f_O.png',rate:1,obj:new Image()},
 	'map_f_P':
-		{src:'images/gradius_map_f_P.png',rate:1,obj:new Image()}
+		{src:'images/gradius_map_f_P.png',rate:1,obj:new Image()},
+
+	//炎
+	'map_g_A_1':{src:'images/gradius_map_g_A_1.png',rate:1,obj:new Image()},
+	'map_g_A_2':{src:'images/gradius_map_g_A_2.png',rate:1,obj:new Image()},
+	'map_g_A_3':{src:'images/gradius_map_g_A_3.png',rate:1,obj:new Image()},
+	'map_g_A_4':{src:'images/gradius_map_g_A_4.png',rate:1,obj:new Image()},
+	'map_g_A_5':{src:'images/gradius_map_g_A_5.png',rate:1,obj:new Image()},
+
+	'map_g_B_1':{src:'images/gradius_map_g_B_1.png',rate:1,obj:new Image()},
+	'map_g_B_2':{src:'images/gradius_map_g_B_2.png',rate:1,obj:new Image()},
+	'map_g_B_3':{src:'images/gradius_map_g_B_3.png',rate:1,obj:new Image()},
+	'map_g_B_4':{src:'images/gradius_map_g_B_4.png',rate:1,obj:new Image()},
+	'map_g_B_5':{src:'images/gradius_map_g_B_5.png',rate:1,obj:new Image()}
+
 };
 
 const _CANVAS_IMGS_INIT={

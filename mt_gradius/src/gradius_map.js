@@ -484,6 +484,24 @@ const _MAP_THEME={//_parts要素番号0は空文字
 		}
 	}
 },//_THEME5
+'_THEME6':{//炎
+	'_p':{
+		'A':{
+			'_o':_CANVAS_IMGS['map_g_A_1'],
+			'_s':'00000000,11111111,11111111',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		},
+		'B':{
+			'_o':_CANVAS_IMGS['map_g_B_1'],
+			'_s':'11111111,11111111,00000000',
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;}
+		}
+
+	},
+	'_enemies':_MAP_ENEMIES._ENEMIES
+}//_THEME6
 }//_MAP_THEME
 
 //各種ステージ定義

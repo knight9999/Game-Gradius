@@ -28,10 +28,11 @@ const _AJAX=function(_url,_type,_f){
 
 const _DATAAPI={
 _data_api:'',
-_blog_id:3,
+_blog_id:2,
+_url:'http://localhost:8080/mt6/mt-data-api.cgi',
 _init:function(_this){
 	_this._data_api=new MT.DataAPI({
-		baseUrl:"http://localhost:8080/mt6/mt-data-api.cgi",
+		baseUrl:_this._url,
 		clientId:"api11entries"
 	});
 
@@ -70,7 +71,12 @@ _set_entryupdate:function(_ed){
 
 		//jsonファイルを取得して再表示させる
 		_MAP.init(function(){
-			_MAP_PETTERN=0;
+			_MAP_PETTERN=(function(){
+				//エントリした記事を記事更新後初期表示させる
+				for(let _i=0;_i<_MAPDEFS.length;_i++){
+					if(_MAPDEFS[_i]._eid===_ed._eid){return _i;}
+				}
+			})();
 			_GAME_STAGEEDIT._setData(_MAP_PETTERN);
 
 			//area_parts内、parts_blockイベント設定
@@ -357,8 +363,6 @@ setDataForDataApi:function(){
 		_str+=((_i===$_abr.length-1)?'"':'",');
 		}//_i
 		_str+='],';
-//		_str+='"_title":"'+document.querySelector('#title input[name="title"]').value+'",';
-//		_str+='"_eid":"'+_m._eid+'",';
 		_str+='"_theme":"'+_m._theme+'",';
 		_str+='"_body":"'+document.querySelector('#body textarea[name="body"]').value+'",';
 		_str+='"_initx":"'+document.querySelector('#init .col_r .val').getAttribute('data-val')+'",';

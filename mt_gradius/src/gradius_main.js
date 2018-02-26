@@ -1567,6 +1567,7 @@ class GameObject_FORCEFIELD{
 	}
 	enemy_collision(_e){
 		let _this=this;
+		if(!_this.isalive()){return;}
 		if(_GAME.isSqCollision(
 			parseInt(_this.width/8)
 			+","+parseInt(_this.height/8)
@@ -1582,6 +1583,7 @@ class GameObject_FORCEFIELD{
 	}
 	enemy_shot_collision(_e){
 		let _this=this;
+		if(!_this.isalive()){return;}
 		if(_GAME.isSqCollision(
 			parseInt(_this.width/8)
 			+","+parseInt(_this.height/8)
@@ -2920,6 +2922,8 @@ class GameObject_SHOTS_RIPPLE_LASER
 			let _t=this.shots[_k];
 //			console.log('_kk:'+_k);
 			if(!_t._shot_alive){continue;}
+			//衝突を無視
+			if(_e.isIgnoreCollision()){continue;}
 
 			let _s=_GAME.isSqCollision(
 					"0,-20,"+(_t._width)+","+(_t._height*2+20),
@@ -2941,6 +2945,8 @@ class GameObject_SHOTS_RIPPLE_LASER
 					if(!_en.isalive()){continue;}
 					//非表示は無視する
 					if(!_en.isshow()){continue;}
+					//衝突を無視
+					if(_en.isIgnoreCollision()){continue;}
 
 					let _s1=_GAME.isSqCollision(
 						"0,0,"+(_t._width)+","+(_t._height*2),
@@ -3851,10 +3857,13 @@ const _IS_GET_POWERCAPSELL=function(){
 		}
 		if(_pwc.type==='blue'){
 			//CANVAS内の敵を外す
-			for(let _i=0;_i<_ENEMIES.length;_i++){
-				let _e=_ENEMIES[_i];
+			var _ar=_ENEMIES.concat();
+			for(let _i=0;_i<_ar.length;_i++){
+				let _e=_ar[_i];
 				if(_GAME.isEnemyCanvasOut(_e)){continue;}
 				if(_e.isStandBy()){continue;}
+				if(!_e.isAbleCollision()){continue;}
+
 				_e._status-=1;
 				if(!_e.isalive()){
 					_SCORE.set(_e.getscore);
@@ -3863,8 +3872,9 @@ const _IS_GET_POWERCAPSELL=function(){
 //				_e.collision();
 			}
 			//CANVAS内の敵のショットを全て外す
-			for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
-				let _es=_ENEMIES_SHOTS[_i];
+			_ar=_ENEMIES_SHOTS.concat();
+			for(let _i=0;_i<_ar.length;_i++){
+				let _es=_ar[_i];
 				if(_GAME.isEnemyCanvasOut(_es)){continue;}
 				_es.init();
 			}

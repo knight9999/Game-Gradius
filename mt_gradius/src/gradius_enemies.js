@@ -165,6 +165,10 @@ class GameObject_ENEMY{
 
 		_this._collision_type='t0';
 		_this.is_able_collision=true;//敵衝突可能フラグ（falseは無敵）
+		//衝突してるがショットを通過させる
+		//true:衝突判定するが、ショットは通過
+		//false:衝突するものの無視
+		_this.is_ignore_collision=false;
 
 		//衝突判定座標(x1,y1,x2,y2)
 		//左上：x1,y1
@@ -199,6 +203,9 @@ class GameObject_ENEMY{
 	}
 	isAbleCollision(){
 		return this.is_able_collision;
+	}
+	isIgnoreCollision(){
+		return this.is_ignore_collision;
 	}
 	isCollision(){
 		//衝突判定フラグ
@@ -1547,6 +1554,186 @@ class ENEMY_qr extends GameObject_ENEMY{
 	}
 }
 
+
+//炎（大）
+class ENEMY_frame_1 extends GameObject_ENEMY{
+    constructor(_x,_y,_d){
+		super(_CANVAS_IMGS['enemy_frame_1'].obj,_x,_y)
+		let _this=this;
+		_this._status=1;
+		_this.getscore=200;
+		_this.speedx=_BACKGROUND_SPEED;
+		_this.speedy=0;
+		_this._isbroken=false;
+		_this._c=0;
+		_this.imgs=[
+			_CANVAS_IMGS['enemy_frame_1'].obj,
+			_CANVAS_IMGS['enemy_frame_2'].obj
+		];
+	}
+	setAlive(){
+		let _this=this;
+		if(_this.isalive()){return;}
+		_SCORE.set(_this.getscore);
+	}
+	map_collition(){
+		let _this=this;
+		//中心座標取得
+		let _e=_this.getEnemyCenterPosition();
+		//MAPの位置を取得
+		let _map_x=_MAP.getMapX(_e._x);
+		let _map_y=_MAP.getMapY(_e._y);
+
+		if(_MAP.isMapCollision(_map_x,_map_y)){
+			_this.init();
+		}
+	}
+	showCollapes(){
+		let _this=this;
+		let _cp=_this.getEnemyCenterPosition();
+		if(_this._status>0){return;}
+		if(_this._isbroken){return;}
+
+		let _eb_l=0;
+		let _eb=_ENEMIES;
+		for(let _i=0;_i<_eb.length;_i++){
+			if(!ENEMY_frame_2.prototype.isPrototypeOf(_eb[_i])){continue;}
+			_eb_l++;
+		}
+
+		let _c=(_eb_l>15)?1:2;
+		for(let _i=0;_i<_c;_i++){
+			//オブジェクト追加
+			let _cls=
+				new ENEMY_frame_2(_cp._x,_cp._y,_this.direct);
+			_ENEMIES.push(_cls);
+		}
+		_this._isbroken=true;
+		_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision1']);
+		_this.init();
+	}
+	move_standby(){
+		let _this=this;
+		if(_this.x<_CANVAS.width){
+			_this.speedx=3+_BACKGROUND_SPEED*3*Math.random();
+			_this.speedy=(_this.y<_CANVAS.height/2)
+					?Math.random()*3
+					:Math.random()*-3;
+			_this._standby=false;
+		}
+	}
+	moveDraw(){
+		let _this=this;
+		
+		_this.map_collition();
+		_this.x-=_this.speedx;
+		_this.y+=_this.speedy;
+		_this._c=(_this._c>=(_this.imgs.length*5)-1)?0:_this._c+1;
+		_this.img=_this.imgs[parseInt(_this._c/5)];
+//		console.log(_this._c);
+
+		// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
+		// _CONTEXT.beginPath();
+		// _CONTEXT.rect(
+		// 	_this.x,
+		// 	_this.y,
+		// 	_this.img.width,
+		// 	_this.img.height
+		// );
+		// _CONTEXT.stroke();
+
+		_CONTEXT.drawImage(
+			_this.img,
+			_this.x,
+			_this.y,
+			_this.img.width,
+			_this.img.height
+		);
+	}
+}
+//炎（中）
+class ENEMY_frame_2 extends ENEMY_frame_1{
+    constructor(_x,_y,_d){
+		super(_x,_y,_d);
+		let _this=this;
+		_this._status=1;
+		_this.speedx=3+_BACKGROUND_SPEED*3*Math.random();
+		_this.speedy=(Math.random()>0.5)
+				?Math.random()*5
+				:Math.random()*-5;
+		_this.getscore=200;
+		_this._isbroken=false;
+		_this.img=_CANVAS_IMGS['enemy_frame_3'].obj;
+		_this.shotColMap=[
+			"0,0,"+_this.img.width+","+_this.img.height
+		];
+		_this.imgs=[
+			_CANVAS_IMGS['enemy_frame_3'].obj,
+			_CANVAS_IMGS['enemy_frame_4'].obj
+		];
+		_this._standby=false;
+	}
+	showCollapes(){
+		let _this=this;
+		let _cp=_this.getEnemyCenterPosition();
+		if(_this._status>0){return;}
+		if(_this._isbroken){return;}
+
+		let _eb_l=0;
+		let _eb=_ENEMIES;
+		for(let _i=0;_i<_eb.length;_i++){
+			if(!ENEMY_frame_3.prototype.isPrototypeOf(_eb[_i])){continue;}
+			_eb_l++;
+		}
+
+		let _c=(_eb_l>10)?1:2;
+		_c=(_eb_l>15)?0:1;
+//		console.log(_eb_l);
+		for(let _i=0;_i<_c;_i++){
+			//オブジェクト追加
+			let _cls=
+				new ENEMY_frame_3(
+					_cp._x,
+					_cp._y,
+					_this.direct
+					);
+			_ENEMIES.push(_cls);
+		}
+		_this._isbroken=true;
+		_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision1']);
+		_this.init();
+
+	}
+}
+//炎（小）
+class ENEMY_frame_3 extends ENEMY_frame_1{
+    constructor(_x,_y,_d){
+		super(_x,_y,_d);
+		let _this=this;
+		_this._status=1;
+		_this.speedx=3+_BACKGROUND_SPEED*3*Math.random();
+		_this.speedy=(Math.random()>0.5)
+				?Math.random()*3
+				:Math.random()*-3;
+
+		_this.getscore=200;
+		_this._isbroken=false;
+		_this.img=_CANVAS_IMGS['enemy_frame_5'].obj;
+		_this.shotColMap=[
+			"0,0,"+_this.img.width+","+_this.img.height
+		];
+		//無敵だが衝突を無視し、"ある程度"ショットは通過できる
+		_this.is_able_collision=false;
+		_this.is_ignore_collision=(Math.random()>0.1);
+		_this._standby=false;
+
+		_this.imgs=[
+			_CANVAS_IMGS['enemy_frame_5'].obj,
+			_CANVAS_IMGS['enemy_frame_6'].obj
+		];
+	}
+}
+
 //========================================
 //　ボス クラス
 //	_o:ボス画像オブジェクト
@@ -2467,8 +2654,8 @@ class ENEMY_BOSS_CRYSTALCORE
 		}
 
 		_this.hands_up=[
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_standby":true,"_initx":50,"_inity":80,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,10","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_standby":true,"_initx":50,"_inity":80,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,185,5","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":50,"_inity":80,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,10","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":50,"_inity":80,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,185,5","_change":true}),
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":80,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,-10","_change":true}),
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":80,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,175,-25","_change":true}),
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":80,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,170,-40","_change":true}),
@@ -2481,8 +2668,8 @@ class ENEMY_BOSS_CRYSTALCORE
 		}
 
 		_this.hands_down=[
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_standby":true,"_initx":50,"_inity":155,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,-10","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_standby":true,"_initx":50,"_inity":155,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,175,-5","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":50,"_inity":155,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,-10","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":50,"_inity":155,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,175,-5","_change":false}),
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":155,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,10","_change":false}),
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":155,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,185,25","_change":false}),
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":155,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,190,40","_change":false}),
@@ -2686,7 +2873,8 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		_this._change=_d._change;//true:上向き,false:下向き
 		_this._standby=true;
 		_this._standby_tmp=_d._standby||false;
-		_this.isAbleCollision=false;
+		_this.is_able_collision=false;
+		_this.is_ignore_collision=_d._ignore_collision||false;
 
 		//ここでは先端のオブジェクトだけ、
 		//ショットさせる
@@ -2798,7 +2986,7 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		if(!_o.is_all_set){return;}
 		_this.shot();
 		_this.move_hands();
-		_this._standby=_this._standby_tmp;
+		_this._standby=false;
 		_this._c++;
 	}
 	//moveはmain.jsから処理させない

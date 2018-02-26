@@ -155,7 +155,7 @@ _setInitMap:function(_m){
 				_s+='<img'+((_st==='')?'':' style="'+_st+'"')+' width="'+parseInt(_o.width*0.8)+'" height="'+parseInt(_o.height*0.8)+'" src="'+_o.src+'">';
 			}else if(_k.match(_MAP.collision_map)!==null){
 				//マップの表示
-				let _o=_MAP_THEME[_m._theme]._p[_k]._o.obj;
+				let _o=_MAP_THEME[_m._theme]._map[_k]._o.obj;
 				_s+='<img width="'+parseInt(_o.width*0.8)+'" height="'+parseInt(_o.height*0.8)+'" src="'+_o.src+'">';
 //                _s+='<img width="'+parseInt(20*_wh._w)+'" height="'+parseInt(20*_wh._h)+'" src="'+_MAP_THEME[_m._theme]._p[_k]._o.src+'">';
 			}
@@ -242,7 +242,7 @@ _setInitPartsBlocksWrapper:function(_m){
 		.innerHTML=_str;
 
 	_str='';
-	for(let [_k,_v] of Object.entries(_MAP_THEME[_m._theme]._p)){
+	for(let [_k,_v] of Object.entries(_MAP_THEME[_m._theme]._map)){
 		_str+=
 			'<div class="parts_block_wrapper" data-val="'+_k+'">'+
 			'<div class="text">MAP '+_k+'</div>'+
@@ -658,7 +658,7 @@ _f_as_drop:function(e){
 		}
 		if(_o.match(_MAP.collision_map)!==null){
 			//MAPの表示
-			let _obj=_MAP_THEME[_GAME_STAGEEDIT._theme]._p[_o]._o.obj;
+			let _obj=_MAP_THEME[_GAME_STAGEEDIT._theme]._map[_o]._o.obj;
 			$_cn.children[0].width=parseInt(_obj.width*0.8);
 			$_cn.children[0].height=parseInt(_obj.height*0.8);
 		}

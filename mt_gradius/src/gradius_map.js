@@ -15,6 +15,339 @@ let _MAP_SCROLL_POSITION_X=0;
 // CANVASの初期左上が0として基点
 let _MAP_SCROLL_POSITION_Y=0;
 
+//========================================
+//MAPオブジェクト定義
+//
+//
+//
+//========================================
+class MAP_OBJECT{
+	constructor(){
+		let _this=this;
+		_this._s='1';
+		_this._c=0;
+		_this._DEF_DIR={//向き
+			_U:0,//上
+			_D:1,//下
+			_R:2,//右
+			_L:3,//左
+			_LU:4,//左上
+			_LD:5,//左下
+			_RU:6,//右上
+			_RD:7//右下
+		};
+		_this.img=new Image();
+		_this.imgs=[];
+	}
+	getImg(){
+		let _this=this;
+		return _this.img.obj;
+	}
+}
+//=====================
+//cube
+//=====================
+class MAP_CUBE_A extends MAP_OBJECT{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='1';
+		_this.img=_CANVAS_IMGS['map_cube_A'];
+	}
+}
+//=====================
+//cristal
+//=====================
+class MAP_CRISTAL extends MAP_OBJECT{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='011,111,110';
+		_this.img=_CANVAS_IMGS['enemy_p_1'];
+	}
+}
+
+//=====================
+//moai
+//=====================
+class MAP_MOAI_A extends MAP_OBJECT{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='0000000000,1111111111,1111111111,0000000000';
+		_this.img=_CANVAS_IMGS['map_moai_A'];
+	}
+}
+class MAP_MOAI_B extends MAP_MOAI_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this.img=_CANVAS_IMGS['map_moai_B'];
+	}
+}
+//=====================
+//volcano
+//=====================
+class MAP_VOLCANO_A extends MAP_OBJECT{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='111111111,111111111,000000000';
+		_this.img=_CANVAS_IMGS['map_volcano_A'];
+	}
+}
+class MAP_VOLCANO_B extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this.img=_CANVAS_IMGS['map_volcano_B'];
+	}
+}
+class MAP_VOLCANO_C extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='000000000,111111111,111111111';
+		_this.img=_CANVAS_IMGS['map_volcano_C'];
+	}
+}
+class MAP_VOLCANO_D extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='000000000,111111111,111111111';
+		_this.img=_CANVAS_IMGS['map_volcano_D'];
+	}
+}
+class MAP_VOLCANO_F extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='000110000,'+
+				'000110000,'+
+				'001111000,'+
+				'011111100,'+
+				'011111110,'+
+				'111111111';
+		_this.img=_CANVAS_IMGS['map_volcano_F'];
+	}
+}
+class MAP_VOLCANO_G extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='111111110,011111110,011111100,001111000,000110000,000110000';
+		_this.img=_CANVAS_IMGS['map_volcano_G'];
+	}
+}
+class MAP_VOLCANO_H extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='00000000000000000000,'+
+				'00000111111111111110,'+
+				'00000111111110000000,'+
+				'00000000011110000000,'+
+				'00000000001100000000,'+
+				'00000000001100000000,'+
+				'00000000001100000000,'+
+				'11111111111111111100,'+
+				'01111111111111111100,'+
+				'00000000011000000000,'+
+				'00000000011000000000,'+
+				'00000000111000000000,'+
+				'00000001111110000000';
+		_this.img=_CANVAS_IMGS['map_volcano_H'];
+	}
+}
+class MAP_VOLCANO_I extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='000000010000000,'+
+				'000000010000000,'+
+				'000000111000000,'+
+				'000001111100000,'+
+				'000011111110000,'+
+				'000111111111000,'+
+				'001111111111100,'+
+				'001111111111100,'+
+				'011111111111110,'+
+				'111111111111111';
+		_this.img=_CANVAS_IMGS['map_volcano_I'];
+	}
+}
+class MAP_VOLCANO_J extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='111111111111111,'+
+				'011111111111110,'+
+				'001111111111100,'+
+				'001111111111100,'+
+				'000111111111000,'+
+				'000011111110000,'+
+				'000001111100000,'+
+				'000000111000000,'+
+				'000000010000000,'+
+				'000000010000000';
+		_this.img=_CANVAS_IMGS['map_volcano_J'];
+	}
+}
+class MAP_VOLCANO_K extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='010';
+		_this.img=_CANVAS_IMGS['map_volcano_K'];
+	}
+}
+class MAP_VOLCANO_L extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='010';
+		_this.img=_CANVAS_IMGS['map_volcano_L'];
+	}
+}
+class MAP_VOLCANO_M extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='0111,1111';
+		_this.img=_CANVAS_IMGS['map_volcano_M'];
+	}
+}
+class MAP_VOLCANO_N extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='1111,0111';
+		_this.img=_CANVAS_IMGS['map_volcano_N'];
+	}
+}
+class MAP_VOLCANO_O extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='1111,1110';
+		_this.img=_CANVAS_IMGS['map_volcano_O'];
+	}
+}
+class MAP_VOLCANO_P extends MAP_VOLCANO_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='1110,1111';
+		_this.img=_CANVAS_IMGS['map_volcano_P'];
+	}
+}
+//=====================
+//frame
+//=====================
+class MAP_FRAME_A extends MAP_OBJECT{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='000000000,11111111,11111111';
+		_this._c=0;
+		_this.img=_CANVAS_IMGS['map_frame_A_1'];
+		_this.imgs=[
+			_CANVAS_IMGS['map_frame_A_1'],
+			_CANVAS_IMGS['map_frame_A_2'],
+			_CANVAS_IMGS['map_frame_A_3'],
+			_CANVAS_IMGS['map_frame_A_4'],
+			_CANVAS_IMGS['map_frame_A_5']
+		];
+	}
+	getImg(){
+		let _this=this;
+		_this._c=(_this._c>=(_this.imgs.length*10)-1)
+					?0
+					:_this._c+1;
+		return _this.imgs[parseInt(_this._c/10)].obj;
+	}
+}
+class MAP_FRAME_B extends MAP_FRAME_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='11111111,11111111,00000000';
+		_this.img=_CANVAS_IMGS['map_frame_B_1'];
+		_this.imgs=[
+			_CANVAS_IMGS['map_frame_B_1'],
+			_CANVAS_IMGS['map_frame_B_2'],
+			_CANVAS_IMGS['map_frame_B_3'],
+			_CANVAS_IMGS['map_frame_B_4'],
+			_CANVAS_IMGS['map_frame_B_5']
+		];
+	}
+}
+class MAP_FRAME_C extends MAP_FRAME_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='00,01,11';
+		_this.img=_CANVAS_IMGS['map_frame_C_1'];
+		_this.direct=_this._DEF_DIR._LD
+		_this.imgs=[
+			_CANVAS_IMGS['map_frame_C_1'],
+			_CANVAS_IMGS['map_frame_C_2'],
+			_CANVAS_IMGS['map_frame_C_3'],
+			_CANVAS_IMGS['map_frame_C_4'],
+			_CANVAS_IMGS['map_frame_C_5']
+		];
+	}
+}
+class MAP_FRAME_D extends MAP_FRAME_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='11,01,00';
+		_this.img=_CANVAS_IMGS['map_frame_D_1'];
+		_this.direct=_this._DEF_DIR._LU
+		_this.imgs=[
+			_CANVAS_IMGS['map_frame_D_1'],
+			_CANVAS_IMGS['map_frame_D_2'],
+			_CANVAS_IMGS['map_frame_D_3'],
+			_CANVAS_IMGS['map_frame_D_4'],
+			_CANVAS_IMGS['map_frame_D_5']
+		];
+	}
+}
+class MAP_FRAME_E extends MAP_FRAME_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='00,10,11';
+		_this.img=_CANVAS_IMGS['map_frame_E_1'];
+		_this.direct=_this._DEF_DIR._LU
+		_this.imgs=[
+			_CANVAS_IMGS['map_frame_E_1'],
+			_CANVAS_IMGS['map_frame_E_2'],
+			_CANVAS_IMGS['map_frame_E_3'],
+			_CANVAS_IMGS['map_frame_E_4'],
+			_CANVAS_IMGS['map_frame_E_5']
+		];
+	}
+}
+class MAP_FRAME_F extends MAP_FRAME_A{
+	constructor(){
+		super();
+		let _this=this;
+		_this._s='11,10,00';
+		_this.img=_CANVAS_IMGS['map_frame_F_1'];
+		_this.direct=_this._DEF_DIR._LU
+		_this.imgs=[
+			_CANVAS_IMGS['map_frame_F_1'],
+			_CANVAS_IMGS['map_frame_F_2'],
+			_CANVAS_IMGS['map_frame_F_3'],
+			_CANVAS_IMGS['map_frame_F_4'],
+			_CANVAS_IMGS['map_frame_F_5']
+		];
+	}
+}
+
 const _MAP_ENEMIES={
 _DEF_DIR:{//向き
 	_U:0,//上
@@ -155,205 +488,177 @@ const _MAP_ENEMIES_BOSS={
 
 
 const _MAP_THEME={//_parts要素番号0は空文字
-'_THEME1':{//なし
-	'_p':{
+'_THEME1':{//クリスタル
+	'_map':{
 		'A':{
-			'_o':_CANVAS_IMGS['enemy_p_1'],
-			'_s':'011,111,110',
+			'_o':(new MAP_CRISTAL()).img,//画像
+			'_s':(new MAP_CRISTAL())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_CRISTAL();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 		}
 	},
 	'_enemies':_MAP_ENEMIES._ENEMIES
 },//_THEME1
-'_THEME2':{//大地
-	'_p':{
+'_THEME2':{//火山
+	'_map':{
 		'A':{
-			'_o':_CANVAS_IMGS['map_f_A'],
-			'_s':'111111111,111111111,000000000',
+			'_o':(new MAP_VOLCANO_A()).img,//画像
+			'_s':(new MAP_VOLCANO_A())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'B':{
-			'_o':_CANVAS_IMGS['map_f_B'],
-			'_s':'111111111,111111111,000000000',
+			'_o':(new MAP_VOLCANO_B()).img,//画像
+			'_s':(new MAP_VOLCANO_B())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'C':{
-			'_o':_CANVAS_IMGS['map_f_C'],
-			'_s':'000000000,111111111,111111111',
+			'_o':(new MAP_VOLCANO_C()).img,//画像
+			'_s':(new MAP_VOLCANO_C())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_C();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'D':{
-			'_o':_CANVAS_IMGS['map_f_D'],
-			'_s':'000000000,111111111,111111111',
+			'_o':(new MAP_VOLCANO_D()).img,//画像
+			'_s':(new MAP_VOLCANO_D())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
-		},
-		'E':{
-			'_o':_CANVAS_IMGS['map_f_E'],
-			'_s':'1',
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_D();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'F':{
-			'_o':_CANVAS_IMGS['map_f_F'],
-			'_s':'000110000,'+
-				'000110000,'+
-				'001111000,'+
-				'011111100,'+
-				'011111110,'+
-				'111111111',
+			'_o':(new MAP_VOLCANO_F()).img,//画像
+			'_s':(new MAP_VOLCANO_F())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_F();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'G':{
-			'_o':_CANVAS_IMGS['map_f_G'],
-			'_s':'111111110,011111110,011111100,001111000,000110000,000110000',
+			'_o':(new MAP_VOLCANO_G()).img,//画像
+			'_s':(new MAP_VOLCANO_G())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_G();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'H':{
-			'_o':_CANVAS_IMGS['map_f_H'],
-			'_s':
-			'00000000000000000000,'+
-			'00000111111111111110,'+
-			'00000111111110000000,'+
-			'00000000011110000000,'+
-			'00000000001100000000,'+
-			'00000000001100000000,'+
-			'00000000001100000000,'+
-			'11111111111111111100,'+
-			'01111111111111111100,'+
-			'00000000011000000000,'+
-			'00000000011000000000,'+
-			'00000000111000000000,'+
-			'00000001111110000000',
+			'_o':(new MAP_VOLCANO_H()).img,//画像
+			'_s':(new MAP_VOLCANO_H())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_H();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'I':{//8
-			'_o':_CANVAS_IMGS['map_f_I'],
-			'_s':
-			'000000010000000,'+
-			'000000010000000,'+
-			'000000111000000,'+
-			'000001111100000,'+
-			'000011111110000,'+
-			'000111111111000,'+
-			'001111111111100,'+
-			'001111111111100,'+
-			'011111111111110,'+
-			'111111111111111',
+			'_o':(new MAP_VOLCANO_I()).img,//画像
+			'_s':(new MAP_VOLCANO_I())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_I();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'J':{
-			'_o':_CANVAS_IMGS['map_f_J'],
-			'_s':
-			'111111111111111,'+
-			'011111111111110,'+
-			'001111111111100,'+
-			'001111111111100,'+
-			'000111111111000,'+
-			'000011111110000,'+
-			'000001111100000,'+
-			'000000111000000,'+
-			'000000010000000,'+
-			'000000010000000',
+			'_o':(new MAP_VOLCANO_J()).img,//画像
+			'_s':(new MAP_VOLCANO_J())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_J();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
+
 		},
 		'K':{
-			'_o':_CANVAS_IMGS['map_f_K'],
-			'_s':
-			'010',
+			'_o':(new MAP_VOLCANO_K()).img,//画像
+			'_s':(new MAP_VOLCANO_K())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_K();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
+
 		},
 		'L':{
-			'_o':_CANVAS_IMGS['map_f_L'],
-			'_s':
-			'010',
+			'_o':(new MAP_VOLCANO_L()).img,//画像
+			'_s':(new MAP_VOLCANO_L())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_L();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'M':{
-			'_o':_CANVAS_IMGS['map_f_M'],
-			'_s':
-			'0111,1111',
+			'_o':(new MAP_VOLCANO_M()).img,//画像
+			'_s':(new MAP_VOLCANO_M())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_M();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'N':{
-			'_o':_CANVAS_IMGS['map_f_N'],
-			'_s':
-			'1111,0111',
+			'_o':(new MAP_VOLCANO_N()).img,//画像
+			'_s':(new MAP_VOLCANO_N())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_N();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'O':{
-			'_o':_CANVAS_IMGS['map_f_O'],
-			'_s':
-			'1111,1110',
+			'_o':(new MAP_VOLCANO_O()).img,//画像
+			'_s':(new MAP_VOLCANO_O())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_O();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'P':{
-			'_o':_CANVAS_IMGS['map_f_P'],
-			'_s':
-			'1110,1111',
+			'_o':(new MAP_VOLCANO_P()).img,//画像
+			'_s':(new MAP_VOLCANO_P())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_P();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		}
 
 	},
 	'_enemies':_MAP_ENEMIES._ENEMIES
 },//_THEME2
-'_THEME3':{//クリスタル
-	'_p':{
+'_THEME3':{//キューブ
+	'_map':{
 		'A':{
-			'_o':_CANVAS_IMGS['map_c_A'],
-			'_s':'1',
+			'_o':(new MAP_CUBE_A()).img,//画像
+			'_s':(new MAP_CUBE_A())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_CUBE_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 		}
 	},
 	'_enemies':_MAP_ENEMIES._ENEMIES
 },//_THEME3
-'_THEME4':{//なし
-	'_p':{
-		'A':{
-			'_o':_CANVAS_IMGS['map_c_A'],
-			'_s':'1',
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
-		}
-
-	},
-	'_enemies':_MAP_ENEMIES._ENEMIES
-},//_THEME4
 '_THEME5':{//なし
-	'_p':{
-		'A':{
-			'_o':_CANVAS_IMGS['map_c_A'],
-			'_s':'1',
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
-		},
+	'_map':{
 		'B':{
-			'_o':_CANVAS_IMGS['map_m_A'],
-			'_s':'0000000000,1111111111,1111111111,0000000000',
+			'_o':(new MAP_MOAI_A()).img,//画像
+			'_s':(new MAP_MOAI_A())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_MOAI_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		},
 		'C':{
-			'_o':_CANVAS_IMGS['map_m_B'],
-			'_s':'0000000000,1111111111,1111111111,0000000000',
+			'_o':(new MAP_MOAI_B()).img,//画像
+			'_s':(new MAP_MOAI_B())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_MOAI_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}
 		}
 	},
 	'_enemies':{
@@ -485,22 +790,84 @@ const _MAP_THEME={//_parts要素番号0は空文字
 	}
 },//_THEME5
 '_THEME6':{//炎
-	'_p':{
+	'_map':{
 		'A':{
-			'_o':_CANVAS_IMGS['map_g_A_1'],
-			'_s':'00000000,11111111,11111111',
+			'_o':(new MAP_FRAME_A()).img,//画像
+			'_s':(new MAP_FRAME_A())._s,//衝突座標
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_FRAME_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 		},
 		'B':{
-			'_o':_CANVAS_IMGS['map_g_B_1'],
-			'_s':'11111111,11111111,00000000',
+			'_o':(new MAP_FRAME_B()).img,
+			'_s':(new MAP_FRAME_B())._s,
 			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;}
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_FRAME_B();},
+			'objs':{}
+		},
+		'C':{
+			'_o':(new MAP_FRAME_C()).img,
+			'_s':(new MAP_FRAME_C())._s,
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_FRAME_C();},
+			'objs':{}
+		},
+		'D':{
+			'_o':(new MAP_FRAME_D()).img,
+			'_s':(new MAP_FRAME_D())._s,
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_FRAME_D();},
+			'objs':{}
+		},
+		'E':{
+			'_o':(new MAP_FRAME_E()).img,
+			'_s':(new MAP_FRAME_E())._s,
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_FRAME_E();},
+			'objs':{}
+		},
+		'F':{
+			'_o':(new MAP_FRAME_F()).img,
+			'_s':(new MAP_FRAME_F())._s,
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_FRAME_F();},
+			'objs':{}
 		}
 
 	},
-	'_enemies':_MAP_ENEMIES._ENEMIES
+	'_enemies':{
+		'a':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_frame_1(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',//MAP衝突用ビット
+			'_o':_CANVAS_IMGS['enemy_frame_1']//画像オブジェクト
+		},
+		'd':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_d_1']
+		},
+		'e':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_e_1']
+		}
+	}
+
 }//_THEME6
 }//_MAP_THEME
 
@@ -574,7 +941,20 @@ class GameObject_MAP{
 		_this.map_boss=_MAPDEFS[_this.map_pettern]._boss;
 		_this.isboss=false;
 
+		_this.init_map_anime();
 		_this.init_mapdef_col();
+	}
+	init_map_anime(){
+		let _this=this;
+		for(let _i=0;_i<_this.mapdef.length;_i++){
+		let _m=_this.mapdef[_i];
+		for(let _j=0;_j<_m.length;_j++){
+			//MAP衝突用1行分ループ
+			if((_m[_j]).match(/[A-Z]/)===null){continue;}
+			_MAP_THEME[_this.map_theme]._map[_m[_j]].obj(_j+','+_i);
+//			_MAP_ANIME[_j+','+_i]=_c;
+		}
+		}
 	}
 	init_enemies_location(){
 		let _this=this;
@@ -625,7 +1005,7 @@ class GameObject_MAP{
 			let _p=
 				(_this.isEnemiesBit(_m[_j]))
 				?_MAP_THEME[_this.map_theme]._enemies[_m[_j]]
-				:_MAP_THEME[_this.map_theme]._p[_m[_j]];
+				:_MAP_THEME[_this.map_theme]._map[_m[_j]];
 			if(_p===undefined){
 				console.log('テーマ:'+_this.map_theme+'に対して '+_m[_j]+'の定義がありません。');
 			}
@@ -835,7 +1215,7 @@ class GameObject_MAP{
 
 			}else{
 				//MAP
-				let _p=_MAP_THEME[_m._theme]._p[_k];
+				let _p=_MAP_THEME[_m._theme]._map[_k];
 				let _img=_p._o.obj;
 				//画像サイズは、25x25px
 				//ここでは10x10pxに調整
@@ -866,8 +1246,9 @@ class GameObject_MAP{
 				//キャンバスからある程度の距離は描画しない
 				continue;
 			}
-			let _p=_MAP_THEME[_this.map_theme]._p[_k];
-			let _img=_p._o.obj;
+			let _p=_MAP_THEME[_this.map_theme]._map[_k];
+			let _img=_p.objs[_j+','+_i].getImg();
+			// let _img=_p._o.obj;
 //			console.log(_this.y+(_p._my(_i)*_this.t))
 			_CONTEXT.drawImage(
 				_img,

@@ -21,8 +21,6 @@
     "imagemin-cli": "^3.0.0"
   },
   "dependencies": {
-    "uglify-es": "^3.3.10",
-    "uglifyjs": "^2.4.11",
-    "webpack": "^3.11.0"
+    "uglify-es": "^3.3.9"
   }
 }

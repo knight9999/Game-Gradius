@@ -3092,7 +3092,52 @@ class ENEMY_BOSS_CUBE
 }
 
 
+//========================================
+//　ボス フレーム
+//	_x:ボスの初期x位置
+//	_y:ボスの初期y位置
+//	_countは触手と連動させている
+//	  0〜200：クロスする
+//	  200〜400：広げる
+//	_count->800〜1200　本体レーザーの連射
+//	　※連射完了後は_countを0にリセットさせ、
+//	   繰り返す
+//========================================
+class ENEMY_BOSS_FRAME
+			extends GameObject_ENEMY_BOSS{
+	constructor(_x,_y){
+		super(_CANVAS_IMGS['enemy_cristalcore'].obj,_x,_y);
+		let _this=this;
+		_this._status=70;
+		_this.speed=3;
+		_this.move_array=[];
+		_this.heads=[];
+		_this.bodies=[];
+	}
+	move(){
+		
+	}
+}
 
+class ENEMY_BOSS_FRAME_HEAD
+	extends GameObject_ENEMY{
+	constructor(_d){
+		super(_d.o,_d.x,_d.y);
+		let _this=this;
+		_this._standby=false;
+	}
+}
+class ENEMY_BOSS_FRAME_BODY
+	extends GameObject_ENEMY{
+	constructor(_d){
+		let _this=this;
+		_this._standby=false;
+		_this.is_able_collision=false;
+	}
+	moveDraw(_loc){
+		_this.setDrawImage();
+	}
+}
 
 
 //====================

@@ -2580,6 +2580,7 @@ class ENEMY_BOSS_CRYSTALCORE
 	setDrawImageDirect(){
 	}
 	set_wall_standBy(){
+		//壁へのショットを有効にする。
 		let _this=this;
 		for(let _i=0;_i<_this.wall.length;_i++){
 			_this.wall[_i].setStandByDone();
@@ -2855,8 +2856,8 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		let _ix=_this._initx;
 		let _iy=_this._inity;
 		let rad=parseInt(_d[3])*Math.PI/180;
-		var cx=_this._boss.x+parseInt(_d[0])+_ix+_this.img.width;
-		var cy=_this._boss.y+parseInt(_d[1])+_iy+parseInt(_this.img.height/1.5);
+		let cx=_this._boss.x+parseInt(_d[0])+_ix+_this.img.width;
+		let cy=_this._boss.y+parseInt(_d[1])+_iy+parseInt(_this.img.height/1.5);
 		// 画像を中心にして回転
 //			_CONTEXT.beginPath();
 		_CONTEXT.save();
@@ -3094,6 +3095,8 @@ class ENEMY_BOSS_CUBE
 
 //========================================
 //　ボス フレーム
+//	このクラス自体の表示はない。
+//	頭・身体に位置情報の指令を送るだけ。
 //	_x:ボスの初期x位置
 //	_y:ボスの初期y位置
 //	_countは触手と連動させている
@@ -3106,37 +3109,206 @@ class ENEMY_BOSS_CUBE
 class ENEMY_BOSS_FRAME
 			extends GameObject_ENEMY_BOSS{
 	constructor(_x,_y){
-		super(_CANVAS_IMGS['enemy_cristalcore'].obj,_x,_y);
+		super(_CANVAS_IMGS.enemy_frame_body1.obj,_x,_y);
 		let _this=this;
 		_this._status=70;
-		_this.speed=3;
-		_this.move_array=[];
-		_this.heads=[];
-		_this.bodies=[];
+		_this.x=_CANVAS.width;
+		_this.speed=2;
+		_this._radX=0;
+		_this._radY=0;
+		_this._rad=100;//半径
+		_this._deg=0;
+
+		_this.moves=[];
+		//頭・身体の初期化
+		_this.parts=[
+//			new ENEMY_BOSS_FRAME_HEAD({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
+//			new ENEMY_BOSS_FRAME_HEAD({o:null,x:1500,y:250})
+		];
+
+		//敵クラスに追加
+		for(let _i=0;_i<_this.parts.length;_i++){
+			_ENEMIES.push(_this.parts[_i]);
+		}
 	}
 	move(){
-		
+		let _this=this;
+		//ここではフレームの頭、身体を設定し、
+		//各描画クラスに描画させる。
+
+		if(_this.c===0){
+			//移動をスイッチさせる
+
+			//pt1
+			//回転の基点を決定
+			// _this._radX=600;
+			// _this._radY=250;
+			// _this._deg=(_this._deg>=360)?0:_this._deg+1;
+			// _this._deg=(_this._deg<0)?360:_this._deg-1;
+
+			// _this.x=_this._radX+Math.cos(_this._deg*Math.PI/180)*_this._rad;
+			// _this.y=_this._radY+Math.sin(_this._deg*Math.PI/180)*_this._rad;
+
+			//pt2
+		}
+
+		//0度<90が左向き
+		//90<270が右向き
+		//270<360が左向き
+
+		//0<が上に移動する
+		//0>(360>)が下に移動する
+		_this._deg=345;
+		_this.x-=_this.speed*Math.cos(_this._deg*Math.PI/180);
+		_this.y-=_this.speed*Math.sin(_this._deg*Math.PI/180);
+		_this._deg+=90;
+
+		//移動の設定
+		_this.moves.unshift({x:_this.x,y:_this.y,rad:_this._deg});
+		if(_this.moves.length>1000){_this.moves.pop();}
+
+		//各顔・の移動指令・表示
+		for(let _i=0;_i<_this.parts.length;_i++){
+			if(_this.moves[_i*25]===undefined){break;}
+			let _m=_this.moves[_i*25];
+			_this.parts[_i].moveDraw(
+				{x:_m.x,y:_m.y,rad:_m.rad});
+		}
+
+		_this.c++;
+		if(_this.c>500){_this.c=0;}
+
 	}
 }
 
 class ENEMY_BOSS_FRAME_HEAD
 	extends GameObject_ENEMY{
 	constructor(_d){
-		super(_d.o,_d.x,_d.y);
+		super(_CANVAS_IMGS.enemy_frame_head1.obj,_d.x,_d.y);
 		let _this=this;
+		_this.img=_CANVAS_IMGS.enemy_frame_head1.obj;
 		_this._standby=false;
+		_this._status=100;
 	}
+	shot(){
+
+	}
+	moveDraw(_loc){
+		let _this=this;
+		_this.x=_loc.x;
+		_this.y=_loc.y;
+		let rad=50*Math.PI/180;
+		//x,yの移動は回転された状態で動く
+		_CONTEXT.save();
+		// _CONTEXT.translate(_this.img.width/2,_this.img.height/2);
+		// _CONTEXT.rotate(rad);
+		// _CONTEXT.translate(_this.img.width/2*-1,_this.img.height/2*-1);
+		_CONTEXT.setTransform(Math.cos(rad),Math.sin(rad),
+								-Math.sin(rad),Math.cos(rad),
+								_this.x-_this.x*Math.cos(rad)+_this.y*Math.sin(rad),
+								_this.y-_this.x*Math.sin(rad)-_this.y*Math.cos(rad));
+		_CONTEXT.drawImage(
+			_this.img,
+			_this.x,
+			_this.y,
+			_this.img.width,
+			_this.img.height
+		);
+
+		_CONTEXT.restore();
+
+
+		_CONTEXT.strokeStyle = 'rgb(200,200,255)';
+		_CONTEXT.beginPath();
+		_CONTEXT.rect(
+			_this.x,
+			_this.y,
+			_this.img.width,
+			_this.img.height
+		);
+		_CONTEXT.stroke();
+	}
+	//moveはmain.jsから処理させない
+	move(){}
 }
 class ENEMY_BOSS_FRAME_BODY
 	extends GameObject_ENEMY{
 	constructor(_d){
+		super(_CANVAS_IMGS.enemy_frame_body1.obj,_d.x,_d.y);
 		let _this=this;
+		_this.img=_CANVAS_IMGS.enemy_frame_body1.obj;
 		_this._standby=false;
 		_this.is_able_collision=false;
+		_this.shotColMap=[
+			'10,10,'+(_this.img.width-10)+','+(_this.img.height-10)
+		];
+
 	}
 	moveDraw(_loc){
-		_this.setDrawImage();
+		let _this=this;
+		_this.img=(function(){
+			if(_loc.rad%180>0&&_loc.rad%180<=15){return _CANVAS_IMGS.enemy_frame_body6.obj;}
+			else if(_loc.rad%180>15&&_loc.rad%180<=30){return _CANVAS_IMGS.enemy_frame_body7.obj;}
+			else if(_loc.rad%180>30&&_loc.rad%180<=45){return _CANVAS_IMGS.enemy_frame_body8.obj;}
+			else if(_loc.rad%180>45&&_loc.rad%180<=60){return _CANVAS_IMGS.enemy_frame_body9.obj;}
+			else if(_loc.rad%180>60&&_loc.rad%180<=75){return _CANVAS_IMGS.enemy_frame_body10.obj;}
+			else if(_loc.rad%180>75&&_loc.rad%180<=90){return _CANVAS_IMGS.enemy_frame_body11.obj;}
+			else if(_loc.rad%180>90&&_loc.rad%180<=105){return _CANVAS_IMGS.enemy_frame_body1.obj;}
+			else if(_loc.rad%180>105&&_loc.rad%180<=120){return _CANVAS_IMGS.enemy_frame_body2.obj;}
+			else if(_loc.rad%180>120&&_loc.rad%180<=135){return _CANVAS_IMGS.enemy_frame_body3.obj;}
+			else if(_loc.rad%180>135&&_loc.rad%180<=150){return _CANVAS_IMGS.enemy_frame_body4.obj;}
+			else if(_loc.rad%180>150&&_loc.rad%180<=165){return _CANVAS_IMGS.enemy_frame_body5.obj;}
+			else if(_loc.rad%180>165&&_loc.rad%180<=180){return _CANVAS_IMGS.enemy_frame_body6.obj;}
+			return _CANVAS_IMGS.enemy_frame_body1.obj;
+		})();
+		_this.x=_loc.x;
+		_this.y=_loc.y;
+//		let _rad=_loc.rad;
+		_CONTEXT.save();
+		// _CONTEXT.translate(_this.img.width/2,_this.img.height/2);
+		// _CONTEXT.rotate(rad);
+		// _CONTEXT.translate(_this.img.width/2*-1,_this.img.height/2*-1);
+		// _CONTEXT.setTransform(Math.cos(_rad),Math.sin(_rad),
+		// 						-Math.sin(_rad),Math.cos(_rad),
+		// 						_this.x-_this.x*Math.cos(_rad)+_this.y*Math.sin(_rad),
+		// 						_this.y-_this.x*Math.sin(_rad)-_this.y*Math.cos(_rad));
+		_CONTEXT.drawImage(
+			_this.img,
+			_this.x,
+			_this.y,
+			_this.img.width,
+			_this.img.height
+		);
+
+		_CONTEXT.strokeStyle = 'rgb(200,200,255)';
+		_CONTEXT.beginPath();
+		_CONTEXT.rect(
+			_this.x,
+			_this.y,
+			_this.img.width,
+			_this.img.height
+		);
+		_CONTEXT.stroke();
+
+		_CONTEXT.restore();
 	}
+	//moveはmain.jsから処理させない
+	move(){}
 }
 
 

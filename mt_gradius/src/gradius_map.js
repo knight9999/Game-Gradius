@@ -150,6 +150,9 @@ const _MAP_ENEMIES_BOSS={
 	},
 	'enemy_bigcore2':{
 		_f:function(){return new ENEMY_BOSS_BIGCORE2(1300,200)}
+	},
+	'enemy_frame':{
+		_f:function(){return new ENEMY_BOSS_FRAME(1000,200)}
 	}
 };
 

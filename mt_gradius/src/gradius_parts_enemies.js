@@ -1579,9 +1579,7 @@ class ENEMY_frame_2 extends ENEMY_frame_1{
 			_eb_l++;
 		}
 
-		let _c=(_eb_l>10)?1:2;
-		_c=(_eb_l>15)?0:1;
-//		console.log(_eb_l);
+		let _c=(_eb_l>15)?0:1;
 		for(let _i=0;_i<_c;_i++){
 			//オブジェクト追加
 			let _cls=
@@ -1617,7 +1615,7 @@ class ENEMY_frame_3 extends ENEMY_frame_1{
 		];
 		//無敵だが衝突を無視し、"ある程度"ショットは通過できる
 		_this.is_able_collision=false;
-		_this.is_ignore_collision=(Math.random()>0.1);
+		_this.is_ignore_collision=(Math.random()>0.05);
 		_this._standby=false;
 
 		_this.imgs=[

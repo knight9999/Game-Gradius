@@ -658,6 +658,11 @@ const _CANVAS_AUDIOS={
 		{src:'audios/bg_frame.mp3',
 		volume:1.0,
 		obj:null,
+		buf:new Object()},
+	'bg_type5':
+		{src:'audios/bg_thunderbolt.mp3',
+		volume:1.0,
+		obj:null,
 		buf:new Object()}
 
 };

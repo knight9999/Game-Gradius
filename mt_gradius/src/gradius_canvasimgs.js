@@ -284,21 +284,11 @@ const _CANVAS_IMGS={
 	'enemy_frame_5':{src:'images/gradius_enemy_frame_5.png',rate:0.30,obj:new Image()},
 	'enemy_frame_6':{src:'images/gradius_enemy_frame_6.png',rate:0.30,obj:new Image()},
 
-	'enemy_frame_head1':{src:'images/gradius_enemy_frame_head_1.png',rate:0.35,obj:new Image()},
-	'enemy_frame_head2':{src:'images/gradius_enemy_frame_head_2.png',rate:0.35,obj:new Image()},
-
-	'enemy_frame_body1':{src:'images/gradius_enemy_frame_body_1.png',rate:0.8,obj:new Image()},
-	'enemy_frame_body2':{src:'images/gradius_enemy_frame_body_2.png',rate:0.8,obj:new Image()},
-	'enemy_frame_body3':{src:'images/gradius_enemy_frame_body_3.png',rate:0.8,obj:new Image()},
-	'enemy_frame_body4':{src:'images/gradius_enemy_frame_body_4.png',rate:0.8,obj:new Image()},
-	'enemy_frame_body5':{src:'images/gradius_enemy_frame_body_5.png',rate:0.8,obj:new Image()},
-	'enemy_frame_body6':{src:'images/gradius_enemy_frame_body_6.png',rate:0.8,obj:new Image()},
-	'enemy_frame_body7':{src:'images/gradius_enemy_frame_body_7.png',rate:0.8,obj:new Image()},
-	'enemy_frame_body8':{src:'images/gradius_enemy_frame_body_8.png',rate:0.8,obj:new Image()},
-	'enemy_frame_body9':{src:'images/gradius_enemy_frame_body_9.png',rate:0.8,obj:new Image()},
-	'enemy_frame_body10':{src:'images/gradius_enemy_frame_body_10.png',rate:0.8,obj:new Image()},
-	'enemy_frame_body11':{src:'images/gradius_enemy_frame_body_11.png',rate:0.8,obj:new Image()},
-
+	'enemy_frame_head1':{src:'images/gradius_enemy_frame_head_1.png',rate:1.00,obj:new Image()},
+	'enemy_frame_head2':{src:'images/gradius_enemy_frame_head_2.png',rate:1.00,obj:new Image()},
+	'enemy_frame_head3':{src:'images/gradius_enemy_frame_head_3.png',rate:1.00,obj:new Image()},
+	'enemy_frame_head4':{src:'images/gradius_enemy_frame_head_4.png',rate:1.00,obj:new Image()},
+	'enemy_frame_body1':{src:'images/gradius_enemy_frame_body_1.png',rate:1.00,obj:new Image()},
 
 	'enemy_bigcore':{src:'images/gradius_enemy_bigcore.png',rate:0.60,obj:new Image()},
 	'enemy_bigcore_1':{src:'images/gradius_enemy_bigcore_1.png',rate:0.60,obj:new Image()},

@@ -3980,6 +3980,9 @@ class ENEMY_SHOT_FRAME
 			_this.init();
 			return;
 		}
+		if(!_this._shot_alive){return;}
+		_this.map_collition();
+
 		if(_this._c>100){
 			let _e=_this.getEnemyCenterPosition();
 			_ENEMIES_SHOTS.push(new ENEMY_SHOT_FRAME_SMALL(_e._x,_e._y,0));
@@ -4003,7 +4006,7 @@ class ENEMY_SHOT_FRAME
 		_this.y-=_this.sy*_this.speed;
 
 		_CONTEXT.save();
-		_this.setDrawImageDirect();
+		_this.setDrawImageRotate();
 		_CONTEXT.restore();
 
 		_this._c++;
@@ -4021,9 +4024,6 @@ class ENEMY_SHOT_FRAME_SMALL
 		_this.rad=_this.deg*Math.PI/180;
 		_this.sx=Math.cos(_this.rad);//単位x
 		_this.sy=Math.sin(_this.rad);//単位y
-		// _this.shotColMap=[
-		// 	"5,5,"+parseInt(_this.img.width-10)+","+parseInt(_this.img.height-10)
-		// ];
 	}
 	move(){
 		let _this=this;

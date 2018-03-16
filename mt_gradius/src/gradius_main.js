@@ -1670,7 +1670,7 @@ class GameObject_BACKGROUND{
 }
 
 //自機とパワーカプセルの取得
-const _IS_GET_POWERCAPSELL=function(){
+const _IS_GET_POWERCAPSELL=()=>{
 //	if(!_PLAYERS_MAIN.isalive()){return;}
 	for(let _i=0;_i<_POWERCAPSELLS.length;_i++){
 		if(_POWERCAPSELLS[_i].gotpc){
@@ -1734,7 +1734,7 @@ const _IS_GET_POWERCAPSELL=function(){
 }
 
 //自機ショット、また自機と敵による衝突判定
-const _IS_ENEMIES_COLLISION=function(){
+const _IS_ENEMIES_COLLISION=()=>{
 	if(!_PLAYERS_MAIN.isalive()){return;}
 
 	for(let _i=0;_i<_ENEMIES.length;_i++){
@@ -1818,7 +1818,7 @@ const _IS_ENEMIES_COLLISION=function(){
 }
 
 //敵ショットによる衝突判定
-const _IS_ENEMIES_SHOT_COLLISION=function(){
+const _IS_ENEMIES_SHOT_COLLISION=()=>{
 	if(!_PLAYERS_MAIN.isalive()){return;}
 
 	for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
@@ -1845,7 +1845,7 @@ const _IS_ENEMIES_SHOT_COLLISION=function(){
 //	・イベントリスナのクリア
 //	・requestAnimationFrameの管理
 //===========================================
-const _DRAW=function(){
+const _DRAW=()=>{
 	_KEYEVENT_MASTER.addKeydownGame();
 	_KEYEVENT_MASTER.addKeyupGame();
 
@@ -1938,7 +1938,7 @@ const _DRAW=function(){
 	_DRAW_SETINTERVAL=window.requestAnimationFrame(_loop);
 }
 
-const _DRAW_MATCH_BOSS=function(){
+const _DRAW_MATCH_BOSS=()=>{
 	_MAP.setBackGroundSpeedY(0);
 	_MAP.setInifinite(false);
 	if(!_DRAW_IS_MATCH_BOSS){
@@ -1976,7 +1976,7 @@ const _DRAW_MATCH_BOSS=function(){
 		_DRAW_IS_MATCH_BOSS_COUNT++;
 	}
 }
-const _DRAW_PLAYER_COLLAPES=function(){
+const _DRAW_PLAYER_COLLAPES=()=>{
 	//クラッシュした瞬間にキーを無効にする
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
@@ -2015,7 +2015,7 @@ const _DRAW_PLAYER_COLLAPES=function(){
 	};
 	_si=window.requestAnimationFrame(_loop);		
 }	
-const _DRAW_PLAYERS_SHOTS=function(){
+const _DRAW_PLAYERS_SHOTS=()=>{
 	let _date=new Date();
 	const _loop=function(){
 		_PLAYERS_SHOTS_SETINTERVAL=window.requestAnimationFrame(_loop);	
@@ -2088,16 +2088,16 @@ const _DRAW_PLAYERS_SHOTS=function(){
 	_PLAYERS_SHOTS_SETINTERVAL=window.requestAnimationFrame(_loop);	
 }
 
-const _DRAW_STOP=function(){
+const _DRAW_STOP=()=>{
 //	clearInterval(_DRAW_SETINTERVAL);
 	cancelAnimationFrame(_DRAW_SETINTERVAL);
 	_DRAW_SETINTERVAL=null;
 }
-const _DRAW_STOP_GAMESTART=function(){
+const _DRAW_STOP_GAMESTART=()=>{
 	cancelAnimationFrame(_DRAW_GAMESTART_SETINTERVAL);
 	_DRAW_GAMESTART_SETINTERVAL=null;
 }
-const _DRAW_STOP_PLAYERS_SHOTS=function(){
+const _DRAW_STOP_PLAYERS_SHOTS=()=>{
 	cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
 	_PLAYERS_SHOTS_SETINTERVAL=null;
 	for(var _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
@@ -2114,7 +2114,7 @@ const _DRAW_STOP_PLAYERS_SHOTS=function(){
 	}
 }
 
-const _DRAW_SELECT_POWERMETER=function(){
+const _DRAW_SELECT_POWERMETER=()=>{
 	_DRAW_STOP_PLAYERS_SHOTS();
 	_KEYEVENT_MASTER.removeKeydownSelectPowermeter();
 	let _c=0;
@@ -2136,7 +2136,7 @@ const _DRAW_SELECT_POWERMETER=function(){
 	_si=window.requestAnimationFrame(_loop);
 }
 
-const _DRAW_GAMESTART=function(){
+const _DRAW_GAMESTART=()=>{
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
 
@@ -2193,7 +2193,7 @@ const _DRAW_GAMESTART=function(){
 	_GAME._setStopOnBG();
 }
 
-const _DRAW_GAMECLEAR=function(){
+const _DRAW_GAMECLEAR=()=>{
 	var _img=_CANVAS_IMGS_INIT['font_0'].obj;
 	//クリアしたら敵を全て消す
 	let _s='gameclear';
@@ -2226,7 +2226,7 @@ const _DRAW_GAMECLEAR=function(){
 
 }
 
-const _DRAW_GAMEOVER=function(){
+const _DRAW_GAMEOVER=()=>{
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
 
@@ -2275,7 +2275,7 @@ const _DRAW_GAMEOVER=function(){
 }// _DRAW_GAMEOVER
 
 //敵衝突表示
-const _DRAW_ENEMIES_COLLISIONS=function(){
+const _DRAW_ENEMIES_COLLISIONS=()=>{
 	for(let _i=0;_i<_ENEMIES_COLLISIONS.length;_i++){
 		if(!_ENEMIES_COLLISIONS[_i].isalive()){
 			_ENEMIES_COLLISIONS.splice(_i,1);
@@ -2287,7 +2287,7 @@ const _DRAW_ENEMIES_COLLISIONS=function(){
 	}
 }//_DRAW_ENEMIES_COLLISIONS
 
-const _DRAW_DISP_TXT=function(_s,_x,_y,_r){
+const _DRAW_DISP_TXT=(_s,_x,_y,_r)=>{
 	//_s:テキスト
 	//_x:テキスト開始x座標位置
 	//_y:テキスト開始y座標位置
@@ -2308,14 +2308,14 @@ const _DRAW_DISP_TXT=function(_s,_x,_y,_r){
 		);
 	}
 }
-const _DRAW_SCROLL_STOP=function(){
+const _DRAW_SCROLL_STOP=()=>{
 	_MAP.set_scroll_off_x();
 }
-const _DRAW_SCROLL_RESUME=function(){
+const _DRAW_SCROLL_RESUME=()=>{
 	_MAP.set_scroll_on_x();
 }
 
-const _DRAW_RESET_OBJECT=function(){
+const _DRAW_RESET_OBJECT=()=>{
 	//ゲームリセット
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
@@ -2358,7 +2358,7 @@ const _DRAW_RESET_OBJECT=function(){
 	_DRAW_IS_MATCH_BOSS_COUNT=0;
 }
 
-const _DRAW_INIT_OBJECT=function(){
+const _DRAW_INIT_OBJECT=()=>{
 	_KEYEVENT_MASTER	//パワーメータイベント削除
 		.removeKeydownSelectPowermeter();
 
@@ -2501,7 +2501,7 @@ const _DRAW_INIT_OBJECT=function(){
 	_DRAW_GAMESTART();
 }
 
-const _DRAW_POWER_METER_SELECT=function(){
+const _DRAW_POWER_METER_SELECT=()=>{
 	clearInterval(_PLAYERS_SHOTS_SETINTERVAL);
 	_PLAYERS_SHOTS_SETINTERVAL=null;
 
@@ -2518,7 +2518,7 @@ const _DRAW_POWER_METER_SELECT=function(){
 	_POWERMETER.pms_select();
 }
 
-const _DRAW_STAGE_SELECT=function(){
+const _DRAW_STAGE_SELECT=()=>{
 	clearInterval(_PLAYERS_SHOTS_SETINTERVAL);
 	_PLAYERS_SHOTS_SETINTERVAL=null;
 
@@ -2545,7 +2545,7 @@ const _DRAW_STAGE_SELECT=function(){
 	_GAME._setPlayOnBG(_CANVAS_AUDIOS['bg_powermeterselect']);
 }
 
-const _DRAW_AUDIO_INIT=function(_obj,_func){
+const _DRAW_AUDIO_INIT=(_obj,_func)=>{
 	let _audioLoadedCount=0;
 	let _alertFlag=false;
 	let _gsl_r=document.querySelector('#game_start_loading .rate');
@@ -2576,7 +2576,7 @@ const _DRAW_AUDIO_INIT=function(_obj,_func){
 		_r.send();
 	}
 }
-const _DRAW_INIT=function(_obj,_func){
+const _DRAW_INIT=(_obj,_func)=>{
 //	return new Promise(function(_res,_rej){
 	let _imgLoadedCount=0;
 	let _alertFlag=false;

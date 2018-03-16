@@ -21,6 +21,6 @@
     "imagemin-cli": "^3.0.0"
   },
   "dependencies": {
-    "uglify-es": "^3.3.9"
+    "uglify-es": "^3.3.10"
   }
 }

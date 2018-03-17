@@ -1788,6 +1788,8 @@ class ENEMY_BOSS_WALL
 		_this._initx=_x||0;//初期位置x
 		_this._inity=_y||0;//初期位置y
 		_this._boss=_o_boss;
+		_this.x=_this._boss.x+_this._initx;//初期位置x
+		_this.y=_this._boss.y+_this._inity;//初期位置y
 		_this._status=10;
 		_this.getscore=500;//倒した時のスコア
 		_this._standby=true;
@@ -2110,12 +2112,12 @@ class ENEMY_BOSS_BIGCORE2
 
 		//上の手初期化
 		_this.hands_up=[
-			new ENEMY_BOSS_BIGCORE2_HANDS({"_initx":-52,"_inity":-30,"_dir":_this._DEF_DIR._U})
+			new ENEMY_BOSS_BIGCORE2_HANDS({"_initx":-52,"_inity":-30,"_dir":_this._DEF_DIR._U,"_boss":_this})
 		];
 		_ENEMIES.push(_this.hands_up[0]);		
 		//下の手初期化
 		_this.hands_down=[
-			new ENEMY_BOSS_BIGCORE2_HANDS({"_initx":-52,"_inity":75,"_dir":_this._DEF_DIR._D})
+			new ENEMY_BOSS_BIGCORE2_HANDS({"_initx":-52,"_inity":75,"_dir":_this._DEF_DIR._D,"_boss":_this})
 		];
 		_ENEMIES.push(_this.hands_down[0]);
 		_this._hands_open_flag=false;
@@ -2385,6 +2387,8 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		let _this=this;
 		_this._initx=_d._initx||0;//初期位置x
 		_this._inity=_d._inity||0;//初期位置y
+		_this.x=_this._initx+_d._boss.x;
+		_this.y=_this._inity+_d._boss.y;
 		_this._standby=false;
 		_this.is_able_collision=false;
 
@@ -2498,15 +2502,13 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 	moveDraw(_boss){
 		let _this=this;
 		_this._boss=_boss;
+		_this.move_hands_open();
+		_this.move_hands_close();
 		_this.x=_this._boss.x+parseInt(_this._initx)+_this.imgs_x;
 		_this.y=_this._boss.y+parseInt(_this._inity)+_this.imgs_y;
 		_this.setDrawImage();
 	}
-	move(){
-		let _this=this;
-		_this.move_hands_open();
-		_this.move_hands_close();
-	}
+	move(){}
 }
 
 //========================================

@@ -2214,7 +2214,7 @@ const _DRAW_GAMECLEAR=()=>{
 			(_CANVAS.height/2)+30,
 			0.15
 		);
-	_s='press s to change another stage';
+	_s='press s to change to another stage';
 	_DRAW_DISP_TXT(
 			_s,
 			(_CANVAS.width/2)
@@ -2264,7 +2264,7 @@ const _DRAW_GAMEOVER=()=>{
 			(_CANVAS.height/2)+30,
 			0.15
 		);
-	_s='press s to change another stage';
+	_s='press s to change to another stage';
 	_DRAW_DISP_TXT(
 			_s,
 			(_CANVAS.width/2)
@@ -2615,7 +2615,7 @@ const _DRAW_INIT=(_obj,_func)=>{
 
 const _GAME={//ゲーム用スクリプト
 _url_params:new Array(),
-_init:function(){
+_init(){
 	//マップ用jsonを取得したあとに、
 	//スタート画面をコールバックで表示させる
 	//SCORE
@@ -2636,6 +2636,25 @@ _ac:{
 	_get:function(_c,_a,_p){//カウントの取得
 		return (_c>=(_a.length*_p)-1)?0:_c+1;
 	}
+},
+getRad(_o1,_o2){
+	//各オブジェクトが持つx,yによるラジアン取得
+	//_o1:自機
+	//_o2:自機に対するオブジェクト
+	//{x:000,y:000}形式
+	if(_o1===undefined||_o2===undefined){return;}
+	return Math.atan2((_o1.y-_o2.y),(_o1.x-_o2.x));
+},
+getDeg(_o1,_o2){
+	//各オブジェクトが持つx,yからの角度取得
+	if(_o1===undefined||_o2===undefined){return;}
+	const _rad=Math.atan2((_o1.y-_o2.y),(_o1.x-_o2.x));
+	return _rad/Math.PI*180;
+},
+getRadToDeg(_rad){
+	//ラジアンから角度を取得する
+	if(_rad===undefined||_rad===''){return null;}
+	return _rad/Math.PI*180;
 },
 getBit(_bit,_len){
 	return ('0'.repeat(_len)+_bit).slice(_len*-1);

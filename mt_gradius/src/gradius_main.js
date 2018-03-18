@@ -2702,10 +2702,10 @@ isEnemyCanvasOut(_oe,_dir){
 	return false;
 
 },
-isSqCollision:function(_s1,_s1_n,_s2,_s2_n,_d){
+isSqCollision(_s1,_s1_n,_s2,_s2_n,_d){
 	return (this.isSqCollision_laser(_s1,_s1_n,_s2,_s2_n,_d)).ret;
 },
-isSqCollision_laser:function(_s1,_s1_n,_s2,_s2_n,_d){
+isSqCollision_laser(_s1,_s1_n,_s2,_s2_n,_d){
 	//_s1四辺と、_s2(その中の複数の四辺)の衝突判定。
 	//重なった場合は、衝突とする。
 	//（1）_s1,_s2の中心点を取得
@@ -2779,7 +2779,7 @@ isSqCollision_laser:function(_s1,_s1_n,_s2,_s2_n,_d){
 	}//_i
 	return {ret:_IS_SQ_NOTCOL,val:_CANVAS.width};
 },
-_showGameStart:function(){
+_showGameStart(){
 	let _gsl=document
 	.querySelector('#game_start_loading');
 	_gsl.classList.remove('on');
@@ -2823,7 +2823,7 @@ _showGameStart:function(){
 		document.querySelector('#game_start>.text_loading'),
  		'now loading',30);
 },
-_setTextToFont:function(_o,_str,_w){
+_setTextToFont(_o,_str,_w){
 	if(_o===undefined||_o===null){return;}
 	_w=_w||30;
 	let _s='';

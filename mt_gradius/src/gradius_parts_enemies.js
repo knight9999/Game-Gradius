@@ -3059,12 +3059,7 @@ class ENEMY_BOSS_CUBE
 //	頭・身体に位置情報の指令を送るだけ。
 //	_x:ボスの初期x位置
 //	_y:ボスの初期y位置
-//	_countは触手と連動させている
-//	  0〜200：クロスする
-//	  200〜400：広げる
-//	_count->800〜1200　本体レーザーの連射
-//	　※連射完了後は_countを0にリセットさせ、
-//	   繰り返す
+
 //========================================
 class ENEMY_BOSS_FRAME
 	extends GameObject_ENEMY_BOSS{
@@ -3555,7 +3550,7 @@ class ENEMY_BOSS_FRAME_HEAD
 		_this._status=75;
 //		_this._status=1;
 		_this.getscore=5000;
-		_this.deg=0;
+		_this._deg=0;
 		_this.shotColMap=[
 			'30,30,'+(_this.img.width-60)+','+(_this.img.height-60)
 		];
@@ -3579,10 +3574,8 @@ class ENEMY_BOSS_FRAME_HEAD
 		}
 		_GAME._setPlay(_this.audio_collision);
 	}
-	setDirect(_dir){
-		//向きを変更する
-		let _this=this;
-		_this.direct=_dir;
+	setDirect(_dir){//向きを変更する
+		this.direct=_dir;
 	}
 	shot(){
 		let _this=this;
@@ -3605,7 +3598,7 @@ class ENEMY_BOSS_FRAME_HEAD
 		})();
 		//炎をはく
 		if(_this._c%200===150){
-			_ENEMIES_SHOTS.push(new ENEMY_SHOT_FRAME({x:_this.x,y:_this.y,deg:_this.deg+90}));
+			_ENEMIES_SHOTS.push(new ENEMY_SHOT_FRAME({x:_this.x,y:_this.y,deg:_this._deg+90}));
 		}
 	}
 	moveDraw(_loc){
@@ -3619,11 +3612,11 @@ class ENEMY_BOSS_FRAME_HEAD
 		_this.shot();
 		_this.x=_loc.x;
 		_this.y=_loc.y;
-		_this.deg=_loc.deg;
+		_this._deg=_loc.deg;
 //		console.log('===============deg'+_loc.deg);
 		_CONTEXT.save();
 		_CONTEXT.translate(_this.x+(_this.img.width/4),_this.y+(_this.img.height/4));
-		_CONTEXT.rotate(_this.deg*Math.PI/180);
+		_CONTEXT.rotate(_this._deg*Math.PI/180);
 		_CONTEXT.drawImage(
 			_this.img,
 			-(_this.img.width/2),
@@ -3660,7 +3653,7 @@ class ENEMY_BOSS_FRAME_BODY
 		_this.shotColMap=[
 			'5,5,'+(_this.img.width-10)+','+(_this.img.height-10)
 		];
-		_this.deg=0;
+		_this._deg=0;
 		_this.speed=(Math.random>0.4)?-10:10;//飛び散る時のスピード
 		//フレームの頭が全破壊フラグ
 		//showCollapesで拡散処理させる
@@ -3675,10 +3668,10 @@ class ENEMY_BOSS_FRAME_BODY
 			_this._isshow=false;
 			return;
 		}
-		_this.x+=Math.cos(_this.deg*Math.PI/180)*_this.speed;
-		_this.y+=Math.sin(_this.deg*Math.PI/180)*_this.speed;
+		_this.x+=Math.cos(_this._deg*Math.PI/180)*_this.speed;
+		_this.y+=Math.sin(_this._deg*Math.PI/180)*_this.speed;
 
-		_this.setDrawImageRotate(_this.deg);
+		_this.setDrawImageRotate(_this._deg);
 	}
 	moveDraw(_loc){
 		let _this=this;
@@ -3695,8 +3688,8 @@ class ENEMY_BOSS_FRAME_BODY
 
 		_this.x=_loc.x;
 		_this.y=_loc.y;
-		_this.deg=_loc.deg;
-		_this.setDrawImageRotate(_this.deg);
+		_this._deg=_loc.deg;
+		_this.setDrawImageRotate(_this._deg);
 
 	}
 	//moveはmain.jsから処理させない
@@ -3893,8 +3886,8 @@ class ENEMY_SHOT_FRAME
 
 		if(_this._c>100){
 			let _e=_this.getEnemyCenterPosition();
-			for(let _i=0;_i<=360;_i+=30){
-				_ENEMIES_SHOTS.push(new ENEMY_SHOT_FRAME_SMALL({x:_e._x,y:_e._y,deg:0+_i}));
+			for(let _i=30;_i<=360;_i+=30){
+				_ENEMIES_SHOTS.push(new ENEMY_SHOT_FRAME_SMALL({x:_e._x,y:_e._y,deg:_i}));
 			}
 			_this.init();
 		}
@@ -3905,7 +3898,7 @@ class ENEMY_SHOT_FRAME
 		_this.y-=_this.sy*_this.speed;
 
 		_CONTEXT.save();
-		_this.setDrawImageRotate();
+		_this.setDrawImageRotate(_this.deg);
 		_CONTEXT.restore();
 
 		_this._c++;
@@ -3934,7 +3927,7 @@ class ENEMY_SHOT_FRAME_SMALL
 		_this.y-=_this.sy*_this.speed;
 
 		_CONTEXT.save();
-		_this.setDrawImageRotate();
+		_this.setDrawImageRotate(_this.deg);
 		_CONTEXT.restore();
 	}
 }

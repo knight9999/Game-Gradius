@@ -197,7 +197,7 @@ body.sp section#sp_controller #sp_controller_inner{
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main{
     background-color:rgba(0,0,0,0.3);
-    border:2px solid rgba(255,255,255,0.5);
+    border:1px solid rgba(255,255,255,0.3);
     border-radius:50%;
 	bottom:0px;
     height:100px;
@@ -206,7 +206,7 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_main{
     width:100px;
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_controller_main_center{
-	background-color:rgba(255,255,255,0.5);
+	background-color:rgba(255,255,255,0.3);
 	border-radius:50%;
 	left:calc(50% - 45px);
 	height:90px;
@@ -216,7 +216,7 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_contr
 }
 body.sp section#sp_controller #sp_controller_inner>div[class*="bt"]{
     background-color:rgba(0,0,0,1);
-    border:2px solid rgba(255,255,255,0.5);
+    border:1px solid rgba(255,255,255,0.5);
     border-radius:50%;
     color:rgba(255,255,255,1);
 	font-size:150%;
@@ -294,7 +294,7 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px
 
 @media screen and (max-width: 767px) {
 /* 5.5 4.7 4.0inch */
-body.sp section#game_wrapper{height:100%;transform:scale(0.75);transform-origin:top;}
+body.sp section#game_wrapper{height:100%;transform:scale(0.80);transform-origin:top;}
 body.sp section#game_start_wrapper.on{
 	height:calc(100% - 120px);
 	top:0px;
@@ -331,6 +331,8 @@ body.sp section#game_start_wrapper #game_start{
 }
 #game_start .text{top:260px;}
 #game_start .text_loading{top:300px;}
+
+body.sp section#sp_controller #sp_controller_inner{width:95%;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main{height:100px;width:100px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_controller_main_center{
 	left:calc(50% - 45px);
@@ -338,11 +340,11 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_contr
 	top:calc(50% - 45px);
 	width:90px;
 }
-
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide{right:350px;bottom:0px;height:30px !important;width:30px !important;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r{right:280px;bottom:20px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:140px;bottom:20px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:210px;bottom:0px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b{right:70px;bottom:0px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px;bottom:20px;}
+body.sp section#sp_controller #sp_controller_inner>div[class*="bt"]{height:60px;width:60px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide{right:350px;bottom:10px;height:30px !important;width:30px !important;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r{right:280px;bottom:10px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:210px;bottom:10px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:140px;bottom:10px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b{right:70px;bottom:10px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px;bottom:10px;}
 }

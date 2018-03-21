@@ -1457,7 +1457,7 @@ class GameObject_STAGESELECT{
 			);
 
 		//ページングを表示
-		let _pl=500-(20*(_MAPDEFS.length-1));//センタリング
+		let _pl=500-(20*(_MAPDEFS.length/2)+10);//センタリング
 		for(let _i=0;_i<_MAPDEFS.length;_i++){
 			_CONTEXT.beginPath();
 			_CONTEXT.lineWidth=1;

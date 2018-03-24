@@ -723,11 +723,11 @@ class GameObject_SHOTS_MISSILE
 		this.col_mis=[//ミサイル衝突アニメ定義
 			{fs:'rgba(255,246,72,1)',scale:8},
 			{fs:'rgba(255,131,62,1)',scale:10},
-			{fs:'rgba(255,246,72,1)',scale:12},
+			{fs:'rgba(255,131,72,1)',scale:12},
 			{fs:'rgba(255,131,62,1)',scale:14},
 			{fs:'rgba(133,0,4,1)',scale:12},
-			{fs:'rgba(100,0,4,1)',scale:14},
-			{fs:'rgba(133,0,4,1)',scale:12}
+			{fs:'rgba(133,0,4,1)',scale:14},
+			{fs:'rgba(100,0,4,1)',scale:16}
 		];
 
 		let _t=this;
@@ -1206,7 +1206,7 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 			{fs:'rgba(54,115,255,1)',scale:60},
 			{fs:'rgba(0,27,145,1)',scale:60},
 			{fs:'rgba(0,27,145,1)',scale:60},
-			{fs:'rgba(0,27,145,1)',scale:70}
+			{fs:'rgba(0,27,100,1)',scale:70}
 		];
 		this.mis_status={
 			'_st1':function(_t){

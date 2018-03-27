@@ -538,7 +538,46 @@ const _MAP_THEME={//_parts要素番号0は空文字
 		}
 	}
 
-}//_THEME6
+},//_THEME6
+'_THEME7':{//細胞
+	'_map':{
+		'A':{
+			'_o':(new MAP_FRAME_A()).img,//画像
+			'_s':(new MAP_FRAME_A())._s,//衝突座標
+			'_mx':function(_j){return _j;},
+			'_my':function(_i){return _i;},
+			'obj':function(_key){this.objs[_key]=new MAP_FRAME_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{}//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+		}
+	},
+	'_enemies':{
+		'a':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_cell_core(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',//MAP衝突用ビット
+			'_o':_CANVAS_IMGS['enemy_cell_core']//画像オブジェクト
+		},
+		'd':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_d_1']
+		},
+		'e':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_e_1']
+		}
+	}
+
+}//_THEME7
 }//_MAP_THEME
 
 //各種ステージ定義

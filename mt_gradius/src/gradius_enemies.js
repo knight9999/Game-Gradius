@@ -16,59 +16,24 @@ let _ENEMY_DIFFICULT=4;//主にデバッグ用。
 
 const _ENEMY_DEF_ANI_COL={//衝突アニメーション定義
 't0':{
-	'intv':5,//アニメ間隔（数字が短いほどコマ送りが速い）
-	'imgs':[//アニメ画像
-		{img:_CANVAS_IMGS['enemy_collapes1'].obj,scale:0.3},
-		{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.3},
-		{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.3},
-		{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.2},
-		{img:_CANVAS_IMGS['enemy_collapes2'].obj,scale:0.2}
-	]
+	'intv':5,
+	'img':_CANVAS_IMGS['enemy_collapes0'].obj
 },//t0
 't1':{
 	'intv':5,
-	'imgs':[
-		{img:_CANVAS_IMGS['enemy_collapes12'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes13'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes13'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes12'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes11'].obj,scale:1.0}
-	]
+	'img':_CANVAS_IMGS['enemy_collapes1'].obj
 },//t1
 't2':{
 	'intv':5,
-	'imgs':[
-		{img:_CANVAS_IMGS['enemy_collapes21'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes22'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes23'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes24'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes23'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes22'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes21'].obj,scale:1.0}
-	]
+	'img':_CANVAS_IMGS['enemy_collapes2'].obj
 },//t2
 't8':{
 	'intv':5,
-	'imgs':[
-		{img:_CANVAS_IMGS['enemy_collapes81'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes82'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes83'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes84'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes83'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes82'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes81'].obj,scale:1.0}
-	]
+	'img':_CANVAS_IMGS['enemy_collapes8'].obj
 },//t8
 't9':{
 	'intv':5,
-	'imgs':[
-		{img:_CANVAS_IMGS['enemy_collapes91'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes92'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes93'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes94'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes95'].obj,scale:1.0},
-		{img:_CANVAS_IMGS['enemy_collapes96'].obj,scale:1.0}
-	]
+	'img':_CANVAS_IMGS['enemy_collapes9'].obj
 }//t9
 }//_ENEMY_DEF_ANI_COL;
 
@@ -88,25 +53,30 @@ class GameObject_ENEMY_COLLISION{
 	}
 	move(){
 		let _this=this;
-		let _imgs=_ENEMY_DEF_ANI_COL[_this.type].imgs;
+		let _img=_ENEMY_DEF_ANI_COL[_this.type].img;
 		let _intv=_ENEMY_DEF_ANI_COL[_this.type].intv;
-//		let _scale=ENEMY_DEF_ANI_COL[_this.type].scale;
+		let _w=parseInt(_img.width/_img.height);
+		//		let _scale=ENEMY_DEF_ANI_COL[_this.type].scale;
 		if(_this._c_anime_collosion>=
-			_imgs.length*_intv-1){
+			_w*_intv-1){
 			//アニメーションが終わったら終了
 			_this._status=false;
 			return;
 		}
 
-		let _a=_imgs[parseInt(_this._c_anime_collosion/_intv)];
+		var _s=_img.height;
 		_this.x=_MAP.getX(_this.x);
 		_this.y=_MAP.getY(_this.y);
 		_CONTEXT.drawImage(
-			_a.img,
-			_this.x-parseInt(_a.img.width*_a.scale/2),
-			_this.y-parseInt(_a.img.height*_a.scale/2),
-			_a.img.width*_a.scale,
-			_a.img.height*_a.scale
+			_img,
+			_s*parseInt(_this._c_anime_collosion/_intv),
+			0,
+			_s,
+			_s,
+			_this.x-(_s/2),
+			_this.y-(_s/2),
+			_s,
+			_s
 		);
 		_this._c_anime_collosion++;
 	}

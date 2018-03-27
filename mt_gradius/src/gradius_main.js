@@ -1134,15 +1134,15 @@ const _SP_CONTROLLER={
 class GameObject_PM{
 	constructor(_src,_sx,_sy){
 		let _this=this;
-		this.img=_CANVAS_IMGS[_src].obj;
-		this.x=(_CANVAS.width/2)-
-				(this.img.width/2);
-		this.y=_CANVAS.height-30;
+		_this.img=_CANVAS_IMGS[_src].obj;
+		_this.x=(_CANVAS.width/2)-
+				(_this.img.width/2);
+				_this.y=_CANVAS.height-30;
 
-		this.meterdef_status='111111';
-		this.meterdef_current='000000';
+		_this.meterdef_status='111111';
+		_this.meterdef_current='000000';
 
-		this.meterdef={
+		_this.meterdef={
 			'n_32':{
 				imgobj:new Image(),
 				name:'meter_c_speedup',
@@ -1201,30 +1201,24 @@ class GameObject_PM{
 		};
 
 		//パワーメータ選択画像
-		this._c_pms=0;//カレントの位置
-		this.pms_img=_CANVAS_IMGS_INIT['gradius_powermeterselect'].obj;
+		_this._c_pms=0;//カレントの位置
+		_this.pms_img=_CANVAS_IMGS_INIT['gradius_powermeterselect'].obj;
 		//SPEEDUP〜OPTION選択済定義
-		this.pms_selected=[
+		_this.pms_selected=[
 			{_y:89,_img:_CANVAS_IMGS_INIT.gradius_powermeterselect_0.obj},
 			{_y:162,_img:_CANVAS_IMGS_INIT.gradius_powermeterselect_1.obj},
 			{_y:233,_img:_CANVAS_IMGS_INIT.gradius_powermeterselect_2.obj},
 			{_y:306,_img:_CANVAS_IMGS_INIT.gradius_powermeterselect_3.obj}
 		];
 		//SHIELD選択済定義
-		this._c_pmss=0;//カレントの位置
-		this.pmss_selected=[
+		_this._c_pmss=0;//カレントの位置
+		_this.pmss_selected=[
 			{_x:470,_img:_CANVAS_IMGS_INIT.gradius_powermeterselect_shield_0.obj},
 			{_x:570,_img:_CANVAS_IMGS_INIT.gradius_powermeterselect_shield_1.obj}
 		];
 
-
 	}
-	init(){
-		for(let _i in this.meterdef){
-			this.meterdef[_i].imgobj=
-			_CANVAS_IMGS[this.meterdef[_i].name].obj;
-		}
-	}
+	init(){}
 	_set_current_reset(){
 		this.meterdef_current='000000';
 	}
@@ -1296,26 +1290,32 @@ class GameObject_PM{
 		this._set_current_reset();
 	}
 	show(){
+		let _this=this;
 		//メーターを表示
 		_CONTEXT.drawImage(
-			this.img,
-			this.x,
-			this.y,
-			this.img.width,
-			this.img.height
+			_this.img,
+			0,0,_this.img.width-72,_this.img.height,
+			_this.x,
+			_this.y,
+			_this.img.width-72,
+			_this.img.height
 		);
 
 		//各ステータスでメーターを上書
+		//※装備ずみ
 		for(let _i=0;
 			_i<this.meterdef_status.length;_i++){
 			if(this.meterdef_status[_i]!=='0'){continue;}
-			let _omb=_CANVAS_IMGS['meter_blank'].obj;
 			_CONTEXT.drawImage(
-				_omb,
-				this.x+(_omb.width*_i),
-				this.y,
-				_omb.width,
-				_omb.height
+				_this.img,
+				_this.img.width-72,
+				0,
+				72,
+				_this.img.height,
+				_this.x+(72.5*_i),
+				_this.y,
+				72,
+				_this.img.height
 			);
 		}
 
@@ -1324,17 +1324,21 @@ class GameObject_PM{
 		if(_mc===0){return;}
 		let _ms=parseInt(this.meterdef_status,2);
 
-		let _oimg=
-			((_mc&_ms)!==0)
-			?this.meterdef['n_'+_mc].imgobj
-			:_CANVAS_IMGS['meter_c_blank'].obj;
+		let _img_e=_CANVAS_IMGS['meter_c'].obj;
+		let _e_pos=//カレント中にて位置を取得
+			((_mc&_ms)!==0)//装備ステータスで判定
+			?72*_this.meterdef_current.indexOf('1')
+			:_img_e.width-72;
 		_CONTEXT.drawImage(
-			_oimg,
-			this.x+(_oimg.width
-					*this.meterdef_current.indexOf('1')),
-			this.y,
-			_oimg.width,
-			_oimg.height
+			_img_e,
+			_e_pos,
+			0,
+			72,
+			_img_e.height,
+			_this.x+(72*_this.meterdef_current.indexOf('1')),
+			_this.y,
+			72,
+			_img_e.height
 		);
 	}
 
@@ -1571,7 +1575,8 @@ class GameObject_SCORE{
 	}
 }
 
-
+//パワーカプセルの定義
+//※スプライト画像使用
 class GameObject_POWERCAPSELL{
 	constructor(_x,_y){
 		let _this=this;
@@ -1582,31 +1587,17 @@ class GameObject_POWERCAPSELL{
 		_this.type=(Math.random()>0.1)
 					?'red'
 					:'blue';
-
 		_this._c_pc_ani=0;
-		_this.pc_ani=[//パワーカプセル（赤）のアニメ定義
-			{img:_CANVAS_IMGS['pc1'].obj,scale:0.6},
-			{img:_CANVAS_IMGS['pc2'].obj,scale:0.6},
-			{img:_CANVAS_IMGS['pc3'].obj,scale:0.6},
-			{img:_CANVAS_IMGS['pc4'].obj,scale:0.6},
-			{img:_CANVAS_IMGS['pc5'].obj,scale:0.6}
-		];
-		_this.pc_ani2=[//パワーカプセル（青）のアニメ定義
-			{img:_CANVAS_IMGS['pc11'].obj,scale:0.6},
-			{img:_CANVAS_IMGS['pc12'].obj,scale:0.6},
-			{img:_CANVAS_IMGS['pc13'].obj,scale:0.6},
-			{img:_CANVAS_IMGS['pc14'].obj,scale:0.6}
-		];
 		_this.img=
 			(_this.type==='red')
-				?_this.pc_ani
-				:_this.pc_ani2;
+				?_CANVAS_IMGS['pc_red'].obj
+				:_CANVAS_IMGS['pc_blue'].obj;
 	}
 	getPCCenterPosition(){
 		let _this=this;
-		let _img=_this.img[0].img;
-		return {_x:this.x+(_img.width/2),
-				_y:this.y+(_img.height/2)}
+		//スプライト画像のため1コマ（正方形）
+		return {_x:_this.x+(_this.img.height/2),
+				_y:_this.y+(_this.img.height/2)}
 	}
 	getPowerCapcell(){this.gotpc=true;}
 	move(){
@@ -1617,15 +1608,22 @@ class GameObject_POWERCAPSELL{
 		_this.y=_MAP.getY(_this.y);
 
 		//パワーカプセル所持の場合
-		let _img=(function(_t){
-			_this._c_pc_ani=
-				(_this._c_pc_ani>=(_this.img.length*5)-1)
+		let _w=parseInt(_this.img.width/_this.img.height);
+		let _s=_this.img.height;
+
+		_this._c_pc_ani=
+			(_this._c_pc_ani>=(_w*5)-1)
 				?0:_this._c_pc_ani+1;
-			return _this.img[parseInt(_this._c_pc_ani/5)].img;
-		})(_this);
 		_CONTEXT.drawImage(
-			_img,_this.x,_this.y,
-			_img.width,_img.height
+			_this.img,
+			_s*parseInt(_this._c_pc_ani/5),
+			0,
+			_s,
+			_s,
+			_this.x,
+			_this.y,
+			_s,
+			_s
 		);
 	}
 }
@@ -1690,8 +1688,8 @@ const _IS_GET_POWERCAPSELL=()=>{
 			Math.pow(_pwc_c._y-_pl._y,2)
 			);
 		let _d=Math.sqrt(
-			Math.pow(_PLAYERS_MAIN.img.width,2)+
-			Math.pow(_PLAYERS_MAIN.img.height,2)
+			Math.pow(_PLAYERS_MAIN.width,2)+
+			Math.pow(_PLAYERS_MAIN.height,2)
 		);
 
 		let _s=(_a<_d/2)?true:false;
@@ -1829,7 +1827,6 @@ const _IS_ENEMIES_SHOT_COLLISION=()=>{
 		}
 	}
 
-	let _s=false;//衝突判定
 	for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
 		let _e=_ENEMIES_SHOTS[_i];
 		if(!_e._shot_alive){continue;}
@@ -2850,9 +2847,9 @@ _setPlayerMoveDraw(){
 	//自機移動分配列をセットする。
 	//Y軸無限:配列0番目からY起点にして要素0番目からリフレッシュさせる
 	//Y軸有限:配列0番目から軸を流し込む
-	let _w=_PLAYERS_MAIN.img.width;
-	let _h=_PLAYERS_MAIN.img.height;
-	let _x=_PLAYERS_MAIN.x+parseInt(_w/10);
+	let _w=_PLAYERS_MAIN.width;
+	let _h=_PLAYERS_MAIN.height;
+	let _x=_PLAYERS_MAIN.x+parseInt(_w/4);
 	let _y=_PLAYERS_MAIN.y+parseInt(_h/4);
 	let _mgs=_MAP.getBackGroundSpeedY()*-1;
 	let _pmdy=_PLAYERS_MOVE_DRAW_Y;
@@ -2953,7 +2950,20 @@ _setStopOnBG(){
 	if(!this._is_audio_context_source_bg){return;}
 	this._audio_context_source_bg.stop();
 	this._is_audio_context_source_bg=false;
-},	
+},
+_setDrawImage(_img,_x,_y,_scale){
+	//画像表示
+	//_img:画像オブジェクト
+	//_x:画像のx座標
+	//_y:画像のy座標
+	//_scale:画像スケール
+	let _s=_scale||1;
+	let _sw=_img.width*_s;
+	let _sh=_img.height*_s;
+	_CONTEXT.drawImage(
+		_img,_x-(_sw/2),_y-(_sh/2),_sw,_sh
+	);
+},//_setDrawImage
 _multilineText(context, text, width) {
     let len=text.length,
     	strArray=[],

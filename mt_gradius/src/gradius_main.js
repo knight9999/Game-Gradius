@@ -1292,10 +1292,12 @@ class GameObject_PM{
 	show(){
 		let _this=this;
 		//メーターを表示
+		//もともと7列の画像なので、
+		//表示配置xは36ピクセル右に位置させる。
 		_CONTEXT.drawImage(
 			_this.img,
 			0,0,_this.img.width-72,_this.img.height,
-			_this.x,
+			_this.x+36,
 			_this.y,
 			_this.img.width-72,
 			_this.img.height
@@ -1312,7 +1314,7 @@ class GameObject_PM{
 				0,
 				72,
 				_this.img.height,
-				_this.x+(72.5*_i),
+				_this.x+36+(72.5*_i),
 				_this.y,
 				72,
 				_this.img.height
@@ -1335,7 +1337,7 @@ class GameObject_PM{
 			0,
 			72,
 			_img_e.height,
-			_this.x+(72*_this.meterdef_current.indexOf('1')),
+			_this.x+36+(72*_this.meterdef_current.indexOf('1')),
 			_this.y,
 			72,
 			_img_e.height

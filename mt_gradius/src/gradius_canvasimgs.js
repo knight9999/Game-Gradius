@@ -199,42 +199,12 @@ const _CANVAS_IMGS={
 	'map_volcano_P':{src:'images/gradius_map_volcano_P.png',rate:1,obj:new Image()},
 
 	//炎
-	'map_frame_A_1':{src:'images/gradius_map_frame_A_1.png',rate:1,obj:new Image()},
-	'map_frame_A_2':{src:'images/gradius_map_frame_A_2.png',rate:1,obj:new Image()},
-	'map_frame_A_3':{src:'images/gradius_map_frame_A_3.png',rate:1,obj:new Image()},
-	'map_frame_A_4':{src:'images/gradius_map_frame_A_4.png',rate:1,obj:new Image()},
-	'map_frame_A_5':{src:'images/gradius_map_frame_A_5.png',rate:1,obj:new Image()},
-
-	'map_frame_B_1':{src:'images/gradius_map_frame_B_1.png',rate:1,obj:new Image()},
-	'map_frame_B_2':{src:'images/gradius_map_frame_B_2.png',rate:1,obj:new Image()},
-	'map_frame_B_3':{src:'images/gradius_map_frame_B_3.png',rate:1,obj:new Image()},
-	'map_frame_B_4':{src:'images/gradius_map_frame_B_4.png',rate:1,obj:new Image()},
-	'map_frame_B_5':{src:'images/gradius_map_frame_B_5.png',rate:1,obj:new Image()},
-
-	'map_frame_C_1':{src:'images/gradius_map_frame_C_1.png',rate:1,obj:new Image()},
-	'map_frame_C_2':{src:'images/gradius_map_frame_C_2.png',rate:1,obj:new Image()},
-	'map_frame_C_3':{src:'images/gradius_map_frame_C_3.png',rate:1,obj:new Image()},
-	'map_frame_C_4':{src:'images/gradius_map_frame_C_4.png',rate:1,obj:new Image()},
-	'map_frame_C_5':{src:'images/gradius_map_frame_C_5.png',rate:1,obj:new Image()},
-
-	'map_frame_D_1':{src:'images/gradius_map_frame_D_1.png',rate:1,obj:new Image()},
-	'map_frame_D_2':{src:'images/gradius_map_frame_D_2.png',rate:1,obj:new Image()},
-	'map_frame_D_3':{src:'images/gradius_map_frame_D_3.png',rate:1,obj:new Image()},
-	'map_frame_D_4':{src:'images/gradius_map_frame_D_4.png',rate:1,obj:new Image()},
-	'map_frame_D_5':{src:'images/gradius_map_frame_D_5.png',rate:1,obj:new Image()},
-
-	'map_frame_E_1':{src:'images/gradius_map_frame_E_1.png',rate:1,obj:new Image()},
-	'map_frame_E_2':{src:'images/gradius_map_frame_E_2.png',rate:1,obj:new Image()},
-	'map_frame_E_3':{src:'images/gradius_map_frame_E_3.png',rate:1,obj:new Image()},
-	'map_frame_E_4':{src:'images/gradius_map_frame_E_4.png',rate:1,obj:new Image()},
-	'map_frame_E_5':{src:'images/gradius_map_frame_E_5.png',rate:1,obj:new Image()},
-
-	'map_frame_F_1':{src:'images/gradius_map_frame_F_1.png',rate:1,obj:new Image()},
-	'map_frame_F_2':{src:'images/gradius_map_frame_F_2.png',rate:1,obj:new Image()},
-	'map_frame_F_3':{src:'images/gradius_map_frame_F_3.png',rate:1,obj:new Image()},
-	'map_frame_F_4':{src:'images/gradius_map_frame_F_4.png',rate:1,obj:new Image()},
-	'map_frame_F_5':{src:'images/gradius_map_frame_F_5.png',rate:1,obj:new Image()}
-
+	'map_frame_A':{src:'images/gradius_map_frame_A.png',rate:1.00,obj:new Image()},
+	'map_frame_B':{src:'images/gradius_map_frame_B.png',rate:1.00,obj:new Image()},
+	'map_frame_C':{src:'images/gradius_map_frame_C.png',rate:1.00,obj:new Image()},
+	'map_frame_D':{src:'images/gradius_map_frame_D.png',rate:1.00,obj:new Image()},
+	'map_frame_E':{src:'images/gradius_map_frame_E.png',rate:1.00,obj:new Image()},
+	'map_frame_F':{src:'images/gradius_map_frame_F.png',rate:1.00,obj:new Image()},
 };
 
 const _CANVAS_IMGS_INIT={

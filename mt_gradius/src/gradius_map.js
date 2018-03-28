@@ -956,28 +956,35 @@ class GameObject_MAP{
 				continue;
 			}
 			let _p=_MAP_THEME[_this.map_theme]._map[_k];
-			let _img=_p.objs[_j+','+_i].getImg();
+//			let _img=_p.objs[_j+','+_i].getImg();
 			// let _img=_p._o.obj;
 //			console.log(_this.y+(_p._my(_i)*_this.t))
-			_CONTEXT.drawImage(
-				_img,
+			// _CONTEXT.drawImage(
+			// 	_img,
+			// 	_this.x+(_p._mx(_j)*_this.t),
+			// 	_this.y+(_p._my(_i)*_this.t),
+			// 	_img.width,
+			// 	_img.height
+			// );
+			_p.objs[_j+','+_i].moveDraw(
 				_this.x+(_p._mx(_j)*_this.t),
-				_this.y+(_p._my(_i)*_this.t),
-				_img.width,
-				_img.height
-			);
+				_this.y+(_p._my(_i)*_this.t));
 
 			if(!_this.map_infinite){continue;}
 
 			//縦スクロールする場合は、スクロールをスムーズに表示させる為、
 			//マップを2倍に表示させる。
-			_CONTEXT.drawImage(
-				_img,
+			_p.objs[_j+','+_i].moveDraw(
 				_this.x+(_p._mx(_j)*_this.t),
-				_this.y+(_p._my(_i)*_this.t)+((_this.y>0)?-1000:1000),
-				_img.width,
-				_img.height
-			);
+				_this.y+(_p._my(_i)*_this.t)+((_this.y>0)?-1000:1000));
+
+			// _CONTEXT.drawImage(
+			// 	_img,
+			// 	_this.x+(_p._mx(_j)*_this.t),
+			// 	_this.y+(_p._my(_i)*_this.t)+((_this.y>0)?-1000:1000),
+			// 	_img.width,
+			// 	_img.height
+			// );
 
 		}//_j
 		}//_i

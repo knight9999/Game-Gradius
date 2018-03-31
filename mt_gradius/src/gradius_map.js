@@ -163,10 +163,10 @@ const _MAP_THEME={//_parts要素番号0は空文字
 		'A':{
 			'_o':(new MAP_CRISTAL()).img,//画像
 			'_s':(new MAP_CRISTAL())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_CRISTAL();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'objs':{},//_MAP.moveDraw()で処理させる
+						//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':new MAP_CRISTAL()
 		}
 	},
 	'_enemies':_MAP_ENEMIES._ENEMIES
@@ -176,124 +176,107 @@ const _MAP_THEME={//_parts要素番号0は空文字
 		'A':{
 			'_o':(new MAP_VOLCANO_A()).img,//画像
 			'_s':(new MAP_VOLCANO_A())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_A()
 		},
 		'B':{
 			'_o':(new MAP_VOLCANO_B()).img,//画像
 			'_s':(new MAP_VOLCANO_B())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_B()
 		},
 		'C':{
 			'_o':(new MAP_VOLCANO_C()).img,//画像
 			'_s':(new MAP_VOLCANO_C())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_C();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_C()
 		},
 		'D':{
 			'_o':(new MAP_VOLCANO_D()).img,//画像
 			'_s':(new MAP_VOLCANO_D())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_D();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_D()
 		},
 		'F':{
 			'_o':(new MAP_VOLCANO_F()).img,//画像
 			'_s':(new MAP_VOLCANO_F())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_F();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_F()
 		},
 		'G':{
 			'_o':(new MAP_VOLCANO_G()).img,//画像
 			'_s':(new MAP_VOLCANO_G())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_G();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_G()
 		},
 		'H':{
 			'_o':(new MAP_VOLCANO_H()).img,//画像
 			'_s':(new MAP_VOLCANO_H())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_H();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_H()
 		},
 		'I':{//8
 			'_o':(new MAP_VOLCANO_I()).img,//画像
 			'_s':(new MAP_VOLCANO_I())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_I();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_I()
 		},
 		'J':{
 			'_o':(new MAP_VOLCANO_J()).img,//画像
 			'_s':(new MAP_VOLCANO_J())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_J();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
-
+			'objs':{},
+			'_obj':new MAP_VOLCANO_J()
 		},
 		'K':{
 			'_o':(new MAP_VOLCANO_K()).img,//画像
 			'_s':(new MAP_VOLCANO_K())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_K();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
-
+			'objs':{},
+			'_obj':new MAP_VOLCANO_K()
 		},
 		'L':{
 			'_o':(new MAP_VOLCANO_L()).img,//画像
 			'_s':(new MAP_VOLCANO_L())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_L();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_L()
 		},
 		'M':{
 			'_o':(new MAP_VOLCANO_M()).img,//画像
 			'_s':(new MAP_VOLCANO_M())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_M();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_M()
 		},
 		'N':{
 			'_o':(new MAP_VOLCANO_N()).img,//画像
 			'_s':(new MAP_VOLCANO_N())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_N();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_N()
 		},
 		'O':{
 			'_o':(new MAP_VOLCANO_O()).img,//画像
 			'_s':(new MAP_VOLCANO_O())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_O();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_O()
 		},
 		'P':{
 			'_o':(new MAP_VOLCANO_P()).img,//画像
 			'_s':(new MAP_VOLCANO_P())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_VOLCANO_P();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':new MAP_VOLCANO_P()
 		}
 
 	},
@@ -304,10 +287,9 @@ const _MAP_THEME={//_parts要素番号0は空文字
 		'A':{
 			'_o':(new MAP_CUBE_A()).img,//画像
 			'_s':(new MAP_CUBE_A())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_CUBE_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_CUBE_A())
 		}
 	},
 	'_enemies':_MAP_ENEMIES._ENEMIES
@@ -317,18 +299,16 @@ const _MAP_THEME={//_parts要素番号0は空文字
 		'B':{
 			'_o':(new MAP_MOAI_A()).img,//画像
 			'_s':(new MAP_MOAI_A())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_MOAI_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':(new MAP_MOAI_A())
 		},
 		'C':{
 			'_o':(new MAP_MOAI_B()).img,//画像
 			'_s':(new MAP_MOAI_B())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_MOAI_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}
+			'objs':{},
+			'_obj':(new MAP_MOAI_B())
 		}
 	},
 	'_enemies':{
@@ -464,50 +444,44 @@ const _MAP_THEME={//_parts要素番号0は空文字
 		'A':{
 			'_o':(new MAP_FRAME_A()).img,//画像
 			'_s':(new MAP_FRAME_A())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_FRAME_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_FRAME_A())
 		},
 		'B':{
 			'_o':(new MAP_FRAME_B()).img,
 			'_s':(new MAP_FRAME_B())._s,
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_FRAME_B();},
-			'objs':{}
+			'objs':{},
+			'_obj':(new MAP_FRAME_B())
 		},
 		'C':{
 			'_o':(new MAP_FRAME_C()).img,
 			'_s':(new MAP_FRAME_C())._s,
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_FRAME_C();},
-			'objs':{}
+			'objs':{},
+			'_obj':(new MAP_FRAME_C())
 		},
 		'D':{
 			'_o':(new MAP_FRAME_D()).img,
 			'_s':(new MAP_FRAME_D())._s,
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_FRAME_D();},
-			'objs':{}
+			'objs':{},
+			'_obj':(new MAP_FRAME_D())
 		},
 		'E':{
 			'_o':(new MAP_FRAME_E()).img,
 			'_s':(new MAP_FRAME_E())._s,
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_FRAME_E();},
-			'objs':{}
+			'objs':{},
+			'_obj':(new MAP_FRAME_E())
 		},
 		'F':{
 			'_o':(new MAP_FRAME_F()).img,
 			'_s':(new MAP_FRAME_F())._s,
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
 			'obj':function(_key){this.objs[_key]=new MAP_FRAME_F();},
-			'objs':{}
+			'objs':{},
+			'_obj':(new MAP_FRAME_F())
 		}
 
 	},
@@ -543,11 +517,10 @@ const _MAP_THEME={//_parts要素番号0は空文字
 	'_map':{
 		'A':{
 			'_o':(new MAP_FRAME_A()).img,//画像
-			'_s':(new MAP_FRAME_A())._s,//衝突座標
-			'_mx':function(_j){return _j;},
-			'_my':function(_i){return _i;},
+			'_s':(new MAP_FRAME_A())._s,
 			'obj':function(_key){this.objs[_key]=new MAP_FRAME_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{}//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_FRAME_A())
 		}
 	},
 	'_enemies':{
@@ -930,8 +903,7 @@ class GameObject_MAP{
 				//ここでは10x10pxに調整
 				_CONTEXT.drawImage(
 					_img,
-					50+(_j*10),
-					130+(_p._my(_i)*10),
+					50+(_j*10),130+(_i*10),
 					_img.width/2.5,_img.height/2.5
 				);
 			}
@@ -956,35 +928,17 @@ class GameObject_MAP{
 				continue;
 			}
 			let _p=_MAP_THEME[_this.map_theme]._map[_k];
-//			let _img=_p.objs[_j+','+_i].getImg();
-			// let _img=_p._o.obj;
-//			console.log(_this.y+(_p._my(_i)*_this.t))
-			// _CONTEXT.drawImage(
-			// 	_img,
-			// 	_this.x+(_p._mx(_j)*_this.t),
-			// 	_this.y+(_p._my(_i)*_this.t),
-			// 	_img.width,
-			// 	_img.height
-			// );
 			_p.objs[_j+','+_i].moveDraw(
-				_this.x+(_p._mx(_j)*_this.t),
-				_this.y+(_p._my(_i)*_this.t));
+				_this.x+(_j*_this.t),
+				_this.y+(_i*_this.t));
 
 			if(!_this.map_infinite){continue;}
 
 			//縦スクロールする場合は、スクロールをスムーズに表示させる為、
 			//マップを2倍に表示させる。
 			_p.objs[_j+','+_i].moveDraw(
-				_this.x+(_p._mx(_j)*_this.t),
-				_this.y+(_p._my(_i)*_this.t)+((_this.y>0)?-1000:1000));
-
-			// _CONTEXT.drawImage(
-			// 	_img,
-			// 	_this.x+(_p._mx(_j)*_this.t),
-			// 	_this.y+(_p._my(_i)*_this.t)+((_this.y>0)?-1000:1000),
-			// 	_img.width,
-			// 	_img.height
-			// );
+				_this.x+(_j*_this.t),
+				_this.y+(_i*_this.t)+((_this.y>0)?-1000:1000));
 
 		}//_j
 		}//_i

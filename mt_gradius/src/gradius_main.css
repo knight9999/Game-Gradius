@@ -219,40 +219,42 @@ body.sp section#sp_controller #sp_controller_inner>div[class*="bt"]{
     border:1px solid rgba(255,255,255,0.5);
     border-radius:50%;
     color:rgba(255,255,255,1);
-	font-size:150%;
     height:70px;
-    line-height:2.0em;
     position:absolute;
-    text-align:center;
     width:70px;
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt::before{
 	bottom:0px;left:0px;right:0px;top:0px;
 	content:"";
-    height:50%;
+    height:30px;
 	margin:auto;
     position:absolute;
-	width: 50%;
+	width:30px;
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r::before{
-    background:url(./images/gradius_font_r.png) no-repeat;
-    background-size:cover;
+    background:url(./images/gradius_font.png) no-repeat;
+	background-size:cover;
+	background-position: -810px 0px;
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p::before{
-	background:url(./images/gradius_font_p.png) no-repeat;
+	background:url(./images/gradius_font.png) no-repeat;
     background-size:cover;
+	background-position: -750px 0px;
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s::before{
-	background:url(./images/gradius_font_s.png) no-repeat;
+	background:url(./images/gradius_font.png) no-repeat;
     background-size:cover;
+	background-position: -840px 0px;
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b::before{
-	background:url(./images/gradius_font_b.png) no-repeat;
+	background:url(./images/gradius_font.png) no-repeat;
     background-size:cover;
+	background-position: -330px 0px;
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a::before{
-	background:url(./images/gradius_font_a.png) no-repeat;
+	background:url(./images/gradius_font.png) no-repeat;
     background-size:cover;
+	background-position: -300px 0px;
 }
 
 

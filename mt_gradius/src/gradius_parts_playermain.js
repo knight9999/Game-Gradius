@@ -405,10 +405,10 @@ class GameObject_FORCEFIELD{
 
 		_this._eid=0;//敵ID
 		//アニメーション定義
-		_this.ani=[0,105];
+		_this.ani=[0,106];
 
 		_this.col_date=null;//打たれた時間
-		_this.col_canint=100;//連続ショット許可間隔
+		_this.col_canint=50;//連続ショット許可間隔
 	};
 	init(){
 		let _this=this;

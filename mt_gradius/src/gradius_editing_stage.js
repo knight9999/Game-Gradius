@@ -144,22 +144,30 @@ _setInitMap:function(_m){
         (function(_k){
             if(_k==='0'){return '';}
 			//パーツがある場合はイベントを追加する
-            let _s='<div class="parts_block" '
-					+'ondragstart="_GAME_STAGEEDIT_EVENTS._f_pb_dragstart(event);" '
-					+'draggable="true">';
+			let _s='';
 			if(_k.match(_MAP.collision_enemies)!==null){
 				//敵の表示
 //				console.log(_k)
 				let _o=_MAP_THEME[_m._theme]._enemies[_k]._o.obj;
+				_s='<div class="parts_block" '
+						+'ondragstart="_GAME_STAGEEDIT_EVENTS._f_pb_dragstart(event);" '
+						+'draggable="true">';
 				let _st=_MAP_THEME[_m._theme]._enemies[_k]._st;
 				_s+='<img'+((_st==='')?'':' style="'+_st+'"')+' width="'+parseInt(_o.width*0.8)+'" height="'+parseInt(_o.height*0.8)+'" src="'+_o.src+'">';
+				_s+='</div>';
 			}else if(_k.match(_MAP.collision_map)!==null){
 				//マップの表示
-				let _o=_MAP_THEME[_m._theme]._map[_k]._o.obj;
-				_s+='<img width="'+parseInt(_o.width*0.8)+'" height="'+parseInt(_o.height*0.8)+'" src="'+_o.src+'">';
+				let _o=_MAP_THEME[_m._theme]._map[_k]._obj;
+				_s='<div class="parts_block" '
+						+'style="width:'+parseInt(_o.width*0.8)+'px;height:'+parseInt(_o.height*0.8)+'px" '
+						+'ondragstart="_GAME_STAGEEDIT_EVENTS._f_pb_dragstart(event);" '
+						+'draggable="true">';
+//				_s+='<div style="overflow:hidden;width:'+parseInt(_o.width*0.8)+'px;"><img height="'+parseInt(_o.height*0.8)+'" src="'+_o.img.src+'"></div>';
+				_s+='<img src="'+_o.img.src+'">';
 //                _s+='<img width="'+parseInt(20*_wh._w)+'" height="'+parseInt(20*_wh._h)+'" src="'+_MAP_THEME[_m._theme]._p[_k]._o.src+'">';
+				_s+='</div>';
 			}
-			return _s+'</div>';
+			return _s;
 		})(_mo[_i][_j])+
         '</div><!-- /.area_block -->';
     }//_j
@@ -243,10 +251,18 @@ _setInitPartsBlocksWrapper:function(_m){
 
 	_str='';
 	for(let [_k,_v] of Object.entries(_MAP_THEME[_m._theme]._map)){
+		let _o=_v._obj;
+//		240:60=100:x
+//		x=100*h/w
+		let _h=parseInt(100*_o.height/_o.width);
 		_str+=
 			'<div class="parts_block_wrapper" data-val="'+_k+'">'+
 			'<div class="text">MAP '+_k+'</div>'+
-			'<div class="parts_block"><img src="'+_v._o.src+'"></div>'+
+			'<div class="parts_block" '+
+			'style="width:100px;height:'+_h+'px"'+
+			'>'+
+			'<img src="'+_v._o.src+'">'+
+			'</div>'+
 			'</div><!-- /.parts_block_wrapper -->'
 	}
 	//MAP
@@ -598,6 +614,7 @@ _f_map_remove:function(e){
 //====================
 _f_as_mouseover:function(e){
 //	console.log(e.target);
+//	パーツドラッグ中はこのイベントは発生しない
 	let _this=this;
 	if(e.target.tagName==="IMG"){
 		_GAME_STAGEEDIT_EVENTS.$_mouseover_area_parts_obj=e.target;
@@ -617,8 +634,8 @@ _f_as_mouseout:function(e){
 	return false;
 },//_f_as_mouseout
 _f_as_dragenter:function(e){
-	//マップのブロック内ドラッグオーバー処理
-//	console.log(this.$_do_area_parts_obj);
+	//マップのブロック内ドラッグ
+//	console.log(e.target);
 	if(this.$_do_area_parts_obj!==null){
 		this.$_do_area_parts_obj.classList.remove('over');
 	}
@@ -658,9 +675,12 @@ _f_as_drop:function(e){
 		}
 		if(_o.match(_MAP.collision_map)!==null){
 			//MAPの表示
-			let _obj=_MAP_THEME[_GAME_STAGEEDIT._theme]._map[_o]._o.obj;
-			$_cn.children[0].width=parseInt(_obj.width*0.8);
-			$_cn.children[0].height=parseInt(_obj.height*0.8);
+			let _obj=_MAP_THEME[_GAME_STAGEEDIT._theme]._map[_o]._obj;
+			$_cn.setAttribute('style','width:'+parseInt(_obj.width*0.8)+'px;height:'+parseInt(_obj.height*0.8)+'px');
+			// $_cn.style.width=parseInt(_obj.width*0.8);
+			// $_cn.style.height=parseInt(_obj.height*0.8);
+//			$_cn.children[0].width=parseInt(_obj.width*0.8);
+//			$_cn.children[0].height=parseInt(_obj.height*0.8);
 		}
 		$_ect.children[0].addEventListener('dragstart',this._f_pb_dragstart,false);
 	}

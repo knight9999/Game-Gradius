@@ -1349,9 +1349,6 @@ class GameObject_PM{
 			_CANVAS.width,
 			_CANVAS.height);
 
-		let _s='power meter select';
-		let _s2='shield select';
-
 		_GAME._setDrawTextToFont(
 				'power meter select',
 				(_CANVAS.width/2)

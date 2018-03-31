@@ -1296,10 +1296,10 @@ class GameObject_PM{
 		//表示配置xは36ピクセル右に位置させる。
 		_CONTEXT.drawImage(
 			_this.img,
-			0,0,_this.img.width-72,_this.img.height,
+			0,0,_this.img.width-71,_this.img.height,
 			_this.x+36,
 			_this.y,
-			_this.img.width-72,
+			_this.img.width-71,
 			_this.img.height
 		);
 
@@ -1314,7 +1314,7 @@ class GameObject_PM{
 				0,
 				72,
 				_this.img.height,
-				_this.x+36+(72.5*_i),
+				_this.x+36+(72*_i),
 				_this.y,
 				72,
 				_this.img.height
@@ -1348,23 +1348,19 @@ class GameObject_PM{
 		let _s='power meter select';
 		let _s2='shield select';
 
-		_CONTEXT.clearRect(0,0,
-					_CANVAS.width,
-					_CANVAS.height);
-		_DRAW_DISP_TXT(
-				_s,
+		_GAME._setDrawTextToFont(
+				'power meter select',
 				(_CANVAS.width/2)
-					-(70*0.5*_s.length/2),
+					-(36*('power meter select').length/2),
 				20,
-				0.3
+				0.6
 			);
 
-		_DRAW_DISP_TXT(
-				_s2,
-				(_CANVAS.width/2)
-					-(70*0.5*_s.length/2),
+		_GAME._setDrawTextToFont(
+				'shield select',
+				200,
 				400,
-				0.15
+				0.3
 			);
 
 		//センタリングに表示
@@ -1454,12 +1450,12 @@ class GameObject_STAGESELECT{
 					_CANVAS.width,
 					_CANVAS.height);
 		//テキスト表示
-		_DRAW_DISP_TXT(
+		_GAME._setDrawTextToFont(
 				'stage select',
 				(_CANVAS.width/2)
 					-(70*0.5*('stage select').length/2),
 				20,
-				0.3
+				0.6
 			);
 
 		//ページングを表示
@@ -1488,7 +1484,7 @@ class GameObject_STAGESELECT{
 		_CONTEXT.strokeRect(50,130,300,200);
 
 		//テキスト表示
-		_DRAW_DISP_TXT('stage title',400,130,0.2);
+		_GAME._setDrawTextToFont('stage title',400,130,0.3);
 		_CONTEXT.moveTo(400,160);
 		_CONTEXT.lineTo(950,160);
 		_CONTEXT.stroke();
@@ -1498,12 +1494,12 @@ class GameObject_STAGESELECT{
 			_CONTEXT.fillText(_ar[_i],400,190+(_i*26));
 		}
 
-		_DRAW_DISP_TXT(('difficult:'+this.mapdef._difficult),400,220,0.2);
+		_GAME._setDrawTextToFont(('difficult:'+this.mapdef._difficult),400,230,0.3);
 		_CONTEXT.moveTo(400,260);
 		_CONTEXT.lineTo(950,260);
 		_CONTEXT.stroke();
 
-		_DRAW_DISP_TXT('detail',400,290,0.2);
+		_GAME._setDrawTextToFont('detail',400,300,0.3);
 		_CONTEXT.moveTo(400,330);
 		_CONTEXT.lineTo(950,330);
 		_CONTEXT.stroke();
@@ -1533,47 +1529,15 @@ class GameObject_SCORE{
 		this.scorehi=this.score1p;
 	}
 	show(){
+		let _img=_CANVAS_IMGS_INIT['font'].obj;
 		let _s='1p'+('        '+this.score1p).slice(-8);
-		for(let _i=0;_i<_s.length;_i++){
-			if(_s[_i]===' '){continue;}
-			let _img=
-				_CANVAS_IMGS_INIT['font_'+_s[_i]].obj;
-			_CONTEXT.drawImage(
-				_img,
-				180+(_img.width*0.15*_i),
-				10,
-				_img.width*0.15,
-				_img.height*0.15
-			);
-		}
+		_GAME._setDrawTextToFont(_s,180,10,0.3);
 
 		_s='hi'+('        '+this.scorehi).slice(-8);
-		for(let _i=0;_i<_s.length;_i++){
-			if(_s[_i]===' '){continue;}
-			let _img=
-				_CANVAS_IMGS_INIT['font_'+_s[_i]].obj;
-			_CONTEXT.drawImage(
-				_img,
-				400+(_img.width*0.15*_i),
-				10,
-				_img.width*0.15,
-				_img.height*0.15
-			);
-		}
+		_GAME._setDrawTextToFont(_s,400,10,0.3);
 
 		_s='2p'+('        '+this.score2p).slice(-8);
-		for(let _i=0;_i<_s.length;_i++){
-			if(_s[_i]===' '){continue;}
-			let _img=
-				_CANVAS_IMGS_INIT['font_'+_s[_i]].obj;
-			_CONTEXT.drawImage(
-				_img,
-				620+(_img.width*0.15*_i),
-				10,
-				_img.width*0.15,
-				_img.height*0.15
-			);
-		}
+		_GAME._setDrawTextToFont(_s,620,10,0.3);
 	}
 }
 
@@ -2120,6 +2084,9 @@ const _DRAW_SELECT_POWERMETER=()=>{
 	let _si=null;
 	const _loop=function(){
 		_si=window.requestAnimationFrame(_loop);		
+		_CONTEXT.clearRect(0,0,
+			_CANVAS.width,
+			_CANVAS.height);
 		_POWERMETER.pms_disp();
 		if(_c%5===0){
 			_POWERMETER.pms_select();
@@ -2168,23 +2135,11 @@ const _DRAW_GAMESTART=()=>{
 
 		}else{
 			let _txt='start';
-			for(let _i=0;_i<_txt.length;_i++){
-				var _img=_CANVAS_IMGS_INIT['font_'+_txt[_i]].obj;
-				var _x=
-					(_CANVAS.width/2)
-					-(_img.width*0.5*_txt.length/2);
-				var _y=
-					(_CANVAS.height/2)
-					-(_img.height/2);
-				//センタリングに表示
-				_CONTEXT.drawImage(
-					_img,
-					_x+(_img.width*0.5*_i),
-					_y,
-					_img.width*0.5,
-					_img.height*0.5
-				);
-			}
+			_GAME._setDrawTextToFont(
+				_txt,
+				(_CANVAS.width/2)-(60*_txt.length/2),
+				(_CANVAS.height/2)-(60/2)-20,
+				1.0);
 		}
 		_c++;
 	};
@@ -2193,33 +2148,30 @@ const _DRAW_GAMESTART=()=>{
 }
 
 const _DRAW_GAMECLEAR=()=>{
-	var _img=_CANVAS_IMGS_INIT['font_0'].obj;
+	var _img=_CANVAS_IMGS_INIT['font'].obj;
 	//クリアしたら敵を全て消す
 	let _s='gameclear';
-	_DRAW_DISP_TXT(
-			_s,
-			(_CANVAS.width/2)
-			-(_img.width*0.5*_s.length/2),
-			(_CANVAS.height/2)
-			-(_img.height/2),
-			0.5
-		);
+	_GAME._setDrawTextToFont(
+		_s,
+		(_CANVAS.width/2)-(60*_s.length/2),
+		(_CANVAS.height/2)-(60/2)-40,
+		1.0);
 
 	_s='press r to restart';
-	_DRAW_DISP_TXT(
+	_GAME._setDrawTextToFont(
 			_s,
 			(_CANVAS.width/2)
-	 			-(_img.width*0.15*_s.length/2),
+	 			-(18*_s.length/2),
 			(_CANVAS.height/2)+30,
-			0.15
+			0.3
 		);
 	_s='press s to change to another stage';
-	_DRAW_DISP_TXT(
+	_GAME._setDrawTextToFont(
 			_s,
 			(_CANVAS.width/2)
-	 			-(_img.width*0.15*_s.length/2),
+	 			-(18*_s.length/2),
 			(_CANVAS.height/2)+60,
-			0.15
+			0.3
 		);
 	_DRAW_IS_GAMECLEAR=true;
 
@@ -2244,32 +2196,29 @@ const _DRAW_GAMEOVER=()=>{
 	//SCORE
 	_SCORE.show();
 
-	var _img=_CANVAS_IMGS_INIT['font_0'].obj;
+	var _img=_CANVAS_IMGS_INIT['font'].obj;
 	let _s='gameover';
-	_DRAW_DISP_TXT(
-			_s,
-			(_CANVAS.width/2)
-			-(_img.width*0.5*_s.length/2),
-			(_CANVAS.height/2)
-			-(_img.height/2),
-			0.5
-		);
+	_GAME._setDrawTextToFont(
+		_s,
+		(_CANVAS.width/2)-(60*_s.length/2),
+		(_CANVAS.height/2)-(60/2)-40,
+		1.0);
 
 	_s='press r to restart';
-	_DRAW_DISP_TXT(
+	_GAME._setDrawTextToFont(
 			_s,
 			(_CANVAS.width/2)
-	 			-(_img.width*0.15*_s.length/2),
+				-(18*_s.length/2),
 			(_CANVAS.height/2)+30,
-			0.15
+			0.3
 		);
 	_s='press s to change to another stage';
-	_DRAW_DISP_TXT(
+	_GAME._setDrawTextToFont(
 			_s,
 			(_CANVAS.width/2)
-	 			-(_img.width*0.15*_s.length/2),
+				-(18*_s.length/2),
 			(_CANVAS.height/2)+60,
-			0.15
+			0.3
 		);
 }// _DRAW_GAMEOVER
 
@@ -2286,27 +2235,6 @@ const _DRAW_ENEMIES_COLLISIONS=()=>{
 	}
 }//_DRAW_ENEMIES_COLLISIONS
 
-const _DRAW_DISP_TXT=(_s,_x,_y,_r)=>{
-	//_s:テキスト
-	//_x:テキスト開始x座標位置
-	//_y:テキスト開始y座標位置
-	//_r:文字表示比率(0.0〜1.0)
-	_r=_r||1;
-	for(let _i=0;_i<_s.length;_i++){
-		if(_s[_i]===' '){continue;}
-		var _img=(function(){
-			return _CANVAS_IMGS_INIT['font_'+_s[_i]].obj;
-		})();
-		//センタリングに表示
-		_CONTEXT.drawImage(
-			_img,
-			_x+(_img.width*_r*_i),
-			_y,
-			_img.width*_r,
-			_img.height*_r
-		);
-	}
-}
 const _DRAW_SCROLL_STOP=()=>{
 	_MAP.set_scroll_off_x();
 }
@@ -2622,6 +2550,45 @@ _init(){
 	_MAP=new GameObject_MAP();
 	_MAP.init(_GAME._showGameStart);
 },
+_txt:{//スプライトされたフォントのマッピング
+	"0":"0",
+	"1":"60",
+	"2":"120",
+	"3":"180",
+	"4":"240",
+	"5":"300",
+	"6":"360",
+	"7":"420",
+	"8":"480",
+	"9":"540",
+	"a":"600",
+	"b":"660",
+	"c":"720",
+	"d":"780",
+	"e":"840",
+	"f":"900",
+	"g":"960",
+	"h":"1020",
+	"i":"1080",
+	"j":"1140",
+	"k":"1200",
+	"l":"1260",
+	"m":"1320",
+	"n":"1380",
+	"o":"1440",
+	"p":"1500",
+	"q":"1560",
+	"r":"1620",
+	"s":"1680",
+	"t":"1740",
+	"u":"1800",
+	"v":"1860",
+	"w":"1920",
+	"x":"1980",
+	"y":"2040",
+	"z":"2100",
+	":":"2160"
+},
 _audio_buffer_loader:null,
 _audio_now_obj_bg:null,//バックグラウンド現在再生用
 _audio_context_source_bg:null,//バックグラウンド再生用
@@ -2822,8 +2789,40 @@ _showGameStart(){
 		document.querySelector('#game_start>.text_loading'),
  		'now loading',30);
 },
+_setDrawTextToFont(_s,_x,_y,_r){
+	//キャンバス用にテキストからフォントに置換させる。
+	//_s:テキスト
+	//_x:テキスト開始x座標位置
+	//_y:テキスト開始y座標位置
+	//_r:文字表示比率(0.0〜1.0)
+	let _this=this;
+	const img=_CANVAS_IMGS_INIT['font'].obj;
+	const imgsize=img.height;
+	_r=_r||1;
+	for(let _i=0;_i<_s.length;_i++){
+		if(_s[_i]===' '){continue;}
+		//センタリングに表示
+		_CONTEXT.save();
+		_CONTEXT.translate(_x,_y);
+		_CONTEXT.scale(_r,_r);
+		_CONTEXT.drawImage(
+			img,
+			parseInt(_this._txt[_s[_i]]),
+			0,
+			imgsize,
+			imgsize,
+			(imgsize*_i),
+			0,
+			imgsize,
+			imgsize
+		);
+		_CONTEXT.restore();
+	}
+},//_setDrawTextToFont
 _setTextToFont(_o,_str,_w){
+	//ブラウザ用にテキストからフォントに置換させる。
 	if(_o===undefined||_o===null){return;}
+	let _this=this;
 	_w=_w||30;
 	let _s='';
 	for(let _i=0;_i<_str.length;_i++){
@@ -2831,7 +2830,8 @@ _setTextToFont(_o,_str,_w){
 			_s+='<img src="./images/gradius_spacer.png" width="'+_w+'">';
 			continue;
 		}
-		_s+='<img src="./images/gradius_font_'+_str[_i]+'.png" width="'+_w+'">';
+		let _pos=parseInt(_this._txt[_str[_i]])*(_w/60)*-1;
+		_s+='<div style="background:url(./images/gradius_font.png) no-repeat;width:'+_w+'px;height:'+_w+'px;background-position:'+_pos+'px 0px;background-size:cover;display:inline-block;"></div>';
 	}
 	_o.innerHTML=_s;
 },//_setTextToFont

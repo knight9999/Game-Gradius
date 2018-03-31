@@ -111,7 +111,7 @@ _set_entryupdate:function(_ed){
 				'.parts_block_wrapper .text'
 			);
 			for(let _i=0;_i<$_qsa.length;_i++){
-				_GAME_STAGEEDIT._setTextToFont($_qsa[_i],$_qsa[_i].innerText,20);
+				_GAME_STAGEEDIT._setTextToFont($_qsa[_i],$_qsa[_i].innerText,14);
 			}
 
 	    });//_MAP.init()
@@ -128,6 +128,45 @@ _ac:new(
 )(),
 _as:null,
 _theme:0,
+_txt:{//スプライトされたフォントのマッピング
+	"0":"0",
+	"1":"60",
+	"2":"120",
+	"3":"180",
+	"4":"240",
+	"5":"300",
+	"6":"360",
+	"7":"420",
+	"8":"480",
+	"9":"540",
+	"a":"600",
+	"b":"660",
+	"c":"720",
+	"d":"780",
+	"e":"840",
+	"f":"900",
+	"g":"960",
+	"h":"1020",
+	"i":"1080",
+	"j":"1140",
+	"k":"1200",
+	"l":"1260",
+	"m":"1320",
+	"n":"1380",
+	"o":"1440",
+	"p":"1500",
+	"q":"1560",
+	"r":"1620",
+	"s":"1680",
+	"t":"1740",
+	"u":"1800",
+	"v":"1860",
+	"w":"1920",
+	"x":"1980",
+	"y":"2040",
+	"z":"2100",
+	":":"2160"
+},
 _setInitMap:function(_m){
 	//初期表示
 	this._theme=_m._theme;
@@ -289,15 +328,25 @@ _getTextToFont:function($_obj){
 },
 _setTextToFont:function(_o,_str,_w){
 	if(_o===undefined||_o===null){return;}
-	_w=_w||30;
+	_w=_w||60;
 	let _s='';
 	for(let _i=0;_i<_str.length;_i++){
+        if(_str[_i]===':'){continue;}
 		if(_str[_i]===' '){
 			_s+='<img src="./images/gradius_spacer.png" width="'+_w+'">';
 			continue;
 		}
-        if(_str[_i]===':'){continue;}
-		_s+='<img src="./images/gradius_font_'+_str[_i]+'.png" width="'+_w+'">';
+//		console.log(_str[_i]+':');
+		let _pos=parseInt(this._txt[_str[_i].toLowerCase()])*(_w/60)*-1;
+		_s+='<div style="'
+			+'background:url(./images/gradius_font.png) no-repeat;'
+			+'background-size:cover;'
+			+'background-position:'+_pos+'px 0px;'
+			+'display:inline-block;'
+			+'width:'+_w+'px;'
+			+'height:'+_w+'px;'
+			+'"></div>';
+//		_s+='<img src="./images/gradius_font_'+_str[_i]+'.png" width="'+_w+'">';
 	}
 	_o.innerHTML=_s;
 },//_setTextToFont
@@ -489,12 +538,23 @@ _init:()=>{
 		_GAME_STAGEEDIT._setEntryLink();
 
 		//gradiusフォントにセット
-		const $_qsa=document.querySelectorAll(
-		'h1,h2,h3,#map_bts a,#entrylink a,label.col_l,div.col_r label span, .parts_block_wrapper .text, #menu_inner a'
+		let $_qsa=document.querySelectorAll('h1');
+		for(let _i=0;_i<$_qsa.length;_i++){
+			_this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,40);
+		}
+
+		$_qsa=document.querySelectorAll(
+			'h2,h3,#map_bts a,#entrylink a,label.col_l,div.col_r label span, #menu_inner a'
 		);
 		for(let _i=0;_i<$_qsa.length;_i++){
-		_this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,20);
+			_this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,20);
 		}
+
+		$_qsa=document.querySelectorAll('.parts_block_wrapper .text');
+		for(let _i=0;_i<$_qsa.length;_i++){
+			_this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,14);
+		}
+
 	});
 
 }//_init
@@ -522,7 +582,7 @@ _e_entrylink_prev:function(e){
 		'.parts_block_wrapper .text'
 	);
 	for(let _i=0;_i<$_qsa.length;_i++){
-		_GAME_STAGEEDIT._setTextToFont($_qsa[_i],$_qsa[_i].innerText,20);
+		_GAME_STAGEEDIT._setTextToFont($_qsa[_i],$_qsa[_i].innerText,14);
 	}
 	return false;
 },//_e_entrylink_prev
@@ -543,7 +603,7 @@ _e_entrylink_next:function(e){
 		'.parts_block_wrapper .text'
 	);
 	for(let _i=0;_i<$_qsa.length;_i++){
-		_GAME_STAGEEDIT._setTextToFont($_qsa[_i],$_qsa[_i].innerText,20);
+		_GAME_STAGEEDIT._setTextToFont($_qsa[_i],$_qsa[_i].innerText,14);
 	}
 	return false;
 },//_e_entrylink_next

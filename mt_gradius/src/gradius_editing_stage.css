@@ -183,19 +183,11 @@ form .form_group select{
     min-width: 70%;
     font-size:20px;
 }
-form .form_group input[type="text"] {
+form .form_group input[type="text"],
+form .form_group textarea{
     background-color:rgba(0,0,0,1);
     border:1px solid rgba(255,255,255,1);
-    border-radius: 10px;
-	color:rgba(255,255,255,1);
-    font-size:1.5em;
-    padding: 10px;
-    width: 100%;
-}
-form .form_group textarea {
-    background-color:rgba(0,0,0,1);
-	border:1px solid rgba(255,255,255,1);
-    border-radius: 10px;
+    border-radius:5px;
 	color:rgba(255,255,255,1);
     font-size:1.5em;
     padding: 10px;
@@ -217,7 +209,7 @@ form .form_group .col_r{float:left;width:77%;}
 form .form_group .col_r .val{
     background-color:rgba(0,0,0,1);
     border:1px solid rgba(255,255,255,0.7);
-	border-radius:10px;
+	border-radius:5px;
     display:inline-block;
     margin-right:20px;
 	padding:10px;

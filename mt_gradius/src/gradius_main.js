@@ -1345,6 +1345,10 @@ class GameObject_PM{
 	}
 
 	pms_disp(){
+		_CONTEXT.clearRect(0,0,
+			_CANVAS.width,
+			_CANVAS.height);
+
 		let _s='power meter select';
 		let _s2='shield select';
 

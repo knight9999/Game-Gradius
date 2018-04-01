@@ -2966,6 +2966,12 @@ _setDrawImage(_img,_x,_y,_scale){
 	_CONTEXT.drawImage(
 		_img,_x-(_sw/2),_y-(_sh/2),_sw,_sh
 	);
+
+	_CONTEXT.strokeStyle = 'rgb(200,200,255)';
+	_CONTEXT.beginPath();
+	_CONTEXT.rect(_x-(_sw/2),_y-(_sh/2),_sw,_sh);
+	_CONTEXT.stroke();
+
 },//_setDrawImage
 _multilineText(context, text, width) {
     let len=text.length,

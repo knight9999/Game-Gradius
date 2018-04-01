@@ -97,9 +97,9 @@ const _CANVAS_IMGS={
 	'enemy_m_y_2':{src:'images/gradius_enemy_m_y_2.png',rate:0.5,obj:new Image()},
 
 	'enemy_cell_core':{src:'images/gradius_enemy_cell_core.png',rate:0.40,obj:new Image()},
-	'enemy_cell_hand_1':{src:'images/gradius_enemy_cell_hand_1.png',rate:0.50,obj:new Image()},
-	'enemy_cell_hand_2':{src:'images/gradius_enemy_cell_hand_2.png',rate:0.50,obj:new Image()},
-	'enemy_cell_hand_3':{src:'images/gradius_enemy_cell_hand_3.png',rate:0.50,obj:new Image()},
+	'enemy_cell_hand_1':{src:'images/gradius_enemy_cell_hand_1.png',rate:0.40,obj:new Image()},
+	'enemy_cell_hand_2':{src:'images/gradius_enemy_cell_hand_2.png',rate:0.40,obj:new Image()},
+	'enemy_cell_hand_3':{src:'images/gradius_enemy_cell_hand_3.png',rate:0.30,obj:new Image()},
 
 	'enemy_frame_1':{src:'images/gradius_enemy_frame_1.png',rate:0.30,obj:new Image()},
 	'enemy_frame_2':{src:'images/gradius_enemy_frame_2.png',rate:0.30,obj:new Image()},

@@ -1608,34 +1608,34 @@ class ENEMY_cell_core
 
 		//触手の上定義
 		_this.hands_up=[
-			new ENEMY_cell_hand_1({x:25,y:-5,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_1({x:25,y:-25,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_1({x:25,y:-45,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_2({x:25,y:-65,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_1({x:25,y:-85,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_1({x:25,y:-105,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_1({x:25,y:-125,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_3({x:15,y:-145,rad:0,rad_self:0})
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y-5,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y-25,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y-45,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_2({x:_this.x+25,y:_this.y-65,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y-85,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y-105,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y-125,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_3({x:_this.x+15,y:_this.y-145,rad:0,rad_self:0})
 		];
 		for(let _i=0;_i<_this.hands_up.length;_i++){
 			_ENEMIES.push(_this.hands_up[_i]);		
 		}
 		//触手の下定義
 		_this.hands_down=[
-			new ENEMY_cell_hand_1({x:25,y:_this.img.height-25,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_1({x:25,y:_this.img.height-5,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_1({x:25,y:_this.img.height+15,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_2({x:25,y:_this.img.height+35,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_1({x:25,y:_this.img.height+55,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_1({x:25,y:_this.img.height+75,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_1({x:25,y:_this.img.height+95,rad:0,rad_self:0}),
-			new ENEMY_cell_hand_3({x:15,y:_this.img.height+115,rad:0,rad_self:0})
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y+_this.img.height-25,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y+_this.img.height-5,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y+_this.img.height+15,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_2({x:_this.x+25,y:_this.y+_this.img.height+35,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y+_this.img.height+55,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y+_this.img.height+75,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_1({x:_this.x+25,y:_this.y+_this.img.height+95,rad:0,rad_self:0}),
+			new ENEMY_cell_hand_3({x:_this.x+15,y:_this.y+_this.img.height+115,rad:0,rad_self:0})
 		];
 		for(let _i=0;_i<_this.hands_down.length;_i++){
 			_ENEMIES.push(_this.hands_down[_i]);		
 		}
 		//触手間の距離
-		_this.hands_distance=25;
+		_this.hands_distance=20;
 
 	}
 	set_hands_rad(_h1,_h2){
@@ -1716,13 +1716,20 @@ class ENEMY_cell_core
 
 		//触手の上を表示
 		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
-			if(_this.hands_up[_i-1]===undefined){break;}
+			if(_this.hands_up[_i-1]===undefined){
+				_this.set_hands_pos(
+					_this,
+					_this.hands_up[_i]);				
+				break;
+			}
 			_this.set_hands_pos(_this.hands_up[_i-1],_this.hands_up[_i]);
 			_this.hands_up[_i].moveDraw(_this);
 		}
 		//触手の下を表示
 		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
-			if(_this.hands_down[_i-1]===undefined){break;}
+			if(_this.hands_down[_i-1]===undefined){
+				break;
+			}
 			_this.set_hands_pos(_this.hands_down[_i-1],_this.hands_down[_i]);
 			_this.hands_down[_i].moveDraw(_this);
 		}
@@ -1789,6 +1796,8 @@ class ENEMY_cell_hand_1
 	shot(){}
 	moveDraw(_o){
 		let _this=this;
+		_this.x=_MAP.getX(_this.x);
+		_this.y=_MAP.getY(_this.y);
 		// _this.x=_o.x+_this._initx;
 		// _this.y=_o.y+_this._inity;
 		_this._c=(_this._c>=(_this.ani.length*20)-1)?0:_this._c+1;
@@ -1844,16 +1853,19 @@ class ENEMY_cell_hand_3
 	}
 	moveDraw(_o){
 		let _this=this;
-		_this.x=_o.x+_this._initx;
-		_this.y=_o.y+_this._inity;
-		_this.x-=10;
-//		_this.y++;
+		_this.x=_MAP.getX(_this.x);
+		_this.y=_MAP.getY(_this.y);
 		_this._c=(_this._c>=(_this.ani.length*20)-1)?0:_this._c+1;
 		let _c=parseInt(_this._c/20);
+		const _em=_o.getEnemyCenterPosition();
 		const _e=_this.getEnemyCenterPosition();
 		const _p=_PLAYERS_MAIN.getPlayerCenterPosition();
 		let _rad=Math.atan2(_e._y-_p._y,_e._x-_p._x);
 		_this.setDrawImageRotate(_rad/Math.PI*180);
+
+//		_this.x+=Math.cos(_rad)*2*-1;
+		_this.y+=Math.sin(_rad)*2*-1;
+
 		_this.shot();
 	}
 }

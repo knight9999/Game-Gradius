@@ -1644,7 +1644,12 @@ class ENEMY_cell_core
 	}
 	set_hands_pos(_h1,_h2){
 		//触手間の距離・座標を求める
-		
+		let _this=this;
+        let dx=_h2.x-_h1.x;
+        let dy=_h2.y-_h1.y;
+        let rad=Math.atan2(dy,dx);
+        _h1.x=_h2.x-Math.cos(rad)*_this.hands_distance;
+        _h1.y=_h2.y-Math.sin(rad)*_this.hands_distance;		
 	}
 	is_hands_up_status(){
 		//触手の上（黄色）をステータスを取得
@@ -1710,11 +1715,15 @@ class ENEMY_cell_core
 		}
 
 		//触手の上を表示
-		for(let _i=0;_i<_this.hands_up.length;_i++){
+		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
+			if(_this.hands_up[_i-1]===undefined){break;}
+			_this.set_hands_pos(_this.hands_up[_i-1],_this.hands_up[_i]);
 			_this.hands_up[_i].moveDraw(_this);
 		}
 		//触手の下を表示
-		for(let _i=0;_i<_this.hands_down.length;_i++){
+		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
+			if(_this.hands_down[_i-1]===undefined){break;}
+			_this.set_hands_pos(_this.hands_down[_i-1],_this.hands_down[_i]);
 			_this.hands_down[_i].moveDraw(_this);
 		}
 
@@ -1780,8 +1789,8 @@ class ENEMY_cell_hand_1
 	shot(){}
 	moveDraw(_o){
 		let _this=this;
-		_this.x=_o.x+_this._initx;
-		_this.y=_o.y+_this._inity;
+		// _this.x=_o.x+_this._initx;
+		// _this.y=_o.y+_this._inity;
 		_this._c=(_this._c>=(_this.ani.length*20)-1)?0:_this._c+1;
 		let _c=parseInt(_this._c/20);
 		const _e=_this.getEnemyCenterPosition();
@@ -1837,6 +1846,8 @@ class ENEMY_cell_hand_3
 		let _this=this;
 		_this.x=_o.x+_this._initx;
 		_this.y=_o.y+_this._inity;
+		_this.x-=10;
+//		_this.y++;
 		_this._c=(_this._c>=(_this.ani.length*20)-1)?0:_this._c+1;
 		let _c=parseInt(_this._c/20);
 		const _e=_this.getEnemyCenterPosition();

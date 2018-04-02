@@ -137,18 +137,10 @@ const _CANVAS_IMGS={
 	'enemy_cube4':{src:'images/gradius_enemy_cube4.png',rate:0.25,obj:new Image()},
 
 	'enemy_bigcore2':{src:'images/gradius_enemy_bigcore2.png',rate:1.0,obj:new Image()},
-	'enemy_bigcore2_hand1':{src:'images/gradius_enemy_bigcore2_hand1.png',rate:1.0,obj:new Image()},
-	'enemy_bigcore2_hand2':{src:'images/gradius_enemy_bigcore2_hand2.png',rate:1.0,obj:new Image()},
-	'enemy_bigcore2_hand3':{src:'images/gradius_enemy_bigcore2_hand3.png',rate:1.0,obj:new Image()},
+	'enemy_bigcore2_hand':{src:'images/gradius_enemy_bigcore2_hand.png',rate:1.00,obj:new Image()},
 	'enemy_bigcore2_wall':{src:'images/gradius_enemy_bigcore2_wall.png',rate:1.00,obj:new Image()},
 	'enemy_bigcore2_core':{src:'images/gradius_enemy_bigcore2_core.png',rate:1.00,obj:new Image()},
-
-	'enemy_bigcore2_back1':{src:'images/gradius_enemy_bigcore2_back1.png',rate:1.00,obj:new Image()},
-	'enemy_bigcore2_back2':{src:'images/gradius_enemy_bigcore2_back2.png',rate:1.00,obj:new Image()},
-	'enemy_bigcore2_back3':{src:'images/gradius_enemy_bigcore2_back3.png',rate:1.00,obj:new Image()},
-	'enemy_bigcore2_back4':{src:'images/gradius_enemy_bigcore2_back4.png',rate:1.00,obj:new Image()},
-	'enemy_bigcore2_back5':{src:'images/gradius_enemy_bigcore2_back5.png',rate:1.00,obj:new Image()},
-	'enemy_bigcore2_back6':{src:'images/gradius_enemy_bigcore2_back6.png',rate:1.00,obj:new Image()},
+	'enemy_bigcore2_back':{src:'images/gradius_enemy_bigcore2_back.png',rate:1.00,obj:new Image()},
 
 	'enemy_collapes0':{src:'images/gradius_enemy_collapes0.png',rate:1.0,obj:new Image()},
 	'enemy_collapes1':{src:'images/gradius_enemy_collapes1.png',rate:1.0,obj:new Image()},

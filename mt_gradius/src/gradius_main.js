@@ -1374,13 +1374,17 @@ class GameObject_PM{
 		);
 
 		//SHIELD表示
-		let _pmss=_CANVAS_IMGS_INIT['gradius_powermeterselect_shield_'].obj;
+		let _pmss=_CANVAS_IMGS['meter'].obj;
 		_CONTEXT.drawImage(
 			_pmss,
-			(_CANVAS.width/2)-(this.pms_img.width/2),
+			360,
+			0,
+			72,
+			19,
+			290,
 			430,
-			_pmss.width,
-			_pmss.height
+			72,
+			19
 		);
 
 		//SHIELD選択表示
@@ -2440,8 +2444,7 @@ const _DRAW_POWER_METER_SELECT=()=>{
 	_KEYEVENT_MASTER.removeKeydownSelectStage();
 	_KEYEVENT_MASTER.addKeydownSelectPowermeter();
 
-	_POWERMETER=
-		new	GameObject_PM('meter');
+	_POWERMETER=new	GameObject_PM('meter');
 	_POWERMETER.pms_disp();
 	_POWERMETER.pms_select();
 }

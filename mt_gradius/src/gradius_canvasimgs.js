@@ -137,18 +137,10 @@ const _CANVAS_IMGS={
 	'enemy_cube4':{src:'images/gradius_enemy_cube4.png',rate:0.25,obj:new Image()},
 
 	'enemy_bigcore2':{src:'images/gradius_enemy_bigcore2.png',rate:1.0,obj:new Image()},
-	'enemy_bigcore2_hand1':{src:'images/gradius_enemy_bigcore2_hand1.png',rate:1.0,obj:new Image()},
-	'enemy_bigcore2_hand2':{src:'images/gradius_enemy_bigcore2_hand2.png',rate:1.0,obj:new Image()},
-	'enemy_bigcore2_hand3':{src:'images/gradius_enemy_bigcore2_hand3.png',rate:1.0,obj:new Image()},
+	'enemy_bigcore2_hand':{src:'images/gradius_enemy_bigcore2_hand.png',rate:1.00,obj:new Image()},
 	'enemy_bigcore2_wall':{src:'images/gradius_enemy_bigcore2_wall.png',rate:1.00,obj:new Image()},
 	'enemy_bigcore2_core':{src:'images/gradius_enemy_bigcore2_core.png',rate:1.00,obj:new Image()},
-
-	'enemy_bigcore2_back1':{src:'images/gradius_enemy_bigcore2_back1.png',rate:1.00,obj:new Image()},
-	'enemy_bigcore2_back2':{src:'images/gradius_enemy_bigcore2_back2.png',rate:1.00,obj:new Image()},
-	'enemy_bigcore2_back3':{src:'images/gradius_enemy_bigcore2_back3.png',rate:1.00,obj:new Image()},
-	'enemy_bigcore2_back4':{src:'images/gradius_enemy_bigcore2_back4.png',rate:1.00,obj:new Image()},
-	'enemy_bigcore2_back5':{src:'images/gradius_enemy_bigcore2_back5.png',rate:1.00,obj:new Image()},
-	'enemy_bigcore2_back6':{src:'images/gradius_enemy_bigcore2_back6.png',rate:1.00,obj:new Image()},
+	'enemy_bigcore2_back':{src:'images/gradius_enemy_bigcore2_back.png',rate:1.00,obj:new Image()},
 
 	'enemy_collapes0':{src:'images/gradius_enemy_collapes0.png',rate:1.0,obj:new Image()},
 	'enemy_collapes1':{src:'images/gradius_enemy_collapes1.png',rate:1.0,obj:new Image()},
@@ -209,44 +201,6 @@ const _CANVAS_IMGS={
 
 const _CANVAS_IMGS_INIT={
 	//FONT
-	// 'font_0':{src:'images/gradius_font_0.png',rate:1,obj:new Image()},
-	// 'font_1':{src:'images/gradius_font_1.png',rate:1,obj:new Image()},
-	// 'font_2':{src:'images/gradius_font_2.png',rate:1,obj:new Image()},
-	// 'font_3':{src:'images/gradius_font_3.png',rate:1,obj:new Image()},
-	// 'font_4':{src:'images/gradius_font_4.png',rate:1,obj:new Image()},
-	// 'font_5':{src:'images/gradius_font_5.png',rate:1,obj:new Image()},
-	// 'font_6':{src:'images/gradius_font_6.png',rate:1,obj:new Image()},
-	// 'font_7':{src:'images/gradius_font_7.png',rate:1,obj:new Image()},
-	// 'font_8':{src:'images/gradius_font_8.png',rate:1,obj:new Image()},
-	// 'font_9':{src:'images/gradius_font_9.png',rate:1,obj:new Image()},
-	// 'font_a':{src:'images/gradius_font_a.png',rate:1,obj:new Image()},
-	// 'font_b':{src:'images/gradius_font_b.png',rate:1,obj:new Image()},
-	// 'font_c':{src:'images/gradius_font_c.png',rate:1,obj:new Image()},
-	// 'font_d':{src:'images/gradius_font_d.png',rate:1,obj:new Image()},
-	// 'font_e':{src:'images/gradius_font_e.png',rate:1,obj:new Image()},
-	// 'font_f':{src:'images/gradius_font_f.png',rate:1,obj:new Image()},
-	// 'font_g':{src:'images/gradius_font_g.png',rate:1,obj:new Image()},
-	// 'font_h':{src:'images/gradius_font_h.png',rate:1,obj:new Image()},
-	// 'font_i':{src:'images/gradius_font_i.png',rate:1,obj:new Image()},
-	// 'font_j':{src:'images/gradius_font_j.png',rate:1,obj:new Image()},
-	// 'font_k':{src:'images/gradius_font_k.png',rate:1,obj:new Image()},
-	// 'font_l':{src:'images/gradius_font_l.png',rate:1,obj:new Image()},
-	// 'font_m':{src:'images/gradius_font_m.png',rate:1,obj:new Image()},
-	// 'font_n':{src:'images/gradius_font_n.png',rate:1,obj:new Image()},
-	// 'font_o':{src:'images/gradius_font_o.png',rate:1,obj:new Image()},
-	// 'font_p':{src:'images/gradius_font_p.png',rate:1,obj:new Image()},
-	// 'font_q':{src:'images/gradius_font_q.png',rate:1,obj:new Image()},
-	// 'font_r':{src:'images/gradius_font_r.png',rate:1,obj:new Image()},
-	// 'font_s':{src:'images/gradius_font_s.png',rate:1,obj:new Image()},
-	// 'font_t':{src:'images/gradius_font_t.png',rate:1,obj:new Image()},
-	// 'font_u':{src:'images/gradius_font_u.png',rate:1,obj:new Image()},
-	// 'font_v':{src:'images/gradius_font_v.png',rate:1,obj:new Image()},
-	// 'font_w':{src:'images/gradius_font_w.png',rate:1,obj:new Image()},
-	// 'font_x':{src:'images/gradius_font_x.png',rate:1,obj:new Image()},
-	// 'font_y':{src:'images/gradius_font_y.png',rate:1,obj:new Image()},
-	// 'font_z':{src:'images/gradius_font_z.png',rate:1,obj:new Image()},
-	// 'font_:':{src:'images/gradius_font_27.png',rate:1,obj:new Image()},
-
 	'font':{src:'images/gradius_font.png',rate:1.00,obj:new Image()},
 
 	//POWER METER SELECT
@@ -254,8 +208,6 @@ const _CANVAS_IMGS_INIT={
   		{src:'images/gradius_powermeterselect.png',rate:0.28,obj:new Image()},
 	'gradius_powermeterselect_shield':
   		{src:'images/gradius_powermeterselect_shield.png',rate:0.28,obj:new Image()},
-	'gradius_powermeterselect_shield_':
-  		{src:'images/gradius_powermeterselect_shield_.png',rate:0.28,obj:new Image()},
 	'gradius_powermeterselect_0':
   		{src:'images/gradius_powermeterselect_0.png',rate:0.28,obj:new Image()},
 	'gradius_powermeterselect_1':

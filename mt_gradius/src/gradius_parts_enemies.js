@@ -202,17 +202,52 @@ class GameObject_ENEMY{
 		_CONTEXT.restore();
 		_this.alpha=_alpha;
 	}
-	setDrawImage(){
+	setDrawImage(_w,_h,_s,_p){
 		let _this=this;
+		let _pos=_p||0;
+		let _size=_s||_this.img.width;
+		let _width=_w||_this.img.width;
+		let _height=_h||_this.img.height;
 		_CONTEXT.save();
 		_this.setDrawImageDirect();
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.x,
-			_this.y,
-			_this.img.width,
-			_this.img.height
-		);
+		if(_p===undefined
+			||_s===undefined
+			||_w===undefined
+			||_h===undefined
+		){
+			//一枚画像用
+			_CONTEXT.drawImage(
+				_this.img,
+				_this.x,
+				_this.y,
+				_this.img.width,
+				_this.img.height
+			);
+		}else{
+			//スプライト用
+//			console.log('======='+_this.x);
+			_CONTEXT.drawImage(
+				_this.img,
+				_pos,
+				0,
+				_width,
+				_height,
+				_this.x,
+				_this.y,
+				_width,
+				_height
+			);	
+
+			// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
+			// _CONTEXT.beginPath();
+			// _CONTEXT.rect(
+			// 		_this.x,
+			// 		_this.y,
+			// 		_width,
+			// 		_height
+			// );
+			// _CONTEXT.stroke();
+		}
 		_CONTEXT.restore();
 	}
 	//===原則以下のメソッドのみ継承クラスが
@@ -2167,14 +2202,7 @@ class ENEMY_BOSS_BIGCORE2
 		_this._wall_down_statuses='';
 
 		//噴射画像定義
-		_this.back=[
-			{img:_CANVAS_IMGS['enemy_bigcore2_back1'].obj},
-			{img:_CANVAS_IMGS['enemy_bigcore2_back2'].obj},
-			{img:_CANVAS_IMGS['enemy_bigcore2_back3'].obj},
-			{img:_CANVAS_IMGS['enemy_bigcore2_back4'].obj},
-			{img:_CANVAS_IMGS['enemy_bigcore2_back5'].obj},
-			{img:_CANVAS_IMGS['enemy_bigcore2_back6'].obj}
-		];
+		_this.back=[0,85,170,255,340,425];
 		//噴射画像の表示定義（上）
 		//3はアニメーションインターバル
 		_this.back_img_up={
@@ -2196,13 +2224,21 @@ class ENEMY_BOSS_BIGCORE2
 				this.st=(this.flag)?this.st+1:this.st-1;
 			},
 			f:function(){
-				let img=_this.back[parseInt(this.st/3)].img;
+				let img=_CANVAS_IMGS['enemy_bigcore2_back'].obj;
+//				let img=_this.back[parseInt(this.st/3)].img;
+				let _s=img.height;//サイズ
+				let _w=85;//幅
+				let _h=img.height;//高さ
 				_CONTEXT.drawImage(
 					img,
+					parseInt(this.st/3)*_w,
+					0,
+					_w,
+					_h,
 					_this.x+this.x,
 					_this.y+this.y,
-					img.width,
-					img.height
+					_w,
+					_h
 				);
 			}
 		};
@@ -2220,15 +2256,23 @@ class ENEMY_BOSS_BIGCORE2
 				this.st=(this.flag)?this.st+1:this.st-1;
 			},
 			f:function(){
-				let img=_this.back[parseInt(this.st/3)].img;
+				let img=_CANVAS_IMGS['enemy_bigcore2_back'].obj;
+//				let img=_this.back[parseInt(this.st/3)].img;
+				let _s=img.height;//サイズ
+				let _w=85;//幅
+				let _h=img.height;//高さ
 				_CONTEXT.save();
 				_CONTEXT.setTransform(1,0,0,-1,0,_this.y*2+img.height);
 				_CONTEXT.drawImage(
 					img,
+					parseInt(this.st/3)*_w,
+					0,
+					_w,
+					_h,
 					_this.x+this.x,
 					_this.y+this.y,
-					img.width,
-					img.height
+					_w,
+					_h
 				);
 				_CONTEXT.restore();
 			}
@@ -2531,7 +2575,7 @@ class ENEMY_BOSS_BIGCORE2
 class ENEMY_BOSS_BIGCORE2_HANDS
 	extends GameObject_ENEMY{
 	constructor(_d){
-		super(_CANVAS_IMGS['enemy_bigcore2_hand1'].obj,_d._initx,_d._inity);
+		super(_CANVAS_IMGS['enemy_bigcore2_hand'].obj,_d._initx,_d._inity);
 		let _this=this;
 		_this._initx=_d._initx||0;//初期位置x
 		_this._inity=_d._inity||0;//初期位置y
@@ -2578,10 +2622,11 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 					];
 			}
 			})();
-		_this.imgs=[//手のイメージ定義
-			{img:_CANVAS_IMGS['enemy_bigcore2_hand1'].obj,x:0,y:(_this.direct===_this._DEF_DIR._U)?0:0},
-			{img:_CANVAS_IMGS['enemy_bigcore2_hand2'].obj,x:0,y:(_this.direct===_this._DEF_DIR._U)?-40:40},
-			{img:_CANVAS_IMGS['enemy_bigcore2_hand3'].obj,x:-5,y:(_this.direct===_this._DEF_DIR._U)?-30:30}
+		_this.imgs=[0,250,500];//手のイメージ定義
+		_this.imgsPos=[//手のイメージ定義
+			{x:0,y:(_this.direct===_this._DEF_DIR._U)?0:0},
+			{x:0,y:(_this.direct===_this._DEF_DIR._U)?-40:40},
+			{x:-5,y:(_this.direct===_this._DEF_DIR._U)?-30:30}
 		];
 		_this.imgs_x=0;
 		_this.imgs_y=0;
@@ -2604,8 +2649,9 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		if(!_this.isHandsOpen){return;}
 		//停止フラグで動きを固定状態
 		if(_this.isstop){return;}
-		let _ar=_this.imgs[parseInt(_this._c/6)];
-		_this.img=_ar.img;//画像表示
+		let _ar=_this.imgsPos[parseInt(_this._c/6)];
+//		_this.img=_ar.img;//画像表示
+//console.log(_ar);
 		_this.imgs_x=parseInt(_ar.x);
 		_this.imgs_y=parseInt(_ar.y);
 		//腕に合わせて衝突判定を設定する
@@ -2614,7 +2660,7 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		for(let _i=0;_i<_shotColAr.length;_i++){
 			_this.shotColMap.push(_shotColAr[_i]);
 		}
-//		console.log(_this.shotColMap)
+// 		console.log(_this.shotColMap)
 		if(_this._c>=_this.imgs.length*6-1){
 			_this._c=_this.imgs.length*6-1;
 			_this.isHandsOpen=false;
@@ -2628,8 +2674,8 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		if(!_this.isHandsClose){return;}
 		//停止フラグで動きを固定状態
 		if(_this.isstop){return;}
-		let _ar=_this.imgs[parseInt(_this._c/6)];
-		_this.img=_this.imgs[parseInt(_this._c/6)].img;//画像表示
+		let _ar=_this.imgsPos[parseInt(_this._c/6)];
+//		_this.img=_this.imgs[parseInt(_this._c/6)].img;//画像表示
 		_this.imgs_x=parseInt(_ar.x);
 		_this.imgs_y=parseInt(_ar.y);
 		//腕に合わせて衝突判定を設定する
@@ -2638,6 +2684,7 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		for(let _i=0;_i<_shotColAr.length;_i++){
 			_this.shotColMap.push(_shotColAr[_i]);
 		}
+//		console.log(_this.shotColMap)
 		//		_this.shotColMap[0]=_this.shotColMapTmp[parseInt(_this._c/6)];
 		if(_this._c<=0){
 			_this._c=0;
@@ -2654,7 +2701,7 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		_this.move_hands_close();
 		_this.x=_this._boss.x+parseInt(_this._initx)+_this.imgs_x;
 		_this.y=_this._boss.y+parseInt(_this._inity)+_this.imgs_y;
-		_this.setDrawImage();
+		_this.setDrawImage(250,110,250,_this.imgs[parseInt(_this._c/6)]);
 	}
 	move(){}
 }

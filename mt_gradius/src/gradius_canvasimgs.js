@@ -197,6 +197,14 @@ const _CANVAS_IMGS={
 	'map_frame_D':{src:'images/gradius_map_frame_D.png',rate:1.00,obj:new Image()},
 	'map_frame_E':{src:'images/gradius_map_frame_E.png',rate:1.00,obj:new Image()},
 	'map_frame_F':{src:'images/gradius_map_frame_F.png',rate:1.00,obj:new Image()},
+
+	//細胞
+	'map_cell_A':{src:'images/gradius_map_cell_A.png',rate:1.00,obj:new Image()},
+	'map_cell_B':{src:'images/gradius_map_cell_B.png',rate:1.00,obj:new Image()},
+	'map_cell_C':{src:'images/gradius_map_cell_C.png',rate:1.00,obj:new Image()},
+	'map_cell_D':{src:'images/gradius_map_cell_D.png',rate:1.00,obj:new Image()},
+	'map_cell_E':{src:'images/gradius_map_cell_E.png',rate:1.00,obj:new Image()},
+	'map_cell_F':{src:'images/gradius_map_cell_F.png',rate:1.00,obj:new Image()},
 };
 
 const _CANVAS_IMGS_INIT={

@@ -320,3 +320,104 @@ class MAP_FRAME_F extends MAP_OBJECT{
 		_this.direct=_this._DEF_DIR._LU;
 	}
 }
+
+
+//=====================
+//cell
+//=====================
+class MAP_CELL_A extends MAP_OBJECT{
+	constructor(){
+		super({
+			img:_CANVAS_IMGS['map_cell_A'],
+			imgPos:[0,475,950],
+			aniItv:20,
+			width:475,
+			height:100
+		});
+		let _this=this;
+		_this._s='000000000000000000,'
+				+'001111111111111100,'
+				+'011111111111111110,'
+				+'111111111111111111';
+	}
+}
+class MAP_CELL_B extends MAP_OBJECT{
+	constructor(){
+		super({
+			img:_CANVAS_IMGS['map_cell_B'],
+			imgPos:[0,475,950],
+			aniItv:20,
+			width:475,
+			height:100
+		});
+		let _this=this;
+		_this._s='111111111111111111,'
+				+'011111111111111110,'
+				+'001111111111111100,'
+				+'000000000000000000';
+	}
+}
+class MAP_CELL_C extends MAP_OBJECT{
+	constructor(){
+		super({
+			img:_CANVAS_IMGS['map_cell_C'],
+			imgPos:[0,375,750],
+			aniItv:20,
+			width:375,
+			height:100
+		});
+		let _this=this;
+		_this._s='01111111111111,'
+				+'00111111111111,'
+				+'00011111111111,'
+				+'00000000000000';
+		_this.direct=_this._DEF_DIR._LD
+	}
+}
+class MAP_CELL_D extends MAP_OBJECT{
+	constructor(){
+		super({
+			img:_CANVAS_IMGS['map_cell_D'],
+			imgPos:[0,375,750],
+			aniItv:20,
+			width:375,
+			height:100
+		});
+		let _this=this;
+		_this._s='11111111111110,'
+				+'11111111111100,'
+				+'11111111111000,'
+				+'00000000000000';
+		_this.direct=_this._DEF_DIR._LU;
+	}
+}
+
+class MAP_CELL_E extends MAP_OBJECT{
+	constructor(){
+		super({
+			img:_CANVAS_IMGS['map_cell_E'],
+			imgPos:[0,300,600],
+			aniItv:20,
+			width:300,
+			height:50
+		});
+		let _this=this;
+		_this._s='001111111100,'
+				+'111111111111';
+	}
+}
+
+class MAP_CELL_F extends MAP_OBJECT{
+	constructor(){
+		super({
+			img:_CANVAS_IMGS['map_cell_F'],
+			imgPos:[0,300,600],
+			aniItv:20,
+			width:300,
+			height:50
+		});
+		let _this=this;
+		_this._s='111111111111,'
+				+'001111111100';
+	}
+}

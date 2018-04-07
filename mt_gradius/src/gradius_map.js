@@ -516,12 +516,48 @@ const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME7':{//細胞
 	'_map':{
 		'A':{
-			'_o':(new MAP_FRAME_A()).img,//画像
-			'_s':(new MAP_FRAME_A())._s,
-			'obj':function(_key){this.objs[_key]=new MAP_FRAME_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'_o':(new MAP_CELL_A()).img,//画像
+			'_s':(new MAP_CELL_A())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_FRAME_A())
+			'_obj':(new MAP_CELL_A())
+		},
+		'B':{
+			'_o':(new MAP_CELL_B()).img,//画像
+			'_s':(new MAP_CELL_B())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_CELL_B())
+		},
+		'C':{
+			'_o':(new MAP_CELL_C()).img,//画像
+			'_s':(new MAP_CELL_C())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_C();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_CELL_C())
+		},
+		'D':{
+			'_o':(new MAP_CELL_D()).img,//画像
+			'_s':(new MAP_CELL_D())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_D();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_CELL_D())
+		},
+		'E':{
+			'_o':(new MAP_CELL_E()).img,//画像
+			'_s':(new MAP_CELL_E())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_E();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_CELL_E())
+		},
+		'F':{
+			'_o':(new MAP_CELL_F()).img,//画像
+			'_s':(new MAP_CELL_F())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_F();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_CELL_F())
 		}
+
 	},
 	'_enemies':{
 		'a':{

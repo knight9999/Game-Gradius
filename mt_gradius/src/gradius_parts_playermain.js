@@ -1793,8 +1793,10 @@ class GameObject_SHOTS_RIPPLE_LASER
 		super(_p);
 		this.shots=new Array();
 		this.speed=30;
-		this.lineWidth=5;
-		this.strokeStyle="rgba(50,80,255,1)";
+		this.lineWidth_1=3;
+		this.strokeStyle_1="rgba(40,70,255,1)";
+		this.lineWidth_2=4;
+		this.strokeStyle_2="rgba(100,180,255,0.7)";
 
 		for(let _i=0;_i<_PLAYERS_SHOTS_MAX;_i++){
 			this.shots.push({
@@ -1906,11 +1908,22 @@ class GameObject_SHOTS_RIPPLE_LASER
 			}
 
 			_t._t=(_t._t<20)?_t._t+1:_t._t;
-			_t._width=0.5+_t._t;
+			_t._width=0.4+_t._t;
 			_t._height=8+(_t._t*_t._t/6);
 			_CONTEXT.beginPath();
-			_CONTEXT.lineWidth=_this.lineWidth;
-	        _CONTEXT.strokeStyle=_this.strokeStyle;
+			_CONTEXT.lineWidth=_this.lineWidth_2;
+	        _CONTEXT.strokeStyle=_this.strokeStyle_2;
+			_CONTEXT.ellipse(
+				_t.x+1,
+				_t.y+1,
+				_t._width,
+				_t._height,
+				0,0,2*Math.PI);
+			_CONTEXT.stroke();
+
+			_CONTEXT.beginPath();
+			_CONTEXT.lineWidth=_this.lineWidth_1;
+	        _CONTEXT.strokeStyle=_this.strokeStyle_1;
 			_CONTEXT.ellipse(
 				_t.x,
 				_t.y,
@@ -1928,7 +1941,8 @@ class GameObject_SHOTS_RIPPLE_LASER_RED
 			extends GameObject_SHOTS_RIPPLE_LASER{
 	constructor(_p){
 		super(_p);
-		this.strokeStyle="rgba(255,80,50,1)";
+		this.strokeStyle_1="rgba(255,80,50,1)";
+		this.strokeStyle_2="rgba(255,180,100,0.7)";
 	}
 }
 

@@ -1652,10 +1652,10 @@ class ENEMY_cell_core
 		_this.hands_up=[
 			//最初の要素は細胞からの第1関節
 			//最後の要素は手
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2,rad_min:Math.PI+1.5,rad_max:Math.PI+2,flag:true}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.2,rad_min:Math.PI+1.0,rad_max:Math.PI+2.2,flag:true}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.4,rad_min:Math.PI+0.7,rad_max:Math.PI+2.4,flag:true}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.4,rad_min:Math.PI+0.7,rad_max:Math.PI+2.4,flag:true}),
+			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2,rad_min:Math.PI+1.5,rad_max:Math.PI+2,flag:true,ignore_collision:false}),
+			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.2,rad_min:Math.PI+1.0,rad_max:Math.PI+2.2,flag:true,ignore_collision:false}),
+			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.4,rad_min:Math.PI+0.7,rad_max:Math.PI+2.4,flag:true,ignore_collision:false}),
+			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.4,rad_min:Math.PI+0.7,rad_max:Math.PI+2.4,flag:true,ignore_collision:false}),
 			new ENEMY_cell_hand_2({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.6,rad_min:Math.PI+0.5,rad_max:Math.PI+2.6,flag:true}),
 			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.8,rad_min:Math.PI+0.5,rad_max:Math.PI+2.8,flag:true}),
 			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.0,rad_min:Math.PI+0.3,rad_max:Math.PI+2.8,flag:true}),
@@ -1668,10 +1668,10 @@ class ENEMY_cell_core
 		//触手の下定義
 		_this.hands_down_rad=[];
 		_this.hands_down=[
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-1.0,rad_min:Math.PI-2.0,rad_max:Math.PI-1,flag:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-1.0,rad_min:Math.PI-2.1,rad_max:Math.PI-0.9,flag:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.9,rad_min:Math.PI-2.2,rad_max:Math.PI-0.9,flag:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.9,rad_min:Math.PI-2.3,rad_max:Math.PI-0.6,flag:false}),
+			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-1.0,rad_min:Math.PI-2.0,rad_max:Math.PI-1,flag:false,ignore_collision:false}),
+			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-1.0,rad_min:Math.PI-2.1,rad_max:Math.PI-0.9,flag:false,ignore_collision:false}),
+			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.9,rad_min:Math.PI-2.2,rad_max:Math.PI-0.9,flag:false,ignore_collision:false}),
+			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.9,rad_min:Math.PI-2.3,rad_max:Math.PI-0.6,flag:false,ignore_collision:false}),
 			new ENEMY_cell_hand_2({x:_this.x,y:_this.y,rad:Math.PI-0.9,rad_min:Math.PI-2.7,rad_max:Math.PI-0.6,flag:false}),
 			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.8,rad_min:Math.PI-2.7,rad_max:Math.PI-0.6,flag:false}),
 			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.8,rad_min:Math.PI-2.8,rad_max:Math.PI-0.1,flag:false}),
@@ -1913,6 +1913,7 @@ class ENEMY_cell_hand_1
 		_this.flag=_d.flag||false;
 		_this.is_able_collision=false;
 		_this._collision_type='t2';
+		_this.is_ignore_collision=_d.ignore_collision||true;
 
 		_this.ani=[//アニメーション定義
 			{scale:1},
@@ -1959,6 +1960,7 @@ class ENEMY_cell_hand_2
 		_this.is_able_collision=true;
 		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision7'];
 		_this._status=10;
+		_this.is_ignore_collision=false;
 		_this.shotColMap=[
 			"-10,-10,"+(_this.img.width+10)+","+(_this.img.height+10)
 		];

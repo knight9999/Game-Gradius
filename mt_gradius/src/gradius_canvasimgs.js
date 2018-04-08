@@ -96,10 +96,10 @@ const _CANVAS_IMGS={
 	'enemy_m_y_1':{src:'images/gradius_enemy_m_y_1.png',rate:0.5,obj:new Image()},
 	'enemy_m_y_2':{src:'images/gradius_enemy_m_y_2.png',rate:0.5,obj:new Image()},
 
-	'enemy_cell_core':{src:'images/gradius_enemy_cell_core.png',rate:0.40,obj:new Image()},
-	'enemy_cell_hand_1':{src:'images/gradius_enemy_cell_hand_1.png',rate:0.50,obj:new Image()},
-	'enemy_cell_hand_2':{src:'images/gradius_enemy_cell_hand_2.png',rate:0.50,obj:new Image()},
-	'enemy_cell_hand_3':{src:'images/gradius_enemy_cell_hand_3.png',rate:0.50,obj:new Image()},
+	'enemy_cell_core':{src:'images/gradius_enemy_cell_core.png',rate:0.30,obj:new Image()},
+	'enemy_cell_hand_1':{src:'images/gradius_enemy_cell_hand_1.png',rate:0.30,obj:new Image()},
+	'enemy_cell_hand_2':{src:'images/gradius_enemy_cell_hand_2.png',rate:0.30,obj:new Image()},
+	'enemy_cell_hand_3':{src:'images/gradius_enemy_cell_hand_3.png',rate:0.25,obj:new Image()},
 
 	'enemy_frame_1':{src:'images/gradius_enemy_frame_1.png',rate:0.30,obj:new Image()},
 	'enemy_frame_2':{src:'images/gradius_enemy_frame_2.png',rate:0.30,obj:new Image()},
@@ -197,6 +197,18 @@ const _CANVAS_IMGS={
 	'map_frame_D':{src:'images/gradius_map_frame_D.png',rate:1.00,obj:new Image()},
 	'map_frame_E':{src:'images/gradius_map_frame_E.png',rate:1.00,obj:new Image()},
 	'map_frame_F':{src:'images/gradius_map_frame_F.png',rate:1.00,obj:new Image()},
+
+	//細胞
+	'map_cell_A':{src:'images/gradius_map_cell_A.png',rate:1.00,obj:new Image()},
+	'map_cell_B':{src:'images/gradius_map_cell_B.png',rate:1.00,obj:new Image()},
+	'map_cell_C':{src:'images/gradius_map_cell_C.png',rate:1.00,obj:new Image()},
+	'map_cell_D':{src:'images/gradius_map_cell_D.png',rate:1.00,obj:new Image()},
+	'map_cell_E':{src:'images/gradius_map_cell_E.png',rate:1.00,obj:new Image()},
+	'map_cell_F':{src:'images/gradius_map_cell_F.png',rate:1.00,obj:new Image()},
+	'map_cell_G':{src:'images/gradius_map_cell_G.png',rate:1.00,obj:new Image()},
+
+	'map_cell_Y':{src:'images/gradius_map_cell_Y.png',rate:1.00,obj:new Image()},
+	'map_cell_Z':{src:'images/gradius_map_cell_Z.png',rate:1.00,obj:new Image()},
 };
 
 const _CANVAS_IMGS_INIT={
@@ -327,6 +339,11 @@ const _CANVAS_AUDIOS={
 		obj:null,
 		buf:new Object()},
 
+	'map_cell_wall':
+		{src:'audios/map_cell_wall.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
 
 	'bg_powermeterselect':
 		{src:'audios/bg_powermeterselect.mp3',
@@ -361,6 +378,11 @@ const _CANVAS_AUDIOS={
 		buf:new Object()},
 	'bg_type5':
 		{src:'audios/bg_thunderbolt.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'bg_type6':
+		{src:'audios/bg_cell.mp3',
 		volume:1.0,
 		obj:null,
 		buf:new Object()}

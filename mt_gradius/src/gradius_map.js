@@ -556,8 +556,85 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'obj':function(_key){this.objs[_key]=new MAP_CELL_F();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_CELL_F())
-		}
+		},
+		'G':{
+			'_o':(new MAP_CELL_G()).img,
+			'_s':(new MAP_CELL_G())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_G();},
+			'objs':{},
+			'_obj':(new MAP_CELL_G())
+		},
+		'H':{
+			'_o':(new MAP_CELL_H()).img,
+			'_s':(new MAP_CELL_H())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_H();},
+			'objs':{},
+			'_obj':(new MAP_CELL_H())
+		},
+		'I':{
+			'_o':(new MAP_CELL_I()).img,
+			'_s':(new MAP_CELL_I())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_I();},
+			'objs':{},
+			'_obj':(new MAP_CELL_I())
+		},
+		'J':{
+			'_o':(new MAP_CELL_J()).img,
+			'_s':(new MAP_CELL_J())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_J();},
+			'objs':{},
+			'_obj':(new MAP_CELL_J())
+		},
+		'K':{
+			'_o':(new MAP_CELL_K()).img,
+			'_s':(new MAP_CELL_K())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_K();},
+			'objs':{},
+			'_obj':(new MAP_CELL_K())
+		},
+		'L':{
+			'_o':(new MAP_CELL_L()).img,
+			'_s':(new MAP_CELL_L())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_L();},
+			'objs':{},
+			'_obj':(new MAP_CELL_L())
+		},
+		'M':{
+			'_o':(new MAP_CELL_M()).img,
+			'_s':(new MAP_CELL_M())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_M();},
+			'objs':{},
+			'_obj':(new MAP_CELL_M())
+		},
+		'N':{
+			'_o':(new MAP_CELL_N()).img,
+			'_s':(new MAP_CELL_N())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_N();},
+			'objs':{},
+			'_obj':(new MAP_CELL_N())
+		},
+		'O':{
+			'_o':(new MAP_CELL_O()).img,
+			'_s':(new MAP_CELL_O())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_O();},
+			'objs':{},
+			'_obj':(new MAP_CELL_O())
+		},
 
+		'Y':{
+			'_o':(new MAP_CELL_Y()).img,//画像
+			'_s':(new MAP_CELL_Y())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_Y();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_CELL_Y())
+		},
+		'Z':{
+			'_o':(new MAP_CELL_Z()).img,//画像
+			'_s':(new MAP_CELL_Z())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_Z();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_CELL_Z())
+		},
 	},
 	'_enemies':{
 		'a':{
@@ -567,6 +644,14 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'_st':'',
 			'_s':'0',//MAP衝突用ビット
 			'_o':_CANVAS_IMGS['enemy_cell_core']//画像オブジェクト
+		},
+		'b':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_cell_wall1(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['map_cell_G']
 		},
 		'd':{
 			'_f':function(_mx,_my,_md){
@@ -755,9 +840,9 @@ class GameObject_MAP{
 			let _s_mapdef_col=_this.mapdef_col[_my+_l];
 			//置換箇所は文字列を分割、置換、結合処理
 			_this.mapdef_col[_my+_l]=
-				_s_mapdef_col.substr(0,_mx+1)
+				_s_mapdef_col.substr(0,_mx)
 				+_p_s[_l]
-				+_s_mapdef_col.substr(_mx+1+_p_s[_l].length);			
+				+_s_mapdef_col.substr(_mx+_p_s[_l].length);			
 		}//_l
 	}
 	getX(_x){
@@ -879,6 +964,20 @@ class GameObject_MAP{
 		if(_this.mapdef_col[_my][_mx]===undefined){return false;}
 		if(_this.isCollisionBit(_this.mapdef_col[_my][_mx])){return true;}
 		return false;
+	}
+	setPlayersShotAbleCollision(_mx,_my,_shot){
+		let _this=this;
+		let _mp=_MAP_THEME[_this.map_theme]._map;
+		if(_mp===undefined){return;}
+		let _md=_this.mapdef[_my][_mx];
+		//_MAP_THEMEで定義したMAPにない場合は終了
+		if(_mp[_md]===undefined){return;}
+		let _obj=_mp[_md].objs[_mx+','+_my];
+		if(_obj===undefined){return;}
+		if(_obj.is_able_collision){
+			_obj.collision(_shot);
+		}
+
 	}
 	isPlayersShotCollision(){
 		let _this=this;

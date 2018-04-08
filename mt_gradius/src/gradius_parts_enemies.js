@@ -127,7 +127,7 @@ class GameObject_ENEMY{
 			_GAME._setPlay(_this.audio_alive);			
 		}
 	}
-	setStatus(_s_type,_num){
+	setStatus(_s_type){
 		let _this=this;
 		//自機・ショットによって判定を識別させる
 		_this._status-=
@@ -1647,40 +1647,12 @@ class ENEMY_cell_core
 			{scale:1},{scale:0.95},{scale:0.90},{scale:0.85},{scale:0.90},{scale:0.95}
 		];
 
-		//触手の上定義
 		_this.hands_up_rad=[];
-		_this.hands_up=[
-			//最初の要素は細胞からの第1関節
-			//最後の要素は手
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2,rad_min:Math.PI+1.5,rad_max:Math.PI+2,flag:true,ignore_collision:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.2,rad_min:Math.PI+1.0,rad_max:Math.PI+2.2,flag:true,ignore_collision:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.4,rad_min:Math.PI+0.7,rad_max:Math.PI+2.4,flag:true,ignore_collision:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.4,rad_min:Math.PI+0.7,rad_max:Math.PI+2.4,flag:true,ignore_collision:false}),
-			new ENEMY_cell_hand_2({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.6,rad_min:Math.PI+0.5,rad_max:Math.PI+2.6,flag:true}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.8,rad_min:Math.PI+0.5,rad_max:Math.PI+2.8,flag:true}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.0,rad_min:Math.PI+0.3,rad_max:Math.PI+2.8,flag:true}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.2,rad_min:Math.PI+0.3,rad_max:Math.PI+2.8,flag:true}),
-			new ENEMY_cell_hand_3({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.4,rad_min:Math.PI+0.3,rad_max:Math.PI+3.0,flag:true})
-		];
-		for(let _i=0;_i<_this.hands_up.length;_i++){
-			_ENEMIES.push(_this.hands_up[_i]);		
-		}
+		_this.hands_up=[];
 		//触手の下定義
 		_this.hands_down_rad=[];
-		_this.hands_down=[
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-1.0,rad_min:Math.PI-2.0,rad_max:Math.PI-1,flag:false,ignore_collision:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-1.0,rad_min:Math.PI-2.1,rad_max:Math.PI-0.9,flag:false,ignore_collision:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.9,rad_min:Math.PI-2.2,rad_max:Math.PI-0.9,flag:false,ignore_collision:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.9,rad_min:Math.PI-2.3,rad_max:Math.PI-0.6,flag:false,ignore_collision:false}),
-			new ENEMY_cell_hand_2({x:_this.x,y:_this.y,rad:Math.PI-0.9,rad_min:Math.PI-2.7,rad_max:Math.PI-0.6,flag:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.8,rad_min:Math.PI-2.7,rad_max:Math.PI-0.6,flag:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.8,rad_min:Math.PI-2.8,rad_max:Math.PI-0.1,flag:false}),
-			new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.7,rad_min:Math.PI-2.8,rad_max:Math.PI-0.1,flag:false}),
-			new ENEMY_cell_hand_3({x:_this.x,y:_this.y,rad:Math.PI-0.7,rad_min:Math.PI-2.8,rad_max:Math.PI-0.1,flag:false})
-		];
-		for(let _i=0;_i<_this.hands_down.length;_i++){
-			_ENEMIES.push(_this.hands_down[_i]);		
-		}
+		_this.hands_down=[];
+
 		//触手間の距離
 		_this.hands_distance=12;
 
@@ -1768,6 +1740,44 @@ class ENEMY_cell_core
 				_this._collision_type)
 			);
 		_GAME._setPlay(_this.audio_collision);
+	}
+	move_standby(){
+		let _this=this;
+		if(_this.x<_CANVAS.width-20){
+			_this._standby=false;
+			//触手の上定義
+			_this.hands_up=[
+				//最初の要素は細胞からの第1関節
+				//最後の要素は手
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2,rad_min:Math.PI+1.5,rad_max:Math.PI+2,flag:true,ignore_collision:false}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.2,rad_min:Math.PI+1.0,rad_max:Math.PI+2.2,flag:true,ignore_collision:false}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.4,rad_min:Math.PI+0.7,rad_max:Math.PI+2.4,flag:true,ignore_collision:false}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.4,rad_min:Math.PI+0.7,rad_max:Math.PI+2.4,flag:true,ignore_collision:false}),
+				new ENEMY_cell_hand_2({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.6,rad_min:Math.PI+0.5,rad_max:Math.PI+2.6,flag:true}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.8,rad_min:Math.PI+0.5,rad_max:Math.PI+2.8,flag:true}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.0,rad_min:Math.PI+0.3,rad_max:Math.PI+2.8,flag:true}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.2,rad_min:Math.PI+0.3,rad_max:Math.PI+2.8,flag:true}),
+				new ENEMY_cell_hand_3({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.4,rad_min:Math.PI+0.3,rad_max:Math.PI+3.0,flag:true})
+			];
+			for(let _i=0;_i<_this.hands_up.length;_i++){
+				_ENEMIES.push(_this.hands_up[_i]);		
+			}
+			//触手の下定義
+			_this.hands_down=[
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-1.0,rad_min:Math.PI-2.0,rad_max:Math.PI-1,flag:false,ignore_collision:false}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-1.0,rad_min:Math.PI-2.1,rad_max:Math.PI-0.9,flag:false,ignore_collision:false}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.9,rad_min:Math.PI-2.2,rad_max:Math.PI-0.9,flag:false,ignore_collision:false}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.9,rad_min:Math.PI-2.3,rad_max:Math.PI-0.6,flag:false,ignore_collision:false}),
+				new ENEMY_cell_hand_2({x:_this.x,y:_this.y,rad:Math.PI-0.9,rad_min:Math.PI-2.7,rad_max:Math.PI-0.6,flag:false}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.8,rad_min:Math.PI-2.7,rad_max:Math.PI-0.6,flag:false}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.8,rad_min:Math.PI-2.8,rad_max:Math.PI-0.1,flag:false}),
+				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI-0.7,rad_min:Math.PI-2.8,rad_max:Math.PI-0.1,flag:false}),
+				new ENEMY_cell_hand_3({x:_this.x,y:_this.y,rad:Math.PI-0.7,rad_min:Math.PI-2.8,rad_max:Math.PI-0.1,flag:false})
+			];
+			for(let _i=0;_i<_this.hands_down.length;_i++){
+				_ENEMIES.push(_this.hands_down[_i]);		
+			}
+		}
 	}
 	moveDraw(){
 		let _this=this;
@@ -2006,6 +2016,16 @@ class ENEMY_cell_hand_3
 	}
 }
 
+
+class ENEMY_cell_wall1
+	extends GameObject_ENEMY{
+	constructor(_x,_y){
+		super(_CANVAS_IMGS['map_cell_G'].obj,_x,_y)
+		let _this=this;
+		_this.is_able_collision=false;
+	}
+	shot(){}
+}
 //========================================
 //　ボス クラス
 //	_o:ボス画像オブジェクト

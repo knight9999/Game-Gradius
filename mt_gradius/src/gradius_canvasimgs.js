@@ -205,6 +205,10 @@ const _CANVAS_IMGS={
 	'map_cell_D':{src:'images/gradius_map_cell_D.png',rate:1.00,obj:new Image()},
 	'map_cell_E':{src:'images/gradius_map_cell_E.png',rate:1.00,obj:new Image()},
 	'map_cell_F':{src:'images/gradius_map_cell_F.png',rate:1.00,obj:new Image()},
+	'map_cell_G':{src:'images/gradius_map_cell_G.png',rate:1.00,obj:new Image()},
+
+	'map_cell_Y':{src:'images/gradius_map_cell_Y.png',rate:1.00,obj:new Image()},
+	'map_cell_Z':{src:'images/gradius_map_cell_Z.png',rate:1.00,obj:new Image()},
 };
 
 const _CANVAS_IMGS_INIT={
@@ -335,6 +339,11 @@ const _CANVAS_AUDIOS={
 		obj:null,
 		buf:new Object()},
 
+	'map_cell_wall':
+		{src:'audios/map_cell_wall.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
 
 	'bg_powermeterselect':
 		{src:'audios/bg_powermeterselect.mp3',
@@ -369,6 +378,11 @@ const _CANVAS_AUDIOS={
 		buf:new Object()},
 	'bg_type5':
 		{src:'audios/bg_thunderbolt.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'bg_type6':
+		{src:'audios/bg_cell.mp3',
 		volume:1.0,
 		obj:null,
 		buf:new Object()}

@@ -850,12 +850,12 @@ class GameObject_SHOTS_MISSILE
 			},
 			'_st7':function(_t){
 				//_st7→_st8
-				_t.x+=4;
+				_t.x+=6;
 				_t.y+=1;
 			},
 			'_st8':function(_t){
 				//_st7→_st8
-				_t.x+=4;
+				_t.x+=6;
 				_t.y+=1;
 			}
 		}
@@ -966,7 +966,6 @@ class GameObject_SHOTS_MISSILE
 			// 	_t._init();
 			// 	return;
 			// }
-			_t.x+=2;
 //			if(_setToSt3()){return;}
 			_this.set_missile_status(_t,'_st8');
 		}
@@ -979,7 +978,6 @@ class GameObject_SHOTS_MISSILE
 			// 	_t._init();
 			// 	return;
 			// }
-			_t.x+=2;
 //			let y=parseInt(_t.y/_MAP.t);
 //			console.log(_t.y)
 			// let _y=_MAP_SCROLL_POSITION_Y%_MAP.t;
@@ -1053,7 +1051,7 @@ class GameObject_SHOTS_MISSILE
 
 		if(_this.get_missile_status(_t)==='_st2'){
 //			console.log('_st2');
-			_map_y=_MAP.getMapY(_t.y+_this.imgsize+9);
+			_map_y=_MAP.getMapY(_t.y+_this.imgsize+14);
 			//下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x,_map_y)
 //				||_MAP.isMapCollision(_map_x,_map_y+1)
@@ -1065,7 +1063,7 @@ class GameObject_SHOTS_MISSILE
 		}
 
 		if(_this.get_missile_status(_t)==='_st1'){
-			_map_y=_MAP.getMapY(_t.y+_this.imgsize+9);
+			_map_y=_MAP.getMapY(_t.y+_this.imgsize+14);
 			//自身、あるいはその下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x+1,_map_y)){
 				// let _a=parseInt((_t.y+_this.imgsize)/_MAP.t);

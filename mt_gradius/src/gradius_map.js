@@ -903,7 +903,8 @@ class GameObject_MAP{
 	getMapYToPx(_y){
 		return _y;
 	}
-	getMapX(_x){return parseInt(
+	getMapX(_x){
+		return Math.floor(
 					(_x+_MAP_SCROLL_POSITION_X-this.initx)
 					/this.t);
 	}
@@ -912,7 +913,7 @@ class GameObject_MAP{
 			console.log('_y:'+_y)
 			console.log('_MAP_SCROLL_POSITION_Y:'+_MAP_SCROLL_POSITION_Y)
 		}
-		return parseInt(
+		return Math.floor(
 				((_y+_MAP_SCROLL_POSITION_Y)%1000)
 				/this.t);
 	}

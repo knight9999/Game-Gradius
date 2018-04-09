@@ -4166,8 +4166,11 @@ class GameObject_ENEMY_SHOT{
 		_this.tx=_PLAYERS_MAIN.getPlayerCenterPosition()._x;
 		_this.ty=_PLAYERS_MAIN.getPlayerCenterPosition()._y;
 
-		_this.img=_p.img||_CANVAS_IMGS['enemy_bullet1'].obj;
+		_this.img=_p.img||_CANVAS_IMGS['enemy_bullet'].obj;
+		_this.imgPos=_p.imgPos||[0,18];//スプライトのコマポジション
 		_this._c=0;//アニメーションカウント
+		_this.aniItv=5;//アニメーション間隔
+
 		_this.speed=_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SHOT_SPEED;//定義：発射スピード
 		//角度指定。
 		//自身と相手までのラジアン
@@ -4191,18 +4194,13 @@ class GameObject_ENEMY_SHOT{
 		_this._isshow=true;//弾の状態
 
 		_this.shotColMap=[
-			"0,0,"+_this.img.width+","+_this.img.height
+			"1,1,"+(_this.img.width-1)+","+(_this.img.height-1)
 		];
 	}
 	init(){
 		let _this=this;
 		_this._shot_alive=false;
 		_this._isshow=false;
-	}
-	ani_enemy_bullet(){
-		this.img=
-			_CANVAS_IMGS['enemy_bullet'+parseInt((this._c/4)+1)].obj;
-		this._c=(this._c>=7)?0:this._c+1;
 	}
 	map_collition(){
 		let _this=this;
@@ -4245,6 +4243,52 @@ class GameObject_ENEMY_SHOT{
 
 		_CONTEXT.restore();
 	}
+	setDrawImage(_d){
+		//_w,_h,_s,_p,_deg
+		let _this=this;
+//		let _pos=_d._p||0;
+		let _size=_d._s||_this.img.width;
+		let _width=_d._w||_this.img.width;
+		let _height=_d._h||_this.img.height;
+		_CONTEXT.save();
+		_CONTEXT.rotate((_d._deg||0)*Math.PI/180);
+//		_this.setDrawImageDirect();
+		if(_d._s===undefined){
+			//一枚画像用
+			_CONTEXT.drawImage(
+				_this.img,
+				_this.x,
+				_this.y,
+				_this.img.width,
+				_this.img.height
+			);
+		}else{
+			//スプライト用
+//			console.log('======='+_this.x);
+			_CONTEXT.drawImage(
+				_this.img,
+				_this.imgPos[parseInt(_this._c/_this.aniItv)],
+				0,
+				_width,
+				_height,
+				_this.x,
+				_this.y,
+				_width,
+				_height
+			);	
+
+			// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
+			// _CONTEXT.beginPath();
+			// _CONTEXT.rect(
+			// 		_this.x,
+			// 		_this.y,
+			// 		_width,
+			// 		_height
+			// );
+			// _CONTEXT.stroke();
+		}
+		_CONTEXT.restore();
+	}
 	move(){
 		let _this=this;
 		_this.map_collition();
@@ -4254,12 +4298,15 @@ class GameObject_ENEMY_SHOT{
 			return;
 		}
 		if(!_this._shot_alive){return;}
-		_this.ani_enemy_bullet();
+		_this._c=(_this._c>=7)?0:_this._c+1;
 
 		_this.x+=_this.sx*_this.speed;
 		_this.y+=_this.sy*_this.speed;
 
-		_this.setDrawImageRotate();
+		_this.setDrawImage({
+			_s:18,
+			_w:18
+		});
 		_this._shot_alive=true;
 	}
 }

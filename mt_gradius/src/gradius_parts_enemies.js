@@ -2016,16 +2016,25 @@ class ENEMY_cell_hand_3
 	}
 }
 
-
-class ENEMY_cell_wall1
-	extends GameObject_ENEMY{
-	constructor(_x,_y){
-		super(_CANVAS_IMGS['map_cell_G'].obj,_x,_y)
-		let _this=this;
-		_this.is_able_collision=false;
+class ENEMY_CELL_A extends ENEMY_a{
+	constructor(_x,_y,_d){
+		super(_x,_y,_d);
+        let _this=this;
+        _this.direct=_d||_this._DEF_DIR._U;
+		_this.haspc=false;
+        _this.defimg=[_CANVAS_IMGS['enemy_cell_a_1'].obj,_CANVAS_IMGS['enemy_cell_a_2'].obj];
 	}
-	shot(){}
+}	
+class ENEMY_CELL_B extends ENEMY_a{
+	constructor(_x,_y,_d){
+		super(_x,_y,_d);
+        let _this=this;
+        _this.direct=_d||_this._DEF_DIR._U;
+		_this.haspc=true;
+        _this.defimg=[_CANVAS_IMGS['enemy_cell_b_1'].obj,_CANVAS_IMGS['enemy_cell_b_2'].obj];
+	}
 }
+
 //========================================
 //　ボス クラス
 //	_o:ボス画像オブジェクト

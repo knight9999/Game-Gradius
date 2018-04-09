@@ -647,16 +647,24 @@ const _MAP_THEME={//_parts要素番号0は空文字
 		},
 		'b':{
 			'_f':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_cell_wall1(_mx,_my,_md));
+				_ENEMIES.push(new ENEMY_CELL_A(_mx,_my,_md));
 				},
 			'_st':'',
 			'_s':'0',
-			'_o':_CANVAS_IMGS['map_cell_G']
+			'_o':_CANVAS_IMGS['enemy_cell_a_1']
+		},
+		'c':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_CELL_B(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_cell_b_1']
 		},
 		'd':{
 			'_f':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
-				},
+					},
 			'_st':'',
 			'_s':'0',
 			'_o':_CANVAS_IMGS['enemy_d_1']
@@ -769,16 +777,7 @@ class GameObject_MAP{
 			if(_this.isCollisionBit(_md)){continue;}
 			if(_md==='0'){continue;}
 
-			let _d=(function(){//向きを取得する
-				//直上が1
-				let _r=_MAP_ENEMIES._setDir(_j,_i);
-				let _e=_MAP_THEME[_this.map_theme]._enemies[_md]
-				//直下が1（既に直上が1だったら、直上を向き決定にする）
-				_r=(_r===0)
-					?_MAP_ENEMIES._setDir(_j,_i+parseInt(_e._o.obj.height/_MAP.t))
-					:_r;
-				return _r;
-			})();
+			let _d=_MAP_ENEMIES._setDir(_j,_i);//向きを取得する
 			_MAP_THEME[_this.map_theme]._enemies[_md]
 				._f(_this.x+(_j*_this.t),_i*_this.t,_d);
 

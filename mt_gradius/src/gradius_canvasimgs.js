@@ -101,6 +101,11 @@ const _CANVAS_IMGS={
 	'enemy_cell_hand_2':{src:'images/gradius_enemy_cell_hand_2.png',rate:0.30,obj:new Image()},
 	'enemy_cell_hand_3':{src:'images/gradius_enemy_cell_hand_3.png',rate:0.25,obj:new Image()},
 
+	'enemy_cell_a_1':{src:'images/gradius_enemy_cell_a_1.png',rate:1.00,obj:new Image()},
+	'enemy_cell_a_2':{src:'images/gradius_enemy_cell_a_2.png',rate:1.00,obj:new Image()},
+	'enemy_cell_b_1':{src:'images/gradius_enemy_cell_b_1.png',rate:1.00,obj:new Image()},
+	'enemy_cell_b_2':{src:'images/gradius_enemy_cell_b_2.png',rate:1.00,obj:new Image()},
+
 	'enemy_frame_1':{src:'images/gradius_enemy_frame_1.png',rate:0.30,obj:new Image()},
 	'enemy_frame_2':{src:'images/gradius_enemy_frame_2.png',rate:0.30,obj:new Image()},
 	'enemy_frame_3':{src:'images/gradius_enemy_frame_3.png',rate:0.30,obj:new Image()},
@@ -150,10 +155,6 @@ const _CANVAS_IMGS={
 
 	'enemy_bullet':{src:'images/gradius_enemy_bullet.png',rate:1.0,obj:new Image()},
 
-	// 'enemy_bullet1':
- 	// 	{src:'images/gradius_enemy_bullet1.png',rate:0.8,obj:new Image()},
-	// 'enemy_bullet2':
-  	// 	{src:'images/gradius_enemy_bullet2.png',rate:0.8,obj:new Image()},
 	'enemy_bullet_z':
   		{src:'images/gradius_enemy_bullet_z.png',rate:0.2,obj:new Image()},
 	'enemy_bullet_laser':

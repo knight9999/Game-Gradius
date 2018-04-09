@@ -145,20 +145,22 @@ class GameObject_PLAYER_MAIN
 		this._isequipped_count=20;
 	}
 	map_collition(){
+		let _this=this;
 		//forcefieldが生きてる間はスルー
 		if(_PLAYERS_POWER_METER_SHIELD===1
 			&&_PLAYERS_MAIN_FORCE.isalive()){
 			return;
 		}
 		//プレーヤーの中心座標取得
-		let _pl=this.getPlayerCenterPosition();
+		let _pl=_this.getPlayerCenterPosition();
 		//MAPの位置を取得
 		let _map_x=_MAP.getMapX(_pl._x);
 		let _map_y=_MAP.getMapY(_pl._y);
 
-		if(_MAP.isMapCollision(_map_x,_map_y)){
-			this.setfalsealive();
-		}
+		if(!_MAP.isMapCollision(_map_x,_map_y)){return;}
+		// console.log(_map_x+':'+_map_y);
+		// console.log(_pl._x+'::'+_pl._y);
+		_this.setfalsealive();
 
 	}
 	set_vv_ani(_e_key){
@@ -315,10 +317,16 @@ class GameObject_PLAYER_MAIN
 			_this.imgsize_vb,
 			_this.imgsize_vb
 		);
-		// _CONTEXT.drawImage(
-		// 	_img_vb,_this.x,_this.y+22,
-		// 		_img_vb.width,_img_vb.height
+
+		// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
+		// _CONTEXT.beginPath();
+		// _CONTEXT.rect(
+		// 	_this.x,
+		// 	_this.y,
+		// 	_this.imgsize,
+		// 	_this.imgsize
 		// );
+		// _CONTEXT.stroke();
 	}
 }
 

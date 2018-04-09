@@ -139,6 +139,8 @@ class MAP_VOLCANO_A extends MAP_OBJECT{
 class MAP_VOLCANO_B extends MAP_OBJECT{
 	constructor(){
 		super({img:_CANVAS_IMGS['map_volcano_B'],width:225,height:75});
+		let _this=this;
+		_this._s='111111111,111111111,000000000';
 	}
 }
 class MAP_VOLCANO_C extends MAP_OBJECT{

@@ -1045,7 +1045,7 @@ class GameObject_SHOTS_MISSILE
 
 		if(_this.get_missile_status(_t)==='_st2'){
 //			console.log('_st2');
-			_map_y=_MAP.getMapY(_t.y+_this.imgsize+10);
+			_map_y=_MAP.getMapY(_t.y+_this.imgsize+9);
 			//下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x,_map_y)
 //				||_MAP.isMapCollision(_map_x,_map_y+1)

@@ -147,11 +147,13 @@ const _CANVAS_IMGS={
 	'enemy_collapes2':{src:'images/gradius_enemy_collapes2.png',rate:1.0,obj:new Image()},
 	'enemy_collapes8':{src:'images/gradius_enemy_collapes8.png',rate:1.0,obj:new Image()},
 	'enemy_collapes9':{src:'images/gradius_enemy_collapes9.png',rate:1.0,obj:new Image()},
- 
-	'enemy_bullet1':
- 		{src:'images/gradius_enemy_bullet1.png',rate:0.8,obj:new Image()},
-	'enemy_bullet2':
-  		{src:'images/gradius_enemy_bullet2.png',rate:0.8,obj:new Image()},
+
+	'enemy_bullet':{src:'images/gradius_enemy_bullet.png',rate:1.0,obj:new Image()},
+
+	// 'enemy_bullet1':
+ 	// 	{src:'images/gradius_enemy_bullet1.png',rate:0.8,obj:new Image()},
+	// 'enemy_bullet2':
+  	// 	{src:'images/gradius_enemy_bullet2.png',rate:0.8,obj:new Image()},
 	'enemy_bullet_z':
   		{src:'images/gradius_enemy_bullet_z.png',rate:0.2,obj:new Image()},
 	'enemy_bullet_laser':

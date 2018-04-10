@@ -754,6 +754,7 @@ class GameObject_MAP{
 
 		_this.init_map_anime();
 		_this.init_mapdef_col();
+		_this.init_enemies_location();
 	}
 	init_map_anime(){
 		let _this=this;

@@ -72,6 +72,8 @@ class GameObject_ENEMY{
 		];
 		_this.col_date=null;//打たれた時間
 		_this.col_canint=150;//連続ショット許可間隔
+
+		_this.mapdef_col='0';//MAP衝突ビット
 	}
 	init(){
 		let _this=this;
@@ -1035,6 +1037,7 @@ class ENEMY_p extends GameObject_ENEMY{
 		//レーザーのみ当たり判定を通常の半分にする。
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 
+		_this.mapdef_col='000,000,000';
 	}
 	setAlive(){
 		let _this=this;
@@ -1997,7 +2000,9 @@ class ENEMY_cell_hand_3
 		_ENEMIES_SHOTS.push(
 			new GameObject_ENEMY_SHOT({
 				x:this.getEnemyCenterPosition()._x,
-				y:this.getEnemyCenterPosition()._y
+				y:this.getEnemyCenterPosition()._y,
+				img:_CANVAS_IMGS['enemy_bullet_cell'].obj,
+				imgPos:[0,15]
 				})
 			);
 	}
@@ -4165,6 +4170,7 @@ class ENEMY_BOSS_FRAME_BODY
 //	_p.deg:敵の弾を発射する角度（deg）
 //			※未指定の場合は自機との角度
 //	_p.img:弾の画像
+//	_p.imgPos:スプライト画像の位置（Array）
 //====================
 class GameObject_ENEMY_SHOT{
 //	constructor(_x,_y,_tx,_ty){

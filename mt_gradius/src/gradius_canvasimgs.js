@@ -154,6 +154,7 @@ const _CANVAS_IMGS={
 	'enemy_collapes9':{src:'images/gradius_enemy_collapes9.png',rate:1.0,obj:new Image()},
 
 	'enemy_bullet':{src:'images/gradius_enemy_bullet.png',rate:1.0,obj:new Image()},
+	'enemy_bullet_cell':{src:'images/gradius_enemy_bullet_cell.png',rate:1.0,obj:new Image()},
 
 	'enemy_bullet_z':
   		{src:'images/gradius_enemy_bullet_z.png',rate:0.2,obj:new Image()},
@@ -208,10 +209,10 @@ const _CANVAS_IMGS={
 	'map_cell_D':{src:'images/gradius_map_cell_D.png',rate:1.00,obj:new Image()},
 	'map_cell_E':{src:'images/gradius_map_cell_E.png',rate:1.00,obj:new Image()},
 	'map_cell_F':{src:'images/gradius_map_cell_F.png',rate:1.00,obj:new Image()},
-	'map_cell_G':{src:'images/gradius_map_cell_G.png',rate:1.00,obj:new Image()},
-
 	'map_cell_Y':{src:'images/gradius_map_cell_Y.png',rate:1.00,obj:new Image()},
 	'map_cell_Z':{src:'images/gradius_map_cell_Z.png',rate:1.00,obj:new Image()},
+	'map_cell_wall':{src:'images/gradius_map_cell_wall.png',rate:1.00,obj:new Image()},
+
 };
 
 const _CANVAS_IMGS_INIT={

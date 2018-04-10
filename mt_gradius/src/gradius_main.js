@@ -2428,7 +2428,6 @@ const _DRAW_INIT_OBJECT=()=>{
 
 	//MAP
 	_MAP.init_stage_map();
-	_MAP.init_enemies_location();
 
 	_DRAW_GAMESTART();
 }

@@ -369,10 +369,10 @@ class MAP_CELL_A extends MAP_OBJECT{
 			height:100
 		});
 		let _this=this;
-		_this._s='000000000000000000,'
-				+'001111111111111100,'
-				+'011111111111111110,'
-				+'111111111111111111';
+		_this._s='0000000000000000000,'
+				+'0011111111111111100,'
+				+'0111111111111111110,'
+				+'1111111111111111111';
 	}
 }
 class MAP_CELL_B extends MAP_OBJECT{
@@ -385,10 +385,10 @@ class MAP_CELL_B extends MAP_OBJECT{
 			height:100
 		});
 		let _this=this;
-		_this._s='111111111111111111,'
-				+'011111111111111110,'
-				+'001111111111111100,'
-				+'000000000000000000';
+		_this._s='1111111111111111111,'
+				+'0111111111111111110,'
+				+'0011111111111111100,'
+				+'0000000000000000000';
 	}
 }
 class MAP_CELL_C extends MAP_OBJECT{
@@ -477,13 +477,12 @@ class MAP_CELL_Z extends MAP_CELL_EFYZ{
 class MAP_CELL_WALL extends MAP_OBJECT{
 	constructor(_d){
 		super({
-			img:_CANVAS_IMGS['map_cell_G'],
+			img:_CANVAS_IMGS['map_cell_wall'],
 			imgPos:_d.imgPos||[0],
 			width:25,
 			height:25
 		});
 		let _this=this;
-		_this.img=_CANVAS_IMGS['map_cell_G'];
 		_this._s='1';
 		_this.is_able_collision=true;
 		_this._status=1;

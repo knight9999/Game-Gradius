@@ -1522,17 +1522,15 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 	}
 	move_standby(){
 		let _this=this;
-		if(_this.x<_CANVAS.width){
-			let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
-			_this.rad=//自身と相手までのラジアン
-				Math.atan2(
-					(Math.random()*700-100-_this.y),
-					0-_this.x);
-			_this.deg=_this.rad/Math.PI*180;
-			_this.speedx=Math.cos(_this.rad);//単位x
-			_this.speedy=Math.sin(_this.rad);//単位y
-			_this._standby=false;
-		}
+		if(_this.x>=_CANVAS.width){return;}
+		_this.rad=//自身と相手までのラジアン
+			Math.atan2(
+				(Math.random()*700-100-_this.y),
+				0-_this.x);
+		_this.deg=_this.rad/Math.PI*180;
+		_this.speedx=Math.cos(_this.rad);//単位x
+		_this.speedy=Math.sin(_this.rad);//単位y
+		_this._standby=false;
 	}
 	moveDraw(){
 		let _this=this;
@@ -1547,7 +1545,7 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 			img:_this.img,
 			x:_this.x,
 			y:_this.y,
-			deg:_this._deg
+			deg:_this.deg+180
 		});
 	}
 }

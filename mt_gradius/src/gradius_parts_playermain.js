@@ -392,7 +392,13 @@ class GameObject_PLAYER_OPTION
 		let _p=_this.getPlayerCenterPosition();
 		_this._ani_c=(_this._ani_c>=(_this.ani.length*3)-1)?0:_this._ani_c+1;
 		let _c=parseInt(_this._ani_c/3);
-		_GAME._setDrawImage(_this.img,_p._x,_p._y,_this.ani[_c].scale);
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_p._x,
+			y:_p._y,
+			scale:_this.ani[_c].scale,
+			basePoint:4
+		});
 	}
 }
 
@@ -530,23 +536,35 @@ class GameObject_FORCEFIELD{
 		// 		_this.width,_this.height
 		// );
 
-		_CONTEXT.save();
-		_CONTEXT.translate(
-			_GO.getPlayerCenterPosition()._x-6,
-			_GO.getPlayerCenterPosition()._y-2);
-		_CONTEXT.scale(_this._scale,_this._scale);
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.ani[parseInt(_this._c/5)],
-			0,
-			_this.width,
-			_this.height,
-			-_this.width/2,
-			-_this.height/2,
-			_this.width,
-			_this.height
-		);
-		_CONTEXT.restore();
+		//画像を中心起点とし、拡縮を中心基準点で処理させる
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_GO.getPlayerCenterPosition()._x-6,
+			y:_GO.getPlayerCenterPosition()._y-2,
+			imgPosx:_this.ani[parseInt(_this._c/5)],
+			width:_this.width,
+			height:_this.height,
+			scale:_this._scale,
+			basePoint:4
+		});
+
+		// _CONTEXT.save();
+		// _CONTEXT.translate(
+		// 	_GO.getPlayerCenterPosition()._x-6,
+		// 	_GO.getPlayerCenterPosition()._y-2);
+		// _CONTEXT.scale(_this._scale,_this._scale);
+		// _CONTEXT.drawImage(
+		// 	_this.img,
+		// 	_this.ani[parseInt(_this._c/5)],
+		// 	0,
+		// 	_this.width,
+		// 	_this.height,
+		// 	-_this.width/2,
+		// 	-_this.height/2,
+		// 	_this.width,
+		// 	_this.height
+		// );
+		// _CONTEXT.restore();
 
 		// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
 		// _CONTEXT.beginPath();
@@ -681,40 +699,65 @@ class GameObject_SHIELD
 		let _x=_p.x+_p.width;
 		let _y1=_pl._y;//下
 		let _y2=_pl._y-(_this.height*_this._scale);//上
-		//下の画像
-		_CONTEXT.save();
-		_CONTEXT.translate(_x,_y1);
-		_CONTEXT.scale(_this._scale,_this._scale);
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.ani[parseInt(_this._c/5)],
-			0,
-			_this.width,
-			_this.height,
-			0,
-			-_this.height,
-			_this.width,
-			_this.height
-		);
-		_CONTEXT.restore();
-		//上の画像
-		_CONTEXT.save();
-		_CONTEXT.translate(_x,_y2);
-		_CONTEXT.scale(_this._scale,_this._scale);
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.ani[parseInt(_this._c/5)],
-			0,
-			_this.width,
-			_this.height,
-			0,
-			_this.height,
-			_this.width,
-			_this.height
-		);
-		_CONTEXT.restore();
+		//上画像
+//		console.log(_this._scale)
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_x,
+			y:_y1,
+			imgPosx:_this.ani[parseInt(_this._c/5)],
+			width:_this.width,
+			height:_this.height,
+			scale:_this._scale,
+			basePoint:6
+		});
+
+		//下画像 左上起点として表示
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_x,
+			y:_y1,
+			imgPosx:_this.ani[parseInt(_this._c/5)],
+			width:_this.width,
+			height:_this.height,
+			scale:_this._scale,
+			basePoint:0
+		});
 		this.x=_x;
 		this.y=_y2;
+
+		// _CONTEXT.save();
+		// _CONTEXT.translate(_x,_y1);
+		// _CONTEXT.scale(_this._scale,_this._scale);
+		// _CONTEXT.drawImage(
+		// 	_this.img,
+		// 	_this.ani[parseInt(_this._c/5)],
+		// 	0,
+		// 	_this.width,
+		// 	_this.height,
+		// 	0,
+		// 	-_this.height,
+		// 	_this.width,
+		// 	_this.height
+		// );
+		// _CONTEXT.restore();
+
+		// _CONTEXT.save();
+		// _CONTEXT.translate(_x,_y2);
+		// _CONTEXT.scale(_this._scale,_this._scale);
+		// _CONTEXT.drawImage(
+		// 	_this.img,
+		// 	_this.ani[parseInt(_this._c/5)],
+		// 	0,
+		// 	_this.width,
+		// 	_this.height,
+		// 	0,
+		// 	_this.height,
+		// 	_this.width,
+		// 	_this.height
+		// );
+		// _CONTEXT.restore();
+
 //		this.width*=_sc;
 
 	}

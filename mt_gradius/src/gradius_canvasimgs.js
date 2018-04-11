@@ -8,18 +8,12 @@
 const _CANVAS_IMGS={
 	'vicviper':{src:'images/gradius_vicviper.png',rate:1.00,obj:new Image()},
 	'vicviper_back':{src:'images/gradius_vicviper_back.png',rate:1.00,obj:new Image()},
-	'vicviper_bomb':
-   		{src:'images/gradius_vicviper_bomb.png',
-   		 rate:1,
-   		 obj:new Image()},
-	'vicviper_bomb_red':
-		{src:'images/gradius_vicviper_bomb_red.png',
-		 rate:1,
-		 obj:new Image()},
-	'option':{src:'images/option.png',rate:0.3,obj:new Image()},
+	'vicviper_bomb':{src:'images/gradius_vicviper_bomb.png',rate:1.0,obj:new Image()},
+	'vicviper_bomb_red':{src:'images/gradius_vicviper_bomb_red.png',rate:1.0,obj:new Image()},
+	'option':{src:'images/option.png',rate:1.0,obj:new Image()},
 	'forcefield':{src:'images/gradius_forcefield.png',rate:1.00,obj:new Image()},
 	'shield':{src:'images/gradius_shield.png',rate:1.00,obj:new Image()},
-
+ 
 	'gradius_missile':{src:'images/gradius_missile.png',rate:1.00,obj:new Image()},
 
 	'shot1':{src:'images/gradius_shot1.png',rate:0.4,obj:new Image()},
@@ -96,22 +90,22 @@ const _CANVAS_IMGS={
 	'enemy_m_y_1':{src:'images/gradius_enemy_m_y_1.png',rate:0.5,obj:new Image()},
 	'enemy_m_y_2':{src:'images/gradius_enemy_m_y_2.png',rate:0.5,obj:new Image()},
 
-	'enemy_cell_core':{src:'images/gradius_enemy_cell_core.png',rate:0.30,obj:new Image()},
-	'enemy_cell_hand_1':{src:'images/gradius_enemy_cell_hand_1.png',rate:0.30,obj:new Image()},
-	'enemy_cell_hand_2':{src:'images/gradius_enemy_cell_hand_2.png',rate:0.30,obj:new Image()},
-	'enemy_cell_hand_3':{src:'images/gradius_enemy_cell_hand_3.png',rate:0.25,obj:new Image()},
+	'enemy_cell_core':{src:'images/gradius_enemy_cell_core.png',rate:1.00,obj:new Image()},
+	'enemy_cell_hand_1':{src:'images/gradius_enemy_cell_hand_1.png',rate:1.00,obj:new Image()},
+	'enemy_cell_hand_2':{src:'images/gradius_enemy_cell_hand_2.png',rate:1.00,obj:new Image()},
+	'enemy_cell_hand_3':{src:'images/gradius_enemy_cell_hand_3.png',rate:1.00,obj:new Image()},
 
 	'enemy_cell_a_1':{src:'images/gradius_enemy_cell_a_1.png',rate:1.00,obj:new Image()},
 	'enemy_cell_a_2':{src:'images/gradius_enemy_cell_a_2.png',rate:1.00,obj:new Image()},
 	'enemy_cell_b_1':{src:'images/gradius_enemy_cell_b_1.png',rate:1.00,obj:new Image()},
 	'enemy_cell_b_2':{src:'images/gradius_enemy_cell_b_2.png',rate:1.00,obj:new Image()},
 
-	'enemy_frame_1':{src:'images/gradius_enemy_frame_1.png',rate:0.30,obj:new Image()},
-	'enemy_frame_2':{src:'images/gradius_enemy_frame_2.png',rate:0.30,obj:new Image()},
-	'enemy_frame_3':{src:'images/gradius_enemy_frame_3.png',rate:0.30,obj:new Image()},
-	'enemy_frame_4':{src:'images/gradius_enemy_frame_4.png',rate:0.30,obj:new Image()},
-	'enemy_frame_5':{src:'images/gradius_enemy_frame_5.png',rate:0.30,obj:new Image()},
-	'enemy_frame_6':{src:'images/gradius_enemy_frame_6.png',rate:0.30,obj:new Image()},
+	'enemy_frame_1':{src:'images/gradius_enemy_frame_1.png',rate:1.00,obj:new Image()},
+	'enemy_frame_2':{src:'images/gradius_enemy_frame_2.png',rate:1.00,obj:new Image()},
+	'enemy_frame_3':{src:'images/gradius_enemy_frame_3.png',rate:1.00,obj:new Image()},
+	'enemy_frame_4':{src:'images/gradius_enemy_frame_4.png',rate:1.00,obj:new Image()},
+	'enemy_frame_5':{src:'images/gradius_enemy_frame_5.png',rate:1.00,obj:new Image()},
+	'enemy_frame_6':{src:'images/gradius_enemy_frame_6.png',rate:1.00,obj:new Image()},
 
 	'enemy_frame_head1':{src:'images/gradius_enemy_frame_head_1.png',rate:1.00,obj:new Image()},
 	'enemy_frame_head2':{src:'images/gradius_enemy_frame_head_2.png',rate:1.00,obj:new Image()},

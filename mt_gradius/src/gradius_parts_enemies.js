@@ -1543,7 +1543,12 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 		_this._c=(_this._c>=(_this.imgs.length*5)-1)?0:_this._c+1;
 		_this.img=_this.imgs[parseInt(_this._c/5)];
 
-		_this.setDrawImageRotate(_this.deg+180);
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x,
+			y:_this.y,
+			deg:_this._deg
+		});
 	}
 }
 //炎（中）
@@ -1665,8 +1670,10 @@ class ENEMY_cell_core
 		let _this=this;
 		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
 		let _h=_h2.getEnemyCenterPosition();
-		let dx=_p._x-_h._x;
-		let dy=_p._y-_h._y;
+		let _range=parseInt(Math.random()*100)-50;
+//		console.log(_range)
+		let dx=(_p._x+_range)-_h._x;
+		let dy=(_p._y+_range)-_h._y;
 		//自身と相手の角度を求めたら
 		//自身が動かせる角度の有効範囲を元に、
 		//角度を調整する。
@@ -1674,7 +1681,8 @@ class ENEMY_cell_core
 		let _rad=((_r)=>{
 			//atan2()より0度以下の場合は、
 			//正数に切り替える
-			let _s=Math.random()/50;
+			let _s=Math.random()/50;//動きスピード
+			
 			if(_h2.flag){
 				_r=(Math.cos(_r)>0)
 				?_h2.rad+_s
@@ -1760,7 +1768,7 @@ class ENEMY_cell_core
 				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-0.8,rad_min:Math.PI+0.5,rad_max:Math.PI+2.8,flag:true}),
 				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.0,rad_min:Math.PI+0.3,rad_max:Math.PI+2.8,flag:true}),
 				new ENEMY_cell_hand_1({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.2,rad_min:Math.PI+0.3,rad_max:Math.PI+2.8,flag:true}),
-				new ENEMY_cell_hand_3({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.4,rad_min:Math.PI+0.3,rad_max:Math.PI+3.0,flag:true})
+				new ENEMY_cell_hand_3({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.4,rad_min:Math.PI+0.3,rad_max:Math.PI+2.6,flag:true})
 			];
 			for(let _i=0;_i<_this.hands_up.length;_i++){
 				_ENEMIES.push(_this.hands_up[_i]);		
@@ -1848,14 +1856,14 @@ class ENEMY_cell_core
 					10
 					);
 //				console.log(_this.hands_up_rad)
-				_this.hands_up[_i].moveDraw(_this);			
+				_this.hands_up[_i].moveDraw();			
 				continue;					
 			}
 			_this.set_hands_pos(
 				_this.hands_up_rad[_i],
 				_this.hands_up[_i],
 				_this.hands_up[_i-1]);
-			_this.hands_up[_i].moveDraw(_this);			
+			_this.hands_up[_i].moveDraw();			
 		}
 //		console.log(_this.hands_up_rad);
 
@@ -1882,23 +1890,24 @@ class ENEMY_cell_core
 					_this,
 					(_this.img.width/2)-(_this.hands_down[_i].img.width/2),
 					_this.img.height-30);
-				_this.hands_down[_i].moveDraw(_this);			
+				_this.hands_down[_i].moveDraw();			
 				continue;					
 			}
 			_this.set_hands_pos(
 				_this.hands_down_rad[_i],
 				_this.hands_down[_i],
 				_this.hands_down[_i-1]);
-			_this.hands_down[_i].moveDraw(_this);			
+			_this.hands_down[_i].moveDraw();			
 		}
 
 		//細胞自身を表示
-		_GAME._setDrawImage(
-			_this.img,
-			_e._x,
-			_e._y,
-			_this.ani[_c].scale*((_this._status/10>0.7)?_this._status/10:0.7)
-		);
+//		console.log('2')
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_e._x,
+			y:_e._y,
+			scale:_this.ani[_c].scale*((_this._status/10>0.7)?_this._status/10:0.7)
+		});
 
 		//自身の衝突判定を変更
 		let _sc=((_this.img.width/2)-(_this.img.width*_this.ani[_c].scale/2))
@@ -1956,12 +1965,21 @@ class ENEMY_cell_hand_1
 		_this._c=(_this._c>=(_this.ani.length*20)-1)?0:_this._c+1;
 		let _c=parseInt(_this._c/20);
 		const _e=_this.getEnemyCenterPosition();
-		_GAME._setDrawImage(
-			_this.img,
-			_e._x,
-			_e._y,
-			_this.ani[_c].scale);
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_e._x,
+			y:_e._y,
+			scale:_this.ani[_c].scale
+		});
 		_this.shot();
+	}
+	move(){
+		//敵の処理メイン
+		//原則継承はしない
+		let _this=this;
+		_this.x=_MAP.getX(_this.x);
+		_this.y=_MAP.getY(_this.y);
+		if(!_this.isMove()){return;}
 	}
 }
 class ENEMY_cell_hand_2
@@ -2011,12 +2029,12 @@ class ENEMY_cell_hand_3
 		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
 		let _e=_this.getEnemyCenterPosition();
 		let _r=Math.atan2(_e._y-_p._y,_e._x-_p._x);
-		_this.setDrawImageRotate(_r/Math.PI*180);
-		// _GAME._setDrawImage(
-		// 	_this.img,
-		// 	_e._x,
-		// 	_e._y,
-		// 	_this.ani[_c].scale);
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_e._x,
+			y:_e._y,
+			deg:_r/Math.PI*180
+		});
 		_this.shot();
 	}
 }
@@ -4079,30 +4097,12 @@ class ENEMY_BOSS_FRAME_HEAD
 		_this.x=_loc.x;
 		_this.y=_loc.y;
 		_this._deg=_loc.deg;
-//		console.log('===============deg'+_loc.deg);
-		_CONTEXT.save();
-		_CONTEXT.translate(_this.x+(_this.img.width/4),_this.y+(_this.img.height/4));
-		_CONTEXT.rotate(_this._deg*Math.PI/180);
-		_CONTEXT.drawImage(
-			_this.img,
-			-(_this.img.width/2),
-			-(_this.img.height/2),
-			_this.img.width,
-			_this.img.height			
-		);
-
-		// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
-		// _CONTEXT.beginPath();
-		// _CONTEXT.rect(
-		// 	-(_this.img.width/2),
-		// 	-(_this.img.height/2),
-		// 	_this.img.width,
-		// 	_this.img.height
-		// );
-		// _CONTEXT.stroke();
-
-		_CONTEXT.restore();
-
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x+(_this.img.width/4),
+			y:_this.y+(_this.img.height/4),
+			deg:_this._deg
+		});
 		_this._c=(_this._c>200)?0:_this._c+1;
 	}
 	//moveはmain.jsから処理させない
@@ -4137,7 +4137,12 @@ class ENEMY_BOSS_FRAME_BODY
 		_this.x+=Math.cos(_this._deg*Math.PI/180)*_this.speed;
 		_this.y+=Math.sin(_this._deg*Math.PI/180)*_this.speed;
 
-		_this.setDrawImageRotate(_this._deg);
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.getEnemyCenterPosition()._x,
+			y:_this.getEnemyCenterPosition()._y,
+			deg:_this._deg
+		});
 	}
 	moveDraw(_loc){
 		let _this=this;
@@ -4155,7 +4160,12 @@ class ENEMY_BOSS_FRAME_BODY
 		_this.x=_loc.x;
 		_this.y=_loc.y;
 		_this._deg=_loc.deg;
-		_this.setDrawImageRotate(_this._deg);
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.getEnemyCenterPosition()._x,
+			y:_this.getEnemyCenterPosition()._y,
+			deg:_this._deg
+		});
 
 	}
 	//moveはmain.jsから処理させない

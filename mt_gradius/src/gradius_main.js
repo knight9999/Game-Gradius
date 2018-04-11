@@ -2956,25 +2956,92 @@ _setStopOnBG(){
 	this._audio_context_source_bg.stop();
 	this._is_audio_context_source_bg=false;
 },
-_setDrawImage(_img,_x,_y,_scale){
+_setDrawImage(_d){
 	//画像表示
-	//_img:画像オブジェクト
-	//_x:画像のx座標
-	//_y:画像のy座標
-	//_scale:画像スケール
-	let _s=_scale||1;
-	let _sw=_img.width*_s;
-	let _sh=_img.height*_s;
+	//画像自体、canvasimgで定義したrateは1.0を使用すること。
+	//deg:角度
+	//scale:画像中心を基点とした比率維持の拡大縮小。
+	//		0の場合は表示しない。
+	//basePoint:拡縮・回転時の基準点
+	if(_d===undefined
+		||_d.img===undefined
+		||_d.scale===0){return;}
+	//引数は以下
+	let _width=_d.width||_d.img.width;
+	let _height=_d.height||_d.img.height;
+	let _deg=_d.deg||0;
+	let _imgPosx=_d.imgPosx||0;
+	let _imgPosy=_d.imgPosy||0;
+	let _scale=_d.scale||1;
+	let _x=_d.x||0;
+	let _y=_d.y||0;
+	let _basePoint=_d.basePoint||4;//拡縮による基準点
+	let _alpha=_d.alpha||1;//透明度
+
+	const _DEF_BASEPOINT=[//拡縮基準点ポイントの定義(0-8)
+		{x:0,y:-_height},//0:左上
+		{x:-(_width/2),y:-_height},//1:上真中
+		{x:-_width,y:-_height},//2:右上
+		{x:0,y:-(_height/2)},//3:左真中
+		{x:-(_width/2),y:-(_height/2)},//4:真中
+		{x:-_width,y:-(_height/2)},//5:右真中
+		{x:0,y:0},//6:左下
+		{x:-(_width/2),y:0},//6:下真中
+		{x:-_width,y:0}//8:右下
+	]
+
+	_CONTEXT.save();
+	_CONTEXT.globalAlpha=_alpha;
+	_CONTEXT.translate(_x,_y);
+	_CONTEXT.rotate(_deg*Math.PI/180);
+//	console.log(_scale)
+	_CONTEXT.scale(_scale,_scale);
+	// _CONTEXT.drawImage(
+	// 	_d.img,
+	// 	-(_d.img.width/2),
+	// 	-(_d.img.height/2),
+	// 	_d.img.width,
+	// 	_d.img.height
+	// );
 	_CONTEXT.drawImage(
-		_img,_x-(_sw/2),_y-(_sh/2),_sw,_sh
+		_d.img,
+		_imgPosx,
+		_imgPosy,
+		_width,
+		_height,
+		_DEF_BASEPOINT[_basePoint].x,
+		_DEF_BASEPOINT[_basePoint].y,
+		_width,
+		_height		
 	);
+	_CONTEXT.restore();
+	
+},
+// _setDrawImage(_d){
+// 	//画像表示
+// 	//img:画像オブジェクト
+// 	//x:画像のx座標
+// 	//y:画像のy座標
+// 	//deg:角度（0〜360.反時計回り）
+// 	//scale:画像スケール
+// 	let img=_d.img;
+// 	let _s=_d.scale||1;
+// 	let _deg=_d.deg||0;
+// 	let _sw=_d.img.width*_s;
+// 	let _sh=_d.img.height*_s;
+// 	_CONTEXT.save();
 
-	// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
-	// _CONTEXT.beginPath();
-	// _CONTEXT.rect(_x-(_sw/2),_y-(_sh/2),_sw,_sh);
-	// _CONTEXT.stroke();
+// 	_CONTEXT.drawImage(
+// 		_img,_x-(_sw/2),_y-(_sh/2),_sw,_sh
+// 	);
+// 	_CONTEXT.restore();
 
-},//_setDrawImage
+// 	// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
+// 	// _CONTEXT.beginPath();
+// 	// _CONTEXT.rect(_x-(_sw/2),_y-(_sh/2),_sw,_sh);
+// 	// _CONTEXT.stroke();
+
+// },//_setDrawImage
 _multilineText(context, text, width) {
     let len=text.length,
     	strArray=[],

@@ -396,8 +396,7 @@ class GameObject_PLAYER_OPTION
 			img:_this.img,
 			x:_p._x,
 			y:_p._y,
-			scale:_this.ani[_c].scale,
-			basePoint:4
+			scale:_this.ani[_c].scale
 		});
 	}
 }
@@ -544,8 +543,7 @@ class GameObject_FORCEFIELD{
 			imgPosx:_this.ani[parseInt(_this._c/5)],
 			width:_this.width,
 			height:_this.height,
-			scale:_this._scale,
-			basePoint:4
+			scale:_this._scale
 		});
 
 		// _CONTEXT.save();
@@ -709,10 +707,10 @@ class GameObject_SHIELD
 			width:_this.width,
 			height:_this.height,
 			scale:_this._scale,
-			basePoint:6
+			basePoint:7
 		});
 
-		//下画像 左上起点として表示
+		// //下画像 左上起点として表示
 		_GAME._setDrawImage({
 			img:_this.img,
 			x:_x,
@@ -721,7 +719,7 @@ class GameObject_SHIELD
 			width:_this.width,
 			height:_this.height,
 			scale:_this._scale,
-			basePoint:0
+			basePoint:1
 		});
 		this.x=_x;
 		this.y=_y2;

@@ -4183,6 +4183,167 @@ class ENEMY_BOSS_FRAME_BODY
 }
 
 
+//========================================
+//　ボス 細胞
+//	分身用のサブクラス定義
+//	サブクラスに位置情報の指令を送るだけ。
+//	_x:ボスの初期x位置
+//	_y:ボスの初期y位置
+//========================================
+class ENEMY_BOSS_CELL
+	extends GameObject_ENEMY_BOSS{
+	constructor(_x,_y){
+		//ここではフレームの頭、身体を設定し、
+		//各描画クラスに描画させる。
+		super(_CANVAS_IMGS.enemy_cell_boss.obj,_x,_y);
+		let _this=this;
+		_this._status=10;
+		_this.x=_x||_CANVAS.width+200;
+		_this.y=_y||250;
+		_this.rad=Math.random()*Math.PI-(Math.PI/2);
+
+		//アニメーション定義
+		_this.ani=[0,200,400];
+		_this.ani_c=0;
+		_this.ani_c_intv=20;
+
+		//移動量
+		//{x:x位置,y:y位置}
+		_this.moves=[];
+		_this.speed=2;
+		_this.moves_interval=30;
+
+		//頭・身体の初期化
+		_this.parts=[
+			new ENEMY_BOSS_CELL_SUB(_this.x,_this.y),
+			new ENEMY_BOSS_CELL_SUB(_this.x,_this.y),
+			new ENEMY_BOSS_CELL_SUB(_this.x,_this.y),
+		];
+
+		_this.width=200;
+		_this.height=_this.img.height;
+		_this.shotColMap=[
+			"50,0,"+_this.width+","+_this.height
+		];
+		_this.is_able_collision=false;
+		_this.is_ignore_collision=true;
+		_this._collision_type='t9';
+	}
+	shot(){
+
+	}
+	move_standby(){
+		//スタンバイ状態
+		let _this=this;
+		_this.x+=_this.speed*-1;
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x,
+			y:_this.y,
+			imgPosx:_this.ani[parseInt(_this.ani_c/_this.ani_c_intv)],
+			width:_this.width,
+			basePoint:1
+		});
+		if(_this.x>=_CANVAS.width-300){return;}
+		_this._standby=false;
+
+		//敵クラスに追加
+		for(let _i=0;_i<_this.parts.length;_i++){
+			_ENEMIES.push(_this.parts[_i]);
+		}
+
+	}
+	moveDraw(){
+		//描画状態
+		let _this=this;
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x,
+			y:_this.y,
+			imgPosx:_this.ani[parseInt(_this.ani_c/_this.ani_c_intv)],
+			width:_this.width,
+			basePoint:1
+		});
+	}
+	move(){
+		let _this=this;
+		_this.ani_c=
+			(_this.ani_c>=(_this.ani.length*_this.ani_c_intv)-1)?0:_this.ani_c+1;
+		if(!_this.isMove()){return;}
+
+		if(_this.x<400||_this.x>700||_this.y<100||_this.y>300){
+			_this.rad+=Math.PI/2;
+		}
+		_this.x+=Math.cos(_this.rad)*_this.speed;
+		_this.y+=Math.sin(_this.rad)*_this.speed;
+		//移動量に対して、位置設定
+		_this.moves.unshift({x:_this.x,y:_this.y});
+		if(_this.moves.length>_this.parts.length*_this.moves_interval){
+			_this.moves.pop();
+		}
+
+		//細胞への移動指令・表示
+		for(let _i=_this.parts.length-1;_i>=0;_i--){
+			if(_this.moves[_i*_this.moves_interval]===undefined){break;}
+			let _m=_this.moves[_i*_this.moves_interval];
+			_this.parts[_i].moveDraw({x:_m.x,y:_m.y});
+		}
+
+		//本体への処理
+		_this.shot();
+		_this.moveDraw();
+
+	}
+}
+
+class ENEMY_BOSS_CELL_SUB
+	extends GameObject_ENEMY{
+	constructor(_x,_y){
+		//ここではフレームの頭、身体を設定し、
+		//各描画クラスに描画させる。
+		super(_CANVAS_IMGS.enemy_cell_boss.obj,_x,_y);
+		let _this=this;
+		_this._status=1;
+		_this.x=_x||_CANVAS.width+200;
+		_this.y=_y||250;
+		_this.speed=2;
+		_this._standby=false;
+
+		//アニメーション定義
+		_this.ani=[0,200,400];
+		_this.ani_c=0;
+		_this.ani_c_intv=20;
+
+		_this.width=200;
+		_this.height=_this.img.height;
+		_this.shotColMap=[
+			"50,0,"+_this.width+","+_this.height
+		];
+
+		_this.is_able_collision=false;
+		_this.is_ignore_collision=true;
+		_this._collision_type='t9';
+	}
+	moveDraw(_d){
+		//描画状態
+		let _this=this;
+		_this.x=_d.x;
+		_this.y=_d.y;
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x,
+			y:_this.y,
+			imgPosx:_this.ani[parseInt(_this.ani_c/_this.ani_c_intv)],
+			width:_this.width,
+			basePoint:1,
+			alpha:0.5
+		});
+	}
+	move(){}	
+}
+
+
+
 //====================
 //　弾クラス
 //	_p.x:敵の弾発射開始x位置

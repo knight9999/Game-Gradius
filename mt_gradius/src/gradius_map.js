@@ -143,16 +143,19 @@ const _MAP_ENEMIES_BOSS={
 		_f:function(){return new ENEMY_BOSS_CRYSTALCORE(700,800)}
 	},
 	'enemy_bigcore':{
-		_f:function(){return new ENEMY_BOSS_BIGCORE(1300,200)}
+		_f:function(){return new ENEMY_BOSS_BIGCORE(_CANVAS.width+200,200)}
 	},
 	'enemy_cristalcore_pt2':{
 		_f:function(){return new ENEMY_BOSS_CRYSTALCORE_PT2(700,800)}
 	},
 	'enemy_bigcore2':{
-		_f:function(){return new ENEMY_BOSS_BIGCORE2(1300,200)}
+		_f:function(){return new ENEMY_BOSS_BIGCORE2(_CANVAS.width+200,200)}
 	},
 	'enemy_frame':{
 		_f:function(){return new ENEMY_BOSS_FRAME(1000,200)}
+	},
+	'enemy_cell':{
+		_f:function(){return new ENEMY_BOSS_CELL(_CANVAS.width+200,200)}
 	}
 };
 

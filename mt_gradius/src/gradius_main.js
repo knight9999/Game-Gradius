@@ -2805,21 +2805,16 @@ _setDrawTextToFont(_s,_x,_y,_r){
 	for(let _i=0;_i<_s.length;_i++){
 		if(_s[_i]===' '){continue;}
 		//センタリングに表示
-		_CONTEXT.save();
-		_CONTEXT.translate(_x,_y);
-		_CONTEXT.scale(_r,_r);
-		_CONTEXT.drawImage(
-			img,
-			parseInt(_this._txt[_s[_i]]),
-			0,
-			imgsize,
-			imgsize,
-			(imgsize*_i),
-			0,
-			imgsize,
-			imgsize
-		);
-		_CONTEXT.restore();
+		_GAME._setDrawImage({
+			img:img,
+			x:_x+(imgsize*_r*_i),
+			y:_y,
+			imgPosx:parseInt(_this._txt[_s[_i]]),
+			width:imgsize,
+			height:imgsize,
+			scale:_r,
+			basePoint:1
+		});
 	}
 },//_setDrawTextToFont
 _setTextToFont(_o,_str,_w){
@@ -2975,19 +2970,20 @@ _setDrawImage(_d){
 	let _scale=_d.scale||1;
 	let _x=_d.x||0;
 	let _y=_d.y||0;
-	let _basePoint=_d.basePoint||4;//拡縮による基準点
+	let _basePoint=_d.basePoint||5;//拡縮による基準点
 	let _alpha=_d.alpha||1;//透明度
 
 	const _DEF_BASEPOINT=[//拡縮基準点ポイントの定義(0-8)
-		{x:0,y:-_height},//0:左上
-		{x:-(_width/2),y:-_height},//1:上真中
-		{x:-_width,y:-_height},//2:右上
-		{x:0,y:-(_height/2)},//3:左真中
-		{x:-(_width/2),y:-(_height/2)},//4:真中
-		{x:-_width,y:-(_height/2)},//5:右真中
-		{x:0,y:0},//6:左下
-		{x:-(_width/2),y:0},//6:下真中
-		{x:-_width,y:0}//8:右下
+		{x:0,y:0},//0:ここはありえない
+		{x:0,y:0},//1:左上
+		{x:-(_width/2),y:0},//2:上真中
+		{x:-_width,y:0},//3:右上
+		{x:0,y:-(_height/2)},//4:左真中
+		{x:-(_width/2),y:-(_height/2)},//5:真中
+		{x:-_width,y:-(_height/2)},//6:右真中
+		{x:0,y:-_height},//7:左下
+		{x:-(_width/2),y:-_height},//8:下真中
+		{x:-_width,y:-_height}//9:右下
 	]
 
 	_CONTEXT.save();

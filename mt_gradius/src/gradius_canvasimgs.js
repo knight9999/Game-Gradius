@@ -128,7 +128,7 @@ const _CANVAS_IMGS={
 	'enemy_cristalcore_hand2':{src:'images/gradius_enemy_cristalcore_hand2.png',rate:0.40,obj:new Image()},
 	'enemy_cristalcore_wall1':{src:'images/gradius_enemy_cristalcore_wall1.png',rate:1.00,obj:new Image()},
 	'enemy_cristalcore_wall2':{src:'images/gradius_enemy_cristalcore_wall2.png',rate:1.00,obj:new Image()},
-	'enemy_cristalcore_shot':{src:'images/gradius_enemy_cristalcore_shot.png',rate:0.20,obj:new Image()},
+	'enemy_cristalcore_shot':{src:'images/gradius_enemy_cristalcore_shot.png',rate:1.00,obj:new Image()},
 
 	'enemy_cube1':{src:'images/gradius_enemy_cube1.png',rate:0.25,obj:new Image()},
 	'enemy_cube2':{src:'images/gradius_enemy_cube2.png',rate:0.25,obj:new Image()},
@@ -151,9 +151,9 @@ const _CANVAS_IMGS={
 	'enemy_bullet_cell':{src:'images/gradius_enemy_bullet_cell.png',rate:1.0,obj:new Image()},
 
 	'enemy_bullet_z':
-  		{src:'images/gradius_enemy_bullet_z.png',rate:0.2,obj:new Image()},
+  		{src:'images/gradius_enemy_bullet_z.png',rate:1.0,obj:new Image()},
 	'enemy_bullet_laser':
-  		{src:'images/gradius_enemy_bullet_laser.png',rate:0.25,obj:new Image()},
+  		{src:'images/gradius_enemy_bullet_laser.png',rate:1.0,obj:new Image()},
 
 	//パワーカプセル（赤）
 	'pc_red':{src:'images/gradius_pc_red.png',rate:1.0,obj:new Image()},

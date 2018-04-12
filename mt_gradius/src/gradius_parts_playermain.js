@@ -871,11 +871,13 @@ class GameObject_SHOTS_MISSILE
 			},
 			'_st2':function(_t){
 				//真下
+				_t.x+=0;
 				_t.y+=8;
 			},
 			'_st3':function(_t){
-				_t.x+=8;
 				//真横
+				_t.x+=8;
+				_t.y+=0;
 			},
 			'_st4':function(_t){
 				_t.x+=2;
@@ -1044,16 +1046,7 @@ class GameObject_SHOTS_MISSILE
 				_this.set_missile_status(_t,'_st6');
 				return;
 			}
-
-			//真横に壁がある
-			if(_MAP.isMapCollision(_map_x+1,_map_y)){
-				_t._init();
-				return;
-			}
-
 			_this.set_missile_status(_t,'_st2');
-			_t.x+=3;
-
 		}
 
 

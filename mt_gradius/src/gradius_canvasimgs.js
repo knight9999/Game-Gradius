@@ -91,6 +91,7 @@ const _CANVAS_IMGS={
 	'enemy_m_y_2':{src:'images/gradius_enemy_m_y_2.png',rate:0.5,obj:new Image()},
 
 	'enemy_cell_boss':{src:'images/gradius_enemy_cell_boss.png',rate:1.00,obj:new Image()},
+	'enemy_cell_boss_eye':{src:'images/gradius_enemy_cell_boss_eye.png',rate:1.00,obj:new Image()},
 
 	'enemy_cell_core':{src:'images/gradius_enemy_cell_core.png',rate:1.00,obj:new Image()},
 	'enemy_cell_hand_1':{src:'images/gradius_enemy_cell_hand_1.png',rate:1.00,obj:new Image()},

@@ -4197,10 +4197,12 @@ class ENEMY_BOSS_CELL
 		//各描画クラスに描画させる。
 		super(_CANVAS_IMGS.enemy_cell_boss.obj,_x,_y);
 		let _this=this;
-		_this._status=10;
+		_this._status=1;
 		_this.x=_x||_CANVAS.width+200;
 		_this.y=_y||250;
 		_this.rad=Math.random()*Math.PI-(Math.PI/2);
+		_this._standby=false;
+		_this.is_all_set=false;
 
 		//アニメーション定義
 		_this.ani=[0,200,400];
@@ -4210,15 +4212,21 @@ class ENEMY_BOSS_CELL
 		//移動量
 		//{x:x位置,y:y位置}
 		_this.moves=[];
-		_this.speed=2;
-		_this.moves_interval=30;
+		_this.speed=1;
+		_this.moves_interval=50;
 
-		//頭・身体の初期化
+		//細胞の本体の初期化
 		_this.parts=[
-			new ENEMY_BOSS_CELL_SUB(_this.x,_this.y),
-			new ENEMY_BOSS_CELL_SUB(_this.x,_this.y),
-			new ENEMY_BOSS_CELL_SUB(_this.x,_this.y),
+			new ENEMY_BOSS_CELL_MAIN({x:_this.x,y:_this.y,alpha:1.0}),
+			new ENEMY_BOSS_CELL_MAIN({x:_this.x,y:_this.y,alpha:0.7}),
+			new ENEMY_BOSS_CELL_MAIN({x:_this.x,y:_this.y,alpha:0.7}),
+			new ENEMY_BOSS_CELL_MAIN({x:_this.x,y:_this.y,alpha:0.7}),
+			new ENEMY_BOSS_CELL_MAIN({x:_this.x,y:_this.y,alpha:0.7}),
+			new ENEMY_BOSS_CELL_MAIN({x:_this.x,y:_this.y,alpha:0.7}),
+			new ENEMY_BOSS_CELL_MAIN({x:_this.x,y:_this.y,alpha:0.7})
 		];
+		//細胞の目の初期化
+		_this.parts_eye=new ENEMY_BOSS_CELL_EYE({x:_this.x,y:_this.y}),
 
 		_this.width=200;
 		_this.height=_this.img.height;
@@ -4228,84 +4236,174 @@ class ENEMY_BOSS_CELL
 		_this.is_able_collision=false;
 		_this.is_ignore_collision=true;
 		_this._collision_type='t9';
-	}
-	shot(){
 
+		_this._col_c=0;//爆発表示カウント
 	}
-	move_standby(){
-		//スタンバイ状態
+	is_parts_eye_status(){
+		//細胞の目ステータスを取得
+		//true:生きてる
+		//false:生きていない
 		let _this=this;
-		_this.x+=_this.speed*-1;
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.x,
-			y:_this.y,
-			imgPosx:_this.ani[parseInt(_this.ani_c/_this.ani_c_intv)],
-			width:_this.width,
-			basePoint:1
-		});
+		return _this.parts_eye.isalive();
+	}
+	setSelfCollision(){
+		//アニメーションカウントを用いて自爆処理
+		let _this=this;
+		if(_this._c<_this._c_self_collision){return;}
+		_this.parts_eye._status=0;
+		_this.setCollapes();
+	}
+	setCollapes(){
+		//破壊処理
+		//爆発アニメーションをしながら
+		//this.partsの要素を減らして行く。
+		let _this=this;
+		if(_this.parts.length===0){
+			//this.partsが完全になくなった場合は、
+			//自身も_statusを0にして終了
+			//_ENEMIESもこのタイミングで
+			//全て要素がなくなりGAVE CLEAR
+			_this._status=0;
+			return;
+		}
+
+		//細胞本体への表示指令
+		for(let _i=_this.parts.length-1;_i>=0;_i--){
+			_this.parts[_i].moveDraw();
+		}
+
+		let _o=_this.parts[_this.parts.length-1];
+		if(_this._col_c===0){
+			_o.showCollapes();
+			_this.parts.pop();
+		}else if(_this._col_c%8===0){
+			//爆発表示タイミング
+			_ENEMIES_COLLISIONS.push(
+				new GameObject_ENEMY_COLLISION(
+					_o.x+Math.random()*100,
+					_o.y+Math.random()*100,
+					_this._collision_type)
+			);		
+			_GAME._setPlay(_this.audio_collision);
+		}
+		//爆発表示のカウント
+		_this._col_c=(_this._col_c>40)?0:_this._col_c+1;	
+		return;
+	}
+	isAllset(){
+		//準備完了判定処理
+		let _this=this;
+		if(_this.is_all_set){return true;}
+		_this.move_Allset();
+		return false;
+	}
+	move_Allset(){
+		let _this=this;
+		_this.x-=2;
+		//細胞本体への移動指令
+		for(let _i=0;_i<_this.parts.length;_i++){
+			_this.parts[_i].moveSet({x:_this.x,y:_this.y});
+		}
+		_this.parts[0].moveDraw();
 		if(_this.x>=_CANVAS.width-300){return;}
-		_this._standby=false;
+		_this.is_all_set=true;
 
 		//敵クラスに追加
 		for(let _i=0;_i<_this.parts.length;_i++){
 			_ENEMIES.push(_this.parts[_i]);
 		}
-
+		//細胞の目を敵クラスに追加
+		_ENEMIES.push(_this.parts_eye);
 	}
-	moveDraw(){
-		//描画状態
+	move_standby(){}
+	showCollapes(){
+		//これを破壊した場合は、それに紐づく触手も全て破壊する。
 		let _this=this;
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.x,
-			y:_this.y,
-			imgPosx:_this.ani[parseInt(_this.ani_c/_this.ani_c_intv)],
-			width:_this.width,
-			basePoint:1
-		});
+		let _e=_this.getEnemyCenterPosition();
+		_this._isshow=false;
+		//細胞を破壊させる
+		let _st=0;
+		let _i=_this.parts.length-1;
+
+		if(_this._c===0){
+			_this.parts[_i].showCollapes();
+			_this.parts.pop();
+		}
+		_this._col_c=(_this._col_c%20===0)?0:_this._col_c++;
 	}
 	move(){
 		let _this=this;
 		_this.ani_c=
 			(_this.ani_c>=(_this.ani.length*_this.ani_c_intv)-1)?0:_this.ani_c+1;
 		if(!_this.isMove()){return;}
+		if(!_this.isAllset()){return;}
 
-		if(_this.x<400||_this.x>700||_this.y<100||_this.y>300){
+		//爆発処理（ここで終了）
+		if(!_this.is_parts_eye_status()){
+			_this.setCollapes();
+			return;
+		}
+
+		//動き切り替えの条件設定
+		if(_this.x<400
+			||_this.x>700
+			||_this.y<100
+			||_this.y>300){
 			_this.rad+=Math.PI/2;
 		}
 		_this.x+=Math.cos(_this.rad)*_this.speed;
 		_this.y+=Math.sin(_this.rad)*_this.speed;
-		//移動量に対して、位置設定
+		//移動量に対して位置設定
+		//※要素の少ない方が最新
 		_this.moves.unshift({x:_this.x,y:_this.y});
 		if(_this.moves.length>_this.parts.length*_this.moves_interval){
 			_this.moves.pop();
 		}
-
-		//細胞への移動指令・表示
-		for(let _i=_this.parts.length-1;_i>=0;_i--){
-			if(_this.moves[_i*_this.moves_interval]===undefined){break;}
+		//細胞本体への移動指令
+		for(let _i=0;_i<_this.parts.length;_i++){
 			let _m=_this.moves[_i*_this.moves_interval];
-			_this.parts[_i].moveDraw({x:_m.x,y:_m.y});
+			if(_m===undefined){break;}
+			_this.parts[_i].moveSet({x:_m.x,y:_m.y});
+		}
+		//細胞本体への表示指令
+		for(let _i=_this.parts.length-1;_i>=0;_i--){
+			_this.parts[_i].moveDraw();
 		}
 
-		//本体への処理
-		_this.shot();
-		_this.moveDraw();
+		//細胞目への移動指令・表示
+		let _m=_this.moves[0];
+		if(_this._c%300>100&&_this._c%300<200){
+			//一定期間に達したら表示させる
+			_this.parts_eye.move_eye_open();
+			_this.parts_eye.moveDraw({
+				x:_m.x,
+				y:_m.y+(_this.height/2)-(_this.parts_eye.height/2)
+			});
+		}
+		if(_this._c%300>=200&&_this._c%300<300){
+			//一定期間に達したら表示させる
+			_this.parts_eye.move_eye_close();
+			_this.parts_eye.moveDraw({
+				x:_m.x,
+				y:_m.y+(_this.height/2)-(_this.parts_eye.height/2)
+			});
+		}
 
+		_this.setSelfCollision();
+		_this._c++;
 	}
 }
 
-class ENEMY_BOSS_CELL_SUB
+class ENEMY_BOSS_CELL_MAIN
 	extends GameObject_ENEMY{
-	constructor(_x,_y){
-		//ここではフレームの頭、身体を設定し、
-		//各描画クラスに描画させる。
-		super(_CANVAS_IMGS.enemy_cell_boss.obj,_x,_y);
+	constructor(_d){
+		//細胞メインの設定・表示
+		super(_CANVAS_IMGS.enemy_cell_boss.obj,_d.x,_d.y);
 		let _this=this;
 		_this._status=1;
-		_this.x=_x||_CANVAS.width+200;
-		_this.y=_y||250;
+		_this.x=_d.x||_CANVAS.width+200;
+		_this.y=_d.y||250;
+		_this.alpha=_d.alpha
 		_this.speed=2;
 		_this._standby=false;
 
@@ -4321,14 +4419,30 @@ class ENEMY_BOSS_CELL_SUB
 		];
 
 		_this.is_able_collision=false;
-		_this.is_ignore_collision=true;
+		_this.is_ignore_collision=false;
 		_this._collision_type='t9';
 	}
-	moveDraw(_d){
-		//描画状態
+	showCollapes(){
+		let _this=this;
+		let _e=_this.getEnemyCenterPosition();
+		_ENEMIES_COLLISIONS.push(
+			new GameObject_ENEMY_COLLISION(
+				_this.x+_this.width/2,
+				_e._y,
+				_this._collision_type)
+			);
+		_this.init();
+	}
+	moveSet(_d){
 		let _this=this;
 		_this.x=_d.x;
 		_this.y=_d.y;
+	}
+	moveDraw(){
+		//描画状態
+		let _this=this;
+		_this.ani_c=
+			(_this.ani_c>=(_this.ani.length*_this.ani_c_intv)-1)?0:_this.ani_c+1;
 		_GAME._setDrawImage({
 			img:_this.img,
 			x:_this.x,
@@ -4336,210 +4450,114 @@ class ENEMY_BOSS_CELL_SUB
 			imgPosx:_this.ani[parseInt(_this.ani_c/_this.ani_c_intv)],
 			width:_this.width,
 			basePoint:1,
-			alpha:0.5
+			alpha:_this.alpha
 		});
 	}
 	move(){}	
 }
 
-
-
-//====================
-//　弾クラス
-//	_p.x:敵の弾発射開始x位置
-//	_p.y:敵の弾発射開始y位置
-//	_p.deg:敵の弾を発射する角度（deg）
-//			※未指定の場合は自機との角度
-//	_p.img:弾の画像
-//	_p.imgPos:スプライト画像の位置（Array）
-//====================
-class GameObject_ENEMY_SHOT{
-//	constructor(_x,_y,_tx,_ty){
-	constructor(_p){
+class ENEMY_BOSS_CELL_EYE
+	extends GameObject_ENEMY{
+	constructor(_d){
+		//ここではフレームの頭、身体を設定し、
+		//各描画クラスに描画させる。
+		super(_CANVAS_IMGS.enemy_cell_boss_eye.obj,_d.x,_d.y);
 		let _this=this;
-		_this.x=_p.x||500;
-		_this.y=_p.y||300;
-		_this.tx=_PLAYERS_MAIN.getPlayerCenterPosition()._x;
-		_this.ty=_PLAYERS_MAIN.getPlayerCenterPosition()._y;
+		_this._status=150;
+		_this.x=_d.x||_CANVAS.width+200;
+		_this.y=_d.y||250;
+		_this._standby=false;
+		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision7'];
+		_this.is_able_collision=false;//目を開くまでは無敵
 
-		_this.img=_p.img||_CANVAS_IMGS['enemy_bullet'].obj;
-		_this.imgPos=_p.imgPos||[0,18];//スプライトのコマポジション
-		_this._c=0;//アニメーションカウント
-		_this.aniItv=5;//アニメーション間隔
+		//アニメーション定義
+		_this.ani=[0,60,120,180];
+		_this.ani_c=0;
+		_this.ani_c_intv=20;
 
-		_this.speed=_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SHOT_SPEED;//定義：発射スピード
-		//角度指定。
-		//自身と相手までのラジアン
-		_this.rad=(function(){
-			if(_p.deg===undefined){
-				return _GAME.getRad(
-					{x:_this.tx,y:_this.ty},
-					{x:_this.x,y:_this.y});
-			}
-			return _p.deg*Math.PI/180;
-		})();
-		_this.deg=_p.deg||_GAME.getDeg(
-							{x:_this.tx,y:_this.ty},
-							{x:_this.x,y:_this.y});
-		// _this.deg=//自身と相手までの角度
-		// 	_this.rad*180/Math.PI;
-		_this.sx=Math.cos(_this.rad);//単位x
-		_this.sy=Math.sin(_this.rad);//単位y
+		_this.setAliveHit=false;
 
-		_this._shot_alive=true;//発射中フラグ
-		_this._isshow=true;//弾の状態
-
+		_this.width=60;
+		_this.height=_this.img.height;
 		_this.shotColMap=[
-			"1,1,"+(_this.img.width-1)+","+(_this.img.height-1)
+			"0,0,"+_this.width+","+_this.height
 		];
+		_this._collision_type='t1';
 	}
-	init(){
+	showCollapes(){
 		let _this=this;
-		_this._shot_alive=false;
-		_this._isshow=false;
-	}
-	map_collition(){
-		let _this=this;
-		//MAPの位置を取得
- 		let _map_x=_MAP.getMapX(_this.x);
- 		let _map_y=_MAP.getMapY(_this.y);
-		if(_MAP.isMapCollision(_map_x,_map_y)){
-			_this.init();	
-		}
-	}
-	getEnemyCenterPosition(){
-		return {_x:this.x+(this.img.width/2),
-				_y:this.y+(this.img.height/2)}
-	}
-	isalive(){return this._shot_alive;}
-	isshow(){return this._isshow;}
-	move(){
-		let _this=this;
-		_this.map_collition();
-		_this.y=_MAP.getY(_this.y);		
-		if(_GAME.isEnemyCanvasOut(_this)){
-			_this.init();
-			return;
-		}
-		if(!_this._shot_alive){return;}
-		_this._c=(_this._c>=7)?0:_this._c+1;
-
-		_this.x+=_this.sx*_this.speed;
-		_this.y+=_this.sy*_this.speed;
-
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.x,
-			y:_this.y,
-			width:18,
-			imgPosx:_this.imgPos[parseInt(_this._c/_this.aniItv)]
-		});
-		_this._shot_alive=true;
-	}
-}
-
-class ENEMY_SHOT_LASER
-	extends GameObject_ENEMY_SHOT{
-	constructor(_p){
-		super({x:_p.x,y:_p.y});
-		this.img=_p.img||_CANVAS_IMGS['enemy_bullet_laser'].obj;
-		this.speed=10;
-	}
-	move(){
-		let _this=this;
-		if(_GAME.isEnemyCanvasOut(_this)){
-			_this.init();
-			return;
-		}
-		if(!_this._shot_alive){return;}
-		_this.map_collition();
-
-		_this.x-=_this.speed;
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.x,
-			y:_this.y
-		});
-	}
-}
-
-class ENEMY_SHOT_CRYSTALCORE
-	extends GameObject_ENEMY_SHOT{
-	constructor(_p){
-		super({x:_p.x,y:_p.y,deg:_p.deg});
-		let _this=this;
-		_this.img=_CANVAS_IMGS['enemy_cristalcore_shot'].obj;
-		_this.speed=10;
-	}
-	move(){
-		let _this=this;
-		if(_GAME.isEnemyCanvasOut(_this)){
-			_this.init();
-			return;
-		}
-		if(!_this._shot_alive){return;}
-		_this.map_collition();
-
-		_this.x-=_this.sx*_this.speed;
-		_this.y-=_this.sy*_this.speed;
-
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.x,
-			y:_this.y,
-			deg:_this.deg
-		});
-	}
-}
-
-
-class ENEMY_SHOT_FRAME
-	extends GameObject_ENEMY_SHOT{
-	constructor(_p){
-		super({x:_p.x,y:_p.y,deg:_p.deg});
-		let _this=this;
-		_this.img=_CANVAS_IMGS['enemy_frame_3'].obj;
-		_this.speed=1;
-		_this._c=0;
+		_this.init();
 	}
 	shot(){
 		let _this=this;
-		if(_this._c>100){
-			let _e=_this.getEnemyCenterPosition();
-			for(let _i=30;_i<=360;_i+=30){
-				_ENEMIES_SHOTS.push(new ENEMY_SHOT_FRAME_SMALL({x:_e._x,y:_e._y,deg:_i}));
-			}
-			_this.init();
+		//敵の中心から弾を発射させるための位置調整
+		let _deg=_GAME.getDeg(_PLAYERS_MAIN,_this);
+		for(let _i=-30;_i<=30;_i=_i+30){
+			_ENEMIES_SHOTS.push(
+				new GameObject_ENEMY_SHOT({
+					x:_this.x+20,
+					y:this.getEnemyCenterPosition()._y,
+					img:_CANVAS_IMGS['enemy_bullet_cell'].obj,
+					imgPos:[0,15],
+					width:15,
+					speed:3,
+					aniItv:10,
+					deg:_deg+_i
+				})
+			);	
 		}
 	}
-	move(){
+	move_eye_open(){
+		//目を開く
+		//スプライトで右にずらす
 		let _this=this;
-		if(_GAME.isEnemyCanvasOut(_this)){
-			_this.init();
-			return;
-		}
-		if(!_this._shot_alive){return;}
-		_this.shot();
-		_this.map_collition();
-		_this.x-=_this.sx*_this.speed;
-		_this.y-=_this.sy*_this.speed;
+		if(_this.ani_c>=(_this.ani.length*_this.ani_c_intv)-1){return;}
+		//目が開いたタイミングでショットを放つ
+		if(_this.ani_c%10===0){_this.shot();}
+		_this.ani_c++;
+	}
+	move_eye_close(){
+		//目を閉じる
+		//スプライトで左にずらす
+		let _this=this;
+		if(_this.ani_c<0){return;}
+		//目が開いたタイミングでショットを放つ
+		if(_this.ani_c%10===0){_this.shot();}
+		_this.ani_c--;
+	}
+	setAlive(){
+		let _this=this;
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x+20,
+			y:_this.y,
+			imgPosx:_this.ani[parseInt(_this.ani_c/_this.ani_c_intv)],
+			width:_this.width,
+			basePoint:1
+		});
+		_GAME._setPlay(_this.audio_alive);
+	}
+	moveDraw(_d){
+		//描画状態
+		let _this=this;
+		_this.x=_d.x;
+		_this.y=_d.y;
+		_this.is_able_collision=(_this.ani_c>0);
 		_GAME._setDrawImage({
 			img:_this.img,
 			x:_this.x,
 			y:_this.y,
-			deg:_this.deg
+			imgPosx:_this.ani[parseInt(_this.ani_c/_this.ani_c_intv)],
+			width:_this.width,
+			basePoint:1
 		});
-		_this._c++;
 	}
-}
-
-class ENEMY_SHOT_FRAME_SMALL
-	extends ENEMY_SHOT_FRAME{
-	constructor(_p){
-		super({x:_p.x,y:_p.y,deg:_p.deg});
+	move(){
+		//敵の処理メイン
+		//原則継承はしない
 		let _this=this;
-		_this.img=_CANVAS_IMGS['enemy_frame_5'].obj;
-		_this.speed=5;
-	}
-	shot(){}
+		_this.x=_MAP.getX(_this.x);
+		_this.y=_MAP.getY(_this.y);
+		if(!_this.isMove()){return;}
+	}	
 }

@@ -133,7 +133,7 @@ class GameObject_PLAYER_MAIN
 		}
 
 		if(_GAME.isSqCollision(
-			"25,20,35,30",
+			"25,26,35,32",
 			this.x+","+this.y,
 			_e.shotColMap,
 			_e.x+","+_e.y

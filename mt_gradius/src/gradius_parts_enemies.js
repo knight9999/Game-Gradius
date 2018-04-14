@@ -163,35 +163,6 @@ class GameObject_ENEMY{
 	get_move_bound_val(){
 		return parseInt(Math.random()*(3-1)+1)*((Math.random()>0.5)?1:-1);
 	}
-	setDrawImageRotate(_deg){
-		//透明に設定する
-		let _this=this;
-		_CONTEXT.save();
-		_CONTEXT.translate(
-			_this.getEnemyCenterPosition()._x,
-			_this.getEnemyCenterPosition()._y
-		);
-		_CONTEXT.rotate(_deg*Math.PI/180);
-		_CONTEXT.drawImage(
-			_this.img,
-			-(_this.img.width/2),
-			-(_this.img.height/2),
-			_this.img.width,
-			_this.img.height			
-		);
-
-		// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
-		// _CONTEXT.beginPath();
-		// _CONTEXT.rect(
-		// 	-(_this.img.width/2),
-		// 	-(_this.img.height/2),
-		// 	_this.img.width,
-		// 	_this.img.height
-		// );
-		// _CONTEXT.stroke();
-
-		_CONTEXT.restore();
-	}
 	setDrawImageAlpha(_alpha){
 		//透明に設定する
 		let _this=this;
@@ -4247,7 +4218,7 @@ class ENEMY_BOSS_CELL
 		return _this.parts_eye.isalive();
 	}
 	setSelfCollision(){
-		//アニメーションカウントを用いて自爆処理
+		//アニメーション用いて自爆処理
 		let _this=this;
 		if(_this._c<_this._c_self_collision){return;}
 		_this.parts_eye._status=0;
@@ -4262,8 +4233,9 @@ class ENEMY_BOSS_CELL
 			//this.partsが完全になくなった場合は、
 			//自身も_statusを0にして終了
 			//_ENEMIESもこのタイミングで
-			//全て要素がなくなりGAVE CLEAR
+			//全て要素がなくなりGAME CLEAR
 			_this._status=0;
+			_SCORE.set(_this.getscore);
 			return;
 		}
 
@@ -4315,22 +4287,8 @@ class ENEMY_BOSS_CELL
 		//細胞の目を敵クラスに追加
 		_ENEMIES.push(_this.parts_eye);
 	}
+	showCollapes(){}//ここでの爆発表示しない
 	move_standby(){}
-	showCollapes(){
-		//これを破壊した場合は、それに紐づく触手も全て破壊する。
-		let _this=this;
-		let _e=_this.getEnemyCenterPosition();
-		_this._isshow=false;
-		//細胞を破壊させる
-		let _st=0;
-		let _i=_this.parts.length-1;
-
-		if(_this._c===0){
-			_this.parts[_i].showCollapes();
-			_this.parts.pop();
-		}
-		_this._col_c=(_this._col_c%20===0)?0:_this._col_c++;
-	}
 	move(){
 		let _this=this;
 		_this.ani_c=
@@ -4463,7 +4421,7 @@ class ENEMY_BOSS_CELL_EYE
 		//各描画クラスに描画させる。
 		super(_CANVAS_IMGS.enemy_cell_boss_eye.obj,_d.x,_d.y);
 		let _this=this;
-		_this._status=150;
+		_this._status=100;
 		_this.x=_d.x||_CANVAS.width+200;
 		_this.y=_d.y||250;
 		_this._standby=false;

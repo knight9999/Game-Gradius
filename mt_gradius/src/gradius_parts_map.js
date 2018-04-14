@@ -92,10 +92,13 @@ class MAP_OBJECT{
 //=====================
 class MAP_CUBE_A extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_cube_A'],width:25,height:25});
+		super({
+			img:_CANVAS_IMGS['map_cube_A'],
+			width:25,
+			height:25
+		});
 		let _this=this;
 		_this._s='1';
-		_this.width=50;
 	}
 }
 //=====================
@@ -424,7 +427,7 @@ class MAP_CELL_D extends MAP_OBJECT{
 	}
 }
 
-class MAP_CELL_EFYZ extends MAP_OBJECT{
+class MAP_CELL_VWYZ extends MAP_OBJECT{
 	constructor(_d){
 		super({
 			img:_d.img,
@@ -437,24 +440,24 @@ class MAP_CELL_EFYZ extends MAP_OBJECT{
 		_this._s=_d._s;
 	}
 }
-class MAP_CELL_E extends MAP_CELL_EFYZ{
+class MAP_CELL_V extends MAP_CELL_VWYZ{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_cell_E'],
+		super({img:_CANVAS_IMGS['map_cell_V'],
 			_s:'001111111100,'
 				+'111111111111'
 		});
 	}
 }
-class MAP_CELL_F extends MAP_CELL_EFYZ{
+class MAP_CELL_W extends MAP_CELL_VWYZ{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_cell_F'],
+			img:_CANVAS_IMGS['map_cell_W'],
 			_s:'111111111111,'
 				+'001111111100'
 		});
 	}
 }
-class MAP_CELL_Y extends MAP_CELL_EFYZ{
+class MAP_CELL_Y extends MAP_CELL_VWYZ{
 	constructor(){
 		super({
 			img:_CANVAS_IMGS['map_cell_Y'],
@@ -463,7 +466,7 @@ class MAP_CELL_Y extends MAP_CELL_EFYZ{
 		});
 	}
 }
-class MAP_CELL_Z extends MAP_CELL_EFYZ{
+class MAP_CELL_Z extends MAP_CELL_VWYZ{
 	constructor(){
 		super({
 			img:_CANVAS_IMGS['map_cell_Z'],

@@ -546,20 +546,6 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_CELL_D())
 		},
-		'E':{
-			'_o':(new MAP_CELL_E()).img,//画像
-			'_s':(new MAP_CELL_E())._s,
-			'obj':function(_key){this.objs[_key]=new MAP_CELL_E();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_CELL_E())
-		},
-		'F':{
-			'_o':(new MAP_CELL_F()).img,//画像
-			'_s':(new MAP_CELL_F())._s,
-			'obj':function(_key){this.objs[_key]=new MAP_CELL_F();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_CELL_F())
-		},
 		'G':{
 			'_o':(new MAP_CELL_G()).img,
 			'_s':(new MAP_CELL_G())._s,
@@ -623,7 +609,20 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'objs':{},
 			'_obj':(new MAP_CELL_O())
 		},
-
+		'V':{
+			'_o':(new MAP_CELL_V()).img,//画像
+			'_s':(new MAP_CELL_V())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_V();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_CELL_V())
+		},
+		'W':{
+			'_o':(new MAP_CELL_W()).img,//画像
+			'_s':(new MAP_CELL_W())._s,
+			'obj':function(_key){this.objs[_key]=new MAP_CELL_W();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_obj':(new MAP_CELL_W())
+		},
 		'Y':{
 			'_o':(new MAP_CELL_Y()).img,//画像
 			'_s':(new MAP_CELL_Y())._s,
@@ -1025,26 +1024,36 @@ class GameObject_MAP{
 			if(_k.match(_this.collision_enemies)!==null){
 				//敵
 				let _p=_MAP_THEME[_m._theme]._enemies[_k];
-				let _img=_p._o.obj;
+				let img=_p._o.obj;
 				//画像サイズは、25x25px
 				//ここでは10x10pxに調整
 				_CONTEXT.drawImage(
-					_img,
+					img,
 					50+(_j*10),130+(_i*10),
-					_img.width/2.5,_img.height/2.5
+					img.width/2.5,img.height/2.5
 				);
 
 			}else{
 				//MAP
 				let _p=_MAP_THEME[_m._theme]._map[_k];
-				let _img=_p._o.obj;
+				let img=_p._o.obj;
 				//画像サイズは、25x25px
 				//ここでは10x10pxに調整
+				_CONTEXT.save();
+				_CONTEXT.translate(50,130);
+				_CONTEXT.scale(0.25,0.25);
 				_CONTEXT.drawImage(
-					_img,
-					50+(_j*10),130+(_i*10),
-					_img.width/2.5,_img.height/2.5
+					_p._obj.img.obj,
+					_p._obj.imgPos[0],
+					0,
+					_p._obj.width,
+					_p._obj.height,			
+					(_j*10)*4,
+					(_i*10)*4,
+					_p._obj.width*1.60,//偶然の一致
+					_p._obj.height*1.60
 				);
+				_CONTEXT.restore();
 			}
 		}//_j
 		}//_i

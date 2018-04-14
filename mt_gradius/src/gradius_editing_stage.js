@@ -36,7 +36,7 @@ _init:function(_this){
 		clientId:"api11entries"
 	});
 
-	_this._data_api.getToken(function(res){
+	_this._data_api.getToken((res)=>{
 		if (res.error) {
 			if(res.error.code===401) {
 				console.log('reload after 401 error occuered in updating.');
@@ -198,11 +198,15 @@ _setInitMap:function(_m){
 				//マップの表示
 				let _o=_MAP_THEME[_m._theme]._map[_k]._obj;
 				_s='<div class="parts_block" '
-						+'style="width:'+parseInt(_o.width*0.8)+'px;height:'+parseInt(_o.height*0.8)+'px" '
+						+'style="width:'+parseInt(_o.width*0.8)+'px;height:'+parseInt(_o.height*0.8)+'px;'
+						+'background:url('+_o.img.src+') no-repeat;'
+						+'background-size:cover;'
+						+'background-position:'+(20/_o.width*_o.imgPos[0]*-1)+'px 0px;'
+						+'" '
 						+'ondragstart="_GAME_STAGEEDIT_EVENTS._f_pb_dragstart(event);" '
 						+'draggable="true">';
 //				_s+='<div style="overflow:hidden;width:'+parseInt(_o.width*0.8)+'px;"><img height="'+parseInt(_o.height*0.8)+'" src="'+_o.img.src+'"></div>';
-				_s+='<img src="'+_o.img.src+'">';
+//				_s+='<img src="'+_o.img.src+'">';
 //                _s+='<img width="'+parseInt(20*_wh._w)+'" height="'+parseInt(20*_wh._h)+'" src="'+_MAP_THEME[_m._theme]._p[_k]._o.src+'">';
 				_s+='</div>';
 			}
@@ -231,7 +235,7 @@ _setAudioInit:function(_obj,_func){
 			// contextにArrayBufferを渡し、decodeさせる
 			_this._ac.decodeAudioData(
 				_r.response,
-				function(_buf){
+				(_buf)=>{
 					_obj[_i].buf=_buf;
 					_audioLoadedCount++;
 					if(_audioLoadedCount>=
@@ -241,7 +245,7 @@ _setAudioInit:function(_obj,_func){
 					//ローディングに進捗率を表示させる
 //					_gsl_r.innerHTML=parseInt(_audioLoadedCount/Object.keys(_obj).length*100)+'%';
 				},
-				function(_error){
+				(_error)=>{
 					alert('一部音声読み込みに失敗しました。再度立ち上げなおしてください:'+_error);
 					return;
 				});
@@ -274,6 +278,7 @@ _setAudioPlay(_obj){
 },//_setAudioPlay
 
 _setInitPartsBlocksWrapper:function(_m){
+	//パーツ一覧に表示する
 	let _mo=_m._map;
 	let _str='';
 	//ENEMY
@@ -287,20 +292,25 @@ _setInitPartsBlocksWrapper:function(_m){
     document
 		.querySelector('.parts_blocks_wrapper.enemy .parts_blocks')
 		.innerHTML=_str;
-
+	//MAP
 	_str='';
 	for(let [_k,_v] of Object.entries(_MAP_THEME[_m._theme]._map)){
 		let _o=_v._obj;
-//		240:60=100:x
+//		475:100=100:x
 //		x=100*h/w
 		let _h=parseInt(100*_o.height/_o.width);
+//		console.log(_o.imgPos[0]);
 		_str+=
 			'<div class="parts_block_wrapper" data-val="'+_k+'">'+
 			'<div class="text">MAP '+_k+'</div>'+
 			'<div class="parts_block" '+
-			'style="width:100px;height:'+_h+'px"'+
-			'>'+
-			'<img src="'+_v._o.src+'">'+
+			'style="'+
+			'width:100px;height:'+_h+'px;'+
+			'background:url('+_v._o.src+') no-repeat;'+
+			'background-size:cover;'+
+			'background-position:'+(100/_o.width*_o.imgPos[0]*-1)+'px 0px;'+
+			'">'+
+//			'<img src="'+_v._o.src+'">'+
 			'</div>'+
 			'</div><!-- /.parts_block_wrapper -->'
 	}
@@ -736,7 +746,13 @@ _f_as_drop:function(e){
 		if(_o.match(_MAP.collision_map)!==null){
 			//MAPの表示
 			let _obj=_MAP_THEME[_GAME_STAGEEDIT._theme]._map[_o]._obj;
-			$_cn.setAttribute('style','width:'+parseInt(_obj.width*0.8)+'px;height:'+parseInt(_obj.height*0.8)+'px');
+			$_cn.setAttribute('style',
+				'width:'+parseInt(_obj.width*0.8)+'px;'+
+				'height:'+parseInt(_obj.height*0.8)+'px;'+
+				'background:url('+_obj.img.src+') no-repeat;'+
+				'background-size:cover;'+
+				'background-position:'+(20/_obj.width*_obj.imgPos[0]*-1)+'px 0px;'
+			);
 			// $_cn.style.width=parseInt(_obj.width*0.8);
 			// $_cn.style.height=parseInt(_obj.height*0.8);
 //			$_cn.children[0].width=parseInt(_obj.width*0.8);

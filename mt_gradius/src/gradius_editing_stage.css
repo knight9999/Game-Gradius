@@ -137,7 +137,7 @@ form .parts_block{
     height:auto;
 	transition:0.5s all;
 }
-form #area .area_block .parts_block{position:absolute;border:0.2px dashed rgba(255,255,255,0.8);overflow:hidden;}
+form #area .area_block .parts_block{position:absolute;border:0.2px dashed rgba(255,255,255,0.5);overflow:hidden;}
 form #area .area_block .parts_block.over{background-color:rgba(255,255,255,0.3);border:2px dashed rgba(255,255,255,0.6);}
 form #area .area_block .parts_block img{background-color:rgba(255,255,255,0.2);display:block;height:100%;}
 form #area .area_blocks_rows .area_block.over{background-color:rgba(255,255,255,0.4);}
@@ -165,9 +165,8 @@ form #area .area_blocks_rows .area_block.over{background-color:rgba(255,255,255,
 }
 #area_parts .parts_block_wrapper .parts_block{
 	background-color:rgba(0,0,0,1);
-	border:1px dotted rgba(255,255,255,0.5);
+	border:0.2px dotted rgba(255,255,255,1.0);
 	flex-grow:1;
-	max-width:200px;
 	overflow:hidden;
 	position:relative;
 }

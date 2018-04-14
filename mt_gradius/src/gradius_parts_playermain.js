@@ -1428,10 +1428,9 @@ class GameObject_SHOTS_MISSILE_2WAY
 		if(!_t._shot_alive){return;}
 		//ミサイル衝突判定
 		let _s=_GAME.isSqCollision(
-			_this.imgsize/4+","
-				+_this.imgsize/4+","
-				+_this.imgsize*3/4+","
-				+_this.imgsize*3/4,
+			"-10,-10,"
+				+(_this.imgsize+10)+","
+				+(_this.imgsize+10),
 			_t.x+","+_t.y,
 			_e.shotColMap,
 			_e.x+","+_e.y

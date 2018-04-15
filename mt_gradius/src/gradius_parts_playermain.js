@@ -1904,6 +1904,8 @@ class GameObject_SHOTS_RIPPLE_LASER
 			let _t=this.shots[_k];
 //			console.log('_kk:'+_k);
 			if(!_t._shot_alive){continue;}
+			//敵自体無視
+			if(_e.isIgnore()){continue;}
 			//衝突を無視
 			if(_e.isIgnoreCollision()){continue;}
 
@@ -1923,6 +1925,8 @@ class GameObject_SHOTS_RIPPLE_LASER
 					let _ens=_ENEMIES;
 					for(let _i=0;_i<_ens.length;_i++){
 					let _en=_ens[_i];
+					//敵自体無視
+					if(_en.isIgnore()){continue;}
 					//既に倒した敵は無視する
 					if(!_en.isalive()){continue;}
 					//非表示は無視する

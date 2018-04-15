@@ -132,6 +132,14 @@ _ENEMIES:{
 		'_st':'',
 		'_s':'000,000,000',		
 		'_o':_CANVAS_IMGS['enemy_p_1']
+	},
+	'z':{
+		'_f':function(_mx,_my,_md){
+			_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
+			},
+		'_st':'',
+		'_s':'0',
+		'_o':_CANVAS_IMGS['enemy_fan']
 	}
 
 }//_ENEMIES
@@ -439,6 +447,14 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'_st':'transform:scale(-1,-1);',
 			'_s':'1111,1110,1100,0000',		
 			'_o':_CANVAS_IMGS['enemy_m_a_1']
+		},
+		'z':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_fan']
 		}
 	}
 },//_THEME5
@@ -512,6 +528,14 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'_st':'',
 			'_s':'0',
 			'_o':_CANVAS_IMGS['enemy_e_1']
+		},
+		'z':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_fan']
 		}
 	}
 
@@ -678,6 +702,14 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'_st':'',
 			'_s':'0',
 			'_o':_CANVAS_IMGS['enemy_e_1']
+		},
+		'z':{
+			'_f':function(_mx,_my,_md){
+				_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
+				},
+			'_st':'',
+			'_s':'0',
+			'_o':_CANVAS_IMGS['enemy_fan']
 		}
 	}
 
@@ -1019,7 +1051,8 @@ class GameObject_MAP{
 		for(let _i=0;_i<((_m_length>20)?20:_m_length);_i++){
 		let _ml=_m._map[_i].length;
 		for(let _j=0;_j<((_ml>30)?30:_ml);_j++){
-			let _k=_m._map[_i][_j];
+			let _k=_m._map[_i][_j+100];
+			if(_k===undefined){continue;}
 			if(_k==='0'){continue;}
 			if(_k.match(_this.collision_enemies)!==null){
 				//敵
@@ -1029,7 +1062,8 @@ class GameObject_MAP{
 				//ここでは10x10pxに調整
 				_CONTEXT.drawImage(
 					img,
-					50+(_j*10),130+(_i*10),
+					50+(_j*10),
+					130+(_i*10),
 					img.width/2.5,img.height/2.5
 				);
 

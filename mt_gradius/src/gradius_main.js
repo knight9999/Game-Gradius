@@ -1729,6 +1729,7 @@ const _IS_ENEMIES_COLLISION=()=>{
 		// レーザーを表示させる。
 		for(let _i=0;_i<_e.length;_i++){
 			//スタンバイ状態は無視する
+			if(_e[_i].isIgnore()){continue;}
 			if(_e[_i].isStandBy()){continue;}
 			if(!_e[_i].isalive()){continue;}
 			let _oe=_e[_i];
@@ -1750,6 +1751,7 @@ const _IS_ENEMIES_COLLISION=()=>{
 		let _os=_PLAYERS_SHOTS[_SHOTTYPE][_j];
 		for(let _i=0;_i<_e.length;_i++){
 			//スタンバイ状態は無視する
+			if(_e[_i].isIgnore()){continue;}
 			if(_e[_i].isStandBy()){continue;}		
 			if(!_e[_i].isalive()){continue;}
 			let _oe=_e[_i];
@@ -1763,6 +1765,7 @@ const _IS_ENEMIES_COLLISION=()=>{
 	for(let _i=0;_i<_e.length;_i++){
 	let _oe=_e[_i];
 	//スタンバイ状態は無視する
+	if(_oe.isIgnore()){continue;}
 	if(_oe.isStandBy()){continue;}
 	if(!_oe.isalive()){continue;}
 
@@ -2644,10 +2647,10 @@ setUrlParams(){
 	}
 },
 isShotCanvasOut(_t){
-	if(_t.x<-50
-		||_t.x>_CANVAS.width+50
-		||_t.y<-50
-		||_t.y>_CANVAS.height+50
+	if(_t.x<-_MAP.t
+		||_t.x>_CANVAS.width+_MAP.t
+		||_t.y<-_MAP.t
+		||_t.y>_CANVAS.height+_MAP.t
 		){
 		return true;
 	}
@@ -2658,8 +2661,8 @@ isEnemyCanvasOut(_oe,_dir){
 	//	trueまたはfalseを指定
 	let _e=_oe.getEnemyCenterPosition();
 	let _d=_dir||{up:true,down:true,left:true,right:true}
-	let _e_w=_oe.img.width;
-	let _e_h=_oe.img.height;
+	let _e_w=_oe.width;
+	let _e_h=_oe.height;
 
 	if((_e._x<0-_e_w&&_d.left===true)
 		||(_e._x>_CANVAS.width+_e_w&&_d.right===true)

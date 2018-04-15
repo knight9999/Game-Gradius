@@ -25,6 +25,8 @@ const _CANVAS_IMGS={
 	'meter':{src:'images/gradius_meter.png',rate:1.0,obj:new Image()}, 
 	'meter_c':{src:'images/gradius_meter_c.png',rate:1.0,obj:new Image()}, 
 
+	'enemy_fan':{src:'images/gradius_enemy_fan.png',rate:1.00,obj:new Image()},
+
 	'enemy_a_1':{src:'images/gradius_enemy_a_1.png',rate:0.55,obj:new Image()},
 	'enemy_a_2':{src:'images/gradius_enemy_a_2.png',rate:0.55,obj:new Image()},
 	'enemy_b_1':{src:'images/gradius_enemy_b_1.png',rate:0.55,obj:new Image()},

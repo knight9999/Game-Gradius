@@ -14,15 +14,20 @@
 // collision()
 //===========================================
 class GameObject_ENEMY{
-	constructor(_o,_x,_y){
+	constructor(_o,_x,_y,_imgPos,_aniItv,_w,_h){
 		let _this=this;
 		_this.id=_ENEMIES.length;//敵の当たり判定用ID
 		_this.gid=0;//敵のグループID
 		_this.img=_o;//画像オブジェクト
-		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision1'];
-		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision3'];
+		_this.imgPos=_imgPos||[0];//スプライト時の画像
+		_this.aniItv=_aniItv||10;//スプライトアニメによる間隔(ms)
+		_this.width=_w||_this.img.width;
+		_this.height=_h||_this.img.height;
 		_this.x=_x||0;//X位置
 		_this.y=_y||0;//Y位置
+
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision1'];
+		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision3'];
 		
 		_this.isshot=false;
 		_this._DEF_DIR={//向き
@@ -58,7 +63,11 @@ class GameObject_ENEMY{
 		_this.haspc=false;//パワーカプセル所持フラグ
 
 		_this._collision_type='t0';
-		_this.is_able_collision=true;//敵衝突可能フラグ（falseは無敵）
+
+		//完全に無視する
+		_this.is_ignore=false;
+		//敵衝突可能フラグ（falseは無敵）
+		_this.is_able_collision=true;
 		//衝突してるがショットを通過させる
 		//true:衝突判定するが、ショットは通過
 		//false:衝突するものの無視
@@ -68,7 +77,7 @@ class GameObject_ENEMY{
 		//左上：x1,y1
 		//右下：x2,y2
 		_this.shotColMap=[
-			"0,0,"+_this.img.width+","+_this.img.height
+			"0,0,"+_this.width+","+_this.height
 		];
 		_this.col_date=null;//打たれた時間
 		_this.col_canint=150;//連続ショット許可間隔
@@ -97,12 +106,9 @@ class GameObject_ENEMY{
 		_this.setStatus(_s_type,_num);
 		return true;
 	}
-	isAbleCollision(){
-		return this.is_able_collision;
-	}
-	isIgnoreCollision(){
-		return this.is_ignore_collision;
-	}
+	isAbleCollision(){return this.is_able_collision;}
+	isIgnore(){return this.is_ignore;}
+	isIgnoreCollision(){return this.is_ignore_collision;}
 	isCollision(){
 		//衝突判定フラグ
 		//_statusを下げる判定フラグ
@@ -137,8 +143,8 @@ class GameObject_ENEMY{
 		_this.setAlive();
 	}
 	getEnemyCenterPosition(){
-		return {_x:this.x+(this.img.width/2),
-				_y:this.y+(this.img.height/2)}
+		return {_x:this.x+(this.width/2),
+				_y:this.y+(this.height/2)}
 	}
 	isalive(){return (this._status>0);}
 	isshow(){return this._isshow;}
@@ -278,10 +284,10 @@ class GameObject_ENEMY{
 		//爆発して終了
 		_ENEMIES_COLLISIONS.push(
 			new GameObject_ENEMY_COLLISION(
-				_x||_this.x+(_this.img.width/2),
-				_y||_this.y+(_this.img.height/2),
+				_x||_this.x+(_this.width/2),
+				_y||_this.y+(_this.height/2),
 				_this._collision_type)
-			);
+		);
 	}
 	isMove(){
 		let _this=this;
@@ -330,6 +336,138 @@ class GameObject_ENEMY{
 		if(!_this.isMove()){return;}
 		_this.moveDraw();
 	}
+}
+
+//編隊を管理する敵クラス
+//実体はFAN_MAINクラスのため、
+//これ自身は当たり判定等は無視
+//ただし、編隊を全て倒した時の
+//パワーカプセル表示の為に
+//座標位置は保持しておく。x
+class ENEMY_FAN extends GameObject_ENEMY{
+    constructor(_x,_y,_d){
+		super(
+			_CANVAS_IMGS['enemy_fan'].obj,
+			_x,
+			_y,
+			[0,25,50,75,100,125,150,175],
+			5,
+			25,
+			25);
+		let _this=this;
+		_this.haspc=true;
+		_this.parts=[];//スタンバイ完了後に設定
+		_this.is_ignore=true;
+	}
+	move_standby(){
+		let _this=this;
+		if(_this.x>_CANVAS.width){return;}
+		_this._standby=false;
+		_this.parts=[
+			new ENEMY_FAN_MAIN({x:_this.x+_this.width*0,y:_this.y}),
+			new ENEMY_FAN_MAIN({x:_this.x+_this.width*1,y:_this.y}),
+			new ENEMY_FAN_MAIN({x:_this.x+_this.width*2,y:_this.y}),
+			new ENEMY_FAN_MAIN({x:_this.x+_this.width*3,y:_this.y}),
+			new ENEMY_FAN_MAIN({x:_this.x+_this.width*4,y:_this.y}),
+			new ENEMY_FAN_MAIN({x:_this.x+_this.width*5,y:_this.y}),
+		];
+		//敵クラスに追加
+		for(let _i=0;_i<_this.parts.length;_i++){
+			_ENEMIES.push(_this.parts[_i]);
+		}
+	}
+	moveDraw(){
+		let _this=this;
+		//表示
+		for(let _i=_this.parts.length-1;_i>=0;_i--){
+			let _pt=_this.parts[_i];
+			_pt.moveDraw();
+			//敵を倒す度に要素を減らす。
+			if(!_pt.isalive()){
+				_this.parts.splice(_i,1);
+			}
+		}
+		if(_this.parts.length===0){
+			//キャンバスから外れたらカプセルは表示させない
+			if(_this.x<_CANVAS.width+10){
+				_this.showCollapes();
+			}
+			//全ての敵を倒す、あるいは自身がキャンバスから外れた場合、自身が消える
+			_this.init();
+			return;
+		}
+		//自身の座標は最後に残った敵の座標を取得する。
+		//※その座標は最終的にパワーカプセルを表示させる位置とする	
+		_this.x=_this.parts[_this.parts.length-1].x
+		_this.y=_this.parts[_this.parts.length-1].y
+	}
+}
+
+class ENEMY_FAN_MAIN extends GameObject_ENEMY{
+    constructor(_p){
+		super(
+			_CANVAS_IMGS['enemy_fan'].obj,
+			_p.x,
+			_p.y,
+			[0,25,50,75,100,125,150,175],
+			5,
+			25,
+			25);
+        let _this=this;
+		_this._status=1;
+		_this.speed=2;
+		_this._standby=false;
+		_this.pos_y=(_p.y>250);//0:250より上 1:250より下
+		_this.change_x=false;//xの移動切替位置
+		_this.change_y=false;//yの移動切替位置
+	}
+	isCanvasOut(){
+		let _this=this;
+		//Uターンさせる動きにより、
+		//スタンバイ終了後、右画面へ消えたらキャンバス外扱い
+		return _GAME.isEnemyCanvasOut(
+			_this,{
+				up:false,
+				down:false,
+				left:false,
+				right:(_this.change_x)
+			}
+		);
+	}
+	moveDraw(){
+		let _this=this;
+		_this.x=_MAP.getX(_this.x);
+		_this.y=_MAP.getY(_this.y);
+		if(!_this.isMove()){return;}
+
+		const _X_LEFT=500;//xの切替位置
+		const _Y_TOP=(_this.pos_y)?275:200;//yの切替位置
+		_this.change_x=_this.change_x||(_this.x<_X_LEFT);
+		_this.x+=(_this.change_x)
+			?_this.speed+_MAP.getBackGroundSpeed()
+			:_this.speed*-1;
+		_this.change_y=_this.change_y
+				||(_this.pos_y&&_this.y<_Y_TOP||!_this.pos_y&&_this.y>_Y_TOP);
+		_this.y+=(()=>{
+			if(!_this.change_x){return 0;}
+			if(_this.change_y){return 0;}
+			return (_this.pos_y)?_this.speed*-1:_this.speed;
+		})()
+
+		_this._c=
+			(_this._c>=(_this.imgPos.length*_this.aniItv)-1)?0:_this._c+1;
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x,
+			y:_this.y,
+			imgPosx:_this.imgPos[parseInt(_this._c/_this.aniItv)],
+			width:_this.width,
+			basePoint:1
+		});
+		//弾の発射
+		_this.shot();
+	}
+	move(){}//親に指示させるので、ここでは無効にする
 }
 
 class ENEMY_a extends GameObject_ENEMY{

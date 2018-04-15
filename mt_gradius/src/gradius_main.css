@@ -196,11 +196,13 @@ body.sp section#sp_controller #sp_controller_inner{
 	width:90%;
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main{
-    background-color:rgba(0,0,0,0.3);
-    border:1px solid rgba(255,255,255,0.3);
+    background-color:rgba(100,100,100,1.0);
+    border:1px solid rgba(255,255,255,1.0);
     border-radius:50%;
 	bottom:0px;
-    height:100px;
+	filter:drop-shadow(1px 1px 5px rgba(0,0,0,1.0));
+	height:100px;
+	opacity:0.6;
 	overflow:hidden;
     position:absolute;
     width:100px;
@@ -215,11 +217,13 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_contr
 	width:90px;
 }
 body.sp section#sp_controller #sp_controller_inner>div[class*="bt"]{
-    background-color:rgba(0,0,0,1);
-    border:1px solid rgba(255,255,255,0.5);
+    background-color:rgba(100,100,100,1.0);
+    border:1px solid rgba(255,255,255,1.0);
     border-radius:50%;
     color:rgba(255,255,255,1);
     height:70px;
+	filter:drop-shadow(1px 1px 5px rgba(0,0,0,1.0));
+	opacity:0.6;
     position:absolute;
     width:70px;
 }
@@ -309,12 +313,12 @@ body.sp section#game_start_wrapper #game_start{
 #game_start .text{top:260px;}
 #game_start .text_loading{top:300px;}
 
-body.sp section#sp_controller #sp_controller_inner .sp_controller_main{height:120px;width:120px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_main{height:100px;width:100px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_controller_main_center{
-	left:calc(50% - 55px);
-	height:110px;
-	top:calc(50% - 55px);
-	width:110px;
+	left:calc(50% - 45px);
+	height:90px;
+	top:calc(50% - 45px);
+	width:90px;
 }
 
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide{right:350px;bottom:0px;height:30px !important;width:30px !important;}

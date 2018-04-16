@@ -612,6 +612,7 @@ class GameObject_SHIELD
 	}
 	enemy_collision(_e){
 		let _this=this;
+		if(!_this.isalive()){return;}
 		if(_GAME.isSqCollision(
 			"0,0,"
 			+parseInt(_this._scale*_this.width)
@@ -625,6 +626,7 @@ class GameObject_SHIELD
 	}
 	enemy_shot_collision(_e){
 		let _this=this;
+		if(!_this.isalive()){return;}
 		if(_GAME.isSqCollision(
 			"0,0,"+_this.width+","+(_this.height*2),
 			parseInt(_this.x)+","+parseInt(_this.y),

@@ -1074,7 +1074,7 @@ class GameObject_MAP{
 				//画像サイズは、25x25px
 				//ここでは10x10pxに調整
 				_CONTEXT.save();
-				_CONTEXT.translate(50,130);
+				_CONTEXT.translate(50+(_j*10),130+(_i*10));
 				_CONTEXT.scale(0.25,0.25);
 				_CONTEXT.drawImage(
 					_p._obj.img.obj,
@@ -1082,8 +1082,8 @@ class GameObject_MAP{
 					0,
 					_p._obj.width,
 					_p._obj.height,			
-					(_j*10)*4,
-					(_i*10)*4,
+					0,
+					0,
 					_p._obj.width*1.60,//偶然の一致
 					_p._obj.height*1.60
 				);
@@ -1092,9 +1092,12 @@ class GameObject_MAP{
 		}//_j
 		}//_i
 		//はみ出た分を黒でラッピングする
+		//エリアは50,130,350,330
 		_CONTEXT.fillStyle="rgba(0,0,0,1)";
-		_CONTEXT.fillRect(351,130,_CANVAS.width,200);
-		_CONTEXT.fillRect(0,341,_CANVAS.width,500);
+		_CONTEXT.fillRect(350,130,500,500);
+		_CONTEXT.fillRect(50,330,500,500);
+//		_CONTEXT.beginPath();
+//		_CONTEXT.clearRect(50,130,250,230);
 		
 	}//showMapForStageselect
 	map_draw(){

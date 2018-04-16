@@ -1839,14 +1839,17 @@ const _DRAW=()=>{
 			_ENEMIES_SHOTS[_i].move();
 		}
 		// console.log('3:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
+
+		//MAP位置と敵の表示はこのシーケンス
+		//※モアイ破壊後のMAP衝突がうまく調整できなくなる
+		//MAP位置設定
+		_MAP.move();
 		//敵を表示
 		for(let _i=0;_i<_ENEMIES.length;_i++){
 			if(_ENEMIES[_i]===undefined){continue;}
 			_ENEMIES[_i].move();
 		}
 		// console.log('4:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-		//MAP位置設定
-		_MAP.move();
 		// console.log('5:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 
 		_IS_GET_POWERCAPSELL();

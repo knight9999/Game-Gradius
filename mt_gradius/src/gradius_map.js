@@ -1077,7 +1077,7 @@ class GameObject_MAP{
 				_CONTEXT.translate(50+(_j*10),130+(_i*10));
 				_CONTEXT.scale(0.25,0.25);
 				_CONTEXT.drawImage(
-					_p._obj.img.obj,
+					_p._obj.img,
 					_p._obj.imgPos[0],
 					0,
 					_p._obj.width,

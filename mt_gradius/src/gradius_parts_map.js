@@ -10,10 +10,25 @@
 //	アニメーションさせたい場合は、
 //	スプライト画像で用意する。
 //	ただし横配置させること
+//	img:画像ファイル
+//	imgPos:スプライト画像に対するコマ送り定義(array)
+//	aniItv:スプライト画像に対するコマ送り間隔
+//	width:横幅
+//	height:高さ
 //========================================
 class MAP_OBJECT{
 	constructor(_p){
 		let _this=this;
+		if(_p===undefined){return;}
+		_this.img=_p.img;
+		_this.imgPos=_p.imgPos||[0];//スプライトのコマポジション
+		_this.aniItv=_p.aniItv||1;//アニメーションの間隔
+		_this.width=_p.width||_this.img.obj.width;//画像width
+		_this.height=_p.height||_this.img.obj.height;//画像height
+		_this.dir=_p.dir||1;
+		_this.x=_p.x||0;
+		_this.y=_p.y||0;
+
 		_this._s='1';
 		_this._c=0;
 		_this._DEF_DIR={//向き
@@ -26,11 +41,6 @@ class MAP_OBJECT{
 			_RU:6,//右上
 			_RD:7//右下
 		};
-		_this.img=_p.img;
-		_this.imgPos=_p.imgPos||[0];//スプライトのコマポジション
-		_this.aniItv=_p.aniItv||1;//アニメーションの間隔
-		_this.width=_p.width||_this.img.obj.width;//画像width
-		_this.height=_p.height||_this.img.obj.height;//画像height
 
 		_this.is_able_collision=false;//破壊可否フラグ
 
@@ -49,42 +59,23 @@ class MAP_OBJECT{
 		let _this=this;
 		return _this.img.obj;
 	}
-	moveDrawImage(_x,_y){
-		let _this=this;
-		_this._c=
-			(_this._c>=(_this.imgPos.length*_this.aniItv)-1)?0:_this._c+1;
-		_CONTEXT.drawImage(
-			_this.img.obj,
-			_this.imgPos[parseInt(_this._c/_this.aniItv)],
-			0,
-			_this.width,
-			_this.height,
-			_x,
-			_y,
-			_this.width,
-			_this.height
-		);		
-	}
-	moveDrawImagePos(_x,_y,_pos){
-		let _this=this;
-		_CONTEXT.drawImage(
-			_this.img.obj,
-			_pos,
-			0,
-			_this.width,
-			_this.height,
-			_x,
-			_y,
-			_this.width,
-			_this.height
-		);		
-	}
 	collision(){
 		//壁を破壊する場合のロジック
 	}
 	moveDraw(_x,_y){
 		let _this=this;
-		_this.moveDrawImage(_x,_y);
+		_this._c=
+			(_this._c>=(_this.imgPos.length*_this.aniItv)-1)?0:_this._c+1;
+
+		_GAME._setDrawImage({
+			img:_this.img,
+			imgPosx:_this.imgPos[parseInt(_this._c/_this.aniItv)],
+			x:_x,
+			y:_y,
+			width:_this.width,
+			height:_this.height,
+			basePoint:1
+		})
 	}
 }
 //=====================
@@ -93,7 +84,7 @@ class MAP_OBJECT{
 class MAP_CUBE_A extends MAP_OBJECT{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_cube_A'],
+			img:_CANVAS_IMGS['map_cube_A'].obj,
 			width:25,
 			height:25
 		});
@@ -106,7 +97,7 @@ class MAP_CUBE_A extends MAP_OBJECT{
 //=====================
 class MAP_CRISTAL extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['enemy_p_1'],width:84,height:83});
+		super({img:_CANVAS_IMGS['enemy_p_1'].obj,width:84,height:83});
 		let _this=this;
 		_this._s='011,111,110';
 	}
@@ -117,14 +108,14 @@ class MAP_CRISTAL extends MAP_OBJECT{
 //=====================
 class MAP_MOAI_A extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_moai_A'],width:250,height:100});
+		super({img:_CANVAS_IMGS['map_moai_A'].obj,width:250,height:100});
 		let _this=this;
 		_this._s='0000000000,1111111111,1111111111,0000000000';
 	}
 }
 class MAP_MOAI_B extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_moai_B'],width:250,height:100});
+		super({img:_CANVAS_IMGS['map_moai_B'].obj,width:250,height:100});
 		let _this=this;
  		_this._s='0000000000,1111111111,1111111111,0000000000';
 	}
@@ -134,35 +125,35 @@ class MAP_MOAI_B extends MAP_OBJECT{
 //=====================
 class MAP_VOLCANO_A extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_A'],width:225,height:75});
+		super({img:_CANVAS_IMGS['map_volcano_A'].obj,width:225,height:75});
 		let _this=this;
 		_this._s='111111111,111111111,000000000';
 	}
 }
 class MAP_VOLCANO_B extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_B'],width:225,height:75});
+		super({img:_CANVAS_IMGS['map_volcano_B'].obj,width:225,height:75});
 		let _this=this;
 		_this._s='111111111,111111111,000000000';
 	}
 }
 class MAP_VOLCANO_C extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_C'],width:225,height:75});
+		super({img:_CANVAS_IMGS['map_volcano_C'].obj,width:225,height:75});
 		let _this=this;
 		_this._s='000000000,111111111,111111111';
 	}
 }
 class MAP_VOLCANO_D extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_D'],width:225,height:75});
+		super({img:_CANVAS_IMGS['map_volcano_D'].obj,width:225,height:75});
 		let _this=this;
 		_this._s='000000000,111111111,111111111';
 	}
 }
 class MAP_VOLCANO_F extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_F'],width:225,height:150});
+		super({img:_CANVAS_IMGS['map_volcano_F'].obj,width:225,height:150});
 		let _this=this;
 		_this._s='000110000,'+
 				'000110000,'+
@@ -174,14 +165,14 @@ class MAP_VOLCANO_F extends MAP_OBJECT{
 }
 class MAP_VOLCANO_G extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_G'],width:225,height:150});
+		super({img:_CANVAS_IMGS['map_volcano_G'].obj,width:225,height:150});
 		let _this=this;
 		_this._s='111111110,011111110,011111100,001111000,000110000,000110000';
 	}
 }
 class MAP_VOLCANO_H extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_H'],width:500,height:325});
+		super({img:_CANVAS_IMGS['map_volcano_H'].obj,width:500,height:325});
 		let _this=this;
 		_this._s='00000000000000000000,'+
 				'00000111111111111110,'+
@@ -200,7 +191,7 @@ class MAP_VOLCANO_H extends MAP_OBJECT{
 }
 class MAP_VOLCANO_I extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_I'],width:375,height:250});
+		super({img:_CANVAS_IMGS['map_volcano_I'].obj,width:375,height:250});
 		let _this=this;
 		_this._s='000000010000000,'+
 				'000000010000000,'+
@@ -216,7 +207,7 @@ class MAP_VOLCANO_I extends MAP_OBJECT{
 }
 class MAP_VOLCANO_J extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_J'],width:375,height:250});
+		super({img:_CANVAS_IMGS['map_volcano_J'].obj,width:375,height:250});
 		let _this=this;
 		_this._s='111111111111111,'+
 				'011111111111110,'+
@@ -232,42 +223,42 @@ class MAP_VOLCANO_J extends MAP_OBJECT{
 }
 class MAP_VOLCANO_K extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_K'],width:75,height:25});
+		super({img:_CANVAS_IMGS['map_volcano_K'].obj,width:75,height:25});
 		let _this=this;
 		_this._s='010';
 	}
 }
 class MAP_VOLCANO_L extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_L'],width:75,height:25});
+		super({img:_CANVAS_IMGS['map_volcano_L'].obj,width:75,height:25});
 		let _this=this;
 		_this._s='010';
 	}
 }
 class MAP_VOLCANO_M extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_M'],width:100,height:50});
+		super({img:_CANVAS_IMGS['map_volcano_M'].obj,width:100,height:50});
 		let _this=this;
 		_this._s='0111,1111';
 	}
 }
 class MAP_VOLCANO_N extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_N'],width:100,height:50});
+		super({img:_CANVAS_IMGS['map_volcano_N'].obj,width:100,height:50});
 		let _this=this;
 		_this._s='1111,0111';
 	}
 }
 class MAP_VOLCANO_O extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_O'],width:100,height:50});
+		super({img:_CANVAS_IMGS['map_volcano_O'].obj,width:100,height:50});
 		let _this=this;
 		_this._s='1111,1110';
 	}
 }
 class MAP_VOLCANO_P extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_volcano_P'],width:100,height:50});
+		super({img:_CANVAS_IMGS['map_volcano_P'].obj,width:100,height:50});
 		let _this=this;
 		_this._s='1110,1111';
 	}
@@ -278,7 +269,7 @@ class MAP_VOLCANO_P extends MAP_OBJECT{
 class MAP_FRAME_A extends MAP_OBJECT{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_frame_A'],
+			img:_CANVAS_IMGS['map_frame_A'].obj,
 			imgPos:[0,200,400,600,800],
 			aniItv:10,
 			width:200,
@@ -291,7 +282,7 @@ class MAP_FRAME_A extends MAP_OBJECT{
 class MAP_FRAME_B extends MAP_OBJECT{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_frame_B'],
+			img:_CANVAS_IMGS['map_frame_B'].obj,
 			imgPos:[0,200,400,600,800],
 			aniItv:10,
 			width:200,
@@ -304,7 +295,7 @@ class MAP_FRAME_B extends MAP_OBJECT{
 class MAP_FRAME_C extends MAP_OBJECT{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_frame_C'],
+			img:_CANVAS_IMGS['map_frame_C'].obj,
 			imgPos:[0,50,100,150],
 			aniItv:10,
 			width:50,
@@ -318,7 +309,7 @@ class MAP_FRAME_C extends MAP_OBJECT{
 class MAP_FRAME_D extends MAP_OBJECT{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_frame_D'],
+			img:_CANVAS_IMGS['map_frame_D'].obj,
 			imgPos:[0,50,100,150],
 			aniItv:10,
 			width:50,
@@ -332,7 +323,7 @@ class MAP_FRAME_D extends MAP_OBJECT{
 class MAP_FRAME_E extends MAP_OBJECT{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_frame_E'],
+			img:_CANVAS_IMGS['map_frame_E'].obj,
 			imgPos:[0,50,100,150],
 			aniItv:10,
 			width:50,
@@ -346,7 +337,7 @@ class MAP_FRAME_E extends MAP_OBJECT{
 class MAP_FRAME_F extends MAP_OBJECT{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_frame_F'],
+			img:_CANVAS_IMGS['map_frame_F'].obj,
 			imgPos:[0,50,100,150],
 			aniItv:10,
 			width:50,
@@ -365,7 +356,7 @@ class MAP_FRAME_F extends MAP_OBJECT{
 class MAP_CELL_A extends MAP_OBJECT{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_cell_A'],
+			img:_CANVAS_IMGS['map_cell_A'].obj,
 			imgPos:[0,475,950],
 			aniItv:20,
 			width:475,
@@ -381,7 +372,7 @@ class MAP_CELL_A extends MAP_OBJECT{
 class MAP_CELL_B extends MAP_OBJECT{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_cell_B'],
+			img:_CANVAS_IMGS['map_cell_B'].obj,
 			imgPos:[0,475,950],
 			aniItv:20,
 			width:475,
@@ -397,7 +388,7 @@ class MAP_CELL_B extends MAP_OBJECT{
 class MAP_CELL_C extends MAP_OBJECT{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_cell_C'],
+			img:_CANVAS_IMGS['map_cell_C'].obj,
 			imgPos:[0,125,250],
 			aniItv:20,
 			width:125,
@@ -413,7 +404,7 @@ class MAP_CELL_C extends MAP_OBJECT{
 class MAP_CELL_D extends MAP_OBJECT{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_cell_D'],
+			img:_CANVAS_IMGS['map_cell_D'].obj,
 			imgPos:[0,125,250],
 			aniItv:20,
 			width:125,
@@ -442,7 +433,7 @@ class MAP_CELL_VWYZ extends MAP_OBJECT{
 }
 class MAP_CELL_V extends MAP_CELL_VWYZ{
 	constructor(){
-		super({img:_CANVAS_IMGS['map_cell_V'],
+		super({img:_CANVAS_IMGS['map_cell_V'].obj,
 			_s:'001111111100,'
 				+'111111111111'
 		});
@@ -451,7 +442,7 @@ class MAP_CELL_V extends MAP_CELL_VWYZ{
 class MAP_CELL_W extends MAP_CELL_VWYZ{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_cell_W'],
+			img:_CANVAS_IMGS['map_cell_W'].obj,
 			_s:'111111111111,'
 				+'001111111100'
 		});
@@ -460,7 +451,7 @@ class MAP_CELL_W extends MAP_CELL_VWYZ{
 class MAP_CELL_Y extends MAP_CELL_VWYZ{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_cell_Y'],
+			img:_CANVAS_IMGS['map_cell_Y'].obj,
 			_s:'111111111111,'
 				+'111111111111'
 		});
@@ -469,7 +460,7 @@ class MAP_CELL_Y extends MAP_CELL_VWYZ{
 class MAP_CELL_Z extends MAP_CELL_VWYZ{
 	constructor(){
 		super({
-			img:_CANVAS_IMGS['map_cell_Z'],
+			img:_CANVAS_IMGS['map_cell_Z'].obj,
 			_s:'111111111111,'
 				+'111111111111'
 		});
@@ -480,7 +471,7 @@ class MAP_CELL_Z extends MAP_CELL_VWYZ{
 class MAP_CELL_WALL extends MAP_OBJECT{
 	constructor(_d){
 		super({
-			img:_CANVAS_IMGS['map_cell_wall'],
+			img:_CANVAS_IMGS['map_cell_wall'].obj,
 			imgPos:_d.imgPos||[0],
 			width:25,
 			height:25
@@ -520,7 +511,14 @@ class MAP_CELL_WALL extends MAP_OBJECT{
 			_this._status_count++;
 			return;
 		}
-		_this.moveDrawImagePos(_x,_y,_this.imgPos[0]);
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_x,
+			y:_y,
+			width:_this.width,
+			imgPosx:_this.imgPos[0],
+			basePoint:1
+		})
 	}
 }
 class MAP_CELL_G extends MAP_CELL_WALL{

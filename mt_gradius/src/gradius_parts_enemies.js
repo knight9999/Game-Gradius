@@ -365,11 +365,11 @@ class ENEMY_FAN extends GameObject_ENEMY{
 		_this._standby=false;
 		_this.parts=[
 			new ENEMY_FAN_MAIN({x:_this.x+_this.width*0,y:_this.y}),
+			new ENEMY_FAN_MAIN({x:_this.x+_this.width*0.5,y:_this.y}),
 			new ENEMY_FAN_MAIN({x:_this.x+_this.width*1,y:_this.y}),
+			new ENEMY_FAN_MAIN({x:_this.x+_this.width*1.5,y:_this.y}),
 			new ENEMY_FAN_MAIN({x:_this.x+_this.width*2,y:_this.y}),
-			new ENEMY_FAN_MAIN({x:_this.x+_this.width*3,y:_this.y}),
-			new ENEMY_FAN_MAIN({x:_this.x+_this.width*4,y:_this.y}),
-			new ENEMY_FAN_MAIN({x:_this.x+_this.width*5,y:_this.y}),
+			new ENEMY_FAN_MAIN({x:_this.x+_this.width*2.5,y:_this.y}),
 		];
 		//敵クラスに追加
 		for(let _i=0;_i<_this.parts.length;_i++){
@@ -416,7 +416,6 @@ class ENEMY_FAN_MAIN extends GameObject_ENEMY{
         let _this=this;
 		_this._status=1;
 		_this.speed=2;
-		_this._standby=false;
 		_this.pos_y=(_p.y>250);//0:250より上 1:250より下
 		_this.change_x=false;//xの移動切替位置
 		_this.change_y=false;//yの移動切替位置
@@ -429,7 +428,7 @@ class ENEMY_FAN_MAIN extends GameObject_ENEMY{
 			_this,{
 				up:false,
 				down:false,
-				left:false,
+				left:true,
 				right:(_this.change_x)
 			}
 		);

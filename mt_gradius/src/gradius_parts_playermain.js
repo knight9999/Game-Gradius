@@ -597,8 +597,8 @@ class GameObject_SHIELD
 	}
 	getPlayerCenterPosition(){
 		//センタリングはプレーヤーの中心から約右に配置
-		return {_x:this.x+(this.width/2),
-				_y:this.y+this.height}
+		return {_x:this.x+(this.width/2*this._scale),
+				_y:this.y+(this.height*this._scale)}
 	}
 	init(){
 		let _this=this;
@@ -628,8 +628,10 @@ class GameObject_SHIELD
 		let _this=this;
 		if(!_this.isalive()){return;}
 		if(_GAME.isSqCollision(
-			"0,0,"+_this.width+","+(_this.height*2),
-			parseInt(_this.x)+","+parseInt(_this.y),
+			"0,0,"
+			+parseInt(_this._scale*_this.width)
+			+","+parseInt(_this._scale*_this.height*2),
+			_this.x+","+_this.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
 			)===_IS_SQ_NOTCOL){return;}
@@ -651,7 +653,7 @@ class GameObject_SHIELD
 		}
 
 		//シールドの上端
-		_map_y=_MAP.getMapY(_this.y);
+		_map_y=_MAP.getMapY(_this.y+10);
 //		_map_y=parseInt(this.y/_MAP.t);
 		if(_MAP.isMapCollision(_map_x,_map_y)){
 			_this.reduce();
@@ -659,7 +661,7 @@ class GameObject_SHIELD
 		}
 
 		//シールドの下端
-		_map_y=_MAP.getMapY(_pl._y-10+_this.height);
+		_map_y=_MAP.getMapY(_pl._y-15+(_this.height*_this._scale));
 //		_map_y=parseInt((_pl._y-10+this.height)/_MAP.t);
 		if(_MAP.isMapCollision(_map_x,_map_y)){
 			_this.reduce();

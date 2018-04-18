@@ -16,7 +16,6 @@
 class GameObject_ENEMY{
 	constructor(_o,_x,_y,_imgPos,_aniItv,_w,_h){
 		let _this=this;
-		_this.id=_ENEMIES.length;//敵の当たり判定用ID
 		_this.gid=0;//敵のグループID
 		_this.img=_o;//画像オブジェクト
 		_this.imgPos=_imgPos||[0];//スプライト時の画像

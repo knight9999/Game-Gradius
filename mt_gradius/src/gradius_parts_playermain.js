@@ -406,17 +406,14 @@ class GameObject_FORCEFIELD{
 	constructor(){
 		let _this=this;
 		_this.img=_CANVAS_IMGS['forcefield'].obj;
-		_this.STATUS_MAX=4;
 		_this.x=0;
 		_this.y=0;
 		_this.width=0;
 		_this.height=0;
-		_this.type='forcefield';
 
 		_this._c=0;
 		_this._scale=0;//フォースのサイズ
 
-		_this._eid=0;//敵ID
 		//アニメーション定義
 		_this.ani=[0,106];
 
@@ -589,9 +586,6 @@ class GameObject_SHIELD
 	extends GameObject_FORCEFIELD{
 	constructor(){
 		super();
-		this.STATUS_MAX=15;
-		this.type='shield';
-
 		//アニメーション定義
 		this.ani=[0,40];
 	}

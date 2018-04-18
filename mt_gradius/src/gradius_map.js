@@ -169,6 +169,7 @@ const _MAP_ENEMIES_BOSS={
 
 
 const _MAP_THEME={//_parts要素番号0は空文字
+//_f()はゲーム開始時に実行するもの
 '_THEME1':{//クリスタル
 	'_map':{
 		'A':{
@@ -508,7 +509,7 @@ const _MAP_THEME={//_parts要素番号0は空文字
 		'a':{
 			'_f':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_frame_1(_mx,_my,_md));
-				},
+			},
 			'_st':'',
 			'_s':'0',//MAP衝突用ビット
 			'_o':_CANVAS_IMGS['enemy_frame_1']//画像オブジェクト
@@ -786,19 +787,19 @@ class GameObject_MAP{
 		_this.map_boss=_MAPDEFS[_this.map_pettern]._boss;
 		_this.isboss=false;
 
-		_this.init_map_anime();
+		_this.init_map_location();
 		_this.init_mapdef_col();
 		_this.init_enemies_location();
 	}
-	init_map_anime(){
+	init_map_location(){
 		let _this=this;
 		for(let _i=0;_i<_this.mapdef.length;_i++){
 		let _m=_this.mapdef[_i];
 		for(let _j=0;_j<_m.length;_j++){
 			//MAP衝突用1行分ループ
 			if((_m[_j]).match(/[A-Z]/)===null){continue;}
-			_MAP_THEME[_this.map_theme]._map[_m[_j]]._f(_j+','+_i);
-//			_MAP_ANIME[_j+','+_i]=_c;
+			_MAP_THEME[_this.map_theme]._map[_m[_j]]
+				._f(_j+','+_i);
 		}
 		}
 	}

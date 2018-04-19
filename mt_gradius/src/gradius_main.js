@@ -1132,9 +1132,9 @@ const _SP_CONTROLLER={
 }
 
 class GameObject_PM{
-	constructor(_src,_sx,_sy){
+	constructor(){
 		let _this=this;
-		_this.img=_CANVAS_IMGS[_src].obj;
+		_this.img=_CANVAS_IMGS['meter'].obj;
 		_this.x=(_CANVAS.width/2)-
 				(_this.img.width/2);
 				_this.y=_CANVAS.height-30;
@@ -1218,7 +1218,6 @@ class GameObject_PM{
 		];
 
 	}
-	init(){}
 	_set_current_reset(){
 		this.meterdef_current='000000';
 	}
@@ -1613,13 +1612,7 @@ class GameObject_BACKGROUND{
 		this.speed=Math.random()*5;
 
 		this.move_flash_count=0;
-		this._r=1;
-	}
-	init(){
-		this._r=Math.random()+this._r;
-	}
-	move_flash(){
-		
+		this._r=Math.random();
 	}
 	move(){
 		let _this=this;
@@ -2415,10 +2408,7 @@ const _DRAW_INIT_OBJECT=()=>{
 	}
 
 	//METER
-	_POWERMETER=
-		new	GameObject_PM('meter');
-	_POWERMETER.init();
-
+	_POWERMETER=new GameObject_PM();
 	//SCORE
 	if(!_DRAW_IS_GAMECLEAR){
 		//クリアしていなければスコアをリセット
@@ -2429,7 +2419,6 @@ const _DRAW_INIT_OBJECT=()=>{
 	//BACKGROUND
 	for(let _i=0;_i<_BACKGROUND_STAR_MAX;_i++){
 		_BACKGROUND[_i]=new GameObject_BACKGROUND();
-		_BACKGROUND[_i].init();
 	}
 
 	//MAP
@@ -2449,7 +2438,7 @@ const _DRAW_POWER_METER_SELECT=()=>{
 	_KEYEVENT_MASTER.removeKeydownSelectStage();
 	_KEYEVENT_MASTER.addKeydownSelectPowermeter();
 
-	_POWERMETER=new	GameObject_PM('meter');
+	_POWERMETER=new	GameObject_PM();
 	_POWERMETER.pms_disp();
 	_POWERMETER.pms_select();
 }

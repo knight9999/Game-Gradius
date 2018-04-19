@@ -66,13 +66,7 @@ const _CANVAS_IMGS={
 	'enemy_m_7':{src:'images/gradius_enemy_m_7.png',rate:0.24,obj:new Image()},
 	'enemy_m_8':{src:'images/gradius_enemy_m_8.png',rate:0.24,obj:new Image()},
 
-	'enemy_m_11':{src:'images/gradius_enemy_m_11.png',rate:0.22,obj:new Image()},
-	'enemy_m_12':{src:'images/gradius_enemy_m_12.png',rate:0.22,obj:new Image()},
-	'enemy_m_13':{src:'images/gradius_enemy_m_13.png',rate:0.22,obj:new Image()},
-	'enemy_m_14':{src:'images/gradius_enemy_m_14.png',rate:0.22,obj:new Image()},
-	'enemy_m_15':{src:'images/gradius_enemy_m_15.png',rate:0.22,obj:new Image()},
-	'enemy_m_16':{src:'images/gradius_enemy_m_16.png',rate:0.22,obj:new Image()},
-	'enemy_m_17':{src:'images/gradius_enemy_m_17.png',rate:0.22,obj:new Image()},
+	'enemy_m_group':{src:'images/gradius_enemy_m_group.png',rate:1.00,obj:new Image()},
 	
 	'enemy_o_1':{src:'images/gradius_enemy_o_1.png',rate:0.3,obj:new Image()},
 	'enemy_o_2':{src:'images/gradius_enemy_o_2.png',rate:0.3,obj:new Image()},
@@ -89,8 +83,7 @@ const _CANVAS_IMGS={
 	'enemy_m_b_2':{src:'images/gradius_enemy_m_b_2.png',rate:0.25,obj:new Image()},
 	'enemy_m_z':{src:'images/gradius_enemy_m_z.png',rate:0.25,obj:new Image()},
 
-	'enemy_m_y_1':{src:'images/gradius_enemy_m_y_1.png',rate:0.5,obj:new Image()},
-	'enemy_m_y_2':{src:'images/gradius_enemy_m_y_2.png',rate:0.5,obj:new Image()},
+	'enemy_moai_ring':{src:'images/gradius_enemy_moai_ring.png',rate:1.00,obj:new Image()},
 
 	'enemy_cell_boss':{src:'images/gradius_enemy_cell_boss.png',rate:1.00,obj:new Image()},
 	'enemy_cell_boss_eye':{src:'images/gradius_enemy_cell_boss_eye.png',rate:1.00,obj:new Image()},
@@ -135,10 +128,7 @@ const _CANVAS_IMGS={
 	'enemy_cristalcore_wall2':{src:'images/gradius_enemy_cristalcore_wall2.png',rate:1.00,obj:new Image()},
 	'enemy_cristalcore_shot':{src:'images/gradius_enemy_cristalcore_shot.png',rate:1.00,obj:new Image()},
 
-	'enemy_cube1':{src:'images/gradius_enemy_cube1.png',rate:0.25,obj:new Image()},
-	'enemy_cube2':{src:'images/gradius_enemy_cube2.png',rate:0.25,obj:new Image()},
-	'enemy_cube3':{src:'images/gradius_enemy_cube3.png',rate:0.25,obj:new Image()},
-	'enemy_cube4':{src:'images/gradius_enemy_cube4.png',rate:0.25,obj:new Image()},
+	'enemy_cube':{src:'images/gradius_enemy_cube.png',rate:1.00,obj:new Image()},
 
 	'enemy_bigcore2':{src:'images/gradius_enemy_bigcore2.png',rate:1.0,obj:new Image()},
 	'enemy_bigcore2_hand':{src:'images/gradius_enemy_bigcore2_hand.png',rate:1.00,obj:new Image()},

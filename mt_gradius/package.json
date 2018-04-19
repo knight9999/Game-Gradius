@@ -9,7 +9,7 @@
     "build:css": "uglifycss ./src/gradius_main.css > ./dist/gradius_main.min.css",
     "build:html": "html-dist --config html-dist.config.js --input ./src/gradius.html > ./dist/gradius.html --jsFile gradius_main.min.js --cssFile gradius_main.min.css",
     "build:images": "imagemin ./src/images/* -o ./dist/images",
-    "build:js_edit": "uglifyjs ./src/gradius_canvasimgs.js ./src/gradius_map.js ./src/gradius_editing_stage.js -o ./dist/gradius_editing_stage.min.js -c",
+    "build:js_edit": "uglifyjs ./src/gradius_canvasimgs.js ./src/gradius_map.js ./src/gradius_editing_stage.js -o ./dist/gradius_editing_stage.min.js -c -m",
     "build:css_edit": "uglifycss ./src/gradius_editing_stage.css > ./dist/gradius_editing_stage.min.css",
     "build:html_edit": "html-dist --config html-dist.config.js --input ./src/gradius_editing_stage.html > ./dist/gradius_editing_stage.html --jsFile gradius_editing_stage.min.js --cssFile gradius_editing_stage.min.css",
     "clean": "rm -rf ./dist/*.js ./dist/*.css ./dist/images/* ./dist/*.html"

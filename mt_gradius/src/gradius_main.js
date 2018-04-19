@@ -2433,7 +2433,7 @@ const _DRAW_INIT_OBJECT=()=>{
 	}
 
 	//MAP
-	_MAP.init_stage_map();
+	_MAP.set_gamestart();
 
 	_DRAW_GAMESTART();
 }

@@ -1612,11 +1612,10 @@ class GameObject_BACKGROUND{
 		this.speed=Math.random()*5;
 
 		this.move_flash_count=0;
-		this._r=Math.random();
+		this._r=Math.random()+1;
 	}
 	move(){
 		let _this=this;
-//		_this.x=_MAP.getX(_this.x);
 		_this.x=(_this.x<0)
 					?_CANVAS.width
 					:_this.x;

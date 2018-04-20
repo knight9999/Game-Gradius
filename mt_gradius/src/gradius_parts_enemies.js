@@ -82,7 +82,7 @@ class GameObject_ENEMY{
 		_this.col_date=null;//打たれた時間
 		_this.col_canint=150;//連続ショット許可間隔
 
-		_this.mapdef_col='0';//MAP衝突ビット
+		_this._s='0';//MAP衝突ビット
 	}
 	init(){
 		let _this=this;
@@ -1145,7 +1145,7 @@ class ENEMY_p extends GameObject_ENEMY{
 		//レーザーのみ当たり判定を通常の半分にする。
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 
-		_this.mapdef_col='000,000,000';
+		_this._s='000,000,000';
 	}
 	setAlive(){
 		let _this=this;
@@ -1391,6 +1391,13 @@ class ENEMY_q extends GameObject_ENEMY{
 			})()
 		];
 
+		//衝突座標設定
+		_this._s=(()=>{
+			if(_this.direct===_this._DEF_DIR._D){return '0000,0011,0110,1111';}//右下
+			if(_this.direct===_this._DEF_DIR._U){return '1111,0110,0011,0000';}//右上
+			if(_this.direct===_this._DEF_DIR._LD){return '0000,1100,1110,1111';}//左下
+			if(_this.direct===_this._DEF_DIR._LU){return '1111,1110,1100,0000';}//左上
+			})()
 	}
 	collision(_s_type,_num){
 		let _this=this;
@@ -1504,6 +1511,11 @@ class ENEMY_r extends ENEMY_q{
 				if(_this.direct===_this._DEF_DIR._U){return "20,25,50,70";}
 				})()
 			];
+		
+		_this._s=(()=>{
+			if(_this.direct===_this._DEF_DIR._D){return '0000,0000,0010,1111';}
+			if(_this.direct===_this._DEF_DIR._U){return '1111,0010,0000,0000';}		
+		})();
 	}
 }
 

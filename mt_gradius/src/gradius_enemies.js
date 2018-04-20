@@ -5,15 +5,6 @@
 //=====================================================
 'use strict';
 
-const _DEF_DIFFICULT=[
-	{_ENEMY_SHOT_RATE:0.0001,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
-	{_ENEMY_SHOT_RATE:0.0005,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
-	{_ENEMY_SHOT_RATE:0.002,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
-	{_ENEMY_SHOT_RATE:0.005,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
-	{_ENEMY_SHOT_RATE:0.01,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:2}
-];
-let _ENEMY_DIFFICULT=4;//主にデバッグ用。
-
 const _ENEMY_DEF_ANI_COL={//衝突アニメーション定義
 't0':{
 	'intv':5,

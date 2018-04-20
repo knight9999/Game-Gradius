@@ -42,40 +42,40 @@ _ENEMIES:{
 			_ENEMIES.push(new ENEMY_a(_mx,_my,_md));
 			},
 		'_st':'',
-		'_s':'0',//MAP衝突用ビット
-		'_o':_CANVAS_IMGS['enemy_a_1']//画像オブジェクト
+		'_o':_CANVAS_IMGS['enemy_a_1'],//画像オブジェクト
+		'_obj':new ENEMY_a()
 	},
 	'b':{
 		'_gamestart':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_b(_mx,_my,_md));
 			},
 		'_st':'',
-		'_s':'0',
-		'_o':_CANVAS_IMGS['enemy_b_1']
+		'_o':_CANVAS_IMGS['enemy_b_1'],
+		'_obj':new ENEMY_b()
 	},
 	'c':{
 		'_gamestart':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_c(_mx,_my,_md));
 			},
 		'_st':'',
-		'_s':'0',
-		'_o':_CANVAS_IMGS['enemy_c_1']
+		'_o':_CANVAS_IMGS['enemy_c_1'],
+		'_obj':new ENEMY_c()
 	},
 	'd':{
 		'_gamestart':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
 			},
 		'_st':'',
-		'_s':'0',
-		'_o':_CANVAS_IMGS['enemy_d_1']
+		'_o':_CANVAS_IMGS['enemy_d_1'],
+		'_obj':new ENEMY_d()
 	},
 	'e':{
 		'_gamestart':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
 			},
 		'_st':'',
-		'_s':'0',
-		'_o':_CANVAS_IMGS['enemy_e_1']
+		'_o':_CANVAS_IMGS['enemy_e_1'],
+		'_obj':new ENEMY_e()
 	},
 	'f':{
 		'_gamestart':function(_mx,_my,_md){
@@ -85,8 +85,8 @@ _ENEMIES:{
 			_ENEMIES.push(new ENEMY_f(_mx,_my,_md));
 			},
 		'_st':'',
-		'_s':'0',	
-		'_o':_CANVAS_IMGS['enemy_f_1']
+		'_o':_CANVAS_IMGS['enemy_f_1'],
+		'_obj':new ENEMY_f()
 	},
 	'g':{
 		'_gamestart':function(_mx,_my,_md){
@@ -97,32 +97,32 @@ _ENEMIES:{
 			_ENEMIES.push(new ENEMY_g(_mx,_my,_md));
 			},
 		'_st':'',
-		'_s':'0',	
-		'_o':_CANVAS_IMGS['enemy_g_1']
+		'_o':_CANVAS_IMGS['enemy_g_1'],
+		'_obj':new ENEMY_g()
 	},
 	'm':{
 		'_gamestart':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_m(_mx,_my,_md));
 			},
 		'_st':'',
-		'_s':'0',	
-		'_o':_CANVAS_IMGS['enemy_m_1']
+		'_o':_CANVAS_IMGS['enemy_m_1'],
+		'_obj':new ENEMY_m()
 	},
 	'n':{
 		'_gamestart':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_n(_mx,_my));
 			},
 		'_st':'',
-		'_s':'0',		
-		'_o':_CANVAS_IMGS['enemy_o_1']
+		'_o':_CANVAS_IMGS['enemy_o_1'],
+		'_obj':new ENEMY_n()
 	},
 	'o':{
 		'_gamestart':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_o(_mx,_my));
 			},
 		'_st':'',
-		'_s':'0',		
-		'_o':_CANVAS_IMGS['enemy_o_1']
+		'_o':_CANVAS_IMGS['enemy_o_1'],
+		'_obj':new ENEMY_o()
 	},
 	'p':{
 		'_gamestart':function(_mx,_my,_md){
@@ -130,16 +130,16 @@ _ENEMIES:{
 			_ENEMIES.push(_o);
 			},
 		'_st':'',
-		'_s':'000,000,000',		
-		'_o':_CANVAS_IMGS['enemy_p_1']
+		'_o':_CANVAS_IMGS['enemy_p_1'],
+		'_obj':new ENEMY_p()
 	},
 	'z':{
 		'_gamestart':function(_mx,_my,_md){
 			_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
 			},
 		'_st':'',
-		'_s':'0',
-		'_o':_CANVAS_IMGS['enemy_fan']
+		'_o':_CANVAS_IMGS['enemy_fan'],
+		'_obj':new ENEMY_FAN()
 	}
 
 }//_ENEMIES
@@ -174,7 +174,6 @@ const _MAP_THEME={//_parts要素番号0は空文字
 	'_map':{
 		'A':{
 			'_o':(new MAP_CRISTAL()).img,//画像
-			'_s':(new MAP_CRISTAL())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CRISTAL();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//_MAP.moveDraw()で処理させる
 						//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
@@ -187,105 +186,90 @@ const _MAP_THEME={//_parts要素番号0は空文字
 	'_map':{
 		'A':{
 			'_o':(new MAP_VOLCANO_A()).img,//画像
-			'_s':(new MAP_VOLCANO_A())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_A()
 		},
 		'B':{
 			'_o':(new MAP_VOLCANO_B()).img,//画像
-			'_s':(new MAP_VOLCANO_B())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_B()
 		},
 		'C':{
 			'_o':(new MAP_VOLCANO_C()).img,//画像
-			'_s':(new MAP_VOLCANO_C())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_C();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_C()
 		},
 		'D':{
 			'_o':(new MAP_VOLCANO_D()).img,//画像
-			'_s':(new MAP_VOLCANO_D())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_D();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_D()
 		},
 		'F':{
 			'_o':(new MAP_VOLCANO_F()).img,//画像
-			'_s':(new MAP_VOLCANO_F())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_F();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_F()
 		},
 		'G':{
 			'_o':(new MAP_VOLCANO_G()).img,//画像
-			'_s':(new MAP_VOLCANO_G())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_G();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_G()
 		},
 		'H':{
 			'_o':(new MAP_VOLCANO_H()).img,//画像
-			'_s':(new MAP_VOLCANO_H())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_H();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_H()
 		},
 		'I':{//8
 			'_o':(new MAP_VOLCANO_I()).img,//画像
-			'_s':(new MAP_VOLCANO_I())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_I();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_I()
 		},
 		'J':{
 			'_o':(new MAP_VOLCANO_J()).img,//画像
-			'_s':(new MAP_VOLCANO_J())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_J();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_J()
 		},
 		'K':{
 			'_o':(new MAP_VOLCANO_K()).img,//画像
-			'_s':(new MAP_VOLCANO_K())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_K();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_K()
 		},
 		'L':{
 			'_o':(new MAP_VOLCANO_L()).img,//画像
-			'_s':(new MAP_VOLCANO_L())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_L();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_L()
 		},
 		'M':{
 			'_o':(new MAP_VOLCANO_M()).img,//画像
-			'_s':(new MAP_VOLCANO_M())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_M();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_M()
 		},
 		'N':{
 			'_o':(new MAP_VOLCANO_N()).img,//画像
-			'_s':(new MAP_VOLCANO_N())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_N();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_N()
 		},
 		'O':{
 			'_o':(new MAP_VOLCANO_O()).img,//画像
-			'_s':(new MAP_VOLCANO_O())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_O();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_O()
 		},
 		'P':{
 			'_o':(new MAP_VOLCANO_P()).img,//画像
-			'_s':(new MAP_VOLCANO_P())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_P();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':new MAP_VOLCANO_P()
@@ -298,7 +282,6 @@ const _MAP_THEME={//_parts要素番号0は空文字
 	'_map':{
 		'A':{
 			'_o':(new MAP_CUBE_A()).img,//画像
-			'_s':(new MAP_CUBE_A())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CUBE_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_CUBE_A())
@@ -306,18 +289,16 @@ const _MAP_THEME={//_parts要素番号0は空文字
 	},
 	'_enemies':_MAP_ENEMIES._ENEMIES
 },//_THEME3
-'_THEME5':{//なし
+'_THEME5':{//モアイ
 	'_map':{
 		'B':{
 			'_o':(new MAP_MOAI_A()).img,//画像
-			'_s':(new MAP_MOAI_A())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_MOAI_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':(new MAP_MOAI_A())
 		},
 		'C':{
 			'_o':(new MAP_MOAI_B()).img,//画像
-			'_s':(new MAP_MOAI_B())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_MOAI_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
 			'_obj':(new MAP_MOAI_B())
@@ -329,40 +310,40 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(new ENEMY_a(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',//MAP衝突用ビット
-			'_o':_CANVAS_IMGS['enemy_a_1']//画像オブジェクト
+			'_o':_CANVAS_IMGS['enemy_a_1'],//画像オブジェクト
+			'_obj':new ENEMY_a()
 		},
 		'b':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_b(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_b_1']
+			'_o':_CANVAS_IMGS['enemy_b_1'],
+			'_obj':new ENEMY_b()
 		},
 		'c':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_c(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_c_1']
+			'_o':_CANVAS_IMGS['enemy_c_1'],
+			'_obj':new ENEMY_c()
 		},
 		'd':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_d_1']
+			'_o':_CANVAS_IMGS['enemy_d_1'],
+			'_obj':new ENEMY_d()
 		},
 		'e':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_e_1']
+			'_o':_CANVAS_IMGS['enemy_e_1'],
+			'_obj':new ENEMY_e()
 		},
 		'f':{
 			'_gamestart':function(_mx,_my,_md){
@@ -372,8 +353,8 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(new ENEMY_f(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',	
-			'_o':_CANVAS_IMGS['enemy_f_1']
+			'_o':_CANVAS_IMGS['enemy_f_1'],
+			'_obj':new ENEMY_f()
 		},
 		'g':{
 			'_gamestart':function(_mx,_my,_md){
@@ -384,16 +365,16 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(new ENEMY_g(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',	
-			'_o':_CANVAS_IMGS['enemy_g_1']
+			'_o':_CANVAS_IMGS['enemy_g_1'],
+			'_obj':new ENEMY_g()
 		},
 		'm':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_m(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',	
-			'_o':_CANVAS_IMGS['enemy_m_1']
+			'_o':_CANVAS_IMGS['enemy_m_1'],
+			'_obj':new ENEMY_m()
 		},
 		'l':{
 			'_gamestart':function(_mx,_my,_md){
@@ -401,8 +382,8 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(_o);
 			},
 			'_st':'transform:scale(1,-1);',
-			'_s':'1111,0110,0011,0000',
-			'_o':_CANVAS_IMGS['enemy_m_a_1']
+			'_o':_CANVAS_IMGS['enemy_m_a_1'],
+			'_obj':new ENEMY_q(0,0,_MAP_ENEMIES._DEF_DIR._U)
 		},
 		'n':{
 			'_gamestart':function(_mx,_my,_md){
@@ -410,8 +391,8 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(_o);
 			},
 			'_st':'',
-			'_s':'0000,0011,0110,1111',		
-			'_o':_CANVAS_IMGS['enemy_m_a_1']
+			'_o':_CANVAS_IMGS['enemy_m_a_1'],
+			'_obj':new ENEMY_q(0,0,_MAP_ENEMIES._DEF_DIR._D)
 		},
 		'o':{
 			'_gamestart':function(_mx,_my,_md){
@@ -419,8 +400,8 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(_o);
 			},
 			'_st':'transform:scale(1,-1);',
-			'_s':'1111,0010,0000,0000',		
-			'_o':_CANVAS_IMGS['enemy_m_b_1']
+			'_o':_CANVAS_IMGS['enemy_m_b_1'],
+			'_obj':new ENEMY_r(0,0,_MAP_ENEMIES._DEF_DIR._U)
 		},
 		'p':{
 			'_gamestart':function(_mx,_my,_md){
@@ -428,8 +409,8 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(_o);
 			},
 			'_st':'',
-			'_s':'0000,0000,0010,1111',		
-			'_o':_CANVAS_IMGS['enemy_m_b_2']
+			'_o':_CANVAS_IMGS['enemy_m_b_2'],
+			'_obj':new ENEMY_r(0,0,_MAP_ENEMIES._DEF_DIR._D)
 		},
 		'q':{
 			'_gamestart':function(_mx,_my,_md){
@@ -437,8 +418,8 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(_o);
 			},
 			'_st':'transform:scale(-1,1);',
-			'_s':'0000,1100,1110,1111',
-			'_o':_CANVAS_IMGS['enemy_m_a_1']
+			'_o':_CANVAS_IMGS['enemy_m_a_1'],
+			'_obj':new ENEMY_q(0,0,_MAP_ENEMIES._DEF_DIR._LD)
 		},
 		'r':{
 			'_gamestart':function(_mx,_my,_md){
@@ -446,16 +427,16 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(_o);
 			},
 			'_st':'transform:scale(-1,-1);',
-			'_s':'1111,1110,1100,0000',		
-			'_o':_CANVAS_IMGS['enemy_m_a_1']
+			'_o':_CANVAS_IMGS['enemy_m_a_1'],
+			'_obj':new ENEMY_q(0,0,_MAP_ENEMIES._DEF_DIR._ENEMY_DIFFICULT)
 		},
 		'z':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_fan']
+			'_o':_CANVAS_IMGS['enemy_fan'],
+			'_obj':new ENEMY_FAN()
 		}
 	}
 },//_THEME5
@@ -463,42 +444,36 @@ const _MAP_THEME={//_parts要素番号0は空文字
 	'_map':{
 		'A':{
 			'_o':(new MAP_FRAME_A()).img,//画像
-			'_s':(new MAP_FRAME_A())._s,//衝突座標
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_FRAME_A())
 		},
 		'B':{
 			'_o':(new MAP_FRAME_B()).img,
-			'_s':(new MAP_FRAME_B())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_B();},
 			'objs':{},
 			'_obj':(new MAP_FRAME_B())
 		},
 		'C':{
 			'_o':(new MAP_FRAME_C()).img,
-			'_s':(new MAP_FRAME_C())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_C();},
 			'objs':{},
 			'_obj':(new MAP_FRAME_C())
 		},
 		'D':{
 			'_o':(new MAP_FRAME_D()).img,
-			'_s':(new MAP_FRAME_D())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_D();},
 			'objs':{},
 			'_obj':(new MAP_FRAME_D())
 		},
 		'E':{
 			'_o':(new MAP_FRAME_E()).img,
-			'_s':(new MAP_FRAME_E())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_E();},
 			'objs':{},
 			'_obj':(new MAP_FRAME_E())
 		},
 		'F':{
 			'_o':(new MAP_FRAME_F()).img,
-			'_s':(new MAP_FRAME_F())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_F();},
 			'objs':{},
 			'_obj':(new MAP_FRAME_F())
@@ -511,32 +486,32 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(new ENEMY_frame_1(_mx,_my,_md));
 			},
 			'_st':'',
-			'_s':'0',//MAP衝突用ビット
-			'_o':_CANVAS_IMGS['enemy_frame_1']//画像オブジェクト
+			'_o':_CANVAS_IMGS['enemy_frame_1'],//画像オブジェクト
+			'_obj':new ENEMY_frame_1()
 		},
 		'd':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_d_1']
+			'_o':_CANVAS_IMGS['enemy_d_1'],
+			'_obj':new ENEMY_d()
 		},
 		'e':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_e_1']
+			'_o':_CANVAS_IMGS['enemy_e_1'],
+			'_obj':new ENEMY_e()
 		},
 		'z':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_fan']
+			'_o':_CANVAS_IMGS['enemy_fan'],
+			'_obj':new ENEMY_FAN()
 		}
 	}
 
@@ -545,119 +520,102 @@ const _MAP_THEME={//_parts要素番号0は空文字
 	'_map':{
 		'A':{
 			'_o':(new MAP_CELL_A()).img,//画像
-			'_s':(new MAP_CELL_A())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_CELL_A())
 		},
 		'B':{
 			'_o':(new MAP_CELL_B()).img,//画像
-			'_s':(new MAP_CELL_B())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_CELL_B())
 		},
 		'C':{
 			'_o':(new MAP_CELL_C()).img,//画像
-			'_s':(new MAP_CELL_C())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_C();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_CELL_C())
 		},
 		'D':{
 			'_o':(new MAP_CELL_D()).img,//画像
-			'_s':(new MAP_CELL_D())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_D();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_CELL_D())
 		},
 		'G':{
 			'_o':(new MAP_CELL_G()).img,
-			'_s':(new MAP_CELL_G())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_G();},
 			'objs':{},
 			'_obj':(new MAP_CELL_G())
 		},
 		'H':{
 			'_o':(new MAP_CELL_H()).img,
-			'_s':(new MAP_CELL_H())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_H();},
 			'objs':{},
 			'_obj':(new MAP_CELL_H())
 		},
 		'I':{
 			'_o':(new MAP_CELL_I()).img,
-			'_s':(new MAP_CELL_I())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_I();},
 			'objs':{},
 			'_obj':(new MAP_CELL_I())
 		},
 		'J':{
 			'_o':(new MAP_CELL_J()).img,
-			'_s':(new MAP_CELL_J())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_J();},
 			'objs':{},
 			'_obj':(new MAP_CELL_J())
 		},
 		'K':{
 			'_o':(new MAP_CELL_K()).img,
-			'_s':(new MAP_CELL_K())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_K();},
 			'objs':{},
 			'_obj':(new MAP_CELL_K())
 		},
 		'L':{
 			'_o':(new MAP_CELL_L()).img,
-			'_s':(new MAP_CELL_L())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_L();},
 			'objs':{},
 			'_obj':(new MAP_CELL_L())
 		},
 		'M':{
 			'_o':(new MAP_CELL_M()).img,
-			'_s':(new MAP_CELL_M())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_M();},
 			'objs':{},
 			'_obj':(new MAP_CELL_M())
 		},
 		'N':{
 			'_o':(new MAP_CELL_N()).img,
-			'_s':(new MAP_CELL_N())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_N();},
 			'objs':{},
 			'_obj':(new MAP_CELL_N())
 		},
 		'O':{
 			'_o':(new MAP_CELL_O()).img,
-			'_s':(new MAP_CELL_O())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_O();},
 			'objs':{},
 			'_obj':(new MAP_CELL_O())
 		},
 		'V':{
 			'_o':(new MAP_CELL_V()).img,//画像
-			'_s':(new MAP_CELL_V())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_V();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_CELL_V())
 		},
 		'W':{
 			'_o':(new MAP_CELL_W()).img,//画像
-			'_s':(new MAP_CELL_W())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_W();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_CELL_W())
 		},
 		'Y':{
 			'_o':(new MAP_CELL_Y()).img,//画像
-			'_s':(new MAP_CELL_Y())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_Y();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_CELL_Y())
 		},
 		'Z':{
 			'_o':(new MAP_CELL_Z()).img,//画像
-			'_s':(new MAP_CELL_Z())._s,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_Z();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_obj':(new MAP_CELL_Z())
@@ -669,48 +627,48 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(new ENEMY_cell_core(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',//MAP衝突用ビット
-			'_o':_CANVAS_IMGS['enemy_cell_core']//画像オブジェクト
+			'_o':_CANVAS_IMGS['enemy_cell_core'],//画像オブジェクト
+			'_obj':new ENEMY_cell_core()
 		},
 		'b':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_CELL_A(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_cell_a_1']
+			'_o':_CANVAS_IMGS['enemy_cell_a_1'],
+			'_obj':new ENEMY_CELL_A()
 		},
 		'c':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_CELL_B(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_cell_b_1']
+			'_o':_CANVAS_IMGS['enemy_cell_b_1'],
+			'_obj':new ENEMY_CELL_B()
 		},
 		'd':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
 					},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_d_1']
+			'_o':_CANVAS_IMGS['enemy_d_1'],
+			'_obj':new ENEMY_d()
 		},
 		'e':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_e_1']
+			'_o':_CANVAS_IMGS['enemy_e_1'],
+			'_obj':new ENEMY_e()
 		},
 		'z':{
 			'_gamestart':function(_mx,_my,_md){
 				_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
 				},
 			'_st':'',
-			'_s':'0',
-			'_o':_CANVAS_IMGS['enemy_fan']
+			'_o':_CANVAS_IMGS['enemy_fan'],
+			'_obj':new ENEMY_FAN()
 		}
 	}
 
@@ -838,8 +796,8 @@ class GameObject_MAP{
 			//MAPテーマより、MAPビットを取得する
 			let _p=
 				(_this.isEnemiesBit(_m[_j]))
-				?_MAP_THEME[_this.map_theme]._enemies[_m[_j]]
-				:_MAP_THEME[_this.map_theme]._map[_m[_j]];
+				?_MAP_THEME[_this.map_theme]._enemies[_m[_j]]._obj
+				:_MAP_THEME[_this.map_theme]._map[_m[_j]]._obj;
 			if(_p===undefined){
 				console.log('テーマ:'+_this.map_theme+'に対して '+_m[_j]+'の定義がありません。');
 			}

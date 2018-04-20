@@ -1,6 +1,6 @@
 'use strict';
 
-const _MAP=new GameObject_MAP();
+_MAP=new GameObject_MAP();
 let $_pb=null;
 let $_ab=null;
 let $_mp=null;
@@ -29,7 +29,7 @@ const _AJAX=function(_url,_type,_f){
 const _DATAAPI={
 _data_api:'',
 _blog_id:2,
-_url:'http://localhost:8080/mt6/mt-data-api.cgi',
+_url:'/mt6/mt-data-api.cgi',
 _init:function(_this){
 	_this._data_api=new MT.DataAPI({
 		baseUrl:_this._url,
@@ -37,7 +37,7 @@ _init:function(_this){
 	});
 
 	_this._data_api.getToken((res)=>{
-		if (res.error) {
+		if(res.error){
 			if(res.error.code===401) {
 				console.log('reload after 401 error occuered in updating.');
 				location.href=
@@ -45,6 +45,13 @@ _init:function(_this){
 			}
 			return false;
 		}
+		if(!res.accessToken) {
+			alert('An accessToken error occurred.');
+			location.href=
+				_this._data_api.getAuthorizationUrl(location.href);
+			return;
+		}
+
 		_GAME_STAGEEDIT._init_images(
 			_CANVAS_IMGS,
 			_GAME_STAGEEDIT._init);

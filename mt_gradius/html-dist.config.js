@@ -15,7 +15,8 @@ module.exports = {
    // append the following things to the body 
    remove:'script',
    appends: [
-    script({src:args.jsFile+'?_date='+(new Date().getTime())})
+    script({src:args.jsFile+'?_date='+(new Date().getTime())}),
+    googleAnalytics('UA-117905768-1')
    ]
  }
 }

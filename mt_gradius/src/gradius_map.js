@@ -1048,7 +1048,7 @@ class GameObject_MAP{
 		for(let _i=0;_i<((_m_length>20)?20:_m_length);_i++){
 		let _ml=_m._map[_i].length;
 		for(let _j=0;_j<((_ml>30)?30:_ml);_j++){
-			let _k=_m._map[_i][_j+100];
+			let _k=_m._map[_i][_j+20];
 			if(_k===undefined){continue;}
 			if(_k==='0'){continue;}
 			if(_k.match(_this.collision_enemies)!==null){

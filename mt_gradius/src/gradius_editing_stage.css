@@ -77,7 +77,7 @@ form #form_inner{margin:0px auto;width:100%;}
 
 form #map{
 	background-color:rgba(0,0,0,1);
-	border:1px solid rgba(255,255,255,1);
+	border:3px solid rgba(255,255,255,1);
 	border-radius:10px;
 	margin-bottom:80px;
 	overflow:hidden;
@@ -152,19 +152,20 @@ form #area .area_blocks_rows .area_block.over{background-color:rgba(255,255,255,
     z-index:1;
 }
 
-#area_parts .parts_blocks_wrapper{padding:20px;padding-bottom:0px;}
+#area_parts .parts_blocks_wrapper{flex-shrink:0;padding:10px;}
 #area_parts .parts_blocks_wrapper h3{border-bottom:1px solid rgba(255,255,255,1);}
 
 #area_parts .parts_blocks{display:flex;}
 #area_parts .parts_block_wrapper{
 	flex-grow:1;
-	padding:20px;
+	margin:10px;
 	position:relative;
 	text-align:center;
-	width:150px;
+	width:100px;
 }
+#area_parts .parts_block_wrapper .text{display:none;}
 #area_parts .parts_block_wrapper .parts_block{
-	background-color:rgba(0,0,0,1);
+	background-color:rgba(0,0,0,1) !important;
 	border:0.2px dotted rgba(255,255,255,1.0);
 	flex-grow:1;
 	overflow:hidden;
@@ -196,7 +197,7 @@ form .form_group input[type="range"] {
     margin:0px 20px;
     width: 40%;
 }
-form .form_group{border: 2px solid rgba(255,255,255,0);margin-bottom:10px;padding:20px;}
+form .form_group{border: 2px solid rgba(255,255,255,0);margin-bottom:10px;padding:10px 20px;}
 form .form_group:after{clear:both;content:'';display:table;}
 form .form_group:hover{
 	border: 2px solid rgba(255,255,255,0.5);

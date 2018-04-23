@@ -5,7 +5,7 @@ module.exports = {
   // minify the HTML 
   minify: true,
   head:{
-    remove:'script,link',
+    remove:'link',
     appends:[
       link({rel:'apple-touch-icon',href:'images/homeicon.jpg'}),
       link({rel:'stylesheet',href:args.cssFile+'?_date='+(new Date().getTime())})

@@ -2865,6 +2865,9 @@ _setDrawImage(_d){
 	//scale:画像中心を基点とした比率維持の拡大縮小。
 	//		0の場合は表示しない。
 	//basePoint:拡縮・回転時の基準点
+
+	//以下は描画処理させない
+	//引数未定義は終了
 	if(_d===undefined
 		||_d.img===undefined
 		||_d.scale===0){return;}
@@ -2879,6 +2882,23 @@ _setDrawImage(_d){
 	let _y=_d.y||0;
 	let _basePoint=_d.basePoint||5;//拡縮による基準点
 	let _alpha=_d.alpha||1;//透明度
+
+	if(_d.basePoint===1
+		&&_d.imgPosx===undefined
+		&&_d.alpha===undefined
+		&&_d.scale===undefined
+		&&_d.deg===undefined){
+
+//		console.log('here')
+		_CONTEXT.drawImage(
+			_d.img,
+			_d.x,
+			_d.y,
+			_width,
+			_height		
+		);
+		return;
+	}
 
 	const _DEF_BASEPOINT=[//拡縮基準点ポイントの定義(0-8)
 		{x:0,y:0},//0:ここはありえない
@@ -2920,31 +2940,6 @@ _setDrawImage(_d){
 	_CONTEXT.restore();
 	
 },
-// _setDrawImage(_d){
-// 	//画像表示
-// 	//img:画像オブジェクト
-// 	//x:画像のx座標
-// 	//y:画像のy座標
-// 	//deg:角度（0〜360.反時計回り）
-// 	//scale:画像スケール
-// 	let img=_d.img;
-// 	let _s=_d.scale||1;
-// 	let _deg=_d.deg||0;
-// 	let _sw=_d.img.width*_s;
-// 	let _sh=_d.img.height*_s;
-// 	_CONTEXT.save();
-
-// 	_CONTEXT.drawImage(
-// 		_img,_x-(_sw/2),_y-(_sh/2),_sw,_sh
-// 	);
-// 	_CONTEXT.restore();
-
-// 	// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
-// 	// _CONTEXT.beginPath();
-// 	// _CONTEXT.rect(_x-(_sw/2),_y-(_sh/2),_sw,_sh);
-// 	// _CONTEXT.stroke();
-
-// },//_setDrawImage
 _multilineText(context, text, width) {
     let len=text.length,
     	strArray=[],

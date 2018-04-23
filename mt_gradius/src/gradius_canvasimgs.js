@@ -136,6 +136,11 @@ const _CANVAS_IMGS={
 	'enemy_bigcore2_core':{src:'images/gradius_enemy_bigcore2_core.png',rate:1.00,obj:new Image()},
 	'enemy_bigcore2_back':{src:'images/gradius_enemy_bigcore2_back.png',rate:1.00,obj:new Image()},
 
+	'enemy_death':{src:'images/gradius_enemy_death.png',rate:1.0,obj:new Image()},
+	'enemy_death_front':{src:'images/gradius_enemy_death_front.png',rate:1.0,obj:new Image()},
+	'enemy_death_shot':{src:'images/gradius_enemy_death_shot.png',rate:1.0,obj:new Image()},
+	'enemy_death_shot2':{src:'images/gradius_enemy_death_shot2.png',rate:1.0,obj:new Image()},
+
 	'enemy_collapes0':{src:'images/gradius_enemy_collapes0.png',rate:1.0,obj:new Image()},
 	'enemy_collapes1':{src:'images/gradius_enemy_collapes1.png',rate:1.0,obj:new Image()},
 	'enemy_collapes2':{src:'images/gradius_enemy_collapes2.png',rate:1.0,obj:new Image()},
@@ -282,6 +287,11 @@ const _CANVAS_AUDIOS={
 
 	'enemy_bullet_laser':
 		{src:'audios/enemy_bullet_laser.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+	'enemy_bullet_laser_long':
+		{src:'audios/enemy_bullet_laser_long.mp3',
 		volume:1.0,
 		obj:null,
 		buf:new Object()},

@@ -53,6 +53,7 @@ class GameObject_ENEMY_SHOT{
 
 		_this._shot_alive=true;//発射中フラグ
 		_this._isshow=true;//弾の状態
+		_this.is_ignore_collision=false;//自機衝突したら消えるのを無視する
 
 		_this.shotColMap=[
 			"1,1,"+(_this.width-1)+","+(_this.height-1)
@@ -60,6 +61,7 @@ class GameObject_ENEMY_SHOT{
 	}
 	init(){
 		let _this=this;
+		if(_this.is_ignore_collision){return;}
 		_this._shot_alive=false;
 		_this._isshow=false;
 	}
@@ -207,4 +209,121 @@ class ENEMY_SHOT_FRAME_SMALL
 		_this.speed=5;
 	}
 	shot(){}
+}
+
+
+class ENEMY_SHOT_DEATH
+	extends GameObject_ENEMY_SHOT{
+	constructor(_p){
+		super({
+			x:_p.x,
+			y:_p.y,
+			width:25,
+			height:10,
+			deg:_p.deg
+		});
+		let _this=this;
+		_this.img=_CANVAS_IMGS['enemy_death_shot'].obj;
+		_this.speed=1;
+		_this._c=0;
+	}
+	shot(){
+		let _this=this;
+	}
+	move(){
+		let _this=this;
+		if(_GAME.isEnemyCanvasOut(_this)){
+			_this.init();
+			return;
+		}
+		if(!_this._shot_alive){return;}
+		_this.shot();
+		_this.map_collition();
+		_this.speed+=0.2;
+		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
+		if(_p._y<_this.y){_this.deg++;}
+		if(_p._y>_this.y){_this.deg--;}
+
+		_this.rad=_this.deg*Math.PI/180;
+		_this.sx=Math.cos(_this.rad);//単位x
+		_this.sy=Math.sin(_this.rad);//単位y
+		_this.x-=parseInt(_this.sx*_this.speed);
+		_this.y-=parseInt(_this.sy*_this.speed);
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x,
+			y:_this.y,
+			deg:_this.deg
+		});
+		_this._c++;
+	}
+}
+
+class ENEMY_SHOT_DEATH2
+	extends GameObject_ENEMY_SHOT{
+	constructor(_p){
+		super({
+			x:_p.x,
+			y:_p.y,
+			width:140,
+			height:70,
+			rad:Math.PI
+		});
+		let _this=this;
+		_this.img=_CANVAS_IMGS['enemy_death_shot2'].obj;
+		_this.speed=1;
+		_this.bossx=_p.x;
+		//衝突されても消さない
+		_this.is_ignore_collision=true;
+	}
+	move(){
+		let _this=this;
+		if(_this.bossx<=-150){
+			_this._shot_alive=false;
+			_this._isshow=false;
+			return;
+		}
+		_this.x=(_this.x<=-150)?-150:_this.x-30;
+		_this.bossx=(_this.x>-150)?_this.bossx:_this.bossx-30;
+		_this.shotColMap=[
+			"0,0,"+(_this.bossx+25)+","+(_this.height)
+		];
+
+		//先頭(width:40)
+		_CONTEXT.drawImage(
+			_this.img,
+			0,
+			0,
+			40,
+			_this.height,
+			_this.x,
+			_this.y,
+			40,
+			_this.height		
+		);
+		//真ん中
+		_CONTEXT.drawImage(
+			_this.img,
+			40,
+			0,
+			10,
+			_this.height,
+			_this.x+40,
+			_this.y,
+			_this.bossx-_this.x-25,
+			_this.height		
+		);
+		//後方(width:70)
+		_CONTEXT.drawImage(
+			_this.img,
+			70,
+			0,
+			70,
+			_this.height,
+			_this.bossx,
+			_this.y,
+			70,
+			_this.height		
+		);
+	}
 }

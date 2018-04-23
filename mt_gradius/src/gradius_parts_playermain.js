@@ -413,6 +413,8 @@ class GameObject_FORCEFIELD{
 
 		_this._c=0;
 		_this._scale=0;//フォースのサイズ
+		_this.reduce_scale_rate=0.09;//フォースの削られるサイズ
+		_this.reduce_scale_min=0.55;//フォースが切れる最小サイズ
 
 		//アニメーション定義
 		_this.ani=[0,106];
@@ -426,9 +428,12 @@ class GameObject_FORCEFIELD{
 		_this.width=_this.img.width/4;
 		_this.height=_this.img.height;
 	}
-	isalive(){
-		return (this._scale===0)?false:true;
+	reset(){
+		let _this=this;
+		_this._scale=0;
+		_POWERMETER._set_meter_on('000001');
 	}
+	isalive(){return (this._scale===0)?false:true;}
 	enemy_collision(_e){
 		let _this=this;
 		if(!_this.isalive()){return;}
@@ -459,6 +464,11 @@ class GameObject_FORCEFIELD{
 			_e.shotColMap,
 			_e.x+","+_e.y
 			)===_IS_SQ_NOTCOL){return;}
+		if(_e.is_ignore_collision){
+			//貫通するショットは一気にシールドを削る
+			_this.reset();
+			return;
+		}
 		_e.init();
 		_this.reduce();
 	}
@@ -500,11 +510,10 @@ class GameObject_FORCEFIELD{
 		if(!_this.isalive()){return;}
 		if(!_this.isCollision()){return;}
 
-		_this._scale-=0.09;
+		_this._scale-=_this.reduce_scale_rate;
 		//ある大きさになれば削除
-		if(_this._scale<=0.55){
-			_this._scale=0;
-			_POWERMETER._set_meter_on('000001');
+		if(_this._scale<=_this.reduce_scale_min){
+			_this.reset();
 		}
 		// _this.width*=_this._scale;
 		// _this.height*=_this._scale;
@@ -519,18 +528,8 @@ class GameObject_FORCEFIELD{
 		_this.x=_GO.x;
 		_this.y=_GO.y;
 
-		// _this.x=_GO.getPlayerCenterPosition()._x
-		// 			-6;
-		// _this.y=_GO.getPlayerCenterPosition()._y
-		// 			-2;
-
 		_this._c=
 			(_this._c>=(_this.ani.length*5)-1)?0:_this._c+1;
-//		_this.ani[parseInt(_this._c/5)];
-		// _CONTEXT.drawImage(
-		// 	_img,_this.x,_this.y,
-		// 		_this.width,_this.height
-		// );
 
 		//画像を中心起点とし、拡縮を中心基準点で処理させる
 		_GAME._setDrawImage({
@@ -542,34 +541,6 @@ class GameObject_FORCEFIELD{
 			height:_this.height,
 			scale:_this._scale
 		});
-
-		// _CONTEXT.save();
-		// _CONTEXT.translate(
-		// 	_GO.getPlayerCenterPosition()._x-6,
-		// 	_GO.getPlayerCenterPosition()._y-2);
-		// _CONTEXT.scale(_this._scale,_this._scale);
-		// _CONTEXT.drawImage(
-		// 	_this.img,
-		// 	_this.ani[parseInt(_this._c/5)],
-		// 	0,
-		// 	_this.width,
-		// 	_this.height,
-		// 	-_this.width/2,
-		// 	-_this.height/2,
-		// 	_this.width,
-		// 	_this.height
-		// );
-		// _CONTEXT.restore();
-
-		// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
-		// _CONTEXT.beginPath();
-		// _CONTEXT.rect(
-		// 	_this.x,
-		// 	_this.y,
-		// 	_this.width,
-		// 	_this.height
-		// );
-		// _CONTEXT.stroke();
 	}
 }
 
@@ -586,8 +557,11 @@ class GameObject_SHIELD
 	extends GameObject_FORCEFIELD{
 	constructor(){
 		super();
+		let _this=this;
 		//アニメーション定義
-		this.ani=[0,40];
+		_this.ani=[0,40];
+		_this.reduce_scale_rate=0.04;//フォースの削られるサイズ
+		_this.reduce_scale_min=0.35;//フォースが切れる最小サイズ
 	}
 	getPlayerCenterPosition(){
 		//センタリングはプレーヤーの中心から約右に配置
@@ -629,6 +603,11 @@ class GameObject_SHIELD
 			_e.shotColMap,
 			_e.x+","+_e.y
 			)===_IS_SQ_NOTCOL){return;}
+		if(_e.is_ignore_collision){
+			//貫通するショットは一気にシールドを削る
+			_this.reset();
+			return;
+		}
 		_e.init();
 		_this.reduce();
 	}
@@ -662,20 +641,6 @@ class GameObject_SHIELD
 			return;
 		}
 
-	}
-	reduce(){
-		let _this=this;
-		if(!_this.isalive()){return;}
-		if(!_this.isCollision()){return;}
-
-//		console.log(_this._scale)
-		_this._scale-=0.04;
-		//ある大きさになれば削除
-		if(_this._scale<0.35){
-			_this._scale=0;
-			_POWERMETER._set_meter_on('000001');
-		}
-		_GAME._setPlay(_CANVAS_AUDIOS['vicviper_shield_reduce']);
 	}
 	move(_p){
 		let _this=this;

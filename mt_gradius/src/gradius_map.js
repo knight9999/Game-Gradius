@@ -164,6 +164,9 @@ const _MAP_ENEMIES_BOSS={
 	},
 	'enemy_cell':{
 		_f:function(){return new ENEMY_BOSS_CELL(_CANVAS.width+200,200)}
+	},
+	'enemy_death':{
+		_f:function(){return new ENEMY_BOSS_DEATH(_CANVAS.width+200,200)}
 	}
 };
 

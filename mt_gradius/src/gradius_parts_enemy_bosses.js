@@ -2347,7 +2347,7 @@ class ENEMY_BOSS_CELL_MAIN
 		_this.y=_d.y||250;
 		_this.alpha=(_d.alpha===undefined)?0:_d.alpha;
 		_this.speed=2;
-		_this._standby=_d.standby;
+		_this._standby=false;
 
 		//アニメーション定義
 		_this.ani=(_d.dark)?[480,640,800]:[0,160,320];

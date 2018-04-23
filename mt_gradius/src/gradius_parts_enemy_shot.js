@@ -61,7 +61,6 @@ class GameObject_ENEMY_SHOT{
 	}
 	init(){
 		let _this=this;
-		if(_this.is_ignore_collision){return;}
 		_this._shot_alive=false;
 		_this._isshow=false;
 	}
@@ -275,6 +274,12 @@ class ENEMY_SHOT_DEATH2
 		_this.bossx=_p.x;
 		//衝突されても消さない
 		_this.is_ignore_collision=true;
+	}
+	init(){
+		let _this=this;
+		if(_this.is_ignore_collision){return;}
+		_this._shot_alive=false;
+		_this._isshow=false;
 	}
 	move(){
 		let _this=this;

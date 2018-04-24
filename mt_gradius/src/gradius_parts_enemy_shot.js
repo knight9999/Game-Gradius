@@ -51,7 +51,6 @@ class GameObject_ENEMY_SHOT{
 		_this.sx=Math.cos(_this.rad);//単位x
 		_this.sy=Math.sin(_this.rad);//単位y
 
-		_this._shot_alive=true;//発射中フラグ
 		_this._isshow=true;//弾の状態
 		_this.is_ignore_collision=false;//自機衝突したら消えるのを無視する
 
@@ -61,7 +60,6 @@ class GameObject_ENEMY_SHOT{
 	}
 	init(){
 		let _this=this;
-		_this._shot_alive=false;
 		_this._isshow=false;
 	}
 	map_collition(){
@@ -77,8 +75,16 @@ class GameObject_ENEMY_SHOT{
 		return {_x:this.x+(this.width/2),
 				_y:this.y+(this.height/2)}
 	}
-	isalive(){return this._shot_alive;}
 	isshow(){return this._isshow;}
+	set_imgPos(){
+		let _this=this;
+		_this._c=
+			(_this._c>=(_this.imgPos.length*_this.aniItv)-1)?0:_this._c+1;
+	}
+	get_imgPos(){
+		let _this=this;
+		return _this.imgPos[parseInt(_this._c/_this.aniItv)]
+	}
 	move(){
 		let _this=this;
 		_this.map_collition();
@@ -87,20 +93,17 @@ class GameObject_ENEMY_SHOT{
 			_this.init();
 			return;
 		}
-		if(!_this._shot_alive){return;}
-		_this._c=(_this._c>=7)?0:_this._c+1;
-
 		_this.x+=_this.sx*_this.speed;
 		_this.y+=_this.sy*_this.speed;
 
+		_this.set_imgPos();
 		_GAME._setDrawImage({
 			img:_this.img,
 			x:_this.x,
 			y:_this.y,
 			width:_this.width,
-			imgPosx:_this.imgPos[parseInt(_this._c/_this.aniItv)]
+			imgPosx:_this.get_imgPos()
 		});
-		_this._shot_alive=true;
 	}
 }
 
@@ -117,7 +120,6 @@ class ENEMY_SHOT_LASER
 			_this.init();
 			return;
 		}
-		if(!_this._shot_alive){return;}
 		_this.map_collition();
 
 		_this.x-=_this.speed;
@@ -143,7 +145,6 @@ class ENEMY_SHOT_CRYSTALCORE
 			_this.init();
 			return;
 		}
-		if(!_this._shot_alive){return;}
 		_this.map_collition();
 
 		_this.x-=_this.sx*_this.speed;
@@ -184,7 +185,6 @@ class ENEMY_SHOT_FRAME
 			_this.init();
 			return;
 		}
-		if(!_this._shot_alive){return;}
 		_this.shot();
 		_this.map_collition();
 		_this.x-=_this.sx*_this.speed;
@@ -224,10 +224,6 @@ class ENEMY_SHOT_DEATH
 		let _this=this;
 		_this.img=_CANVAS_IMGS['enemy_death_shot'].obj;
 		_this.speed=1;
-		_this._c=0;
-	}
-	shot(){
-		let _this=this;
 	}
 	move(){
 		let _this=this;
@@ -235,8 +231,6 @@ class ENEMY_SHOT_DEATH
 			_this.init();
 			return;
 		}
-		if(!_this._shot_alive){return;}
-		_this.shot();
 		_this.map_collition();
 		_this.speed+=0.2;
 		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
@@ -258,6 +252,7 @@ class ENEMY_SHOT_DEATH
 	}
 }
 
+//デスのレーザーショット
 class ENEMY_SHOT_DEATH2
 	extends GameObject_ENEMY_SHOT{
 	constructor(_p){
@@ -278,13 +273,11 @@ class ENEMY_SHOT_DEATH2
 	init(){
 		let _this=this;
 		if(_this.is_ignore_collision){return;}
-		_this._shot_alive=false;
 		_this._isshow=false;
 	}
 	move(){
 		let _this=this;
 		if(_this.bossx<=-150){
-			_this._shot_alive=false;
 			_this._isshow=false;
 			return;
 		}

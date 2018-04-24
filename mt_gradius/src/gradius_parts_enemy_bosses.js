@@ -1189,8 +1189,8 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		let _d=_this._data.split(',');
 		_ENEMIES_SHOTS.push(
 			new ENEMY_SHOT_CRYSTALCORE({
-				x:_this.x,
-				y:_this.y,
+				x:_this.x+10,
+				y:_this.y+10,
 				deg:parseInt(_d[3])
 				})
 		);
@@ -2189,7 +2189,6 @@ class ENEMY_BOSS_CELL
 			"50,0,"+_this.width+","+_this.height
 		];
 		_this.is_able_collision=false;
-		_this.is_ignore_collision=true;
 		_this._collision_type='t9';
 
 		_this._col_c=0;//爆発表示カウント
@@ -2345,7 +2344,7 @@ class ENEMY_BOSS_CELL_MAIN
 		_this._status=1;
 		_this.x=_d.x||_CANVAS.width+200;
 		_this.y=_d.y||250;
-		_this.alpha=(_d.alpha===undefined)?0:_d.alpha;
+		_this.alpha=1;
 		_this.speed=2;
 		_this._standby=false;
 
@@ -2379,7 +2378,6 @@ class ENEMY_BOSS_CELL_MAIN
 		let _this=this;
 		_this.x=_d.x;
 		_this.y=_d.y;
-		_this._standby=(_d.standby===undefined||_d.standby===false)?false:true;
 	}
 	moveDraw(){
 		//描画状態
@@ -2517,7 +2515,7 @@ class ENEMY_BOSS_DEATH
 	constructor(_x,_y){
 		super(_CANVAS_IMGS['enemy_death'].obj,_x,_y);
 		let _this=this;
-		_this._status=100;
+		_this._status=150;
 		_this.width=202;
 		_this.height=140;
 
@@ -2538,9 +2536,9 @@ class ENEMY_BOSS_DEATH
 		];
 		_this._collision_type='t9';
 		_this.defSpeed=3;
-
+		//前画像（スプライト）調整するための変数
 		_this._front_imgPosx=0;
-
+		//レーザをショットするまでの判別
 		_this._isfirstbreak=false;
 
 	}
@@ -2631,7 +2629,7 @@ class ENEMY_BOSS_DEATH
 
 		if(_this._isfirstbreak===false
 			&&(_this._c>=2000
-			||_this._status<=50)){
+			||_this._status<=75)){
 			_this._isfirstbreak=true;
 			//爆発して終了
 			_ENEMIES_COLLISIONS.push(

@@ -117,7 +117,7 @@ class GameObject_PLAYER_MAIN
 			return;
 		}
 		if(_GAME.isSqCollision(
-			"25,26,35,32",
+			"25,25,45,35",
 			this.x+","+this.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
@@ -133,7 +133,7 @@ class GameObject_PLAYER_MAIN
 		}
 
 		if(_GAME.isSqCollision(
-			"25,26,35,32",
+			"25,25,45,35",
 			this.x+","+this.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
@@ -317,16 +317,14 @@ class GameObject_PLAYER_MAIN
 			_this.imgsize_vb,
 			_this.imgsize_vb
 		);
-
-		// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
-		// _CONTEXT.beginPath();
-		// _CONTEXT.rect(
-		// 	_this.x,
-		// 	_this.y,
-		// 	_this.imgsize,
-		// 	_this.imgsize
+		//"20,25,40,35",
+		// _CONTEXT.strokeStyle = 'rgb(0,0,0)';
+		// _CONTEXT.fillRect(
+		// 	_this.x+25,
+		// 	_this.y+25,
+		// 	20,
+		// 	10
 		// );
-		// _CONTEXT.stroke();
 	}
 }
 
@@ -1867,8 +1865,6 @@ class GameObject_SHOTS_RIPPLE_LASER
 			let _t=this.shots[_k];
 //			console.log('_kk:'+_k);
 			if(!_t._shot_alive){continue;}
-			//敵自体無視
-			if(_e.isIgnore()){continue;}
 			//衝突を無視
 			if(_e.isIgnoreCollision()){continue;}
 

@@ -1657,7 +1657,7 @@ const _IS_ENEMIES_COLLISION=()=>{
 		for(let _i=0;_i<_e.length;_i++){
 			//スタンバイ状態は無視する
 			if(_e[_i].isIgnore()){continue;}
-			if(_e[_i].isStandBy()){continue;}		
+			if(_e[_i].isStandBy()){continue;}//敵自体無視	
 			if(!_e[_i].isalive()){continue;}
 			let _oe=_e[_i];
 			_os.enemy_collision(_oe);
@@ -1700,15 +1700,13 @@ const _IS_ENEMIES_SHOT_COLLISION=()=>{
 
 	for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
 		//非表示・かつ生存してない場合は、要素から外す
-		if(!_ENEMIES_SHOTS[_i].isshow()
-			&&!_ENEMIES_SHOTS[_i].isalive()){
+		if(!_ENEMIES_SHOTS[_i].isshow()){
 			_ENEMIES_SHOTS.splice(_i,1);
 		}
 	}
 
 	for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
 		let _e=_ENEMIES_SHOTS[_i];
-		if(!_e._shot_alive){continue;}
 		//自機衝突判定
 		_PLAYERS_MAIN.enemy_shot_collision(_e);
 		_PLAYERS_MAIN_FORCE.enemy_shot_collision(_e);

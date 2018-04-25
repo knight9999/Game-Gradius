@@ -1393,13 +1393,6 @@ class GameObject_STAGESELECT{
 		let _md=_this.mapdef;		
 		_MAP.showMapForStageselect(_md);
 
-		//左カラム表示
-		_CONTEXT.beginPath();
-		_CONTEXT.lineWidth=1;
-		_CONTEXT.strokeStyle='rgba(255,255,255,1)';
-		_CONTEXT.fillStyle='rgba(255,255,255,1)';
-		_CONTEXT.strokeRect(50,130,300,200);
-
 		//テキスト表示
 		_GAME._setDrawTextToFont('stage title',400,130,0.3);
 		_CONTEXT.moveTo(400,160);

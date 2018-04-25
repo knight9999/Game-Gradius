@@ -23,26 +23,15 @@ class MAP_OBJECT{
 		_this.img=_p.img;
 		_this.imgPos=_p.imgPos||[0];//スプライトのコマポジション
 		_this.aniItv=_p.aniItv||1;//アニメーションの間隔
-		_this.width=_p.width||_this.img.obj.width;//画像width
-		_this.height=_p.height||_this.img.obj.height;//画像height
+		_this.width=_p.width||_this.img.width;//画像width
+		_this.height=_p.height||_this.img.height;//画像height
 		_this.dir=_p.dir||1;
 		_this.x=_p.x||0;
 		_this.y=_p.y||0;
+		_this._s=_p.s||'1';
 
-		_this._s='1';
 		_this._c=0;
-		_this._DEF_DIR={//向き
-			_U:0,//上
-			_D:1,//下
-			_R:2,//右
-			_L:3,//左
-			_LU:4,//左上
-			_LD:5,//左下
-			_RU:6,//右上
-			_RD:7//右下
-		};
-
-		_this.is_able_collision=false;//破壊可否フラグ
+ 		_this.is_able_collision=false;//破壊可否フラグ
 
 		_this._DEF_SHOTSTATUS={
 			//main.jsよりショットによる衝突判定を設定
@@ -59,17 +48,24 @@ class MAP_OBJECT{
 		let _this=this;
 		return _this.img.obj;
 	}
+	set_imgPos(){
+		let _this=this;
+		_this._c=
+			(_this._c>=(_this.imgPos.length*_this.aniItv)-1)?0:_this._c+1;
+	}
+	get_imgPos(){
+		let _this=this;
+		return _this.imgPos[parseInt(_this._c/_this.aniItv)]
+	}
 	collision(){
 		//壁を破壊する場合のロジック
 	}
 	moveDraw(_x,_y){
 		let _this=this;
-		_this._c=
-			(_this._c>=(_this.imgPos.length*_this.aniItv)-1)?0:_this._c+1;
-
+		_this.set_imgPos();
 		_GAME._setDrawImage({
 			img:_this.img,
-			imgPosx:_this.imgPos[parseInt(_this._c/_this.aniItv)],
+			imgPosx:_this.get_imgPos(),
 			x:_x,
 			y:_y,
 			width:_this.width,
@@ -303,7 +299,7 @@ class MAP_FRAME_C extends MAP_OBJECT{
 		});
 		let _this=this;
 		_this._s='00,01,11';
-		_this.direct=_this._DEF_DIR._LD
+		_this.direct=_DEF_DIR._LD
 	}
 }
 class MAP_FRAME_D extends MAP_OBJECT{
@@ -317,7 +313,7 @@ class MAP_FRAME_D extends MAP_OBJECT{
 		});
 		let _this=this;
 		_this._s='11,01,00';
-		_this.direct=_this._DEF_DIR._LU;
+		_this.direct=_DEF_DIR._LU;
 	}
 }
 class MAP_FRAME_E extends MAP_OBJECT{
@@ -331,7 +327,7 @@ class MAP_FRAME_E extends MAP_OBJECT{
 		});
 		let _this=this;
 		_this._s='00,10,11';
-		_this.direct=_this._DEF_DIR._LU;
+		_this.direct=_DEF_DIR._LU;
 	}
 }
 class MAP_FRAME_F extends MAP_OBJECT{
@@ -345,7 +341,7 @@ class MAP_FRAME_F extends MAP_OBJECT{
 		});
 		let _this=this;
 		_this._s='11,10,00';
-		_this.direct=_this._DEF_DIR._LU;
+		_this.direct=_DEF_DIR._LU;
 	}
 }
 

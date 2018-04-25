@@ -16,130 +16,108 @@ let _MAP_SCROLL_POSITION_X=0;
 let _MAP_SCROLL_POSITION_Y=0;
 
 const _MAP_ENEMIES={
-_DEF_DIR:{//向き
-	_U:0,//上
-	_D:1,//下
-	_R:2,//右
-	_L:3,//左
-	_LU:4,//左上
-	_LD:5,//左下
-	_RU:6,//右上
-	_RD:7//右下
-},//_DEF_DIR
 _setDir:function(_mx,_my){
 	let _this=this;
 	let _d=(_MAP.isMapCollision(_mx,_my-1))
-			?_this._DEF_DIR._U
-			:_this._DEF_DIR._D;
+			?_DEF_DIR._U
+			:_DEF_DIR._D;
 	_d=(_MAP.isMapCollision(_mx,_my+1))
-			?_this._DEF_DIR._D
-			:_this._DEF_DIR._U;
+			?_DEF_DIR._D
+			:_DEF_DIR._U;
 	return _d;
 },//_setDir
 _ENEMIES:{
 	'a':{
-		'_gamestart':function(_mx,_my,_md){
-			_ENEMIES.push(new ENEMY_a(_mx,_my,_md));
+		'_gamestart':(_mx,_my,_md)=>{
+			_ENEMIES.push(new ENEMY_a({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_a_1'],//画像オブジェクト
-		'_obj':new ENEMY_a()
+		'_getObj':()=>{return new ENEMY_a({})}
 	},
 	'b':{
-		'_gamestart':function(_mx,_my,_md){
-			_ENEMIES.push(new ENEMY_b(_mx,_my,_md));
+		'_gamestart':(_mx,_my,_md)=>{
+			_ENEMIES.push(new ENEMY_b({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_b_1'],
-		'_obj':new ENEMY_b()
+		'_getObj':()=>{return new ENEMY_b({})}
 	},
 	'c':{
-		'_gamestart':function(_mx,_my,_md){
-			_ENEMIES.push(new ENEMY_c(_mx,_my,_md));
+		'_gamestart':(_mx,_my,_md)=>{
+			_ENEMIES.push(new ENEMY_c({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_c_1'],
-		'_obj':new ENEMY_c()
+		'_getObj':()=>{return new ENEMY_c({})}
 	},
 	'd':{
-		'_gamestart':function(_mx,_my,_md){
-			_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
+		'_gamestart':(_mx,_my,_md)=>{
+			_ENEMIES.push(new ENEMY_d({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_d_1'],
-		'_obj':new ENEMY_d()
+		'_getObj':()=>{return new ENEMY_d({})}
 	},
 	'e':{
-		'_gamestart':function(_mx,_my,_md){
-			_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
+		'_gamestart':(_mx,_my,_md)=>{
+			_ENEMIES.push(new ENEMY_e({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_e_1'],
-		'_obj':new ENEMY_e()
+		'_getObj':()=>{return new ENEMY_e({})}
 	},
 	'f':{
-		'_gamestart':function(_mx,_my,_md){
+		'_gamestart':(_mx,_my,_md)=>{
 			_md=(_my<_CANVAS.height/2)
-				?_MAP_ENEMIES._DEF_DIR._U
-				:_MAP_ENEMIES._DEF_DIR._D;
-			_ENEMIES.push(new ENEMY_f(_mx,_my,_md));
+				?_DEF_DIR._U
+				:_DEF_DIR._D;
+			_ENEMIES.push(new ENEMY_f({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_f_1'],
-		'_obj':new ENEMY_f()
+		'_getObj':()=>{return new ENEMY_f({})}
 	},
 	'g':{
-		'_gamestart':function(_mx,_my,_md){
+		'_gamestart':(_mx,_my,_md)=>{
 			_md=(_my<_CANVAS.height/2)
-				?_MAP_ENEMIES._DEF_DIR._U
-				:_MAP_ENEMIES._DEF_DIR._D;
+				?_DEF_DIR._U
+				:_DEF_DIR._D;
 
-			_ENEMIES.push(new ENEMY_g(_mx,_my,_md));
+			_ENEMIES.push(new ENEMY_g({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_g_1'],
-		'_obj':new ENEMY_g()
+		'_getObj':()=>{return new ENEMY_g({})}
 	},
 	'm':{
-		'_gamestart':function(_mx,_my,_md){
-			_ENEMIES.push(new ENEMY_m(_mx,_my,_md));
+		'_gamestart':(_mx,_my,_md)=>{
+			_ENEMIES.push(new ENEMY_m({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_m_1'],
-		'_obj':new ENEMY_m()
+		'_getObj':()=>{return new ENEMY_m({})}
 	},
 	'n':{
-		'_gamestart':function(_mx,_my,_md){
-			_ENEMIES.push(new ENEMY_n(_mx,_my));
+		'_gamestart':(_mx,_my,_md)=>{
+			_ENEMIES.push(new ENEMY_n({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_o_1'],
-		'_obj':new ENEMY_n()
+		'_getObj':()=>{return new ENEMY_n({})}
 	},
 	'o':{
-		'_gamestart':function(_mx,_my,_md){
-			_ENEMIES.push(new ENEMY_o(_mx,_my));
+		'_gamestart':(_mx,_my,_md)=>{
+			_ENEMIES.push(new ENEMY_o({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_o_1'],
-		'_obj':new ENEMY_o()
+		'_getObj':()=>{return new ENEMY_o({})}
 	},
 	'p':{
-		'_gamestart':function(_mx,_my,_md){
-			let _o=new ENEMY_p(_mx,_my);
+		'_gamestart':(_mx,_my,_md)=>{
+			let _o=new ENEMY_p({x:_mx,y:_my,direct:_md});
 			_ENEMIES.push(_o);
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_p_1'],
-		'_obj':new ENEMY_p()
+		'_getObj':()=>{return new ENEMY_p({})}
 	},
 	'z':{
-		'_gamestart':function(_mx,_my,_md){
-			_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
+		'_gamestart':(_mx,_my,_md)=>{
+			_ENEMIES.push(new ENEMY_FAN({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_o':_CANVAS_IMGS['enemy_fan'],
-		'_obj':new ENEMY_FAN()
+		'_getObj':()=>{return new ENEMY_FAN({width:25,height:25})}
 	}
 
 }//_ENEMIES
@@ -148,39 +126,38 @@ _ENEMIES:{
 //マップ用ボス定義
 const _MAP_ENEMIES_BOSS={
 	'enemy_cristalcore':{
-		_f:function(){return new ENEMY_BOSS_CRYSTALCORE(700,800)}
+		_f:function(){return new ENEMY_BOSS_CRYSTALCORE({x:700,y:800});}
 	},
 	'enemy_bigcore':{
-		_f:function(){return new ENEMY_BOSS_BIGCORE(_CANVAS.width+200,200)}
+		_f:function(){return new ENEMY_BOSS_BIGCORE({x:_CANVAS.width+200,y:200});}
 	},
 	'enemy_cristalcore_pt2':{
-		_f:function(){return new ENEMY_BOSS_CRYSTALCORE_PT2(700,800)}
+		_f:function(){return new ENEMY_BOSS_CRYSTALCORE_PT2({x:700,y:800});}
 	},
 	'enemy_bigcore2':{
-		_f:function(){return new ENEMY_BOSS_BIGCORE2(_CANVAS.width+200,200)}
+		_f:function(){return new ENEMY_BOSS_BIGCORE2({x:_CANVAS.width+200,y:200});}
 	},
 	'enemy_frame':{
-		_f:function(){return new ENEMY_BOSS_FRAME(1000,200)}
+		_f:function(){return new ENEMY_BOSS_FRAME({x:1000,y:200});}
 	},
 	'enemy_cell':{
-		_f:function(){return new ENEMY_BOSS_CELL(_CANVAS.width+200,200)}
+		_f:function(){return new ENEMY_BOSS_CELL({x:_CANVAS.width+200,y:200});}
 	},
 	'enemy_death':{
-		_f:function(){return new ENEMY_BOSS_DEATH(_CANVAS.width+200,200)}
+		_f:function(){return new ENEMY_BOSS_DEATH({x:_CANVAS.width+200,y:200});}
 	}
 };
 
 
 const _MAP_THEME={//_parts要素番号0は空文字
-//_f()はゲーム開始時に実行するもの
+//_gamestart()はゲーム開始時に実行するもの
 '_THEME1':{//クリスタル
 	'_map':{
 		'A':{
-			'_o':(new MAP_CRISTAL()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CRISTAL();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//_MAP.moveDraw()で処理させる
 						//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':new MAP_CRISTAL()
+			'_getObj':()=>{return new MAP_CRISTAL();}
 		}
 	},
 	'_enemies':_MAP_ENEMIES._ENEMIES
@@ -188,94 +165,79 @@ const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME2':{//火山
 	'_map':{
 		'A':{
-			'_o':(new MAP_VOLCANO_A()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_A()
+			'_getObj':()=>{return new MAP_VOLCANO_A();}
 		},
 		'B':{
-			'_o':(new MAP_VOLCANO_B()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_B()
+			'_getObj':()=>{return new MAP_VOLCANO_B();}
 		},
 		'C':{
-			'_o':(new MAP_VOLCANO_C()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_C();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_C()
+			'_getObj':()=>{return new MAP_VOLCANO_C();}
 		},
 		'D':{
-			'_o':(new MAP_VOLCANO_D()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_D();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_D()
+			'_getObj':()=>{return new MAP_VOLCANO_D();}
 		},
 		'F':{
-			'_o':(new MAP_VOLCANO_F()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_F();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_F()
+			'_getObj':()=>{return new MAP_VOLCANO_F();}
 		},
 		'G':{
-			'_o':(new MAP_VOLCANO_G()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_G();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_G()
+			'_getObj':()=>{return new MAP_VOLCANO_G();}
 		},
 		'H':{
-			'_o':(new MAP_VOLCANO_H()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_H();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_H()
+			'_getObj':()=>{return new MAP_VOLCANO_H();}
 		},
-		'I':{//8
-			'_o':(new MAP_VOLCANO_I()).img,//画像
+		'I':{
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_I();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_I()
+			'_getObj':()=>{return new MAP_VOLCANO_I();}
 		},
 		'J':{
-			'_o':(new MAP_VOLCANO_J()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_J();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_J()
+			'_getObj':()=>{return new MAP_VOLCANO_J();}
 		},
 		'K':{
-			'_o':(new MAP_VOLCANO_K()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_K();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_K()
+			'_getObj':()=>{return new MAP_VOLCANO_K();}
 		},
 		'L':{
-			'_o':(new MAP_VOLCANO_L()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_L();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_L()
+			'_getObj':()=>{return new MAP_VOLCANO_L();}
 		},
 		'M':{
-			'_o':(new MAP_VOLCANO_M()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_M();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_M()
+			'_getObj':()=>{return new MAP_VOLCANO_M();}
 		},
 		'N':{
-			'_o':(new MAP_VOLCANO_N()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_N();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_N()
+			'_getObj':()=>{return new MAP_VOLCANO_N();}
 		},
 		'O':{
-			'_o':(new MAP_VOLCANO_O()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_O();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_O()
+			'_getObj':()=>{return new MAP_VOLCANO_O();}
 		},
 		'P':{
-			'_o':(new MAP_VOLCANO_P()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_P();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':new MAP_VOLCANO_P()
+			'_getObj':()=>{return new MAP_VOLCANO_P();}
 		}
 
 	},
@@ -284,10 +246,9 @@ const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME3':{//キューブ
 	'_map':{
 		'A':{
-			'_o':(new MAP_CUBE_A()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CUBE_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_CUBE_A())
+			'_getObj':()=>{return (new MAP_CUBE_A());}
 		}
 	},
 	'_enemies':_MAP_ENEMIES._ENEMIES
@@ -295,226 +256,188 @@ const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME5':{//モアイ
 	'_map':{
 		'B':{
-			'_o':(new MAP_MOAI_A()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_MOAI_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':(new MAP_MOAI_A())
+			'_getObj':()=>{return (new MAP_MOAI_A());}
 		},
 		'C':{
-			'_o':(new MAP_MOAI_B()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_MOAI_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},
-			'_obj':(new MAP_MOAI_B())
+			'_getObj':()=>{return (new MAP_MOAI_B());}
 		}
 	},
 	'_enemies':{
 		'a':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_a(_mx,_my,_md));
-				},
+			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_a({x:_mx,y:_my,direct:_md}));},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_a_1'],//画像オブジェクト
-			'_obj':new ENEMY_a()
+			'_getObj':()=>{return new ENEMY_a({});}
 		},
 		'b':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_b(_mx,_my,_md));
-				},
+			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_b({x:_mx,y:_my,direct:_md}));},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_b_1'],
-			'_obj':new ENEMY_b()
+			'_getObj':()=>{return new ENEMY_b({});}
 		},
 		'c':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_c(_mx,_my,_md));
-				},
+			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_c({x:_mx,y:_my,direct:_md}));},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_c_1'],
-			'_obj':new ENEMY_c()
+			'_getObj':()=>{return new ENEMY_c({});}
 		},
 		'd':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
-				},
+			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_d({x:_mx,y:_my,direct:_md}));},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_d_1'],
-			'_obj':new ENEMY_d()
+			'_getObj':()=>{return new ENEMY_d({});}
 		},
 		'e':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
-				},
+			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_e({x:_mx,y:_my,direct:_md}));},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_e_1'],
-			'_obj':new ENEMY_e()
+			'_getObj':()=>{return new ENEMY_e({});}
 		},
 		'f':{
-			'_gamestart':function(_mx,_my,_md){
+			'_gamestart':(_mx,_my,_md)=>{
 				_md=(_my<_CANVAS.height/2)
-					?_MAP_ENEMIES._DEF_DIR._U
-					:_MAP_ENEMIES._DEF_DIR._D;
-				_ENEMIES.push(new ENEMY_f(_mx,_my,_md));
+					?_DEF_DIR._U
+					:_DEF_DIR._D;
+				_ENEMIES.push(new ENEMY_f({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_f_1'],
-			'_obj':new ENEMY_f()
+			'_getObj':()=>{return new ENEMY_f({});}
 		},
 		'g':{
-			'_gamestart':function(_mx,_my,_md){
+			'_gamestart':(_mx,_my,_md)=>{
 				_md=(_my<_CANVAS.height/2)
-					?_MAP_ENEMIES._DEF_DIR._U
-					:_MAP_ENEMIES._DEF_DIR._D;
-	
-				_ENEMIES.push(new ENEMY_g(_mx,_my,_md));
+					?_DEF_DIR._U
+					:_DEF_DIR._D;
+				_ENEMIES.push(new ENEMY_g({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_g_1'],
-			'_obj':new ENEMY_g()
+			'_getObj':()=>{return new ENEMY_g({});}
 		},
 		'm':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_m(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_m({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_m_1'],
-			'_obj':new ENEMY_m()
+			'_getObj':()=>{return new ENEMY_m({});}
 		},
 		'l':{
-			'_gamestart':function(_mx,_my,_md){
-				let _o=new ENEMY_q(_mx,_my,_MAP_ENEMIES._DEF_DIR._U);
+			'_gamestart':(_mx,_my,_md)=>{
+				let _o=new ENEMY_q({x:_mx,y:_my,direct:_DEF_DIR._U});
 				_ENEMIES.push(_o);
 			},
 			'_st':'transform:scale(1,-1);',
-			'_o':_CANVAS_IMGS['enemy_m_a_1'],
-			'_obj':new ENEMY_q(0,0,_MAP_ENEMIES._DEF_DIR._U)
+			'_getObj':()=>{return new ENEMY_q({x:0,y:0,direct:_DEF_DIR._U});}
 		},
 		'n':{
-			'_gamestart':function(_mx,_my,_md){
-				let _o=new ENEMY_q(_mx,_my,_MAP_ENEMIES._DEF_DIR._D);
+			'_gamestart':(_mx,_my,_md)=>{
+				let _o=new ENEMY_q({x:_mx,y:_my,direct:_DEF_DIR._D});
 				_ENEMIES.push(_o);
 			},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_m_a_1'],
-			'_obj':new ENEMY_q(0,0,_MAP_ENEMIES._DEF_DIR._D)
+			'_getObj':()=>{return new ENEMY_q({x:0,y:0,direct:_DEF_DIR._D});}
 		},
 		'o':{
-			'_gamestart':function(_mx,_my,_md){
-				let _o=new ENEMY_r(_mx,_my,_MAP_ENEMIES._DEF_DIR._U);
+			'_gamestart':(_mx,_my,_md)=>{
+				let _o=new ENEMY_r({x:_mx,y:_my,direct:_DEF_DIR._U});
 				_ENEMIES.push(_o);
 			},
 			'_st':'transform:scale(1,-1);',
-			'_o':_CANVAS_IMGS['enemy_m_b_1'],
-			'_obj':new ENEMY_r(0,0,_MAP_ENEMIES._DEF_DIR._U)
+			'_getObj':()=>{return new ENEMY_r({x:0,y:0,direct:_DEF_DIR._U});}
 		},
 		'p':{
-			'_gamestart':function(_mx,_my,_md){
-				let _o=new ENEMY_r(_mx,_my,_MAP_ENEMIES._DEF_DIR._D);
+			'_gamestart':(_mx,_my,_md)=>{
+				let _o=new ENEMY_r({x:_mx,y:_my,direct:_DEF_DIR._D});
 				_ENEMIES.push(_o);
 			},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_m_b_2'],
-			'_obj':new ENEMY_r(0,0,_MAP_ENEMIES._DEF_DIR._D)
+			'_getObj':()=>{return new ENEMY_r({x:0,y:0,direct:_DEF_DIR._D});}
 		},
 		'q':{
-			'_gamestart':function(_mx,_my,_md){
-				let _o=new ENEMY_q(_mx,_my,_MAP_ENEMIES._DEF_DIR._LD);
+			'_gamestart':(_mx,_my,_md)=>{
+				let _o=new ENEMY_q({x:_mx,y:_my,direct:_DEF_DIR._LD});
 				_ENEMIES.push(_o);
 			},
 			'_st':'transform:scale(-1,1);',
-			'_o':_CANVAS_IMGS['enemy_m_a_1'],
-			'_obj':new ENEMY_q(0,0,_MAP_ENEMIES._DEF_DIR._LD)
+			'_getObj':()=>{return new ENEMY_q({x:0,y:0,direct:_DEF_DIR._LD});}
 		},
 		'r':{
-			'_gamestart':function(_mx,_my,_md){
-				let _o=new ENEMY_q(_mx,_my,_MAP_ENEMIES._DEF_DIR._LU);
+			'_gamestart':(_mx,_my,_md)=>{
+				let _o=new ENEMY_q({x:_mx,y:_my,direct:_DEF_DIR._LU});
 				_ENEMIES.push(_o);
 			},
 			'_st':'transform:scale(-1,-1);',
-			'_o':_CANVAS_IMGS['enemy_m_a_1'],
-			'_obj':new ENEMY_q(0,0,_MAP_ENEMIES._DEF_DIR._ENEMY_DIFFICULT)
+			'_getObj':()=>{return new ENEMY_q({x:0,y:0,direct:_DEF_DIR._LU});}
 		},
 		'z':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_FAN({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_fan'],
-			'_obj':new ENEMY_FAN()
-		}
+			'_getObj':()=>{return new ENEMY_FAN({});}
+		}	
 	}
 },//_THEME5
 '_THEME6':{//炎
 	'_map':{
 		'A':{
-			'_o':(new MAP_FRAME_A()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_FRAME_A())
+			'_getObj':()=>{return (new MAP_FRAME_A());}
 		},
 		'B':{
-			'_o':(new MAP_FRAME_B()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_B();},
 			'objs':{},
-			'_obj':(new MAP_FRAME_B())
+			'_getObj':()=>{return (new MAP_FRAME_B());}
 		},
 		'C':{
-			'_o':(new MAP_FRAME_C()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_C();},
 			'objs':{},
-			'_obj':(new MAP_FRAME_C())
+			'_getObj':()=>{return (new MAP_FRAME_C());}
 		},
 		'D':{
-			'_o':(new MAP_FRAME_D()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_D();},
 			'objs':{},
-			'_obj':(new MAP_FRAME_D())
+			'_getObj':()=>{return (new MAP_FRAME_D());}
 		},
 		'E':{
-			'_o':(new MAP_FRAME_E()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_E();},
 			'objs':{},
-			'_obj':(new MAP_FRAME_E())
+			'_getObj':()=>{return (new MAP_FRAME_E());}
 		},
 		'F':{
-			'_o':(new MAP_FRAME_F()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_F();},
 			'objs':{},
-			'_obj':(new MAP_FRAME_F())
+			'_getObj':()=>{return (new MAP_FRAME_F());}
 		}
 
 	},
 	'_enemies':{
 		'a':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_frame_1(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_frame_1({x:_mx,y:_my,direct:_md}));
 			},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_frame_1'],//画像オブジェクト
-			'_obj':new ENEMY_frame_1()
+			'_getObj':()=>{return new ENEMY_frame_1({});}
 		},
 		'd':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_d({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_d_1'],
-			'_obj':new ENEMY_d()
+			'_getObj':()=>{return new ENEMY_d({});}
 		},
 		'e':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_e({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_e_1'],
-			'_obj':new ENEMY_e()
+			'_getObj':()=>{return new ENEMY_e({});}
 		},
 		'z':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_FAN({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_fan'],
-			'_obj':new ENEMY_FAN()
+			'_getObj':()=>{return new ENEMY_FAN({});}
 		}
 	}
 
@@ -522,156 +445,133 @@ const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME7':{//細胞
 	'_map':{
 		'A':{
-			'_o':(new MAP_CELL_A()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_CELL_A())
+			'_getObj':()=>{return (new MAP_CELL_A());}
 		},
 		'B':{
-			'_o':(new MAP_CELL_B()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_CELL_B())
+			'_getObj':()=>{return (new MAP_CELL_B());}
 		},
 		'C':{
-			'_o':(new MAP_CELL_C()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_C();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_CELL_C())
+			'_getObj':()=>{return (new MAP_CELL_C());}
 		},
 		'D':{
-			'_o':(new MAP_CELL_D()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_D();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_CELL_D())
+			'_getObj':()=>{return (new MAP_CELL_D());}
 		},
 		'G':{
-			'_o':(new MAP_CELL_G()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_G();},
 			'objs':{},
-			'_obj':(new MAP_CELL_G())
+			'_getObj':()=>{return (new MAP_CELL_G());}
 		},
 		'H':{
-			'_o':(new MAP_CELL_H()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_H();},
 			'objs':{},
-			'_obj':(new MAP_CELL_H())
+			'_getObj':()=>{return (new MAP_CELL_H());}
 		},
 		'I':{
-			'_o':(new MAP_CELL_I()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_I();},
 			'objs':{},
-			'_obj':(new MAP_CELL_I())
+			'_getObj':()=>{return (new MAP_CELL_I());}
 		},
 		'J':{
-			'_o':(new MAP_CELL_J()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_J();},
 			'objs':{},
-			'_obj':(new MAP_CELL_J())
+			'_getObj':()=>{return (new MAP_CELL_J());}
 		},
 		'K':{
-			'_o':(new MAP_CELL_K()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_K();},
 			'objs':{},
-			'_obj':(new MAP_CELL_K())
+			'_getObj':()=>{return (new MAP_CELL_K());}
 		},
 		'L':{
-			'_o':(new MAP_CELL_L()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_L();},
 			'objs':{},
-			'_obj':(new MAP_CELL_L())
+			'_getObj':()=>{return (new MAP_CELL_L());}
 		},
 		'M':{
-			'_o':(new MAP_CELL_M()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_M();},
 			'objs':{},
-			'_obj':(new MAP_CELL_M())
+			'_getObj':()=>{return (new MAP_CELL_M());}
 		},
 		'N':{
-			'_o':(new MAP_CELL_N()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_N();},
 			'objs':{},
-			'_obj':(new MAP_CELL_N())
+			'_getObj':()=>{return (new MAP_CELL_N());}
 		},
 		'O':{
-			'_o':(new MAP_CELL_O()).img,
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_O();},
 			'objs':{},
-			'_obj':(new MAP_CELL_O())
+			'_getObj':()=>{return (new MAP_CELL_O());}
 		},
 		'V':{
-			'_o':(new MAP_CELL_V()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_V();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_CELL_V())
+			'_getObj':()=>{return (new MAP_CELL_V());}
 		},
 		'W':{
-			'_o':(new MAP_CELL_W()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_W();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_CELL_W())
+			'_getObj':()=>{return (new MAP_CELL_W());}
 		},
 		'Y':{
-			'_o':(new MAP_CELL_Y()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_Y();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_CELL_Y())
+			'_getObj':()=>{return (new MAP_CELL_Y());}
 		},
 		'Z':{
-			'_o':(new MAP_CELL_Z()).img,//画像
 			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_Z();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_obj':(new MAP_CELL_Z())
+			'_getObj':()=>{return (new MAP_CELL_Z());}
 		},
 	},
 	'_enemies':{
 		'a':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_cell_core(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_cell_core({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_cell_core'],//画像オブジェクト
-			'_obj':new ENEMY_cell_core()
+			'_getObj':()=>{return new ENEMY_cell_core({});}
 		},
 		'b':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_CELL_A(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_CELL_A({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_cell_a_1'],
-			'_obj':new ENEMY_CELL_A()
+			'_getObj':()=>{return new ENEMY_CELL_A({});}
 		},
 		'c':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_CELL_B(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_CELL_B({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_cell_b_1'],
-			'_obj':new ENEMY_CELL_B()
+			'_getObj':()=>{return new ENEMY_CELL_B({});}
 		},
 		'd':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_d(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_d({x:_mx,y:_my,direct:_md}));
 					},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_d_1'],
-			'_obj':new ENEMY_d()
+			'_getObj':()=>{return new ENEMY_d({});}
 		},
 		'e':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_e(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_e({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_e_1'],
-			'_obj':new ENEMY_e()
+			'_getObj':()=>{return new ENEMY_e({});}
 		},
 		'z':{
-			'_gamestart':function(_mx,_my,_md){
-				_ENEMIES.push(new ENEMY_FAN(_mx,_my,_md));
+			'_gamestart':(_mx,_my,_md)=>{
+				_ENEMIES.push(new ENEMY_FAN({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_o':_CANVAS_IMGS['enemy_fan'],
-			'_obj':new ENEMY_FAN()
+			'_getObj':()=>{return new ENEMY_FAN({});}
 		}
 	}
 
@@ -799,8 +699,8 @@ class GameObject_MAP{
 			//MAPテーマより、MAPビットを取得する
 			let _p=
 				(_this.isEnemiesBit(_m[_j]))
-				?_MAP_THEME[_this.map_theme]._enemies[_m[_j]]._obj
-				:_MAP_THEME[_this.map_theme]._map[_m[_j]]._obj;
+				?_MAP_THEME[_this.map_theme]._enemies[_m[_j]]._getObj()
+				:_MAP_THEME[_this.map_theme]._map[_m[_j]]._getObj();
 			if(_p===undefined){
 				console.log('テーマ:'+_this.map_theme+'に対して '+_m[_j]+'の定義がありません。');
 			}
@@ -1008,42 +908,54 @@ class GameObject_MAP{
 		let _m_length=_m._map.length;
 		for(let _i=0;_i<((_m_length>20)?20:_m_length);_i++){
 		let _ml=_m._map[_i].length;
-		for(let _j=0;_j<((_ml>30)?30:_ml);_j++){
-			let _k=_m._map[_i][_j+20];
+		for(let _j=0;_j<((_ml>40)?40:_ml);_j++){
+			let _k=_m._map[_i][_j+100];
 			if(_k===undefined){continue;}
 			if(_k==='0'){continue;}
 			if(_k.match(_this.collision_enemies)!==null){
 				//敵
-				let _p=_MAP_THEME[_m._theme]._enemies[_k];
-				let img=_p._o.obj;
-				//画像サイズは、25x25px
-				//ここでは10x10pxに調整
-				_CONTEXT.drawImage(
-					img,
-					50+(_j*10),
-					130+(_i*10),
-					img.width/2.5,img.height/2.5
-				);
-
-			}else{
-				//MAP
-				let _p=_MAP_THEME[_m._theme]._map[_k];
-				let img=_p._o.obj;
+				let _p=_MAP_THEME[_m._theme]._enemies[_k]._getObj();
+//				let img=_p._obj.img;
 				//画像サイズは、25x25px
 				//ここでは10x10pxに調整
 				_CONTEXT.save();
-				_CONTEXT.translate(50+(_j*10),130+(_i*10));
+				let _x=0+(_j*10);
+				let _y=130+(_i*10);
+				let _w=_p.width/2.5;
+				let _h=_p.height/2.5;
+				if(_p.direct===_DEF_DIR._U){
+					_CONTEXT.setTransform(1,0,0,-1,0,_y*2+_h);
+				}
+				if(_p.direct===_DEF_DIR._LU){
+					_CONTEXT.setTransform(-1,0,0,-1,_x*2+_w,_y*2+_h);
+				}
+				if(_p.direct===_DEF_DIR._LD){
+					_CONTEXT.setTransform(-1,0,0,1,_x*2+_w,0);
+				}
+				_CONTEXT.drawImage(
+					_p.img,
+					_x,_y,_w,_h
+				);
+				_CONTEXT.restore();
+			}else{
+				//MAP
+				let _p=_MAP_THEME[_m._theme]._map[_k]._getObj();
+//				let img=_p._obj.img;
+				//画像サイズは、25x25px
+				//ここでは10x10pxに調整
+				_CONTEXT.save();
+				_CONTEXT.translate(0+(_j*10),130+(_i*10));
 				_CONTEXT.scale(0.25,0.25);
 				_CONTEXT.drawImage(
-					_p._obj.img,
-					_p._obj.imgPos[0],
+					_p.img,
+					_p.imgPos[0],
 					0,
-					_p._obj.width,
-					_p._obj.height,			
+					_p.width,
+					_p.height,			
 					0,
 					0,
-					_p._obj.width*1.60,//偶然の一致
-					_p._obj.height*1.60
+					_p.width*1.60,//偶然の一致
+					_p.height*1.60
 				);
 				_CONTEXT.restore();
 			}
@@ -1052,11 +964,20 @@ class GameObject_MAP{
 		//はみ出た分を黒でラッピングする
 		//エリアは50,130,350,330
 		_CONTEXT.fillStyle="rgba(0,0,0,1)";
+		_CONTEXT.fillRect(0,130,50,500);
 		_CONTEXT.fillRect(350,130,500,500);
 		_CONTEXT.fillRect(50,330,500,500);
 //		_CONTEXT.beginPath();
-//		_CONTEXT.clearRect(50,130,250,230);
-		
+		// _CONTEXT.fillStyle="rgba(0,0,0,0)";
+		// _CONTEXT.clearRect(50,130,250,230);
+
+		//MAPのフレームを表示
+		_CONTEXT.beginPath();
+		_CONTEXT.lineWidth=1;
+		_CONTEXT.strokeStyle='rgba(255,255,255,1)';
+		_CONTEXT.fillStyle='rgba(255,255,255,1)';
+		_CONTEXT.strokeRect(50,130,300,200);
+
 	}//showMapForStageselect
 	map_draw(){
 		//MAPの表示

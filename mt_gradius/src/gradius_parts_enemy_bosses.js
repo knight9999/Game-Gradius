@@ -22,12 +22,17 @@
 //========================================
 class GameObject_ENEMY_BOSS
 		extends GameObject_ENEMY{
-	constructor(_o,_x,_y){
-		super(_o,_x,_y);
+	// constructor(_o,_x,_y){
+	// 	super(_o,_x,_y);
+	constructor(_p){
+		super({
+			img:_p.img,
+			x:_p.x,
+			y:_p.y
+		});
 		let _this=this;
 		_this.speed=0;
 		_this.getscore=10000;
-		_this._c=0;//アニメーションカウント
 		_this._c_self_collision=4000;//アニメーションカウントを使って、自爆までのカウント
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision6'];
 		_this.is_able_collision=false;//衝突可能フラグ
@@ -143,17 +148,22 @@ class GameObject_ENEMY_BOSS
 //========================================
 class ENEMY_BOSS_WALL
 	extends GameObject_ENEMY{
-	constructor(_o,_o_boss,_x,_y){
-		super(_o,_x,_y);
+	// constructor(_o,_o_boss,_x,_y){
+	// 	super(_o,_x,_y);
+	constructor(_p){
+		super({
+			img:_p.img,
+			x:_p.x,
+			y:_p.y
+		});
 		let _this=this;
-		_this._initx=_x||0;//初期位置x
-		_this._inity=_y||0;//初期位置y
-		_this._boss=_o_boss;
+		_this._initx=_p.x||0;//初期位置x
+		_this._inity=_p.y||0;//初期位置y
+		_this._boss=_p.boss;
 		_this.x=_this._boss.x+_this._initx;//初期位置x
 		_this.y=_this._boss.y+_this._inity;//初期位置y
 		_this._status=10;
 		_this.getscore=500;//倒した時のスコア
-		_this._standby=true;
 		_this.is_able_collision=false;
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];
 
@@ -185,19 +195,23 @@ class ENEMY_BOSS_WALL
 //====================
 class ENEMY_BOSS_BIGCORE
 			extends GameObject_ENEMY_BOSS{
-	constructor(_x,_y){
-		super(_CANVAS_IMGS['enemy_bigcore'].obj,_x,_y);
+	constructor(_p){
+		super({
+			img:_CANVAS_IMGS['enemy_bigcore'].obj,
+			x:_p.x,
+			y:_p.y
+		});
 		let _this=this;
 		_this._status=1;
 		_this.speed=3;
 		_this.is_able_collision=false;
 
 		_this.wall=[
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore_1'].obj,_this,15,50),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore_1'].obj,_this,25,50),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore_1'].obj,_this,35,50),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore_2'].obj,_this,45,53),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore_3'].obj,_this,70,43)
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore_1'].obj,boss:_this,x:15,y:50}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore_1'].obj,boss:_this,x:25,y:50}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore_1'].obj,boss:_this,x:35,y:50}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore_2'].obj,boss:_this,x:45,y:53}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore_3'].obj,boss:_this,x:70,y:43})
 		];
 		_this._wall_statuses='';
 
@@ -355,26 +369,28 @@ class ENEMY_BOSS_BIGCORE
 //========================================
 class ENEMY_BOSS_BIGCORE2
 			extends GameObject_ENEMY_BOSS{
-	constructor(_x,_y){
-		super(_CANVAS_IMGS['enemy_bigcore2'].obj,_x,_y);
+	constructor(_p){
+		super({
+			img:_CANVAS_IMGS['enemy_bigcore2'].obj,
+			x:_p.x,
+			y:_p.y
+		});
 		let _this=this;
-		_this._status=1;
 		_this.speed=2;
 		_this.is_able_collision=false;
-		_this.img=_CANVAS_IMGS['enemy_bigcore2'].obj;
 		_this.wall_up=[
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore2_wall'].obj,_this,90,38),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore2_wall'].obj,_this,95,38),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore2_wall'].obj,_this,100,38),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore2_wall'].obj,_this,105,38),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore2_core'].obj,_this,110,36)
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_wall'].obj,boss:_this,x:90,y:38}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_wall'].obj,boss:_this,x:95,y:38}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_wall'].obj,boss:_this,x:100,y:38}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_wall'].obj,boss:_this,x:105,y:38}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_core'].obj,boss:_this,x:110,y:36})
 		];
 		_this.wall_down=[
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore2_wall'].obj,_this,90,95),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore2_wall'].obj,_this,95,95),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore2_wall'].obj,_this,100,95),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore2_wall'].obj,_this,105,95),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore2_core'].obj,_this,110,93)
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_wall'].obj,boss:_this,x:90,y:95}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_wall'].obj,boss:_this,x:95,y:95}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_wall'].obj,boss:_this,x:100,y:95}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_wall'].obj,boss:_this,x:105,y:95}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_core'].obj,boss:_this,x:110,y:93})
 		];
 		_this._wall_up_statuses='';
 		_this._wall_down_statuses='';
@@ -482,12 +498,12 @@ class ENEMY_BOSS_BIGCORE2
 
 		//上の手初期化
 		_this.hands_up=[
-			new ENEMY_BOSS_BIGCORE2_HANDS({"_initx":-52,"_inity":-30,"_dir":_this._DEF_DIR._U,"_boss":_this})
+			new ENEMY_BOSS_BIGCORE2_HANDS({"_initx":-52,"_inity":-30,"_dir":_DEF_DIR._U,"_boss":_this})
 		];
 		_ENEMIES.push(_this.hands_up[0]);		
 		//下の手初期化
 		_this.hands_down=[
-			new ENEMY_BOSS_BIGCORE2_HANDS({"_initx":-52,"_inity":75,"_dir":_this._DEF_DIR._D,"_boss":_this})
+			new ENEMY_BOSS_BIGCORE2_HANDS({"_initx":-52,"_inity":75,"_dir":_DEF_DIR._D,"_boss":_this})
 		];
 		_ENEMIES.push(_this.hands_down[0]);
 		_this._hands_open_flag=false;
@@ -753,7 +769,11 @@ class ENEMY_BOSS_BIGCORE2
 class ENEMY_BOSS_BIGCORE2_HANDS
 	extends GameObject_ENEMY{
 	constructor(_d){
-		super(_CANVAS_IMGS['enemy_bigcore2_hand'].obj,_d._initx,_d._inity);
+		super({
+			img:_CANVAS_IMGS['enemy_bigcore2_hand'].obj,
+			x:_d._initx,
+			y:_d._inity
+		});
 		let _this=this;
 		_this._initx=_d._initx||0;//初期位置x
 		_this._inity=_d._inity||0;//初期位置y
@@ -770,14 +790,14 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		_this.isstop=false;//true時、手を動かさない
 
 		_this._boss=new Object();
-		_this.direct=_d._dir||_this._DEF_DIR._U;
+		_this.direct=_d._dir||_DEF_DIR._U;
 
 		_this.shotColMap=[//衝突判定（下の定義を使って動的に設定）
 			(function(){
-				if(_this.direct===_this._DEF_DIR._U){//上
+				if(_this.direct===_DEF_DIR._U){//上
 					return "0,30,250,100,false";
 				}
-				if(_this.direct===_this._DEF_DIR._D){//下
+				if(_this.direct===_DEF_DIR._D){//下
 					return "0,30,250,100,false";
 				}
 			})()
@@ -787,13 +807,13 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 			//手のイメージ定義の要素に合わせて、
 			//衝突エリアを設定する。
 			(function(){
-			if(_this.direct===_this._DEF_DIR._U){//上
+			if(_this.direct===_DEF_DIR._U){//上
 				return [["90,30,250,70,false","25,70,250,100,false"],
 						["180,30,250,90,false"],
 						["50,10,225,20,false"]
 					];
 			}
-			if(_this.direct===_this._DEF_DIR._D){//下
+			if(_this.direct===_DEF_DIR._D){//下
 				return [["25,30,250,70,false","90,70,250,100,false"],
 						["180,20,250,60,false"],
 						["50,90,225,100,false"]
@@ -802,9 +822,9 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 			})();
 		_this.imgs=[0,250,500];//手のイメージ定義
 		_this.imgsPos=[//手のイメージ定義
-			{x:0,y:(_this.direct===_this._DEF_DIR._U)?0:0},
-			{x:0,y:(_this.direct===_this._DEF_DIR._U)?-40:40},
-			{x:-5,y:(_this.direct===_this._DEF_DIR._U)?-30:30}
+			{x:0,y:(_this.direct===_DEF_DIR._U)?0:0},
+			{x:0,y:(_this.direct===_DEF_DIR._U)?-40:40},
+			{x:-5,y:(_this.direct===_DEF_DIR._U)?-30:30}
 		];
 		_this.imgs_x=0;
 		_this.imgs_y=0;
@@ -897,18 +917,24 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 //========================================
 class ENEMY_BOSS_CRYSTALCORE
 			extends GameObject_ENEMY_BOSS{
-	constructor(_x,_y){
-		super(_CANVAS_IMGS['enemy_cristalcore'].obj,_x,_y);
+		// constructor(_x,_y){
+		// 	super(_CANVAS_IMGS['enemy_cristalcore'].obj,_x,_y);	
+		constructor(_p){
+		super({
+			img:_CANVAS_IMGS['enemy_cristalcore'].obj,
+			x:_p.x,
+			y:_p.y
+		});
 		let _this=this;
 		_this._status=70;
 		_this.speed=3;
 
 		_this.wall=[
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_cristalcore_wall1'].obj,_this,47,116),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_cristalcore_wall2'].obj,_this,62,116),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_cristalcore_wall2'].obj,_this,77,116),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_cristalcore_wall2'].obj,_this,92,116),
-			new ENEMY_BOSS_WALL(_CANVAS_IMGS['enemy_bigcore_3'].obj,_this,102,115)
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_cristalcore_wall1'].obj,boss:_this,x:47,y:116}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_cristalcore_wall2'].obj,boss:_this,x:62,y:116}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_cristalcore_wall2'].obj,boss:_this,x:77,y:116}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_cristalcore_wall2'].obj,boss:_this,x:92,y:116}),
+			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore_3'].obj,boss:_this,x:102,y:115})
 		];
 		_this._wall_statuses='';
 
@@ -1138,7 +1164,11 @@ class ENEMY_BOSS_CRYSTALCORE
 class ENEMY_BOSS_CRYSTALCORE_HANDS
 	extends GameObject_ENEMY{
 	constructor(_d){
-		super(_CANVAS_IMGS['enemy_cristalcore_hand1'].obj,_d._initx,_d._inity);
+		super({
+			img:_CANVAS_IMGS['enemy_cristalcore_hand1'].obj,
+			x:_d._initx,
+			y:_d._inity
+		});
 		let _this=this;
 		_this._initx=_d._initx||0;//初期位置x
 		_this._inity=_d._inity||0;//初期位置y
@@ -1288,10 +1318,14 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 //====================
 class ENEMY_BOSS_CRYSTALCORE_PT2
 			extends ENEMY_BOSS_CRYSTALCORE{
-	constructor(_x,_y){
-		super(_x,_y);
+		// constructor(_x,_y){
+		// 	super(_x,_y);
+		constructor(_p){
+		super({
+			x:_p.x,
+			y:_p.y
+		});
 		let _this=this;
-		_this._c=0;
 		_this._showout_cube=0;
 		_this._standby_count=0;
 		_this._complete_cube_count=0;
@@ -1349,14 +1383,15 @@ class ENEMY_BOSS_CRYSTALCORE_PT2
 class ENEMY_BOSS_CUBE
 		extends GameObject_ENEMY{
 	constructor(_p){
-		super(
-			_CANVAS_IMGS['enemy_cube'].obj,
-			_p.x,
-			_p.y,
-			[0,45,90,135],
-			10,
-			45,
-			45);
+		super({
+			img:_CANVAS_IMGS['enemy_cube'].obj,
+			x:_p.x,
+			y:_p.y,
+			imgPos:[0,45,90,135],
+			aniItv:10,
+			width:45,
+			height:45
+		});
 		let _this=this;
 		_this._standby=false;
 		_this._status=1;
@@ -1500,14 +1535,18 @@ class ENEMY_BOSS_CUBE
 //========================================
 class ENEMY_BOSS_FRAME
 	extends GameObject_ENEMY_BOSS{
-	constructor(_x,_y){
+	// constructor(_x,_y){
+	// 	super(_CANVAS_IMGS.enemy_frame_body1.obj,_x,_y);
+	constructor(_p){
+		super({
+			img:_CANVAS_IMGS.enemy_frame_body1.obj,
+			x:_p.x,
+			y:_p.y
+		});
 		//ここではフレームの頭、身体を設定し、
 		//各描画クラスに描画させる。
-		super(_CANVAS_IMGS.enemy_frame_body1.obj,_x,_y);
 		let _this=this;
 		_this._status=1;
-		_this.x=_CANVAS.width+100;
-		_this.y=250;
 
 		//speed,moves_intervalで、
 		//フレームのスピードを調整する。
@@ -1740,7 +1779,7 @@ class ENEMY_BOSS_FRAME
 			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
 			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
 			new ENEMY_BOSS_FRAME_BODY({o:null,x:1500,y:250}),
-			new ENEMY_BOSS_FRAME_HEAD({o:null,x:1500,y:250,d:_this._DEF_DIR._L})
+			new ENEMY_BOSS_FRAME_HEAD({o:null,x:1500,y:250,d:_DEF_DIR._L})
 		];
 
 		//移動量
@@ -1959,7 +1998,7 @@ class ENEMY_BOSS_FRAME
 			_this.moves.reverse();
 			_this.x=_this.moves[0].x;
 			_this.y=_this.moves[0].y;
-			_this.parts[0].setDirect(_this._DEF_DIR._R);
+			_this.parts[0].setDirect(_DEF_DIR._R);
 			_this._deg=_this.moves[0].deg+180;
 			_this.moves_pt[_this._mpt].switch(0);
 			_this._mpt=0;
@@ -1975,17 +2014,20 @@ class ENEMY_BOSS_FRAME
 
 class ENEMY_BOSS_FRAME_HEAD
 	extends GameObject_ENEMY{
-	constructor(_d){
-		super(_CANVAS_IMGS.enemy_frame_head1.obj,_d.x,_d.y);
+	constructor(_p){
+		super({
+			img:_CANVAS_IMGS.enemy_frame_head1.obj,
+			x:_p.x,
+			y:_p.y,
+			direct:_p.d
+		});
 		let _this=this;
-		_this.direct=_d.d||_this._DEF_DIR._R;
 		_this.img=
-			(_this.direct===_this._DEF_DIR._L)
+			(_this.direct===_DEF_DIR._L)
 				?_CANVAS_IMGS.enemy_frame_head3.obj
 				:_CANVAS_IMGS.enemy_frame_head1.obj;
 		_this._standby=false;
 		_this._status=75;
-//		_this._status=1;
 		_this.getscore=5000;
 		_this._deg=0;
 		_this.shotColMap=[
@@ -2022,13 +2064,13 @@ class ENEMY_BOSS_FRAME_HEAD
 			let _r=(_this._c%200<150&&_this._c%200>0);
 			if(_r){
 			//閉じる
-				return (_this.direct===_this._DEF_DIR._L)
+				return (_this.direct===_DEF_DIR._L)
 						?_CANVAS_IMGS.enemy_frame_head3.obj
 						:_CANVAS_IMGS.enemy_frame_head1.obj;
 			}
 
 			//開く
-			return (_this.direct===_this._DEF_DIR._L)
+			return (_this.direct===_DEF_DIR._L)
 				?_CANVAS_IMGS.enemy_frame_head4.obj
 				:_CANVAS_IMGS.enemy_frame_head2.obj;
 
@@ -2063,10 +2105,13 @@ class ENEMY_BOSS_FRAME_HEAD
 }
 class ENEMY_BOSS_FRAME_BODY
 	extends GameObject_ENEMY{
-	constructor(_d){
-		super(_CANVAS_IMGS.enemy_frame_body1.obj,_d.x,_d.y);
+	constructor(_p){
+		super({
+			img:_CANVAS_IMGS.enemy_frame_body1.obj,
+			x:_p.x,
+			y:_p.y
+		});
 		let _this=this;
-		_this.img=_CANVAS_IMGS.enemy_frame_body1.obj;
 		_this._standby=false;
 		_this.is_able_collision=false;
 		_this.shotColMap=[
@@ -2081,9 +2126,9 @@ class ENEMY_BOSS_FRAME_BODY
 		_this.ani=[//アニメーション定義
 			{scale:1},
 			{scale:0.95},
-			{scale:0.9},
+			{scale:0.90},
 			{scale:0.85},
-			{scale:0.9},
+			{scale:0.90},
 			{scale:0.95}
 		];
 	}
@@ -2147,14 +2192,15 @@ class ENEMY_BOSS_FRAME_BODY
 //========================================
 class ENEMY_BOSS_CELL
 	extends GameObject_ENEMY_BOSS{
-	constructor(_x,_y){
-		//ここではフレームの頭、身体を設定し、
-		//各描画クラスに描画させる。
-		super(_CANVAS_IMGS.enemy_cell_boss.obj,_x,_y);
+	// constructor(_x,_y){
+	// 	super(_CANVAS_IMGS.enemy_cell_boss.obj,_x,_y);
+	constructor(_p){
+		super({
+			img:_CANVAS_IMGS.enemy_cell_boss.obj,
+			x:_p.x,
+			y:_p.y
+		});
 		let _this=this;
-		_this._status=1;
-		_this.x=_x||_CANVAS.width+200;
-		_this.y=_y||250;
 		_this.rad=Math.random()*Math.PI-(Math.PI/2);
 		_this._standby=false;
 		_this.is_all_set=false;
@@ -2337,19 +2383,21 @@ class ENEMY_BOSS_CELL
 
 class ENEMY_BOSS_CELL_MAIN
 	extends GameObject_ENEMY{
-	constructor(_d){
+	constructor(_p){
 		//細胞メインの設定・表示
-		super(_CANVAS_IMGS.enemy_cell_boss.obj,_d.x,_d.y);
+		super({
+			img:_CANVAS_IMGS.enemy_cell_boss.obj,
+			x:_p.x,
+			y:_p.y
+		});
 		let _this=this;
 		_this._status=1;
-		_this.x=_d.x||_CANVAS.width+200;
-		_this.y=_d.y||250;
 		_this.alpha=1;
 		_this.speed=2;
 		_this._standby=false;
 
 		//アニメーション定義
-		_this.ani=(_d.dark)?[480,640,800]:[0,160,320];
+		_this.ani=(_p.dark)?[480,640,800]:[0,160,320];
 		_this.ani_c=0;
 		_this.ani_c_intv=20;
 
@@ -2400,14 +2448,14 @@ class ENEMY_BOSS_CELL_MAIN
 
 class ENEMY_BOSS_CELL_EYE
 	extends GameObject_ENEMY{
-	constructor(_d){
-		//ここではフレームの頭、身体を設定し、
-		//各描画クラスに描画させる。
-		super(_CANVAS_IMGS.enemy_cell_boss_eye.obj,_d.x,_d.y);
+	constructor(_p){
+		super({
+			img:_CANVAS_IMGS.enemy_cell_boss_eye.obj,
+			x:_p.x,
+			y:_p.y
+		});
 		let _this=this;
 		_this._status=100;
-		_this.x=_d.x||_CANVAS.width+200;
-		_this.y=_d.y||250;
 		_this._standby=false;
 		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision7'];
 		_this.is_able_collision=false;//目を開くまでは無敵
@@ -2512,12 +2560,16 @@ class ENEMY_BOSS_CELL_EYE
 //====================
 class ENEMY_BOSS_DEATH
 		extends GameObject_ENEMY_BOSS{
-	constructor(_x,_y){
-		super(_CANVAS_IMGS['enemy_death'].obj,_x,_y);
+	constructor(_p){
+		super({
+			img:_CANVAS_IMGS['enemy_death'].obj,
+			x:_p.x,
+			y:_p.y,
+			width:202,
+			height:140
+		});
 		let _this=this;
 		_this._status=150;
-		_this.width=202;
-		_this.height=140;
 
 		//攻撃無効を表示させる画像
 		_this.c_z4_ani=30;

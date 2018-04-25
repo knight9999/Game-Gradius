@@ -99,3 +99,14 @@ const _AUDIO_CONTEXT=new(
 	window.AudioContext
 	||window.webkitAudioContext
 )();
+
+const _DEF_DIR={//向き
+	_U:0,//上
+	_D:1,//下
+	_R:2,//右
+	_L:3,//左
+	_LU:4,//左上
+	_LD:5,//左下
+	_RU:6,//右上
+	_RD:7//右下
+};

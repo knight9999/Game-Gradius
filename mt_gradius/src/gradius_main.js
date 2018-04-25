@@ -1722,9 +1722,12 @@ const _DRAW=()=>{
 		_CONTEXT.clearRect(0,0,
 					_CANVAS.width,
 					_CANVAS.height);
-//		console.log('t')
-		// console.log('0:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-			
+
+		//以下は大体のシーケンス
+		//・移動設定
+		//・表示
+		//・衝突判定
+
 		//BACKGROUNDを表示
 		for(let _i=0;_i<_BACKGROUND_STAR_MAX;_i++){
 			_BACKGROUND[_i].move();
@@ -1747,20 +1750,6 @@ const _DRAW=()=>{
 		}
 		// console.log('4:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 		// console.log('5:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-
-		_IS_GET_POWERCAPSELL();
-		// console.log('6:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
- 		//敵、衝突判定
-		_IS_ENEMIES_SHOT_COLLISION();
-		// console.log('7:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-		_IS_ENEMIES_COLLISION();
-		// console.log('8:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-		//MAP（衝突判定）
-		_MAP.isPlayersShotCollision();
-		// console.log('9:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-		//敵、衝突表示
-		_DRAW_ENEMIES_COLLISIONS();
-		// console.log('10:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
  
 //		console.log('t')
 		//パワーカプセルを表示
@@ -1795,6 +1784,19 @@ const _DRAW=()=>{
 		//SCOREを表示
 		_SCORE.show();
 
+		_IS_GET_POWERCAPSELL();
+		// console.log('6:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
+ 		//敵、衝突判定
+		_IS_ENEMIES_SHOT_COLLISION();
+		// console.log('7:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
+		_IS_ENEMIES_COLLISION();
+		// console.log('8:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
+		//MAP（衝突判定）
+		_MAP.isPlayersShotCollision();
+		// console.log('9:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
+		//敵、衝突表示
+		_DRAW_ENEMIES_COLLISIONS();
+		// console.log('10:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 		
 		// if(_MAP_SCROLL_POSITION_X-100<=
 		// 	(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}

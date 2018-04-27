@@ -26,7 +26,8 @@ class GameObject_ENEMY{
 		_this.height=_p.height||_this.img.height;
 		_this.x=_p.x||0;//X位置
 		_this.y=_p.y||0;//Y位置
-		_this.direct=(_p.direct===undefined)?_DEF_DIR._D:_p.direct;//向きの設定
+		//向きの設定 nullもあり。（ステージセレクトにて使用）
+		_this.direct=(_p.direct===undefined)?_DEF_DIR._D:_p.direct;
 		_this._s=_p.s||'0';//MAP衝突ビット
 
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision1'];

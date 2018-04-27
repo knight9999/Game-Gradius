@@ -2125,6 +2125,8 @@ class GameObject_SHOTS_LASER
 //		console.log(_v)
 		_t._laser_MaxX=_v;
 	}
+	moveDrawLaser(_x,_sx,_y){
+	}
 	move(){
 		let _this=this;
 		let _p=_this.player;
@@ -2132,6 +2134,7 @@ class GameObject_SHOTS_LASER
 		if(!_p.isshotflag()){return;}
 		//プレーヤーの中心座標取得
 		let _pl=_p.getPlayerCenterPosition();
+		let _px=_pl._x;
 
 		//	自機のショット状態を取得
 		_CONTEXT.beginPath();
@@ -2152,12 +2155,15 @@ class GameObject_SHOTS_LASER
 	  			if(_i>=_t._laser_MaxX-_pl._x){
 					//レーザーが右端に届いた時
 					_t._laser_t+=(1000/_FPS);
+//					console.log('a');
 					return _t._laser_MaxX-_pl._x;
 				}
-				return _i+_this.speed;
+//				console.log('b=========:'+(_i+_this.speed));
+				//衝突時と画面右端時のスピードを分けておく
+				return _i+((_t._laser_MaxX<_CANVAS.width)?1:_this.speed);
 			})(_t.x);
 
-//			console.log(_t._sx)
+//			console.log(_t.x)
 			//照射終了
 			_t._sx=(function(_i){
 				if(!_t._shot){
@@ -2186,14 +2192,12 @@ class GameObject_SHOTS_LASER
 
 			if(_t.x<_t._sx||Math.abs(_t.x-_t._sx)<50){continue;}
 
-//			console.log('_max:'+(_t._laser_MaxX));
+			//			console.log('_max:'+(_t._laser_MaxX));
 //			let _px=_p.x+_p.img.width;
-			let _px=_pl._x;
 //			console.log('_px+_t.x:'+(_px+_t.x));
 // console.log('_x:'+(_px+_t.x)+
 // '    _sx:'+(_px+_t._sx)+
 // '    _max:'+(_t._laser_MaxX));
-
 			_CONTEXT.beginPath();
 			_CONTEXT.strokeStyle=_this.strokeStyle_u;
 			_CONTEXT.moveTo(_px+_t._sx,_pl._y+1);
@@ -2206,6 +2210,7 @@ class GameObject_SHOTS_LASER
 			_CONTEXT.lineTo(_px+_t.x,_pl._y);
 			_CONTEXT.stroke();
 
+			_this.moveDrawLaser(_px+_t.x,_px+_t._sx,_pl._y);
 			_this.setLaserLine(_t,
 								_px+_t.x,
 								_px+_t._sx
@@ -2229,5 +2234,16 @@ class GameObject_SHOTS_LASER_CYCLONE
 		_this.strokeStyle="rgba(255,80,50,1)";
 		_this.strokeStyle_u="rgba(255,200,150,1)";
 		_this.img_col_ani=[50,75];
+	}
+	moveDrawLaser(_x,_sx,_y){
+		let _this=this;
+		for(let _i=_sx;_i<_x;_i=_i+20){
+			_CONTEXT.beginPath();
+			_CONTEXT.lineWidth=3;
+			_CONTEXT.strokeStyle='rgba(100,20,10,1)';
+			_CONTEXT.moveTo(_i,_y-1);
+			_CONTEXT.lineTo(_i-_this.lineWidth,_y+2);
+			_CONTEXT.stroke();	
+		}
 	}
 }

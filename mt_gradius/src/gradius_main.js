@@ -1335,17 +1335,9 @@ class GameObject_PM{
 
 class GameObject_STAGESELECT{
 	constructor(){
-		this.x=0;
-		this.y=0;
-		this.speed=100;
-
-		this.mapdef_status=0;
-		this.mapdef=_MAPDEFS[this.mapdef_status];
-	}
-	get_ajaxdata(_d,_t){
-		_t.mapdef=_d[_t.mapdef_status];
-		if(_ISDEBUG){return;}
-		_t.disp_thumb_map();
+		let _this=this;
+		_this.mapdef_status=0;
+		_this.mapdef=_MAPDEFS[_this.mapdef_status];
 	}
 	init(){
 		this.mapdef=_MAPDEFS[0];
@@ -1390,8 +1382,11 @@ class GameObject_STAGESELECT{
 		}
 
 		//MAPを表示
-		let _md=_this.mapdef;		
-		_MAP.showMapForStageselect(_md);
+		_MAP.mapdef=_this.mapdef._map;
+		_MAP.map_theme=_this.mapdef._theme;
+		_MAP.mapdef_col=[];
+		_MAP.set_gamestart_mapdef_col();
+		_MAP.showMapForStageselect(_this.mapdef);
 
 		//テキスト表示
 		_GAME._setDrawTextToFont('stage title',400,130,0.3);
@@ -1725,8 +1720,8 @@ const _DRAW=()=>{
 
 		//以下は大体のシーケンス
 		//・移動設定
-		//・表示
 		//・衝突判定
+		//・表示
 
 		//BACKGROUNDを表示
 		for(let _i=0;_i<_BACKGROUND_STAR_MAX;_i++){
@@ -1757,6 +1752,20 @@ const _DRAW=()=>{
 			_POWERCAPSELLS[_i].move();			
 		}
 
+		_IS_GET_POWERCAPSELL();
+		// console.log('6:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
+ 		//敵、衝突判定
+		_IS_ENEMIES_SHOT_COLLISION();
+		// console.log('7:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
+		_IS_ENEMIES_COLLISION();
+		// console.log('8:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
+		//MAP（自機ショット衝突判定）
+		_MAP.isPlayersShotCollision();
+		// console.log('9:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
+		//敵、衝突表示
+		_DRAW_ENEMIES_COLLISIONS();
+		// console.log('10:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
+		
 		//ショットを表示
 		for(let _i=0;_i<_PLAYERS_MAX;_i++){
 			if(_PLAYERS_MISSILE_ISALIVE){
@@ -1771,12 +1780,10 @@ const _DRAW=()=>{
 			_PLAYERS_OPTION[_i].move(10*(_i+1));
 		}
 		// console.log('12:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-
 		//自機を表示
 		_PLAYERS_MAIN_FORCE.move(_PLAYERS_MAIN);
 		_PLAYERS_MAIN.move();
 		// console.log('13:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-
 		//MAP表示設定
 		_MAP.map_draw();
 		//DRAW POWER METERを表示
@@ -1784,19 +1791,6 @@ const _DRAW=()=>{
 		//SCOREを表示
 		_SCORE.show();
 
-		_IS_GET_POWERCAPSELL();
-		// console.log('6:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
- 		//敵、衝突判定
-		_IS_ENEMIES_SHOT_COLLISION();
-		// console.log('7:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-		_IS_ENEMIES_COLLISION();
-		// console.log('8:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-		//MAP（衝突判定）
-		_MAP.isPlayersShotCollision();
-		// console.log('9:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-		//敵、衝突表示
-		_DRAW_ENEMIES_COLLISIONS();
-		// console.log('10:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 		
 		// if(_MAP_SCROLL_POSITION_X-100<=
 		// 	(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}
@@ -2105,7 +2099,6 @@ const _DRAW_GAMEOVER=()=>{
 	//SCORE
 	_SCORE.show();
 
-	var _img=_CANVAS_IMGS_INIT['font'].obj;
 	let _s='gameover';
 	_GAME._setDrawTextToFont(
 		_s,

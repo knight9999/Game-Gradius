@@ -168,8 +168,38 @@ body.sp section#sp_landscapemode ._inner{
 	left: 50%;
 	position: absolute;
 	text-align:center;
-	top: 50%;
+	top: 45%;
 	transform: translate(-50%,-50%);
+}
+body.sp section#sp_landscapemode #device{
+	animation:3s anim infinite;
+	background-color:rgba(255,255,255,0.2);
+	border-radius:5px;
+	border:2px solid rgba(255,255,255,1);
+	height:60px;
+	position:absolute;
+	transform-origin:bottom right;
+	transform:rotate(0deg);
+	top:55%;
+	left:38%;
+	transform:translate(-50%,-50%);
+	width:36px;
+}
+body.sp section#sp_landscapemode #device:after{
+	background-color:rgba(0,0,0,1);
+	border:1px solid rgba(255,255,255,1);
+	content:'';
+	left:calc(50% - 14px);
+	top:calc(50% - 21px);
+	position:absolute;
+	height:40px;
+	width:26px;
+}
+@keyframes anim{
+	0%{transform:translate(-50%,-50%)}
+	30%{transform:translate(-50%,-50%) rotate(0deg);}
+	70%{transform:translate(-50%,-50%) rotate(90deg);}
+	100%{transform:translate(-50%,-50%) rotate(90deg);}
 }
 }
 @media screen and (orientation: landscape) {

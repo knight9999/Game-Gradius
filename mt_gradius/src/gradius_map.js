@@ -32,35 +32,35 @@ _ENEMIES:{
 			_ENEMIES.push(new ENEMY_a({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_a({})}
+		'_getObj':()=>{return new ENEMY_a({direct:null})}
 	},
 	'b':{
 		'_gamestart':(_mx,_my,_md)=>{
 			_ENEMIES.push(new ENEMY_b({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_b({})}
+		'_getObj':()=>{return new ENEMY_b({direct:null})}
 	},
 	'c':{
 		'_gamestart':(_mx,_my,_md)=>{
 			_ENEMIES.push(new ENEMY_c({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_c({})}
+		'_getObj':()=>{return new ENEMY_c({direct:null})}
 	},
 	'd':{
 		'_gamestart':(_mx,_my,_md)=>{
 			_ENEMIES.push(new ENEMY_d({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_d({})}
+		'_getObj':()=>{return new ENEMY_d({direct:null})}
 	},
 	'e':{
 		'_gamestart':(_mx,_my,_md)=>{
 			_ENEMIES.push(new ENEMY_e({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_e({})}
+		'_getObj':()=>{return new ENEMY_e({direct:null})}
 	},
 	'f':{
 		'_gamestart':(_mx,_my,_md)=>{
@@ -70,7 +70,7 @@ _ENEMIES:{
 			_ENEMIES.push(new ENEMY_f({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_f({})}
+		'_getObj':()=>{return new ENEMY_f({direct:null})}
 	},
 	'g':{
 		'_gamestart':(_mx,_my,_md)=>{
@@ -81,28 +81,28 @@ _ENEMIES:{
 			_ENEMIES.push(new ENEMY_g({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_g({})}
+		'_getObj':()=>{return new ENEMY_g({direct:null})}
 	},
 	'm':{
 		'_gamestart':(_mx,_my,_md)=>{
 			_ENEMIES.push(new ENEMY_m({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_m({})}
+		'_getObj':()=>{return new ENEMY_m({direct:null})}
 	},
 	'n':{
 		'_gamestart':(_mx,_my,_md)=>{
 			_ENEMIES.push(new ENEMY_n({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_n({})}
+		'_getObj':()=>{return new ENEMY_n({direct:null})}
 	},
 	'o':{
 		'_gamestart':(_mx,_my,_md)=>{
 			_ENEMIES.push(new ENEMY_o({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_o({})}
+		'_getObj':()=>{return new ENEMY_o({direct:null})}
 	},
 	'p':{
 		'_gamestart':(_mx,_my,_md)=>{
@@ -110,14 +110,14 @@ _ENEMIES:{
 			_ENEMIES.push(_o);
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_p({})}
+		'_getObj':()=>{return new ENEMY_p({direct:null})}
 	},
 	'z':{
 		'_gamestart':(_mx,_my,_md)=>{
 			_ENEMIES.push(new ENEMY_FAN({x:_mx,y:_my,direct:_md}));
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_FAN({width:25,height:25})}
+		'_getObj':()=>{return new ENEMY_FAN({width:25,height:25,direct:null})}
 	}
 
 }//_ENEMIES
@@ -270,27 +270,27 @@ const _MAP_THEME={//_parts要素番号0は空文字
 		'a':{
 			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_a({x:_mx,y:_my,direct:_md}));},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_a({});}
+			'_getObj':()=>{return new ENEMY_a({direct:null});}
 		},
 		'b':{
 			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_b({x:_mx,y:_my,direct:_md}));},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_b({});}
+			'_getObj':()=>{return new ENEMY_b({direct:null});}
 		},
 		'c':{
 			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_c({x:_mx,y:_my,direct:_md}));},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_c({});}
+			'_getObj':()=>{return new ENEMY_c({direct:null});}
 		},
 		'd':{
 			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_d({x:_mx,y:_my,direct:_md}));},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_d({});}
+			'_getObj':()=>{return new ENEMY_d({direct:null});}
 		},
 		'e':{
 			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_e({x:_mx,y:_my,direct:_md}));},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_e({});}
+			'_getObj':()=>{return new ENEMY_e({direct:null});}
 		},
 		'f':{
 			'_gamestart':(_mx,_my,_md)=>{
@@ -372,7 +372,7 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(new ENEMY_FAN({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_FAN({});}
+			'_getObj':()=>{return new ENEMY_FAN({direct:null});}
 		}	
 	}
 },//_THEME5
@@ -423,14 +423,14 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(new ENEMY_d({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_d({});}
+			'_getObj':()=>{return new ENEMY_d({direct:null});}
 		},
 		'e':{
 			'_gamestart':(_mx,_my,_md)=>{
 				_ENEMIES.push(new ENEMY_e({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_e({});}
+			'_getObj':()=>{return new ENEMY_e({direct:null});}
 		},
 		'z':{
 			'_gamestart':(_mx,_my,_md)=>{
@@ -543,35 +543,35 @@ const _MAP_THEME={//_parts要素番号0は空文字
 				_ENEMIES.push(new ENEMY_CELL_A({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_CELL_A({});}
+			'_getObj':()=>{return new ENEMY_CELL_A({direct:null});}
 		},
 		'c':{
 			'_gamestart':(_mx,_my,_md)=>{
 				_ENEMIES.push(new ENEMY_CELL_B({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_CELL_B({});}
+			'_getObj':()=>{return new ENEMY_CELL_B({direct:null});}
 		},
 		'd':{
 			'_gamestart':(_mx,_my,_md)=>{
 				_ENEMIES.push(new ENEMY_d({x:_mx,y:_my,direct:_md}));
 					},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_d({});}
+			'_getObj':()=>{return new ENEMY_d({direct:null});}
 		},
 		'e':{
 			'_gamestart':(_mx,_my,_md)=>{
 				_ENEMIES.push(new ENEMY_e({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_e({});}
+			'_getObj':()=>{return new ENEMY_e({direct:null});}
 		},
 		'z':{
 			'_gamestart':(_mx,_my,_md)=>{
 				_ENEMIES.push(new ENEMY_FAN({x:_mx,y:_my,direct:_md}));
 				},
 			'_st':'',
-			'_getObj':()=>{return new ENEMY_FAN({});}
+			'_getObj':()=>{return new ENEMY_FAN({direct:null});}
 		}
 	}
 
@@ -923,13 +923,14 @@ class GameObject_MAP{
 				let _y=130+(_i*10);
 				let _w=_p.width/2.5;
 				let _h=_p.height/2.5;
-				if(_p.direct===_DEF_DIR._U){
+				let _d=(_p.direct===null)?_MAP_ENEMIES._setDir(_j+100,_i):_p.direct;
+				if(_d===_DEF_DIR._U){
 					_CONTEXT.setTransform(1,0,0,-1,0,_y*2+_h);
 				}
-				if(_p.direct===_DEF_DIR._LU){
+				if(_d===_DEF_DIR._LU){
 					_CONTEXT.setTransform(-1,0,0,-1,_x*2+_w,_y*2+_h);
 				}
-				if(_p.direct===_DEF_DIR._LD){
+				if(_d===_DEF_DIR._LD){
 					_CONTEXT.setTransform(-1,0,0,1,_x*2+_w,0);
 				}
 				_CONTEXT.drawImage(

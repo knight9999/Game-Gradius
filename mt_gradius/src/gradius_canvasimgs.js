@@ -155,13 +155,8 @@ const _CANVAS_IMGS={
 	'enemy_bullet_laser':
   		{src:'images/gradius_enemy_bullet_laser.png',rate:1.0,obj:new Image()},
 
-	//パワーカプセル（赤）
-	'pc_red':{src:'images/gradius_pc_red.png',rate:1.0,obj:new Image()},
-	//パワーカプセル（青）
-	'pc_blue':{src:'images/gradius_pc_blue.png',rate:1.0,obj:new Image()},
-
-
-
+	//パワーカプセル
+	'gradius_pc':{src:'images/gradius_pc.png',rate:1.0,obj:new Image()},
 
 	//cube
 	'map_cube_A':{src:'images/gradius_map_cube_A.png',rate:1,obj:new Image()},

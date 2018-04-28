@@ -1458,17 +1458,18 @@ class GameObject_POWERCAPSELL{
 		_this.type=(Math.random()>0.1)
 					?'red'
 					:'blue';
-		_this._c_pc_ani=0;
-		_this.img=
-			(_this.type==='red')
-				?_CANVAS_IMGS['pc_red'].obj
-				:_CANVAS_IMGS['pc_blue'].obj;
+		_this._c=0;
+		//アニメーション定義
+		_this.ani=[0,25,50,75];
+		_this.img=_CANVAS_IMGS['gradius_pc'].obj;
+		_this.width=25;
+		_this.height=23;
 	}
 	getPCCenterPosition(){
 		let _this=this;
 		//スプライト画像のため1コマ（正方形）
-		return {_x:_this.x+(_this.img.height/2),
-				_y:_this.y+(_this.img.height/2)}
+		return {_x:_this.x+(_this.width/2),
+				_y:_this.y+(_this.height/2)}
 	}
 	getPowerCapcell(){this.gotpc=true;}
 	move(){
@@ -1477,25 +1478,18 @@ class GameObject_POWERCAPSELL{
 		if(_this.gotpc){return;}
 		_this.x=_MAP.getX(_this.x);
 		_this.y=_MAP.getY(_this.y);
+		
+		_this._c=(_this._c>=(_this.ani.length*5)-1)?0:_this._c+1;
 
-		//パワーカプセル所持の場合
-		let _w=parseInt(_this.img.width/_this.img.height);
-		let _s=_this.img.height;
-
-		_this._c_pc_ani=
-			(_this._c_pc_ani>=(_w*5)-1)
-				?0:_this._c_pc_ani+1;
-		_CONTEXT.drawImage(
-			_this.img,
-			_s*parseInt(_this._c_pc_ani/5),
-			0,
-			_s,
-			_s,
-			_this.x,
-			_this.y,
-			_s,
-			_s
-		);
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x,
+			y:_this.y,
+			imgPosx:_this.ani[parseInt(_this._c/5)]+((_this.type==='blue')?100:0),
+			width:_this.width,
+			height:_this.height,
+			basePoint:1
+		});
 	}
 }
 

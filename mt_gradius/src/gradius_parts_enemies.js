@@ -1624,13 +1624,13 @@ class ENEMY_r extends ENEMY_q{
 class ENEMY_moai_ring extends GameObject_ENEMY{
 	constructor(_p){
 		super({
-			img:_CANVAS_IMGS['enemy_moai_ring'].obj,
+			img:_p.img||_CANVAS_IMGS['enemy_moai_ring'].obj,
 			x:_p.x,
 			y:_p.y,
-			imgPos:[0,25],
-			aniItv:5,
-			width:25,
-			height:25
+			imgPos:_p.imgPos||[0,25],
+			aniItv:_p.aniItv||5,
+			width:_p.width||25,
+			height:_p.height||25
 		});
         let _this=this;
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision2'];		

@@ -77,6 +77,10 @@ const _CANVAS_IMGS={
 	'enemy_p_4':{src:'images/gradius_enemy_p_4.png',rate:0.30,obj:new Image()},
 	'enemy_p_5':{src:'images/gradius_enemy_p_5.png',rate:0.30,obj:new Image()},
 
+	'enemy_moai_boss':{src:'images/gradius_enemy_moai_boss.png',rate:1.00,obj:new Image()},
+	'enemy_moai_mini_boss':{src:'images/gradius_enemy_moai_mini_boss.png',rate:1.00,obj:new Image()},
+	'enemy_moai_boss_ring':{src:'images/gradius_enemy_moai_boss_ring.png',rate:1.00,obj:new Image()},
+
 	'enemy_m_a_1':{src:'images/gradius_enemy_m_a_1.png',rate:0.25,obj:new Image()},
 	'enemy_m_a_2':{src:'images/gradius_enemy_m_a_2.png',rate:0.25,obj:new Image()},
 	'enemy_m_b_1':{src:'images/gradius_enemy_m_b_1.png',rate:0.25,obj:new Image()},

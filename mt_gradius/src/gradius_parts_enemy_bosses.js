@@ -28,7 +28,9 @@ class GameObject_ENEMY_BOSS
 		super({
 			img:_p.img,
 			x:_p.x,
-			y:_p.y
+			y:_p.y,
+			width:_p.width,
+			height:_p.height
 		});
 		let _this=this;
 		_this.speed=0;
@@ -2544,7 +2546,6 @@ class ENEMY_BOSS_CELL_EYE
 	}
 	move(){
 		//敵の処理メイン
-		//原則継承はしない
 		let _this=this;
 		_this.x=_MAP.getX(_this.x);
 		_this.y=_MAP.getY(_this.y);
@@ -2717,4 +2718,264 @@ class ENEMY_BOSS_DEATH
 		_this._c++;
 
 	}
+}
+
+
+//====================
+//　ボス モアイ
+//	_x:ボスの初期x位置
+//	_y:ボスの初期y位置
+//====================
+class ENEMY_BOSS_MOAI
+		extends GameObject_ENEMY_BOSS{
+	constructor(_p){
+		super({
+			img:_CANVAS_IMGS['enemy_moai_boss'].obj,
+			x:_p.x,
+			y:_p.y,
+			width:135,
+			height:150
+		});
+		let _this=this;
+		_this._status=20;
+		_this.speedx=2;
+		_this.speedy=2;
+		_this._standby=false;
+		_this.is_all_set=false;
+
+		//プチモアイ格納
+		_this.moai_mini=[];
+		//アニメーション定義
+		_this.ani=[0,135,270,405,540,675,810];
+		_this.imgPosx=_this.ani[6];
+		_this._isopen=false;
+
+		_this._direct=_DEF_DIR._L;//左向
+		_this.shotColMapDir={
+			3:["0,90,20,120","20,0,135,150,false"],
+			2:["115,90,135,120","0,0,115,150,false"]
+		}
+	
+		_this.shotColMap=_this.shotColMapDir[_this._direct];
+		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision7'];
+		_this._collision_type='t9';
+	}
+	collision(_s_type,_num){
+		let _this=this;
+		//イオンリングを発したときに当たり判定させる
+		if(!_this._isopen){return;}
+		if(!_this.isCollision()){return;}
+		_this.setStatus(_s_type,_num);
+	}
+	showCollapes(){
+		let _this=this;
+		let _e=_this.getEnemyCenterPosition()
+		//敵を倒した場合
+		_this._isshow=false;
+		//爆発して終了
+		_ENEMIES_COLLISIONS.push(
+			new GameObject_ENEMY_COLLISION(
+				_e._x,
+				_e._y,
+				_this._collision_type)
+		);
+		//他のボスをすべて爆発
+		for(let _i=0;_i<_ENEMIES.length;_i++){
+			let _o=_ENEMIES[_i];
+			if(ENEMY_BOSS_MOAI.prototype.isPrototypeOf(_o)){continue;}
+			_o._status=0;
+		}
+	}
+	set_direct(_dir){
+		let _this=this;
+		if(_this._c===0){return;}
+		if(_this._c%200>=170&&_this._c%200<180){
+			_this.imgPosx=(_this._direct===_DEF_DIR._L)?_this.ani[4]:_this.ani[2];
+			return;
+		}
+		if(_this._c%200>=180&&_this._c%200<190){
+			_this.imgPosx=_this.ani[3];
+			return;
+		}
+		if(_this._c%200>=190&&_this._c%200<200){
+			_this.imgPosx=(_this._direct===_DEF_DIR._L)?_this.ani[2]:_this.ani[4];
+			return;			
+		}
+		if(_this._c%200===0){
+			_this._direct=(_this._direct===_DEF_DIR._L)?_DEF_DIR._R:_DEF_DIR._L;
+		}
+		_this.imgPosx=(_this._direct===_DEF_DIR._L)?_this.ani[5]:_this.ani[0];
+	}
+	shot(){
+		let _this=this;
+
+		//向き展開中はプチモアイを吐き出さない
+		if(_this._c%200>=170&&_this._c%200<200){
+			return;
+		}
+		//プチモアイを吐き出す
+		let _num=0;
+		for(let _i=0;_i<_ENEMIES.length;_i++){
+			let _o=_ENEMIES[_i];
+			if(ENEMY_BOSS_MOAI_MINI.prototype.isPrototypeOf(_o)){
+				_num++;
+				if(_num>20){return;}
+			}
+		}
+		if(_this._c%50>=30&&_this._c%50<50){
+			_this.imgPosx=(_this._direct===_DEF_DIR._L)?_this.ani[5]:_this.ani[0];
+			_this._isopen=true;
+		}else{
+			_this.imgPosx=(_this._direct===_DEF_DIR._L)?_this.ani[6]:_this.ani[1];
+			_this._isopen=false;
+		}
+		if(_this._c%30===20){
+			let _e=_this.getEnemyCenterPosition();
+			let _o=new ENEMY_BOSS_MOAI_MINI({x:_e._x,y:_e._y});
+			_this.moai_mini.push(_o);
+			_ENEMIES.push(_o);	
+		}
+	}
+	isAllset(){
+		//準備完了判定処理
+		let _this=this;
+		if(_this.is_all_set){return true;}
+		_this.move_Allset();
+		return false;
+	}
+	move_Allset(){
+		//スタンバイ状態
+		let _this=this;
+		if(_this.move_before()){return;}
+		_this.x-=4;
+		if(_this.x<_CANVAS.width-300){
+			_this.is_all_set=true;
+		}
+	}
+	move_standby(){}
+	move(){
+		let _this=this;
+
+//		console.log(_this.imgPosx);
+		//自身を表示
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x,
+			y:_this.y,
+			imgPosx:_this.imgPosx,
+			width:_this.width,
+			basePoint:1
+		});
+
+		if(!_this.isMove()){return;}
+		if(!_this.isAllset()){return;}
+
+		_this.shotColMap=_this.shotColMapDir[_this._direct];
+
+		_this.x+=_this.speedx;
+		_this.speedx=(_this.x<200
+					||_this.x+_this.width>900)
+				?_this.speedx*-1
+				:_this.speedx;
+		_this.y+=_this.speedy;
+		_this.speedy=(_this.y<50
+					||_this.y+_this.height>450)
+						?_this.speedy*-1
+						:_this.speedy;
+
+//		console.log(_this.x);
+		let _e=_this.getEnemyCenterPosition();
+		//向きを切り替える
+		_this.set_direct();
+		//プチモアイを吐き出す
+		_this.shot();
+		//プチモアイの操作
+		for(let _i=0;_i<_ENEMIES.length;_i++){
+			let _o=_ENEMIES[_i];
+			if(ENEMY_BOSS_MOAI.prototype.isPrototypeOf(_o)){continue;}
+			_o.setPos({x:_e._x,y:_e._y});
+		}
+
+		//自爆
+		_this.setSelfCollision();
+		_this._c++;
+
+	}
+}
+
+class ENEMY_BOSS_MOAI_MINI
+	extends GameObject_ENEMY{
+	constructor(_p){
+		super({
+			img:_CANVAS_IMGS['enemy_moai_mini_boss'].obj,
+			x:_p.x,
+			y:_p.y,
+			width:27,
+			height:30
+		});
+		let _this=this;
+		_this._status=5;
+		_this._radian=0;
+		_this._radius=0;
+		_this._standby=false;
+		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision3'];
+		_this._collision_type='t2';
+	}
+	shot(){
+		let _this=this;
+		//イオンリングを吐き出す
+		if(_this._c!==0){return;}
+		_ENEMIES.push(new ENEMY_moai_boss_ring({x:_this.x,y:_this.y}))
+	}
+	setPos(_d){
+		let _this=this;
+		_this._radian+=0.075;
+		_this._radius=(_this._radius<150)?_this._radius+5:_this._radius;
+		_this.x=_this._radius*Math.cos(_this._radian)+_d.x;
+		_this.y=_this._radius*Math.sin(_this._radian)+_d.y;
+	}
+	moveDraw(){
+		//描画状態
+		let _this=this;
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x,
+			y:_this.y,
+			basePoint:5
+		});
+	}
+	move(){
+		//敵の処理メイン
+		let _this=this;
+		_this.x=_MAP.getX(_this.x);
+		_this.y=_MAP.getY(_this.y);
+		if(!_this.isMove()){return;}
+		_this.shot();
+		_this.moveDraw();
+		_this._c=(_this._c>50)?0:_this._c+1;
+	}	
+}
+
+//モアイ（リング）
+class ENEMY_moai_boss_ring
+	extends ENEMY_moai_ring{
+	constructor(_p){
+		super({
+			img:_CANVAS_IMGS['enemy_moai_boss_ring'].obj,
+			x:_p.x,
+			y:_p.y,
+			imgPos:[0,10],
+			aniItv:5,
+			width:10,
+			height:10
+		});
+        let _this=this;
+		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision2'];
+		_this.speed=8.0;
+		_this._collision_type='t2';
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=1;
+		_this.getscore=100;//倒した時のスコア
+
+	}
+	setPos(){}//これは必要。
 }

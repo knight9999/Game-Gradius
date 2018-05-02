@@ -12,7 +12,7 @@
     "build:js_edit": "uglifyjs ./src/gradius_canvasimgs.js ./src/gradius_common.js ./src/gradius_parts_enemies.js ./src/gradius_parts_map.js ./src/gradius_map.js ./src/gradius_editing_stage.js -o ./dist/gradius_editing_stage.min.js -c -m",
     "build:css_edit": "uglifycss ./src/gradius_editing_stage.css > ./dist/gradius_editing_stage.min.css",
     "build:html_edit": "html-dist --config html-dist.config.js --input ./src/gradius_editing_stage.html > ./dist/gradius_editing_stage.html --jsFile gradius_editing_stage.min.js --cssFile gradius_editing_stage.min.css",
-    "clean": "rm -rf ./dist/*.js ./dist/*.css ./dist/images/* ./dist/*.html"
+    "clean": "rm -rf ./dist/*.js ./dist/*.css ./dist/images/* ./dist/audios/* ./dist/*.html"
   },
   "author": "Takahashi Masaya",
   "license": "ISC",

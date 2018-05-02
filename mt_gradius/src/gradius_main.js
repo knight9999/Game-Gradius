@@ -1472,15 +1472,8 @@ class GameObject_POWERCAPSELL{
 				_y:_this.y+(_this.height/2)}
 	}
 	getPowerCapcell(){this.gotpc=true;}
-	move(){
+	setDrawImage(){
 		let _this=this;
-		//すでにパワーカプセル取得済みは終了
-		if(_this.gotpc){return;}
-		_this.x=_MAP.getX(_this.x);
-		_this.y=_MAP.getY(_this.y);
-		
-		_this._c=(_this._c>=(_this.ani.length*5)-1)?0:_this._c+1;
-
 		_GAME._setDrawImage({
 			img:_this.img,
 			x:_this.x,
@@ -1490,6 +1483,15 @@ class GameObject_POWERCAPSELL{
 			height:_this.height,
 			basePoint:1
 		});
+	}
+	move(){
+		let _this=this;
+		//すでにパワーカプセル取得済みは終了
+		if(_this.gotpc){return;}
+		_this.x=_MAP.getX(_this.x);
+		_this.y=_MAP.getY(_this.y);
+		
+		_this._c=(_this._c>=(_this.ani.length*5)-1)?0:_this._c+1;
 	}
 }
 
@@ -1610,7 +1612,6 @@ const _IS_ENEMIES_COLLISION=()=>{
 			_j++){
 		let _os=_PLAYERS_SHOTS[_SHOTTYPE][_j];
 		let _ma=_CANVAS.width;
-		let _now_laser_MaxX=_os.shots[0]._laser_MaxX;
 		// レーザーでは敵全部を回して、
 		// 自機から一番近い耐久性がある敵まで
 		// レーザーを表示させる。
@@ -1622,13 +1623,12 @@ const _IS_ENEMIES_COLLISION=()=>{
 			let _oe=_e[_i];
 			let _m=_os.enemy_collision(_oe);
 			_ma=(_ma>_m)?_m:_ma;
-	//		console.log(_ma);
 		}//_i
-		//衝突はあったが、すでにレーザーが進んでる場合は、
-		//そのまま突き進む
+
+		//敵判定から最大衝突を設定する。
 		_os.shots[0]._laser_MaxX=
 			(_os.shots[0].x<_ma)
-				?_ma
+				?_ma//さらに手前で衝突が発生した場合
 				:_os.shots[0]._laser_MaxX;
 		}//_j
 	}else if(_SHOTTYPE!==_SHOTTYPE_LASER){
@@ -1706,7 +1706,7 @@ const _DRAW=()=>{
 	_KEYEVENT_MASTER.addKeyupGame();
 
 	let _c=0;
-	const _loop=function(){
+	const _loop=()=>{
 		_DRAW_SETINTERVAL=window.requestAnimationFrame(_loop);		
 		_CONTEXT.clearRect(0,0,
 					_CANVAS.width,
@@ -1724,18 +1724,20 @@ const _DRAW=()=>{
 		// console.log('2:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 		//敵の弾を表示
 		for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
-			_ENEMIES_SHOTS[_i].move();
+			if(_PLAYERS_MAIN.isalive()){_ENEMIES_SHOTS[_i].move();}
+			_ENEMIES_SHOTS[_i].setDrawImage();
 		}
 		// console.log('3:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 
 		//MAP位置と敵の表示はこのシーケンス
 		//※モアイ破壊後のMAP衝突がうまく調整できなくなる
 		//MAP位置設定
-		_MAP.move();
+		if(_PLAYERS_MAIN.isalive()){_MAP.move();}
 		//敵を表示
 		for(let _i=0;_i<_ENEMIES.length;_i++){
 			if(_ENEMIES[_i]===undefined){continue;}
-			_ENEMIES[_i].move();
+			if(_PLAYERS_MAIN.isalive()){_ENEMIES[_i].move();}
+			_ENEMIES[_i].setDrawImage();
 		}
 		// console.log('4:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 		// console.log('5:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
@@ -1743,7 +1745,16 @@ const _DRAW=()=>{
 //		console.log('t')
 		//パワーカプセルを表示
 		for(let _i=0;_i<_POWERCAPSELLS.length;_i++){
-			_POWERCAPSELLS[_i].move();			
+			if(_PLAYERS_MAIN.isalive()){_POWERCAPSELLS[_i].move();}
+			_POWERCAPSELLS[_i].setDrawImage();
+		}
+
+		//ショットの移動調整
+		for(let _i=0;_i<_PLAYERS_MAX;_i++){
+			if(_PLAYERS_MISSILE_ISALIVE){
+				if(_PLAYERS_MAIN.isalive()){_PLAYERS_MISSILE[_i].move();}
+			}
+			if(_PLAYERS_MAIN.isalive()){_PLAYERS_SHOTS[_SHOTTYPE][_i].move();}
 		}
 
 		_IS_GET_POWERCAPSELL();
@@ -1763,15 +1774,18 @@ const _DRAW=()=>{
 		//ショットを表示
 		for(let _i=0;_i<_PLAYERS_MAX;_i++){
 			if(_PLAYERS_MISSILE_ISALIVE){
-				_PLAYERS_MISSILE[_i].move();
+//				if(_PLAYERS_MAIN.isalive()){_PLAYERS_MISSILE[_i].move();}
+				_PLAYERS_MISSILE[_i].setDrawImage();
 			}
-			_PLAYERS_SHOTS[_SHOTTYPE][_i].move();
+//			if(_PLAYERS_MAIN.isalive()){_PLAYERS_SHOTS[_SHOTTYPE][_i].move();}
+			_PLAYERS_SHOTS[_SHOTTYPE][_i].setDrawImage();
 		}
 		// console.log('11:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 
 		//自機からひもづくオプションを表示
 		for(let _i=0;_i<_PLAYERS_OPTION_MAX;_i++){
-			_PLAYERS_OPTION[_i].move(10*(_i+1));
+			if(_PLAYERS_MAIN.isalive()){_PLAYERS_OPTION[_i].move(10*(_i+1));}
+			_PLAYERS_OPTION[_i].setDrawImage();
 		}
 		// console.log('12:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 		//自機を表示
@@ -1780,6 +1794,12 @@ const _DRAW=()=>{
 		// console.log('13:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 		//MAP表示設定
 		_MAP.map_draw();
+
+		//自機のステータスが0になった時
+		if(!_PLAYERS_MAIN.isalive()){
+			_DRAW_PLAYER_COLLAPES();			
+		}
+
 		//DRAW POWER METERを表示
 		_POWERMETER.show();
 		//SCOREを表示
@@ -1846,34 +1866,29 @@ const _DRAW_PLAYER_COLLAPES=()=>{
 	//自機の爆発表示
 	let _si=null;
 	let _pl=_this.getPlayerCenterPosition();
-	_GAME._setPlay(_CANVAS_AUDIOS['vicviper_bomb']);
 
-	const _loop=function(){
-		_si=window.requestAnimationFrame(_loop);		
-		if(_this._col_ani_c
-			>=(_this.col_ani.length*10)-1){
-			//アニメーションが終わったら終了
-			cancelAnimationFrame(_si);
-			_DRAW_GAMEOVER();
-			return;
-		}
+	if(_this._col_ani_c
+		>=(_this.col_ani.length*10)-1){
+		//アニメーションが終わったら終了
+		cancelAnimationFrame(_si);
+		_DRAW_GAMEOVER();
+		return;
+	}
 
-		let _c=parseInt(_this._col_ani_c/10);
-		let _w=_this.col_ani[_c].img.width;
-		let _h=_this.col_ani[_c].img.height;
-		let _sw=_w*_this.col_ani[_c].scale;
-		let _sh=_h*_this.col_ani[_c].scale;
-		_CONTEXT.drawImage(
-			_this.col_ani[_c].img,
-			_pl._x-(_sw/2),
-			_pl._y-(_sh/2),
-			_sw,
-			_sh
-		);
-		_this._col_ani_c++;
+	let _c=parseInt(_this._col_ani_c/10);
+	let _w=_this.col_ani[_c].img.width;
+	let _h=_this.col_ani[_c].img.height;
+	let _sw=_w*_this.col_ani[_c].scale;
+	let _sh=_h*_this.col_ani[_c].scale;
+	_CONTEXT.drawImage(
+		_this.col_ani[_c].img,
+		_pl._x-(_sw/2),
+		_pl._y-(_sh/2),
+		_sw,
+		_sh
+	);
+	_this._col_ani_c++;
 
-	};
-	_si=window.requestAnimationFrame(_loop);		
 }	
 const _DRAW_PLAYERS_SHOTS=()=>{
 	let _date=new Date();
@@ -1979,7 +1994,7 @@ const _DRAW_SELECT_POWERMETER=()=>{
 	_KEYEVENT_MASTER.removeKeydownSelectPowermeter();
 	let _c=0;
 	let _si=null;
-	const _loop=function(){
+	const _loop=()=>{
 		_si=window.requestAnimationFrame(_loop);		
 		_CONTEXT.clearRect(0,0,
 			_CANVAS.width,
@@ -2005,7 +2020,7 @@ const _DRAW_GAMESTART=()=>{
 
 	if(_ISDEBUG){_DRAW();return;}
 	let _c=0;
-	const _loop=function(){
+	const _loop=()=>{
 		_DRAW_GAMESTART_SETINTERVAL=window.requestAnimationFrame(_loop);
 		//	_DRAW_GAMESTART_SETINTERVAL=setInterval(function(){
 		if(_c>250){
@@ -2078,6 +2093,7 @@ const _DRAW_GAMEOVER=()=>{
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
 
+	_DRAW_STOP();
 	_DRAW_STOP_PLAYERS_SHOTS();
 
 	_KEYEVENT_MASTER.addKeydownGameover();
@@ -2127,8 +2143,10 @@ const _DRAW_ENEMIES_COLLISIONS=()=>{
 	}
 
 	for(let _i=0;_i<_ENEMIES_COLLISIONS.length;_i++){
-		_ENEMIES_COLLISIONS[_i].move();
+		if(_PLAYERS_MAIN.isalive()){_ENEMIES_COLLISIONS[_i].move();}
+		_ENEMIES_COLLISIONS[_i].setDrawImage();
 	}
+
 }//_DRAW_ENEMIES_COLLISIONS
 
 const _DRAW_SCROLL_STOP=()=>{
@@ -2154,6 +2172,7 @@ const _DRAW_RESET_OBJECT=()=>{
 
 	_PLAYERS_MAIN='';
 	_PLAYERS_MAIN_FORCE='';
+	_PLAYERS_MAIN_COLLISION=false;
 	_PLAYERS_MOVE_FLAG=false;
 	_PLAYERS_OPTION=[];
 	_PLAYERS_OPTION_ISALIVE=0;
@@ -2861,7 +2880,7 @@ _setDrawImage(_d){
 	let _x=_d.x||0;
 	let _y=_d.y||0;
 	let _basePoint=_d.basePoint||5;//拡縮による基準点
-	let _alpha=_d.alpha||1;//透明度
+	let _alpha=(_d.alpha===undefined)?1:_d.alpha;//透明度
 
 	if(_d.basePoint===1
 		&&_d.imgPosx===undefined

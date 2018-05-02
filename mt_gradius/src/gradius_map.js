@@ -106,7 +106,7 @@ _ENEMIES:{
 	},
 	'p':{
 		'_gamestart':(_mx,_my,_md)=>{
-			let _o=new ENEMY_p({x:_mx,y:_my,direct:_md});
+			let _o=new ENEMY_p({x:_mx,y:_my,direct:_DEF_DIR._D});
 			_ENEMIES.push(_o);
 			},
 		'_st':'',

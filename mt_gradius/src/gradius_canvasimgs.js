@@ -104,10 +104,8 @@ const _CANVAS_IMGS={
 
 	'enemy_frame_1':{src:'images/gradius_enemy_frame_1.png',rate:1.00,obj:new Image()},
 	'enemy_frame_2':{src:'images/gradius_enemy_frame_2.png',rate:1.00,obj:new Image()},
-	'enemy_frame_3':{src:'images/gradius_enemy_frame_3.png',rate:1.00,obj:new Image()},
-	'enemy_frame_4':{src:'images/gradius_enemy_frame_4.png',rate:1.00,obj:new Image()},
-	'enemy_frame_5':{src:'images/gradius_enemy_frame_5.png',rate:1.00,obj:new Image()},
-	'enemy_frame_6':{src:'images/gradius_enemy_frame_6.png',rate:1.00,obj:new Image()},
+	'enemy_frame_small':{src:'images/gradius_enemy_frame_small.png',rate:1.00,obj:new Image()},
+	'enemy_frame_mini':{src:'images/gradius_enemy_frame_mini.png',rate:1.00,obj:new Image()},
 
 	'enemy_frame_head1':{src:'images/gradius_enemy_frame_head_1.png',rate:1.00,obj:new Image()},
 	'enemy_frame_head2':{src:'images/gradius_enemy_frame_head_2.png',rate:1.00,obj:new Image()},
@@ -330,6 +328,12 @@ const _CANVAS_AUDIOS={
 		volume:1.0,
 		obj:null,
 		buf:new Object()},
+	'enemy_collision8':
+		{src:'audios/enemy_collision8.mp3',
+		volume:1.0,
+		obj:null,
+		buf:new Object()},
+
 	'enemy_all_out':
 		{src:'audios/enemy_all_out.mp3',
 		volume:1.0,

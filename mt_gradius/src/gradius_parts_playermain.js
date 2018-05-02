@@ -105,9 +105,14 @@ class GameObject_PLAYER_MAIN
 	collapes(){
 		let _this=this;
 		if(_DRAW_SETINTERVAL===null){return;}
-		_GAME._setStopOnBG();		
-		_DRAW_STOP();
-		_DRAW_PLAYER_COLLAPES();
+		_GAME._setStopOnBG();
+		_DRAW_STOP_PLAYERS_SHOTS();
+		_DRAW_SCROLL_STOP();
+		_PLAYERS_MAIN_COLLISION=true;
+		if(_this._col_ani_c===1){
+//			console.log(_this._col_ani_c)
+			_GAME._setPlay(_CANVAS_AUDIOS['vicviper_bomb']);
+		}
 	//		console.log(this._col_ani_c)
 	}
 	enemy_collision(_e){
@@ -373,29 +378,36 @@ class GameObject_PLAYER_OPTION
 		this.width=this.imgsize;
 		this.height=this.imgsize;
 	}
+	setDrawImage(){
+		let _this=this;
+		if(!_this._isalive){return;}
+		//要素がない場合は飛ばす
+		if(_this.x===null
+			||_this.y===null
+			||_this.x===undefined
+			||_this.y===undefined){return;}
+		let _p=_this.getPlayerCenterPosition();
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_p._x,
+			y:_p._y,
+			scale:_this.ani[parseInt(_this._ani_c/3)].scale
+		});		
+	}
 	move(_pmd_elem){
 		let _this=this;
 		_this.x=_GAME._getPlayerMoveDrawX(_pmd_elem);
 		_this.y=_GAME._getPlayerMoveDrawY(_pmd_elem);
-
-		if(!_this._isalive){return;}
 		//装備していない場合
+		if(!_this._isalive){return;}
+		//要素がない場合は飛ばす
 		if(_this.x===null
 			||_this.y===null
 			||_this.x===undefined
 			||_this.y===undefined){return;}
 
 		_this.shotflag=true;
-
-		let _p=_this.getPlayerCenterPosition();
 		_this._ani_c=(_this._ani_c>=(_this.ani.length*3)-1)?0:_this._ani_c+1;
-		let _c=parseInt(_this._ani_c/3);
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_p._x,
-			y:_p._y,
-			scale:_this.ani[_c].scale
-		});
 	}
 }
 
@@ -415,7 +427,7 @@ class GameObject_FORCEFIELD{
 		_this.reduce_scale_min=0.55;//フォースが切れる最小サイズ
 
 		//アニメーション定義
-		_this.ani=[0,106];
+		_this.ani=[0,105];
 
 		_this.col_date=null;//打たれた時間
 		_this.col_canint=50;//連続ショット許可間隔
@@ -759,6 +771,7 @@ class GameObject_SHOTS{
 	}
 	map_collition(){}
 	getshottype(){}
+	setDrawImage(){}
 	move(){}
 }
 
@@ -772,7 +785,6 @@ class GameObject_SHOTS_MISSILE
 			{fs:'rgba(255,131,62,1)',scale:10},
 			{fs:'rgba(255,131,72,1)',scale:12},
 			{fs:'rgba(255,131,62,1)',scale:14},
-			{fs:'rgba(133,0,4,1)',scale:12},
 			{fs:'rgba(133,0,4,1)',scale:14},
 			{fs:'rgba(100,0,4,1)',scale:16}
 		];
@@ -1121,6 +1133,25 @@ class GameObject_SHOTS_MISSILE
 		}
 		_t._c++;
 	}
+	setDrawImage(){
+		let _this=this;
+		for(let _j=0;_j<_this.shots.length;_j++){
+			let _t=_this.shots[_j];
+			if(!_t._shot_alive){continue;}
+			if(_t._c>0){continue;}
+			_CONTEXT.drawImage(
+				_t._img,
+				_this.st[_this.get_missile_status(_t)],
+				0,
+				_this.imgsize,
+				_this.imgsize,
+				_t.x,
+				_t.y,
+				_this.imgsize,
+				_this.imgsize
+			);
+		}
+	}
 	move(){
 		let _this=this;
 		let _p=_this.player;
@@ -1153,17 +1184,7 @@ class GameObject_SHOTS_MISSILE
 				_t._init();				
 				continue;
 			}
-			_CONTEXT.drawImage(
-				_t._img,
-				_this.st[_this.get_missile_status(_t)],
-				0,
-				_this.imgsize,
-				_this.imgsize,
-				_t.x,
-				_t.y,
-				_this.imgsize,
-				_this.imgsize
-			);
+
 			// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
 			// _CONTEXT.beginPath();
 			// _CONTEXT.rect(
@@ -1241,11 +1262,9 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 		super(_p);
 		this.col_mis=[//ミサイル衝突アニメ定義
 			{fs:'rgba(198,231,247,1)',scale:30},
-			{fs:'rgba(54,115,255,1)',scale:40},
-			{fs:'rgba(54,115,255,1)',scale:50},
-			{fs:'rgba(54,115,255,1)',scale:60},
-			{fs:'rgba(0,27,145,1)',scale:60},
-			{fs:'rgba(0,27,145,1)',scale:60},
+			{fs:'rgba(71,127,228,1)',scale:40},
+			{fs:'rgba(22,83,190,1)',scale:50},
+			{fs:'rgba(4,9,161,1)',scale:60},
 			{fs:'rgba(0,27,100,1)',scale:70}
 		];
 		this.st={'_st1':72,'_st2':96,'_st3':0};
@@ -1348,26 +1367,6 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 				_t._init();
 				continue;
 			}
-
-			_CONTEXT.drawImage(
-				_t._img,
-				_this.st[_this.get_missile_status(_t)],
-				0,
-				_this.imgsize,
-				_this.imgsize,
-				_t.x,
-				_t.y,
-				_this.imgsize,
-				_this.imgsize
-			);
-			// _this.mis_status[_t._st](_t);
-			// _CONTEXT.drawImage(
-			// 	_t._img,
-			// 	_t.x,
-			// 	_t.y,
-			// 	_t._img.width,
-			// 	_this.imgsize
-			// );
 
 			_t._shot_alive=true;
 //			console.log(_t._y);
@@ -1501,18 +1500,6 @@ class GameObject_SHOTS_MISSILE_2WAY
 				})();
 			}
 
-			_CONTEXT.drawImage(
-				_t._img,
-				_this.st[_this.get_missile_status(_t)],
-				0,
-				_this.imgsize,
-				_this.imgsize,
-				_t.x,
-				_t.y,
-				_this.imgsize,
-				_this.imgsize
-			);
-
 			_t._shot_alive=true;
 		}
 	}
@@ -1563,6 +1550,21 @@ class GameObject_SHOTS_NORMAL
 			_MAP.setPlayersShotAbleCollision(_map_x+1,_map_y);
 		}
 	}
+	setDrawImage(){
+		for(let _j=0;_j<this.shots.length;_j++){
+			let _t=this.shots[_j];
+			if(!_t._shot_alive){continue;}
+
+			let _img=_CANVAS_IMGS['shot1'].obj;
+			_CONTEXT.drawImage(
+				_img,
+				_t.x,
+				_t.y,
+				_img.width,
+				_img.height
+			);
+		}
+	}
 	move(){
 		let _p=this.player;
 		if(!_p.isalive()){return;}
@@ -1588,16 +1590,6 @@ class GameObject_SHOTS_NORMAL
 				_t._init();
 				continue;
 			}
-
-			let _img=_CANVAS_IMGS['shot1'].obj;
-			_CONTEXT.drawImage(
-				_img,
-				_t.x,
-				_t.y,
-				_img.width,
-				_img.height
-			);
-
 			_t._shot_alive=true;
 		}
 	}
@@ -1609,15 +1601,18 @@ class GameObject_SHOTS_DOUBLE
 		super(_p);
 		this.shots=new Array();
 		this.speed=30;
-
+		this.imgs=[
+			_CANVAS_IMGS['shot1'].obj,
+			_CANVAS_IMGS['shot2'].obj,
+			_CANVAS_IMGS['shot3'].obj
+			];
+		
 		for(let _i=0;_i<_PLAYERS_SHOTS_MAX;_i++){
 			this.shots.push({
 				sid:_SHOTTYPE_DOUBLE,
 				x:0,//処理変数：照射x軸
 				y:0,
-				_img:(_i===0)
-					?_CANVAS_IMGS['shot1'].obj
-					:_CANVAS_IMGS['shot2'].obj,
+				img:null,//this.imgsからの画像
 				_audio:_CANVAS_AUDIOS['shot_normal'],				
 				_enemyid:null,//敵ID
 				_shot:false,//処理変数：照射フラグ
@@ -1679,6 +1674,19 @@ class GameObject_SHOTS_DOUBLE
 		}
 
 	}
+	setDrawImage(){
+		for(let _j=0;_j<this.shots.length;_j++){
+			let _t=this.shots[_j];
+			if(!_t._shot_alive){continue;}
+			_CONTEXT.drawImage(
+				_t.img,
+				_t.x,
+				_t.y,
+				_t.img.width,
+				_t.img.height
+			);
+		}
+	}
 	move(){
 		let _p=this.player;
 		if(!_p.isalive()){return;}
@@ -1727,13 +1735,8 @@ class GameObject_SHOTS_DOUBLE
 				_t._init();
 				continue;
 			}
-			_CONTEXT.drawImage(
-				_t._img,
-				_t.x,
-				_t.y,
-				_t._img.width,
-				_t._img.height
-			);
+
+			_t.img=(_j===0)?this.imgs[0]:this.imgs[1];
 
 			_t._shot_alive=true;
 		}
@@ -1808,17 +1811,7 @@ class GameObject_SHOTS_TAILGUN
 				continue;
 			}
 
-			let _img=(_j===0)
-					?_CANVAS_IMGS['shot1'].obj
-					:_CANVAS_IMGS['shot3'].obj;
-			_CONTEXT.drawImage(
-				_img,
-				_t.x,
-				_t.y,
-				_img.width,
-				_img.height
-			);
-
+			_t.img=(_j===0)?this.imgs[0]:this.imgs[2];
 			_t._shot_alive=true;
 		}
 	}
@@ -1931,6 +1924,34 @@ class GameObject_SHOTS_RIPPLE_LASER
 		}
 
 	}
+	setDrawImage(){
+		let _this=this;
+		for(let _j=0;_j<_this.shots.length;_j++){
+			let _t=_this.shots[_j];
+			if(!_t._shot_alive){continue;}
+			_CONTEXT.beginPath();
+			_CONTEXT.lineWidth=_this.lineWidth_2;
+	        _CONTEXT.strokeStyle=_this.strokeStyle_2;
+			_CONTEXT.ellipse(
+				_t.x+1,
+				_t.y+1,
+				_t._width,
+				_t._height,
+				0,0,2*Math.PI);
+			_CONTEXT.stroke();
+
+			_CONTEXT.beginPath();
+			_CONTEXT.lineWidth=_this.lineWidth_1;
+	        _CONTEXT.strokeStyle=_this.strokeStyle_1;
+			_CONTEXT.ellipse(
+				_t.x,
+				_t.y,
+				_t._width,
+				_t._height,
+				0,0,2*Math.PI);
+			_CONTEXT.stroke();			
+		}
+	}
 	move(){
 		let _this=this;
 		let _p=_this.player;
@@ -1961,27 +1982,6 @@ class GameObject_SHOTS_RIPPLE_LASER
 			_t._t=(_t._t<20)?_t._t+1:_t._t;
 			_t._width=0.4+_t._t;
 			_t._height=8+(_t._t*_t._t/6);
-			_CONTEXT.beginPath();
-			_CONTEXT.lineWidth=_this.lineWidth_2;
-	        _CONTEXT.strokeStyle=_this.strokeStyle_2;
-			_CONTEXT.ellipse(
-				_t.x+1,
-				_t.y+1,
-				_t._width,
-				_t._height,
-				0,0,2*Math.PI);
-			_CONTEXT.stroke();
-
-			_CONTEXT.beginPath();
-			_CONTEXT.lineWidth=_this.lineWidth_1;
-	        _CONTEXT.strokeStyle=_this.strokeStyle_1;
-			_CONTEXT.ellipse(
-				_t.x,
-				_t.y,
-				_t._width,
-				_t._height,
-				0,0,2*Math.PI);
-			_CONTEXT.stroke();
 
 			_t._shot_alive=true;
 		}
@@ -2017,7 +2017,7 @@ class GameObject_SHOTS_LASER
 		for(let _i=0;_i<1;_i++){
 			_this.shots.push({
 				sid:_SHOTTYPE_LASER,
-				x:0,//処理変数：照射x軸
+				x:0,//処理変数：照射xの照射量
 				y:0,
 				_c_col:0,//アニメーションカウント衝突
 				laser_time:500,//定義：照射時間（照射終了共通）
@@ -2071,7 +2071,7 @@ class GameObject_SHOTS_LASER
 		if(!this.player.isalive()){return;}
 		for(let _k=0;_k<this.shots.length;_k++){
 		//自機より後ろの敵は無視する。
-		if(_e.x<this.player.x){continue;}		
+		if(_e.x+_e.width<this.player.x){continue;}		
 		let _t=this.shots[_k];
 //		console.log('count');
 		if(!_t._shot_alive){continue;}
@@ -2104,9 +2104,13 @@ class GameObject_SHOTS_LASER
 		let _map_x=_MAP.getMapX(_t._l_x);
 		let _map_y=_MAP.getMapY(_t.y);
 		//先端の衝突を表示させる判定
-		if(_MAP.isMapCollision(_map_x,_map_y)
-			||_MAP.isMapCollision(_map_x-1,_map_y)){
-			_this.setLaserMaxX(_t,_MAP.getMapXToPx(_map_x));
+		for(let _i=_t._l_x-_this.speed;_i<=_t._l_x;_i++){
+//			console.log(_i)
+			//this.speed分ループさせて衝突した場所を決定させる。
+			if(_MAP.isMapCollision(_MAP.getMapX(_i),_map_y)){
+				_this.setLaserMaxX(_t,_i);
+				break;
+			}
 		}
 		//レーザー照射内にて、当たり判定のある壁は壊す処理
 		let _map_sx=_MAP.getMapX(_t._l_sx);
@@ -2121,12 +2125,46 @@ class GameObject_SHOTS_LASER
 		_t._l_sx=_l_sx;
 	}
 	setLaserMaxX(_t,_v){
+		//衝突判定が発生した場合、
+		//レーザーの先端位置を設定する。
 		let _this=this;
-//		console.log(_v)
 		_t._laser_MaxX=_v;
 	}
-	moveDrawLaser(_x,_sx,_y){
+	setDrawImage(){
+		let _this=this;
+		let _p=_this.player;
+		if(!_p.isalive()){return;}
+		if(!_p.isshotflag()){return;}
+		//プレーヤーの中心座標取得
+		let _pl=_p.getPlayerCenterPosition();
+		let _px=_pl._x;
+
+		_CONTEXT.lineWidth=_this.lineWidth;
+		_CONTEXT.strokeStyle=_this.strokeStyle;
+		_CONTEXT.lineCap='round';
+
+		for(let _j=0;_j<_this.shots.length;_j++){
+			let _t=_this.shots[_j];
+			if(!_t._shot_alive){continue;}
+			if(_t.x<_t._sx||Math.abs(_t.x-_t._sx)<_this.speed){continue;}
+			_CONTEXT.beginPath();
+			_CONTEXT.strokeStyle=_this.strokeStyle_u;
+			_CONTEXT.moveTo(_t._l_sx,_pl._y+1);
+			_CONTEXT.lineTo(_t._l_x,_pl._y+1);
+			_CONTEXT.stroke();
+
+			_CONTEXT.beginPath();
+			_CONTEXT.strokeStyle=_this.strokeStyle;
+			_CONTEXT.moveTo(_t._l_sx,_pl._y);
+			_CONTEXT.lineTo(_t._l_x,_pl._y);
+			_CONTEXT.stroke();
+
+			_this.moveDrawLaser(_t._l_x,_t._l_sx,_pl._y);
+			_this.laser_collision(_t);
+
+		}
 	}
+	moveDrawLaser(_x,_sx,_y){}//レーザーの描画からさらに追加する場合
 	move(){
 		let _this=this;
 		let _p=_this.player;
@@ -2136,12 +2174,7 @@ class GameObject_SHOTS_LASER
 		let _pl=_p.getPlayerCenterPosition();
 		let _px=_pl._x;
 
-		//	自機のショット状態を取得
-		_CONTEXT.beginPath();
-		_CONTEXT.lineWidth=_this.lineWidth;
-		_CONTEXT.strokeStyle=_this.strokeStyle;
-		_CONTEXT.lineCap='round';
-
+		//自機のショット状態を取得
 		//ショットの描画(１つのみ)
 		for(let _j=0;_j<_this.shots.length;_j++){
 			let _t=_this.shots[_j];
@@ -2190,34 +2223,8 @@ class GameObject_SHOTS_LASER
 			})(_t._sx);
 			_t.y=_pl._y;
 
-			if(_t.x<_t._sx||Math.abs(_t.x-_t._sx)<50){continue;}
+			_this.setLaserLine(_t,_px+_t.x,_px+_t._sx);
 
-			//			console.log('_max:'+(_t._laser_MaxX));
-//			let _px=_p.x+_p.img.width;
-//			console.log('_px+_t.x:'+(_px+_t.x));
-// console.log('_x:'+(_px+_t.x)+
-// '    _sx:'+(_px+_t._sx)+
-// '    _max:'+(_t._laser_MaxX));
-			_CONTEXT.beginPath();
-			_CONTEXT.strokeStyle=_this.strokeStyle_u;
-			_CONTEXT.moveTo(_px+_t._sx,_pl._y+1);
-			_CONTEXT.lineTo(_px+_t.x,_pl._y+1);
-			_CONTEXT.stroke();
-
-			_CONTEXT.beginPath();
-			_CONTEXT.strokeStyle=_this.strokeStyle;
-			_CONTEXT.moveTo(_px+_t._sx,_pl._y);
-			_CONTEXT.lineTo(_px+_t.x,_pl._y);
-			_CONTEXT.stroke();
-
-			_this.moveDrawLaser(_px+_t.x,_px+_t._sx,_pl._y);
-			_this.setLaserLine(_t,
-								_px+_t.x,
-								_px+_t._sx
-							);
-			_this.laser_collision(_t,_px+_t.x);
-
-//			_this.setLaserMaxX(_t,_CANVAS.width);
 			if(_t.x>0){_t._shot_alive=true;}
 
 		}

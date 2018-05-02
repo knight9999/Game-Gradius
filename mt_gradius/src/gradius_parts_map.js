@@ -478,7 +478,7 @@ class MAP_CELL_WALL extends MAP_OBJECT{
 		_this._status=1;
 		_this._status_count=0;
 		_this.audio_collision=_CANVAS_AUDIOS['map_cell_wall'];
-		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.1;
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.2;
 	}
 	collision(_s_type){
 		let _this=this;	

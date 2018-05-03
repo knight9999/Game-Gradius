@@ -1138,7 +1138,11 @@ class GameObject_SHOTS_MISSILE
 		for(let _j=0;_j<_this.shots.length;_j++){
 			let _t=_this.shots[_j];
 			if(!_t._shot_alive){continue;}
-			if(_t._c>0){continue;}
+			//爆発を表示させる
+			if(_t._c>0){
+				_this.collapse_missile(_t,10);
+				continue;
+			}
 			_CONTEXT.drawImage(
 				_t._img,
 				_this.st[_this.get_missile_status(_t)],
@@ -1165,7 +1169,6 @@ class GameObject_SHOTS_MISSILE
 			_t.y=_MAP.getShotY(_t.y);
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
-				_this.collapse_missile(_t,10);
 				continue;
 			}
 //console.log('_j:'+_j+'   _t.x:'+_t.x+'   _t.y:'+_t.y);
@@ -1315,11 +1318,11 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 	map_collition(_t){
 		//MAPの位置を取得
 		let _map_x=_MAP.getMapX(_t.x);
-		let _map_y=_MAP.getMapY(_t.y);
+		let _map_y=_MAP.getMapY(_t.y+this.imgsize);
 
 		if(_MAP.isMapCollision(_map_x,_map_y)
 			||_MAP.isMapCollision(_map_x+1,_map_y)){
-			this.collapse_missile(_t,-25);
+			if(_t._c===0){_t._c=1;}
 			return;
 		}
 
@@ -1339,7 +1342,6 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 			_t.y=_MAP.getShotY(_t.y);
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
-				_this.collapse_missile(_t);
 				continue;
 			}
 
@@ -1453,7 +1455,6 @@ class GameObject_SHOTS_MISSILE_2WAY
 			_t.y=_MAP.getShotY(_t.y);			
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
-				_this.collapse_missile(_t,10);
 				continue;
 			}
 
@@ -2003,8 +2004,8 @@ class GameObject_SHOTS_LASER
 		super(_p);
 		let _this=this;
 		_this.shots=new Array();
-		_this.speed=50;
-		_this.lineWidth=3;
+		_this.speed=40;
+		_this.lineWidth=2;
 		_this.strokeStyle="rgba(50,80,255,1)";
 		_this.strokeStyle_u="rgba(120,150,255,1)";
 
@@ -2021,7 +2022,7 @@ class GameObject_SHOTS_LASER
 				sx:0,//処理変数：レーザー左端x
 				y:0,
 				_c_col:0,//アニメーションカウント衝突
-				laser_time:500,//定義：照射時間（照射終了共通）
+				laser_time:600,//定義：照射時間（照射終了共通）
 				_enemy:null,//レーザーに衝突した敵のオブジェクト
 				_laser_t:0,//処理変数：照射時間
 				_laser_ts:0,//処理変数：照射終了後時間
@@ -2088,7 +2089,7 @@ class GameObject_SHOTS_LASER
 		if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
 		_e.collision(_SHOTTYPE_LASER);
  		if(!_e.isalive()){return _CANVAS.width;}
-		return _s.val;	
+		return _s.val;
 		}//_k
 
 		//ここの段階で当たり判定はないのでnullを返す

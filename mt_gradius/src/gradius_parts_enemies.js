@@ -1297,8 +1297,6 @@ class ENEMY_p_small extends GameObject_ENEMY{
 			y:_p.y,
 			direct:_p.direct
 		});
-	// constructor(_d,_x,_y){
-	// 	super(_d,_x,_y);
 		let _this=this;
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];		
 		_this._status=5;
@@ -1306,6 +1304,7 @@ class ENEMY_p_small extends GameObject_ENEMY{
 		_this.speedx=_this.get_move_bound_val();
 		_this.speedy=_this.get_move_bound_val();
 
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 		_this.col_date=new Date();
 		_this._collision_type='t1';
 		
@@ -1665,6 +1664,7 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 		_this.shotColMap=[
 			"5,5,"+(_this.img.width-5)+","+(_this.img.height-5)
 		];
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 
 	}
 	setAlive(){

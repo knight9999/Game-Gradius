@@ -1776,6 +1776,12 @@ const _DRAW=()=>{
 			if(_PLAYERS_MAIN.isalive()){_PLAYERS_SHOTS[_SHOTTYPE][_i].move();}
 		}
 
+		//敵衝突表示の移動・表示調整
+		for(let _i=0;_i<_ENEMIES_COLLISIONS.length;_i++){
+			if(_PLAYERS_MAIN.isalive()){_ENEMIES_COLLISIONS[_i].move();}
+			_ENEMIES_COLLISIONS[_i].setDrawImage();
+		}
+
 		_IS_GET_POWERCAPSELL();
 		// console.log('6:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
  		//敵、衝突判定
@@ -1908,89 +1914,109 @@ const _DRAW_PLAYER_COLLAPES=()=>{
 	);
 	_this._col_ani_c++;
 
-}	
+}
+
+//長押判定用変数
+let _DRAW_PLAYERS_SHOTS_TIMES=0;
+//自機ショット処理の本体
+const _DRAW_PLAYERS_SHOTS_MAIN=()=>{
+	for(var _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
+		let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
+		if(!_ps.player._isalive){continue;}
+		//ここで同時ショットと
+		//個別ショットで判別させる
+		if(_SHOTTYPE===_SHOTTYPE_DOUBLE){
+			if(_ps.shots[0]._shot_alive||
+				_ps.shots[1]._shot_alive){continue;}
+			_ps.shots[0]._shot=true;
+			_ps.shots[1]._shot=true;
+			//最初の要素（自機）のみショット音をだす
+			if(_i!==0){continue;}
+			_GAME._setPlay(_ps.shots[0]._audio);
+			continue;
+		}
+
+		_ps._sq=
+		(_ps._sq===_ps.shots.length-1)
+			?0
+			:_ps._sq+1;
+		var _s=_ps.shots[_ps._sq];
+
+		if(_s._shot_alive){continue;}
+		//ショット中は、ショットを有効にしない
+		_s._shot=true;
+
+		//最初の要素（自機）のみショット音をだす
+		if(_i!==0){continue;}
+		_GAME._setPlay(_s._audio);
+	}
+
+	if(!_PLAYERS_MISSILE_ISALIVE){return;}
+	//ミサイル
+	for(var _i=0;_i<_PLAYERS_MISSILE.length;_i++){
+		let _pm=_PLAYERS_MISSILE[_i];
+		if(!_pm.player._isalive){continue;}
+		//ここで同時ショット(2WAY)と
+		//個別ショットで判別させる
+		if(_PLAYERS_POWER_METER===3){
+			if(_pm.shots[0]._shot_alive||
+				_pm.shots[1]._shot_alive){continue;}
+			_pm.shots[0]._shot=true;
+			_pm.shots[1]._shot=true;
+			//最初の要素（自機）のみショット音をだす
+			if(_i!==0){continue;}
+			_GAME._setPlay(_pm.shots[0]._audio);
+			continue;
+		}
+
+		_pm._sq=
+			(_pm._sq===_pm.shots.length-1)?
+				0
+				:_pm._sq+1;
+		var _sm=_pm.shots[_pm._sq];
+		//ショット中は、ショットを有効にしない
+		if(_sm._shot_alive){continue;}
+		_sm._shot=true;
+		//最初の要素（自機）のみショット音をだす
+		if(_i!==0){continue;}
+		_GAME._setPlay(_sm._audio);
+	}
+}//_DRAW_PLAYERS_SHOTS_MAIN
+
+//自機ショットのコントロール
+//ボタン押下による、長押判定とショット処理を開始させる
 const _DRAW_PLAYERS_SHOTS=()=>{
 	let _date=new Date();
-	const _loop=function(){
-		_PLAYERS_SHOTS_SETINTERVAL=window.requestAnimationFrame(_loop);	
-		let _d=new Date();
-		if(_d-_date<50){return;}
-		_date=new Date();
-		//ショット
-		for(var _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
-			let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
-			if(!_ps.player._isalive){continue;}
-			//ここで同時ショットと
-			//個別ショットで判別させる
-			if(_SHOTTYPE===_SHOTTYPE_DOUBLE){
-				if(_ps.shots[0]._shot_alive||
-					_ps.shots[1]._shot_alive){continue;}
-				_ps.shots[0]._shot=true;
-				_ps.shots[1]._shot=true;
-				//最初の要素（自機）のみショット音をだす
-				if(_i!==0){continue;}
-				_GAME._setPlay(_ps.shots[0]._audio);
-				continue;
-			}
-
-			_ps._sq=
-			(_ps._sq===_ps.shots.length-1)
-				?0
-				:_ps._sq+1;
-			var _s=_ps.shots[_ps._sq];
-
-			if(_s._shot_alive){continue;}
-			//ショット中は、ショットを有効にしない
-			_s._shot=true;
-
-			//最初の要素（自機）のみショット音をだす
-			if(_i!==0){continue;}
-			_GAME._setPlay(_s._audio);
+	_DRAW_PLAYERS_SHOTS_TIMES=0;
+	const _loop=()=>{
+		_PLAYERS_SHOTS_SETINTERVAL=window.requestAnimationFrame(_loop);
+		_DRAW_PLAYERS_SHOTS_TIMES=
+			(_DRAW_PLAYERS_SHOTS_TIMES>10)
+				?_DRAW_PLAYERS_SHOTS_TIMES
+				:_DRAW_PLAYERS_SHOTS_TIMES+1;
+//		console.log(_DRAW_PLAYERS_SHOTS_TIMES);
+		//スペースキーによる押しボタンの調整
+		//指定数字はおおよその値
+		if(_DRAW_PLAYERS_SHOTS_TIMES>=10){
+			//長押しは時間間隔で連射調整させる
+//			console.log('long!');
+			let _d=new Date();
+			if(_d-_date<50){return;}
+			_date=new Date();
+			//ショット
+		}else{
+			//短押しは最初のタイミングのみ発射させる
+			if(_DRAW_PLAYERS_SHOTS_TIMES!==1){return;}
+//			console.log('shot!');
 		}
-
-		if(!_PLAYERS_MISSILE_ISALIVE){return;}
-		//ミサイル
-		for(var _i=0;_i<_PLAYERS_MISSILE.length;_i++){
-			let _pm=_PLAYERS_MISSILE[_i];
-			if(!_pm.player._isalive){continue;}
-			//ここで同時ショット(2WAY)と
-			//個別ショットで判別させる
-			if(_PLAYERS_POWER_METER===3){
-				if(_pm.shots[0]._shot_alive||
-					_pm.shots[1]._shot_alive){continue;}
-				_pm.shots[0]._shot=true;
-				_pm.shots[1]._shot=true;
-				//最初の要素（自機）のみショット音をだす
-				if(_i!==0){continue;}
-				_GAME._setPlay(_pm.shots[0]._audio);
-				continue;
-			}
-
-			_pm._sq=
-				(_pm._sq===_pm.shots.length-1)?
-					0
-					:_pm._sq+1;
-			var _sm=_pm.shots[_pm._sq];
-			//ショット中は、ショットを有効にしない
-			if(_sm._shot_alive){continue;}
-			_sm._shot=true;
-			//最初の要素（自機）のみショット音をだす
-			if(_i!==0){continue;}
-			_GAME._setPlay(_sm._audio);
-		}
-	}
+		//ショットさせる
+		_DRAW_PLAYERS_SHOTS_MAIN();
+	}//_loop
 	_PLAYERS_SHOTS_SETINTERVAL=window.requestAnimationFrame(_loop);	
 }
 
-const _DRAW_STOP=()=>{
-//	clearInterval(_DRAW_SETINTERVAL);
-	cancelAnimationFrame(_DRAW_SETINTERVAL);
-	_DRAW_SETINTERVAL=null;
-}
-const _DRAW_STOP_GAMESTART=()=>{
-	cancelAnimationFrame(_DRAW_GAMESTART_SETINTERVAL);
-	_DRAW_GAMESTART_SETINTERVAL=null;
-}
+//自機ショットのコントロール
+//ボタンを離して、ショット処理をクリアさせる。
 const _DRAW_STOP_PLAYERS_SHOTS=()=>{
 	cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
 	_PLAYERS_SHOTS_SETINTERVAL=null;
@@ -2006,6 +2032,16 @@ const _DRAW_STOP_PLAYERS_SHOTS=()=>{
 			_pm.shots[_j]._shot=false;
 		}
 	}
+}
+
+const _DRAW_STOP=()=>{
+//	clearInterval(_DRAW_SETINTERVAL);
+	cancelAnimationFrame(_DRAW_SETINTERVAL);
+	_DRAW_SETINTERVAL=null;
+}
+const _DRAW_STOP_GAMESTART=()=>{
+	cancelAnimationFrame(_DRAW_GAMESTART_SETINTERVAL);
+	_DRAW_GAMESTART_SETINTERVAL=null;
 }
 
 const _DRAW_SELECT_POWERMETER=()=>{
@@ -2159,11 +2195,6 @@ const _DRAW_ENEMIES_COLLISIONS=()=>{
 		if(!_ENEMIES_COLLISIONS[_i].isalive()){
 			_ENEMIES_COLLISIONS.splice(_i,1);
 		}
-	}
-
-	for(let _i=0;_i<_ENEMIES_COLLISIONS.length;_i++){
-		if(_PLAYERS_MAIN.isalive()){_ENEMIES_COLLISIONS[_i].move();}
-		_ENEMIES_COLLISIONS[_i].setDrawImage();
 	}
 
 }//_DRAW_ENEMIES_COLLISIONS
@@ -2616,6 +2647,8 @@ isSqCollision_laser(_s1,_s1_n,_s2,_s2_n,_d){
 	// _IS_SQ_COL(0):衝突している、かつ、あたり判定とする。
 	// _IS_SQ_COL_NONE(1):衝突している、ただし、あたり判定はしない。
 	// _IS_SQ_NOTCOL(2):衝突していない。
+
+	//各点の現在の位置を取得する（座標位置は左上）
 	let _s1_n_x=parseInt((_s1_n===undefined)?0:_s1_n.split(',')[0]);
 	let _s1_n_y=parseInt((_s1_n===undefined)?0:_s1_n.split(',')[1]);
 	let _s2_n_x=parseInt((_s2_n===undefined)?0:_s2_n.split(',')[0]);

@@ -2881,6 +2881,8 @@ class ENEMY_BOSS_MOAI
 		_this.shotColMap=_this.shotColMapDir[_this._direct];
 		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision8'];
 		_this._collision_type='t9';
+
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 	}
 	collision(_s_type,_num){
 		let _this=this;
@@ -3043,6 +3045,8 @@ class ENEMY_BOSS_MOAI_MINI
 		_this._standby=false;
 		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision3'];
 		_this._collision_type='t2';
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
+
 	}
 	shot(){
 		let _this=this;

@@ -1138,7 +1138,11 @@ class GameObject_SHOTS_MISSILE
 		for(let _j=0;_j<_this.shots.length;_j++){
 			let _t=_this.shots[_j];
 			if(!_t._shot_alive){continue;}
-			if(_t._c>0){continue;}
+			//爆発を表示させる
+			if(_t._c>0){
+				_this.collapse_missile(_t,10);
+				continue;
+			}
 			_CONTEXT.drawImage(
 				_t._img,
 				_this.st[_this.get_missile_status(_t)],
@@ -1165,7 +1169,6 @@ class GameObject_SHOTS_MISSILE
 			_t.y=_MAP.getShotY(_t.y);
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
-				_this.collapse_missile(_t,10);
 				continue;
 			}
 //console.log('_j:'+_j+'   _t.x:'+_t.x+'   _t.y:'+_t.y);
@@ -1315,11 +1318,11 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 	map_collition(_t){
 		//MAPの位置を取得
 		let _map_x=_MAP.getMapX(_t.x);
-		let _map_y=_MAP.getMapY(_t.y);
+		let _map_y=_MAP.getMapY(_t.y+this.imgsize);
 
 		if(_MAP.isMapCollision(_map_x,_map_y)
 			||_MAP.isMapCollision(_map_x+1,_map_y)){
-			this.collapse_missile(_t,-25);
+			if(_t._c===0){_t._c=1;}
 			return;
 		}
 
@@ -1339,7 +1342,6 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 			_t.y=_MAP.getShotY(_t.y);
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
-				_this.collapse_missile(_t);
 				continue;
 			}
 
@@ -1453,7 +1455,6 @@ class GameObject_SHOTS_MISSILE_2WAY
 			_t.y=_MAP.getShotY(_t.y);			
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
-				_this.collapse_missile(_t,10);
 				continue;
 			}
 

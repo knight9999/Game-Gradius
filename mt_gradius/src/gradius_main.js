@@ -1625,16 +1625,16 @@ const _IS_ENEMIES_COLLISION=()=>{
 			let _m=_os.enemy_collision(_oe);
 			//衝突していないのでスルー
 			if(_m===undefined||_m===null){continue;}
-//			console.log(_ma);
 			_col_max=(_col_max<_m)?_m:_col_max;
 		}//_i
 
 		//敵判定からレーザーの最右端を決定し、
 		//レーザーのx位置も調整する。
 		let _t=_os.shots[0];
-//		console.log('_t.x:'+_t.x+'   ['+_col_max+']');
 		_col_max=(_col_max===0)?_CANVAS.width:_col_max;
-		if(_t.x-25>_col_max){
+		// if(_j===1){console.log('_t.x:'+_t.x+'   ['+_col_max+']');}
+
+		if(_t.x>_col_max+50){
 			//すでにレーザーの先端からレーザースピード分
 			//衝突から超えた場合は、そのまま照射
 			_t._laser_MaxX=_CANVAS.width;
@@ -1643,11 +1643,10 @@ const _IS_ENEMIES_COLLISION=()=>{
 			//衝突xを10ピクセル先にする。
 			//※LASERクラスのmove()は、
 			//この数字より超えないようにする
-			_t._laser_MaxX=_col_max+10;
+			_t._laser_MaxX=_col_max;
 		}
-//		_t._laser_MaxX=_ma;
-//		console.log(_ma)
-	}//_j
+
+		}//_j
 	}else if(_SHOTTYPE!==_SHOTTYPE_LASER){
 		for(let _j=0;
 			_j<_PLAYERS_SHOTS[_SHOTTYPE].length;

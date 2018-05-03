@@ -2004,8 +2004,8 @@ class GameObject_SHOTS_LASER
 		super(_p);
 		let _this=this;
 		_this.shots=new Array();
-		_this.speed=50;
-		_this.lineWidth=3;
+		_this.speed=40;
+		_this.lineWidth=2;
 		_this.strokeStyle="rgba(50,80,255,1)";
 		_this.strokeStyle_u="rgba(120,150,255,1)";
 
@@ -2022,7 +2022,7 @@ class GameObject_SHOTS_LASER
 				sx:0,//処理変数：レーザー左端x
 				y:0,
 				_c_col:0,//アニメーションカウント衝突
-				laser_time:500,//定義：照射時間（照射終了共通）
+				laser_time:600,//定義：照射時間（照射終了共通）
 				_enemy:null,//レーザーに衝突した敵のオブジェクト
 				_laser_t:0,//処理変数：照射時間
 				_laser_ts:0,//処理変数：照射終了後時間
@@ -2089,7 +2089,7 @@ class GameObject_SHOTS_LASER
 		if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
 		_e.collision(_SHOTTYPE_LASER);
  		if(!_e.isalive()){return _CANVAS.width;}
-		return _s.val;	
+		return _s.val;
 		}//_k
 
 		//ここの段階で当たり判定はないのでnullを返す

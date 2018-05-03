@@ -2017,28 +2017,28 @@ class GameObject_SHOTS_LASER
 		for(let _i=0;_i<1;_i++){
 			_this.shots.push({
 				sid:_SHOTTYPE_LASER,
-				x:0,//処理変数：照射xの照射量
+				x:0,//処理変数：レーザー右端x
+				sx:0,//処理変数：レーザー左端x
 				y:0,
 				_c_col:0,//アニメーションカウント衝突
 				laser_time:500,//定義：照射時間（照射終了共通）
-				_sx:0,//処理変数：x軸
 				_enemy:null,//レーザーに衝突した敵のオブジェクト
 				_laser_t:0,//処理変数：照射時間
 				_laser_ts:0,//処理変数：照射終了後時間
 				_laser_MaxX:_CANVAS.width,
 						//処理変数レーザー最大右端
-				_l_x:0,//処理変数：レーザー右端x
-				_l_sx:0,//処理変数：レーザー左端x
+				_l_x:0,//処理変数：レーザー右端移動量
+				_l_sx:0,//処理変数：レーザー左端移動量
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
 				_audio:_CANVAS_AUDIOS['shot_laser'],//ショット音LASER		
 				_init:function(){//初期化
 					this.x=0,
+					this.sx=0,
 					this.y=0,
 					this._c_col=0,
 					this._laser_t=0,
 					this._laser_ts=0,
-					this._sx=0,
 					this._enemy=null,
 					this._l_x=0,//処理変数：レーザー右端x
 					this._l_sx=0,//処理変数：レーザー左端x
@@ -2060,7 +2060,7 @@ class GameObject_SHOTS_LASER
 			0,
 			_this.imgsize_col,
 			_this.imgsize_col,
-			(_v||_t._l_x)-_this.width_col,
+			_t._laser_MaxX-_this.width_col,
 			_t.y-(_this.img_col.height/2),
 			_this.imgsize_col,
 			_this.imgsize_col
@@ -2068,7 +2068,6 @@ class GameObject_SHOTS_LASER
 	}
 	enemy_collision(_e){
 		//敵数分ループ
-		if(!this.player.isalive()){return;}
 		for(let _k=0;_k<this.shots.length;_k++){
 		//自機より後ろの敵は無視する。
 		if(_e.x+_e.width<this.player.x){continue;}		
@@ -2078,21 +2077,22 @@ class GameObject_SHOTS_LASER
 		//		console.log('sx'+_t._l_sx);
 
 		let _s=_GAME.isSqCollision_laser(
-			"0,-6,"+parseInt(_t._l_x-_t._l_sx)+",6",
-			_t._l_sx+","+_t.y,
+			"0,-6,"+parseInt(_t.x-_t.sx)+",6",
+			_t.sx+","+_t.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
 		);
 
-		//_CANVAS.width->当たり判定なし、とみなす
-		if(_s.ret===_IS_SQ_NOTCOL){return _s.val;}
+		//当たり判定がないのはnullで返す
+		if(_s.ret===_IS_SQ_NOTCOL){return null;}
 		if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
 		_e.collision(_SHOTTYPE_LASER);
- 		if(!_e.isalive()){
-			 return _CANVAS.width;
-		}
+ 		if(!_e.isalive()){return _CANVAS.width;}
 		return _s.val;	
 		}//_k
+
+		//ここの段階で当たり判定はないのでnullを返す
+		return null;
 	}
 	map_collition(_t){
 		let _this=this;
@@ -2101,10 +2101,10 @@ class GameObject_SHOTS_LASER
 		//プレーヤーの中心座標取得
 		let _pl=_this.player.getPlayerCenterPosition();
 
-		let _map_x=_MAP.getMapX(_t._l_x);
+		let _map_x=_MAP.getMapX(_t.x);
 		let _map_y=_MAP.getMapY(_t.y);
 		//先端の衝突を表示させる判定
-		for(let _i=_t._l_x-_this.speed;_i<=_t._l_x;_i++){
+		for(let _i=_t.x-_this.speed;_i<=_t.x;_i++){
 //			console.log(_i)
 			//this.speed分ループさせて衝突した場所を決定させる。
 			if(_MAP.isMapCollision(_MAP.getMapX(_i),_map_y)){
@@ -2113,7 +2113,7 @@ class GameObject_SHOTS_LASER
 			}
 		}
 		//レーザー照射内にて、当たり判定のある壁は壊す処理
-		let _map_sx=_MAP.getMapX(_t._l_sx);
+		let _map_sx=_MAP.getMapX(_t.sx);
 		for(let _i=_map_sx+1;_i<=_map_x;_i++){
 			if(_MAP.isMapCollision(_i,_map_y)){
 				_MAP.setPlayersShotAbleCollision(_i,_map_y,_SHOTTYPE_LASER);
@@ -2121,8 +2121,8 @@ class GameObject_SHOTS_LASER
 		}
 	}
 	setLaserLine(_t,_l_x,_l_sx){
-		_t._l_x=_l_x;
-		_t._l_sx=_l_sx;
+		_t.x=_l_x;
+		_t.sx=_l_sx;
 	}
 	setLaserMaxX(_t,_v){
 		//衝突判定が発生した場合、
@@ -2146,20 +2146,22 @@ class GameObject_SHOTS_LASER
 		for(let _j=0;_j<_this.shots.length;_j++){
 			let _t=_this.shots[_j];
 			if(!_t._shot_alive){continue;}
-			if(_t.x<_t._sx||Math.abs(_t.x-_t._sx)<_this.speed){continue;}
+			//小粒のレーザーは無視
+			if(_t.x<_t.sx||Math.abs(_t.x-_t.sx)<20){continue;}
+
 			_CONTEXT.beginPath();
 			_CONTEXT.strokeStyle=_this.strokeStyle_u;
-			_CONTEXT.moveTo(_t._l_sx,_pl._y+1);
-			_CONTEXT.lineTo(_t._l_x,_pl._y+1);
+			_CONTEXT.moveTo(_t.sx,_pl._y+1);
+			_CONTEXT.lineTo(_t.x,_pl._y+1);
 			_CONTEXT.stroke();
 
 			_CONTEXT.beginPath();
 			_CONTEXT.strokeStyle=_this.strokeStyle;
-			_CONTEXT.moveTo(_t._l_sx,_pl._y);
-			_CONTEXT.lineTo(_t._l_x,_pl._y);
+			_CONTEXT.moveTo(_t.sx,_pl._y);
+			_CONTEXT.lineTo(_t.x,_pl._y);
 			_CONTEXT.stroke();
 
-			_this.moveDrawLaser(_t._l_x,_t._l_sx,_pl._y);
+			_this.moveDrawLaser(_t.x,_t.sx,_t.y);
 			_this.laser_collision(_t);
 
 		}
@@ -2184,7 +2186,7 @@ class GameObject_SHOTS_LASER
 			//照射開始位置は、自機またはオプションの
 			//中心座標からとする。
 			//照射開始
-			_t.x=(function(_i){
+			_t._l_x=(function(_i){
 	  			if(_i>=_t._laser_MaxX-_pl._x){
 					//レーザーが右端に届いた時
 					_t._laser_t+=(1000/_FPS);
@@ -2193,15 +2195,15 @@ class GameObject_SHOTS_LASER
 				}
 //				console.log('b=========:'+(_i+_this.speed));
 				//衝突時と画面右端時のスピードを分けておく
-				return _i+((_t._laser_MaxX<_CANVAS.width)?1:_this.speed);
-			})(_t.x);
+				return _i+((_t._laser_MaxX<_CANVAS.width)?5:_this.speed);
+			})(_t._l_x);
 
 //			console.log(_t.x)
 			//照射終了
-			_t._sx=(function(_i){
+			_t._l_sx=(function(_i){
 				if(!_t._shot){
 					//ショットを離した時
-					if(_i>=_t.x){
+					if(_i>=_t._l_x){
 						//照射が終わり切った時
 						_t._init();
 						return 0;
@@ -2218,14 +2220,14 @@ class GameObject_SHOTS_LASER
 					_t._init();
 					return 0;
 				}
-				if(_i>=_t.x){return _t.x;}
+				if(_i>=_t._l_x){return _t._l_x;}
 				return _i+=_this.speed;
-			})(_t._sx);
+			})(_t._l_sx);
 			_t.y=_pl._y;
 
-			_this.setLaserLine(_t,_px+_t.x,_px+_t._sx);
+			_this.setLaserLine(_t,_px+_t._l_x,_px+_t._l_sx);
 
-			if(_t.x>0){_t._shot_alive=true;}
+			if(_t._l_x>0){_t._shot_alive=true;}
 
 		}
 

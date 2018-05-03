@@ -1587,6 +1587,9 @@ class ENEMY_moai_ring extends GameObject_ENEMY{
 		_this.sy=Math.sin(_this.rad);
 		_this.speed=_MAPDEFS[_MAP_PETTERN]._speed*1.5;
 
+		//レーザーのみ当たり判定を通常の半分にする。
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
+
 		_this._collision_type='t2';
 		((_this.direct===_DEF_DIR._D)?-10:0);
 	}
@@ -1694,7 +1697,7 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 			_eb_l++;
 		}
 
-		let _c=(_eb_l>20)?1:2;
+		let _c=(_eb_l>40)?1:2;
 		for(let _i=0;_i<_c;_i++){
 			//オブジェクト追加
 			_ENEMIES.push(
@@ -1791,7 +1794,7 @@ class ENEMY_frame_2 extends GameObject_ENEMY{
 			_eb_l++;
 		}
 
-		let _c=(_eb_l>20)?0:1;
+		let _c=(_eb_l>36)?0:2;
 		for(let _i=0;_i<_c;_i++){
 			//オブジェクト追加
 			_ENEMIES.push(
@@ -1832,6 +1835,7 @@ class ENEMY_frame_3 extends ENEMY_frame_2{
 		//無敵だが衝突を無視し、"ある程度"ショットは通過できる
 		_this.is_able_collision=false;
 		_this.is_ignore_collision=(Math.random()>0.05);
+//		_this.is_ignore_collision=false;
 		_this._standby=false;
 	}
 }

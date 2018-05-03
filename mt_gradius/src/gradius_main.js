@@ -1611,9 +1611,10 @@ const _IS_ENEMIES_COLLISION=()=>{
 			_j<_PLAYERS_SHOTS[_SHOTTYPE].length;
 			_j++){
 		let _os=_PLAYERS_SHOTS[_SHOTTYPE][_j];
-		let _ma=_CANVAS.width;
+		if(!_os.player._isalive){continue;}
+		let _col_max=0;
 		// レーザーでは敵全部を回して、
-		// 自機から一番近い耐久性がある敵まで
+		// 自機から一番遠い耐久性がある敵まで
 		// レーザーを表示させる。
 		for(let _i=0;_i<_e.length;_i++){
 			//スタンバイ状態は無視する
@@ -1622,20 +1623,38 @@ const _IS_ENEMIES_COLLISION=()=>{
 			if(!_e[_i].isalive()){continue;}
 			let _oe=_e[_i];
 			let _m=_os.enemy_collision(_oe);
-			_ma=(_ma>_m)?_m:_ma;
+			//衝突していないのでスルー
+			if(_m===undefined||_m===null){continue;}
+//			console.log(_ma);
+			_col_max=(_col_max<_m)?_m:_col_max;
 		}//_i
 
-		//敵判定から最大衝突を設定する。
-		_os.shots[0]._laser_MaxX=
-			(_os.shots[0].x<_ma)
-				?_ma//さらに手前で衝突が発生した場合
-				:_os.shots[0]._laser_MaxX;
-		}//_j
+		//敵判定からレーザーの最右端を決定し、
+		//レーザーのx位置も調整する。
+		let _t=_os.shots[0];
+//		console.log('_t.x:'+_t.x+'   ['+_col_max+']');
+		_col_max=(_col_max===0)?_CANVAS.width:_col_max;
+		if(_t.x-25>_col_max){
+			//すでにレーザーの先端からレーザースピード分
+			//衝突から超えた場合は、そのまま照射
+			_t._laser_MaxX=_CANVAS.width;
+		}else{
+//			console.log(_col_max)
+			//衝突xを10ピクセル先にする。
+			//※LASERクラスのmove()は、
+			//この数字より超えないようにする
+			_t._laser_MaxX=_col_max+10;
+		}
+//		_t._laser_MaxX=_ma;
+//		console.log(_ma)
+	}//_j
 	}else if(_SHOTTYPE!==_SHOTTYPE_LASER){
 		for(let _j=0;
 			_j<_PLAYERS_SHOTS[_SHOTTYPE].length;
 			_j++){
 		let _os=_PLAYERS_SHOTS[_SHOTTYPE][_j];
+		if(!_os.player._isalive){continue;}
+
 		for(let _i=0;_i<_e.length;_i++){
 			//スタンバイ状態は無視する
 			if(_e[_i].isIgnore()){continue;}
@@ -2643,13 +2662,13 @@ isSqCollision_laser(_s1,_s1_n,_s2,_s2_n,_d){
 		);//斜辺
 
 		//衝突判定
-		let _tmpx=_s2_n_x+parseInt(_s2_p[0]);
+		let _tmpx=_s2_n_x+parseInt(_s2_p[0])+15;
 //		if(_d_l<(_s1_l/2)+(_s2_l/2)){
 		if((_s1_w/2)+(_s2_w/2)>_d_x
 			&&(_s1_h/2)+(_s2_h/2)>_d_y){
 			return (_s2_col)
-				?{ret:_IS_SQ_COL,val:_tmpx+10}
-				:{ret:_IS_SQ_COL_NONE,val:_tmpx+10};
+				?{ret:_IS_SQ_COL,val:_tmpx}
+				:{ret:_IS_SQ_COL_NONE,val:_tmpx};
 		}
 	}//_i
 	return {ret:_IS_SQ_NOTCOL,val:_CANVAS.width};

@@ -178,18 +178,15 @@ class GameObject_ENEMY{
 		let _height=_h||_this.img.height;
 		_CONTEXT.save();
 		_this.setDrawImageDirect();
-		if(_p===undefined
-			||_s===undefined
-			||_w===undefined
-			||_h===undefined
+		if(_p===undefined||_s===undefined
 		){
 			//一枚画像用
 			_CONTEXT.drawImage(
 				_this.img,
 				_this.x,
 				_this.y,
-				_this.img.width,
-				_this.img.height
+				_this.width,
+				_this.height
 			);
 		}else{
 			//スプライト用
@@ -205,16 +202,18 @@ class GameObject_ENEMY{
 				_width,
 				_height
 			);	
+		}
 
-			// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
-			// _CONTEXT.beginPath();
-			// _CONTEXT.rect(
-			// 		_this.x,
-			// 		_this.y,
-			// 		_width,
-			// 		_height
-			// );
-			// _CONTEXT.stroke();
+		if(_ISDEBUG){
+			_CONTEXT.strokeStyle='rgba(200,200,255,0.5)';
+			_CONTEXT.beginPath();
+			_CONTEXT.rect(
+					_this.x,
+					_this.y,
+					_width,
+					_height
+			);
+			_CONTEXT.stroke();	
 		}
 		_CONTEXT.restore();
 	}
@@ -1304,7 +1303,6 @@ class ENEMY_p_small extends GameObject_ENEMY{
 		_this.speedx=_this.get_move_bound_val();
 		_this.speedy=_this.get_move_bound_val();
 
-		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 		_this.col_date=new Date();
 		_this._collision_type='t1';
 		
@@ -1697,7 +1695,7 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 			_eb_l++;
 		}
 
-		let _c=(_eb_l>40)?1:2;
+		let _c=(_eb_l>20)?1:2;
 		for(let _i=0;_i<_c;_i++){
 			//オブジェクト追加
 			_ENEMIES.push(
@@ -1794,7 +1792,7 @@ class ENEMY_frame_2 extends GameObject_ENEMY{
 			_eb_l++;
 		}
 
-		let _c=(_eb_l>36)?0:2;
+		let _c=(_eb_l>30)?0:2;
 		for(let _i=0;_i<_c;_i++){
 			//オブジェクト追加
 			_ENEMIES.push(

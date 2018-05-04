@@ -2069,6 +2069,9 @@ class GameObject_SHOTS_LASER
 	}
 	enemy_collision(_e){
 		//敵数分ループ
+		//return:衝突時→衝突時のx値
+		//		:null 衝突していない
+		let _s=null;
 		for(let _k=0;_k<this.shots.length;_k++){
 		//自機より後ろの敵は無視する。
 		if(_e.x+_e.width<this.player.x){continue;}		
@@ -2077,22 +2080,42 @@ class GameObject_SHOTS_LASER
 		if(!_t._shot_alive){continue;}
 		//		console.log('sx'+_t._l_sx);
 
-		let _s=_GAME.isSqCollision_laser(
+		//当たり判定
+		_s=_GAME.isSqCollision_laser(
 			"0,-6,"+parseInt(_t.x-_t.sx)+",6",
 			_t.sx+","+_t.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
-		);
-
-		//当たり判定がないのはnullで返す
+			);
+		//当たり判定がなければこの段階でnullを返す
 		if(_s.ret===_IS_SQ_NOTCOL){return null;}
-		if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
-		_e.collision(_SHOTTYPE_LASER);
- 		if(!_e.isalive()){return _CANVAS.width;}
-		return _s.val;
-		}//_k
 
-		//ここの段階で当たり判定はないのでnullを返す
+		//移動量の取得
+		let _sl=(_t.x-_t.sx<this.speed)
+				?(_t.x-_t.sx):this.speed;
+		if(_sl<=0){return null;}//_sl値はthis.speed以下
+		//移動分以外の判定処理
+		if(_e.x<_t.x-_sl){			
+			if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
+			_e.collision(_SHOTTYPE_LASER);
+			if(!_e.isalive()){return _CANVAS.width;}
+			return _s.val;
+		}
+		//移動分内、細かく当たり判定を処理させる
+		for(let _i=_t.x-_sl;_i<=_t.x;_i=_i+5){
+			_s=_GAME.isSqCollision_laser(
+				"0,-6,"+parseInt(_i-_t.sx)+",6",
+				_t.sx+","+_t.y,
+				_e.shotColMap,
+				_e.x+","+_e.y
+				);
+			if(_s.ret===_IS_SQ_NOTCOL){continue;}
+			if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
+			_e.collision(_SHOTTYPE_LASER);
+			if(!_e.isalive()){return _CANVAS.width;}
+			return _s.val;
+		}
+		}//_k
 		return null;
 	}
 	map_collition(_t){
@@ -2105,7 +2128,7 @@ class GameObject_SHOTS_LASER
 		let _map_x=_MAP.getMapX(_t.x);
 		let _map_y=_MAP.getMapY(_t.y);
 		//先端の衝突を表示させる判定
-		for(let _i=_t.x-_this.speed;_i<=_t.x;_i++){
+		for(let _i=_t.x-_this.speed;_i<=_t.x;_i=_i+5){
 //			console.log(_i)
 			//this.speed分ループさせて衝突した場所を決定させる。
 			if(_MAP.isMapCollision(_MAP.getMapX(_i),_map_y)){
@@ -2186,8 +2209,10 @@ class GameObject_SHOTS_LASER
 //			console.log(_t._laser_MaxX);
 			//照射開始位置は、自機またはオプションの
 			//中心座標からとする。
-			//照射開始
-			_t._l_x=(function(_i){
+			_t._l_x=((_i)=>{
+				//照射開始
+				_i+=_this.speed;
+				//衝突・または画面右端に達した場合
 	  			if(_i>=_t._laser_MaxX-_pl._x){
 					//レーザーが右端に届いた時
 					_t._laser_t+=(1000/_FPS);
@@ -2195,13 +2220,12 @@ class GameObject_SHOTS_LASER
 					return _t._laser_MaxX-_pl._x;
 				}
 //				console.log('b=========:'+(_i+_this.speed));
-				//衝突時と画面右端時のスピードを分けておく
-				return _i+((_t._laser_MaxX<_CANVAS.width)?5:_this.speed);
+				return _i;
 			})(_t._l_x);
 
 //			console.log(_t.x)
-			//照射終了
-			_t._l_sx=(function(_i){
+			_t._l_sx=((_i)=>{
+				//照射終了
 				if(!_t._shot){
 					//ショットを離した時
 					if(_i>=_t._l_x){
@@ -2249,6 +2273,7 @@ class GameObject_SHOTS_LASER_CYCLONE
 		let _this=this;
 		for(let _i=_sx;_i<_x;_i=_i+20){
 			_CONTEXT.beginPath();
+			_CONTEXT.lineCap='round';
 			_CONTEXT.lineWidth=3;
 			_CONTEXT.strokeStyle='rgba(100,20,10,1)';
 			_CONTEXT.moveTo(_i,_y-1);

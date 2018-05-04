@@ -1614,17 +1614,17 @@ const _IS_ENEMIES_COLLISION=()=>{
 		if(!_os.player._isalive){continue;}
 		let _col_max=0;
 		// レーザーでは敵全部を回して、
-		// 自機から一番遠い耐久性がある敵まで
-		// レーザーを表示させる。
+		// 自機から一番遠い耐久性がある敵に対して
+		// レーザーの
 		for(let _i=0;_i<_e.length;_i++){
 			//スタンバイ状態は無視する
 			if(_e[_i].isIgnore()){continue;}
 			if(_e[_i].isStandBy()){continue;}
 			if(!_e[_i].isalive()){continue;}
-			let _oe=_e[_i];
-			let _m=_os.enemy_collision(_oe);
+			let _m=_os.enemy_collision(_e[_i]);
 			//衝突していないのでスルー
 			if(_m===undefined||_m===null){continue;}
+//			console.log(_m)
 			_col_max=(_col_max<_m)?_m:_col_max;
 		}//_i
 
@@ -1634,13 +1634,12 @@ const _IS_ENEMIES_COLLISION=()=>{
 		_col_max=(_col_max===0)?_CANVAS.width:_col_max;
 		// if(_j===1){console.log('_t.x:'+_t.x+'   ['+_col_max+']');}
 
-		if(_t.x>_col_max+50){
-			//すでにレーザーの先端からレーザースピード分
-			//衝突から超えた場合は、そのまま照射
+		if(_t.x>_col_max+(_os.speed*2)){
+			//すでにレーザーの先端が
+			//衝突から超えた場合は、衝突なしとして照射
 			_t._laser_MaxX=_CANVAS.width;
 		}else{
 //			console.log(_col_max)
-			//衝突xを10ピクセル先にする。
 			//※LASERクラスのmove()は、
 			//この数字より超えないようにする
 			_t._laser_MaxX=_col_max;

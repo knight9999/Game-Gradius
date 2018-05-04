@@ -813,10 +813,10 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		_this.shotColMap=[//衝突判定（下の定義を使って動的に設定）
 			(function(){
 				if(_this.direct===_DEF_DIR._U){//上
-					return "0,30,250,100,false";
+					return "0,30,250,110,false";
 				}
 				if(_this.direct===_DEF_DIR._D){//下
-					return "0,30,250,100,false";
+					return "0,30,250,110,false";
 				}
 			})()
 		]
@@ -826,13 +826,13 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 			//衝突エリアを設定する。
 			(function(){
 			if(_this.direct===_DEF_DIR._U){//上
-				return [["90,30,250,70,false","25,70,250,100,false"],
+				return [["25,70,250,110,false","90,30,250,70,false"],
 						["180,30,250,90,false"],
 						["50,10,225,20,false"]
 					];
 			}
 			if(_this.direct===_DEF_DIR._D){//下
-				return [["25,30,250,70,false","90,70,250,100,false"],
+				return [["25,0,250,40,false","90,40,250,100,false"],
 						["180,20,250,60,false"],
 						["50,90,225,100,false"]
 					];

@@ -1604,46 +1604,57 @@ const _IS_ENEMIES_COLLISION=()=>{
 	}
 
 	let _e=_ENEMIES;
+	//レーザーで自機、オプションにて、
+	//最大の衝突位置を取得させる
+	let _shottype_lasers_col_max=[];
+	//敵分をループさせる
+	for(let _i=0;_i<_e.length;_i++){
+	let _oe=_e[_i];
+	//スタンバイ状態は無視する
+	if(_oe.isIgnore()){continue;}
+	if(_oe.isStandBy()){continue;}
+	if(!_oe.isalive()){continue;}
 
+	//各ショットの当たり判定の処理
 	if(_SHOTTYPE===_SHOTTYPE_LASER){
-	//	console.log('100:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
+		//レーザーの場合は、さらに衝突時の値を
+		//自機・オプションにそれぞれセットする。
 		for(let _j=0;
 			_j<_PLAYERS_SHOTS[_SHOTTYPE].length;
 			_j++){
 		let _os=_PLAYERS_SHOTS[_SHOTTYPE][_j];
 		if(!_os.player._isalive){continue;}
-		let _col_max=0;
-		// レーザーでは敵全部を回して、
-		// 自機から一番遠い耐久性がある敵に対して
-		// レーザーの
-		for(let _i=0;_i<_e.length;_i++){
-			//スタンバイ状態は無視する
-			if(_e[_i].isIgnore()){continue;}
-			if(_e[_i].isStandBy()){continue;}
-			if(!_e[_i].isalive()){continue;}
-			let _m=_os.enemy_collision(_e[_i]);
-			//衝突していないのでスルー
-			if(_m===undefined||_m===null){continue;}
-//			console.log(_m)
-			_col_max=(_col_max<_m)?_m:_col_max;
-		}//_i
+		let _m=_os.enemy_collision(_oe);
+		//衝突していないのでスルー
+//		console.log(_m)
+		if(_m===undefined||_m===null){continue;}
+		//以前より衝突が右端にある場合は、
+		//値を置き換える
+		_shottype_lasers_col_max[_j]=
+			(_shottype_lasers_col_max[_j]<_m
+			||_shottype_lasers_col_max[_j]===undefined)
+				?_m
+				:_shottype_lasers_col_max[_j];
 
-		//敵判定からレーザーの最右端を決定し、
-		//レーザーのx位置も調整する。
-		let _t=_os.shots[0];
-		_col_max=(_col_max===0)?_CANVAS.width:_col_max;
-		// if(_j===1){console.log('_t.x:'+_t.x+'   ['+_col_max+']');}
+	// 	//敵判定からレーザーの最右端を決定し、
+	// 	//レーザーのx位置も調整する。
+	// 	let _t=_os.shots[0];
+	// 	_col_max[_j]=
+	// 		(_col_max[_j]===0)
+	// 		?_CANVAS.width
+	// 		:_col_max[_j];
+	// 	// if(_j===1){console.log('_t.x:'+_t.x+'   ['+_col_max+']');}
 
-		if(_t.x>_col_max+(_os.speed*2)){
-			//すでにレーザーの先端が
-			//衝突から超えた場合は、衝突なしとして照射
-			_t._laser_MaxX=_CANVAS.width;
-		}else{
-//			console.log(_col_max)
-			//※LASERクラスのmove()は、
-			//この数字より超えないようにする
-			_t._laser_MaxX=_col_max;
-		}
+	// 	if(_t.x>_col_max+(_os.speed*2)){
+	// 		//すでにレーザーの先端が
+	// 		//衝突から超えた場合は、衝突なしとして照射
+	// 		_t._laser_MaxX=_CANVAS.width;
+	// 	}else{
+	// //			console.log(_col_max)
+	// 		//※LASERクラスのmove()は、
+	// 		//この数字より超えないようにする
+	// 		_t._laser_MaxX=_col_max[_j];
+	// 	}
 
 		}//_j
 	}else if(_SHOTTYPE!==_SHOTTYPE_LASER){
@@ -1652,26 +1663,9 @@ const _IS_ENEMIES_COLLISION=()=>{
 			_j++){
 		let _os=_PLAYERS_SHOTS[_SHOTTYPE][_j];
 		if(!_os.player._isalive){continue;}
-
-		for(let _i=0;_i<_e.length;_i++){
-			//スタンバイ状態は無視する
-			if(_e[_i].isIgnore()){continue;}
-			if(_e[_i].isStandBy()){continue;}//敵自体無視	
-			if(!_e[_i].isalive()){continue;}
-			let _oe=_e[_i];
-			_os.enemy_collision(_oe);
-	//		console.log(_ma);
-		}//_i
-		}//_j
+		_os.enemy_collision(_oe);
+		}
 	}
-	
-//	console.log('101:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
-	for(let _i=0;_i<_e.length;_i++){
-	let _oe=_e[_i];
-	//スタンバイ状態は無視する
-	if(_oe.isIgnore()){continue;}
-	if(_oe.isStandBy()){continue;}
-	if(!_oe.isalive()){continue;}
 
 	//自機衝突判定
 	_PLAYERS_MAIN.enemy_collision(_oe);
@@ -1689,6 +1683,36 @@ const _IS_ENEMIES_COLLISION=()=>{
 	}//_k
 
 	}//_i
+
+	//ここでレーザーに対して、
+	//自機・オプション共に、衝突位置を決定させる
+	if(_SHOTTYPE===_SHOTTYPE_LASER){
+		for(let _j=0;
+			_j<_PLAYERS_SHOTS[_SHOTTYPE].length;
+			_j++){
+		let _os=_PLAYERS_SHOTS[_SHOTTYPE][_j];
+		if(!_os.player._isalive){continue;}
+		//レーザーのx位置も調整する。
+		let _t=_os.shots[0];
+		_shottype_lasers_col_max[_j]=
+			(_shottype_lasers_col_max[_j]===0||_shottype_lasers_col_max[_j]===undefined)
+			?_CANVAS.width
+			:_shottype_lasers_col_max[_j];
+		// if(_j===1){console.log('_t.x:'+_t.x+'   ['+_shottype_lasers_col_max+']');}
+
+		if(_t.x>_shottype_lasers_col_max[_j]+(_os.speed*2)){
+			//すでにレーザーの先端が
+			//衝突から超えた場合は、衝突なしとして照射
+			_t._laser_MaxX=_CANVAS.width;
+		}else{
+	//			console.log(_shottype_lasers_shottype_lasers_col_max)
+			//※LASERクラスのmove()は、
+			//この数字より超えないようにする
+			_t._laser_MaxX=_shottype_lasers_col_max[_j];
+		}
+
+		}//_j
+	}//if
 //	console.log('102:'+_PLAYERS_SHOTS._SHOTTYPE_LASER[0].shots[0]._laser_MaxX)
 
 }

@@ -692,7 +692,21 @@ class ENEMY_BOSS_BIGCORE2
 			_this.wall_down[_i].moveDraw(_this);
 		}		
 	}
-	setDrawImage(){}
+	setDrawImage(){
+		let _this=this;
+		//自身を表示
+		_this.moveDraw();
+		_this.show_walls();
+		//上を表示
+		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
+			_this.hands_up[_i].moveDraw(_this);
+		}
+		//下を表示
+		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
+			_this.hands_down[_i].moveDraw(_this);
+		}
+		
+	}
 	move(){
 		let _this=this;
 		if(!_this.isMove()){return;}
@@ -706,10 +720,6 @@ class ENEMY_BOSS_BIGCORE2
 					:_this.speed;
 
 		_this.shot();
-
-		//自身を表示
-		_this.moveDraw();
-		_this.show_walls();
 
 		(_this.speed>0&&!_this._moveYStop)
 			?_this.back_img_up.s1()
@@ -731,7 +741,6 @@ class ENEMY_BOSS_BIGCORE2
 				_GAME._setPlay(_this.audio_collision);
 				_this.hands_up[_i].set_hand_stop();
 			}			
-			_this.hands_up[_i].moveDraw(_this);
 		}
 		//下を表示
 		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
@@ -740,8 +749,7 @@ class ENEMY_BOSS_BIGCORE2
 				&&!_this.hands_down[_i].is_hand_stop()){
 				_GAME._setPlay(_this.audio_collision);
 				_this.hands_down[_i].set_hand_stop();
-			}			
-			_this.hands_down[_i].moveDraw(_this);
+			}
 		}
 
 		if(_this._wall_up_statuses.indexOf('1')===-1

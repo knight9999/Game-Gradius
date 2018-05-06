@@ -1700,7 +1700,7 @@ const _IS_ENEMIES_COLLISION=()=>{
 			:_shottype_lasers_col_max[_j];
 		// if(_j===1){console.log('_t.x:'+_t.x+'   ['+_shottype_lasers_col_max+']');}
 
-		if(_t.x>_shottype_lasers_col_max[_j]+(_os.speed*2)){
+		if(_t.x>=_shottype_lasers_col_max[_j]+(_os.speed*1)){
 			//すでにレーザーの先端が
 			//衝突から超えた場合は、衝突なしとして照射
 			_t._laser_MaxX=_CANVAS.width;
@@ -1708,7 +1708,7 @@ const _IS_ENEMIES_COLLISION=()=>{
 	//			console.log(_shottype_lasers_shottype_lasers_col_max)
 			//※LASERクラスのmove()は、
 			//この数字より超えないようにする
-			_t._laser_MaxX=_shottype_lasers_col_max[_j];
+			_t._laser_MaxX=_shottype_lasers_col_max[_j]+10;
 		}
 
 		}//_j
@@ -2717,7 +2717,7 @@ isSqCollision_laser(_s1,_s1_n,_s2,_s2_n,_d){
 		);//斜辺
 
 		//衝突判定
-		let _tmpx=_s2_n_x+parseInt(_s2_p[0])+15;
+		let _tmpx=_s2_n_x+parseInt(_s2_p[0]);
 //		if(_d_l<(_s1_l/2)+(_s2_l/2)){
 		if((_s1_w/2)+(_s2_w/2)>_d_x
 			&&(_s1_h/2)+(_s2_h/2)>_d_y){

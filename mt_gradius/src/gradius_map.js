@@ -28,93 +28,99 @@ _setDir:function(_mx,_my){
 },//_setDir
 _ENEMIES:{
 	'a':{
-		'_gamestart':(_mx,_my,_md)=>{
-			_ENEMIES.push(new ENEMY_a({x:_mx,y:_my,direct:_md}));
+		'_gamestart':(_x,_y,_md)=>{
+			_ENEMIES.push(new ENEMY_a({x:_x,y:_y,direct:_md}));
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_a({direct:null})}
 	},
 	'b':{
-		'_gamestart':(_mx,_my,_md)=>{
-			_ENEMIES.push(new ENEMY_b({x:_mx,y:_my,direct:_md}));
+		'_gamestart':(_x,_y,_md)=>{
+			_ENEMIES.push(new ENEMY_b({x:_x,y:_y,direct:_md}));
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_b({direct:null})}
 	},
 	'c':{
-		'_gamestart':(_mx,_my,_md)=>{
-			_ENEMIES.push(new ENEMY_c({x:_mx,y:_my,direct:_md}));
+		'_gamestart':(_x,_y,_md)=>{
+			let _d=(_MAP.isMapCollision(_MAP.getMapX(_x),_MAP.getMapY(_y)-1))
+					?_DEF_DIR._U
+					:_DEF_DIR._D;
+			_d=(_MAP.isMapCollision(_MAP.getMapX(_x),_MAP.getMapY(_y)+2))
+					?_DEF_DIR._D
+					:_DEF_DIR._U;			
+			_ENEMIES.push(new ENEMY_c({x:_x,y:_y,direct:_d}));
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_c({direct:null})}
 	},
 	'd':{
-		'_gamestart':(_mx,_my,_md)=>{
-			_ENEMIES.push(new ENEMY_d({x:_mx,y:_my,direct:_md}));
+		'_gamestart':(_x,_y,_md)=>{
+			_ENEMIES.push(new ENEMY_d({x:_x,y:_y,direct:_md}));
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_d({direct:null})}
 	},
 	'e':{
-		'_gamestart':(_mx,_my,_md)=>{
-			_ENEMIES.push(new ENEMY_e({x:_mx,y:_my,direct:_md}));
+		'_gamestart':(_x,_y,_md)=>{
+			_ENEMIES.push(new ENEMY_e({x:_x,y:_y,direct:_md}));
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_e({direct:null})}
 	},
 	'f':{
-		'_gamestart':(_mx,_my,_md)=>{
-			_md=(_my<_CANVAS.height/2)
+		'_gamestart':(_x,_y,_md)=>{
+			_md=(_y<_CANVAS.height/2)
 				?_DEF_DIR._U
 				:_DEF_DIR._D;
-			_ENEMIES.push(new ENEMY_f({x:_mx,y:_my,direct:_md}));
+			_ENEMIES.push(new ENEMY_f({x:_x,y:_y,direct:_md}));
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_f({direct:null})}
 	},
 	'g':{
-		'_gamestart':(_mx,_my,_md)=>{
-			_md=(_my<_CANVAS.height/2)
+		'_gamestart':(_x,_y,_md)=>{
+			_md=(_y<_CANVAS.height/2)
 				?_DEF_DIR._U
 				:_DEF_DIR._D;
 
-			_ENEMIES.push(new ENEMY_g({x:_mx,y:_my,direct:_md}));
+			_ENEMIES.push(new ENEMY_g({x:_x,y:_y,direct:_md}));
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_g({direct:null})}
 	},
 	'm':{
-		'_gamestart':(_mx,_my,_md)=>{
-			_ENEMIES.push(new ENEMY_m({x:_mx,y:_my,direct:_md}));
+		'_gamestart':(_x,_y,_md)=>{
+			_ENEMIES.push(new ENEMY_m({x:_x,y:_y,direct:_md}));
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_m({direct:null})}
 	},
 	'n':{
-		'_gamestart':(_mx,_my,_md)=>{
-			_ENEMIES.push(new ENEMY_n({x:_mx,y:_my,direct:_md}));
+		'_gamestart':(_x,_y,_md)=>{
+			_ENEMIES.push(new ENEMY_n({x:_x,y:_y,direct:_md}));
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_n({direct:null})}
 	},
 	'o':{
-		'_gamestart':(_mx,_my,_md)=>{
-			_ENEMIES.push(new ENEMY_o({x:_mx,y:_my,direct:_md}));
+		'_gamestart':(_x,_y,_md)=>{
+			_ENEMIES.push(new ENEMY_o({x:_x,y:_y,direct:_md}));
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_o({direct:null})}
 	},
 	'p':{
-		'_gamestart':(_mx,_my,_md)=>{
-			let _o=new ENEMY_p({x:_mx,y:_my,direct:_DEF_DIR._D});
+		'_gamestart':(_x,_y,_md)=>{
+			let _o=new ENEMY_p({x:_x,y:_y,direct:_DEF_DIR._D});
 			_ENEMIES.push(_o);
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_p({direct:null})}
 	},
 	'z':{
-		'_gamestart':(_mx,_my,_md)=>{
-			_ENEMIES.push(new ENEMY_FAN({x:_mx,y:_my,direct:_md}));
+		'_gamestart':(_x,_y,_md)=>{
+			_ENEMIES.push(new ENEMY_FAN({x:_x,y:_y,direct:_md}));
 			},
 		'_st':'',
 		'_getObj':()=>{return new ENEMY_FAN({width:25,height:25,direct:null})}
@@ -279,11 +285,6 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_b({x:_mx,y:_my,direct:_md}));},
 			'_st':'',
 			'_getObj':()=>{return new ENEMY_b({direct:null});}
-		},
-		'c':{
-			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_c({x:_mx,y:_my,direct:_md}));},
-			'_st':'',
-			'_getObj':()=>{return new ENEMY_c({direct:null});}
 		},
 		'd':{
 			'_gamestart':(_mx,_my,_md)=>{_ENEMIES.push(new ENEMY_d({x:_mx,y:_my,direct:_md}));},
@@ -921,12 +922,34 @@ class GameObject_MAP{
 //				let img=_p._obj.img;
 				//画像サイズは、25x25px
 				//ここでは10x10pxに調整
+				// _CONTEXT.save();
+				// let _x=0+(_j*10);
+				// let _y=130+(_i*10);
+				// let _w=_p.width/2.5;
+				// let _h=_p.height/2.5;
+				// let _d=(_p.direct===null)?_MAP_ENEMIES._setDir(_j+100,_i):_p.direct;
+				// if(_d===_DEF_DIR._U){
+				// 	_CONTEXT.setTransform(1,0,0,-1,0,_y*2+_h);
+				// }
+				// if(_d===_DEF_DIR._LU){
+				// 	_CONTEXT.setTransform(-1,0,0,-1,_x*2+_w,_y*2+_h);
+				// }
+				// if(_d===_DEF_DIR._LD){
+				// 	_CONTEXT.setTransform(-1,0,0,1,_x*2+_w,0);
+				// }
+				// _CONTEXT.drawImage(
+				// 	_p.img,
+				// 	_x,_y,_w,_h
+				// );
+				// _CONTEXT.restore();
+
 				_CONTEXT.save();
+				let _d=(_p.direct===null)?_MAP_ENEMIES._setDir(_j+100,_i):_p.direct;
 				let _x=0+(_j*10);
 				let _y=130+(_i*10);
 				let _w=_p.width/2.5;
 				let _h=_p.height/2.5;
-				let _d=(_p.direct===null)?_MAP_ENEMIES._setDir(_j+100,_i):_p.direct;
+
 				if(_d===_DEF_DIR._U){
 					_CONTEXT.setTransform(1,0,0,-1,0,_y*2+_h);
 				}
@@ -936,9 +959,18 @@ class GameObject_MAP{
 				if(_d===_DEF_DIR._LD){
 					_CONTEXT.setTransform(-1,0,0,1,_x*2+_w,0);
 				}
+				_CONTEXT.translate(0+(_j*10),130+(_i*10));
+				_CONTEXT.scale(0.25,0.25);
 				_CONTEXT.drawImage(
 					_p.img,
-					_x,_y,_w,_h
+					_p.imgPos[0],
+					0,
+					_p.width,
+					_p.height,			
+					0,
+					0,
+					_p.width*1.60,//偶然の一致
+					_p.height*1.60
 				);
 				_CONTEXT.restore();
 			}else{

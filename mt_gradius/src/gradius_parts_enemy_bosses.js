@@ -692,12 +692,7 @@ class ENEMY_BOSS_BIGCORE2
 			_this.wall_down[_i].moveDraw(_this);
 		}		
 	}
-	setDrawImage(){
-		let _this=this;
-		//自身を表示
-		_this.moveDraw();
-		_this.show_walls();
-	}
+	setDrawImage(){}
 	move(){
 		let _this=this;
 		if(!_this.isMove()){return;}
@@ -711,6 +706,10 @@ class ENEMY_BOSS_BIGCORE2
 					:_this.speed;
 
 		_this.shot();
+
+		//自身を表示
+		_this.moveDraw();
+		_this.show_walls();
 
 		(_this.speed>0&&!_this._moveYStop)
 			?_this.back_img_up.s1()
@@ -799,6 +798,7 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		_this.y=_this._inity+_d._boss.y;
 		_this._standby=false;
 		_this.is_able_collision=false;
+		_this.width=250;
 
 		//ここでは先端のオブジェクトだけ、
 		//ショットさせる
@@ -882,6 +882,7 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		}
 		_this._c++;
 	}
+	setDrawImage(){}
 	move_hands_close(){
 		//手をクローズする。
 		let _this=this;
@@ -908,10 +909,6 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		_this._c--;
 //		_this.isHandsClose=false;
 	}
-	setDrawImage(){
-		let _this=this;
-		super.setDrawImage(250,110,250,_this.imgs[parseInt(_this._c/6)]);
-	}
 	moveDraw(_boss){
 		let _this=this;
 		_this._boss=_boss;
@@ -919,6 +916,33 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		_this.move_hands_close();
 		_this.x=_this._boss.x+parseInt(_this._initx)+_this.imgs_x;
 		_this.y=_this._boss.y+parseInt(_this._inity)+_this.imgs_y;
+
+		_CONTEXT.save();
+		_this.setDrawImageDirect();
+		_CONTEXT.drawImage(
+			_this.img,
+			_this.imgs[parseInt(_this._c/6)],
+			0,
+			_this.width,
+			_this.height,
+			_this.x,
+			_this.y,
+			_this.width,
+			_this.height
+		);
+
+		if(_ISDEBUG){
+			_CONTEXT.strokeStyle='rgba(200,200,255,0.5)';
+			_CONTEXT.beginPath();
+			_CONTEXT.rect(
+					_this.x,
+					_this.y,
+					_this.width,
+					_this.height
+			);
+			_CONTEXT.stroke();	
+		}
+		_CONTEXT.restore();
 	}
 	move(){}
 }
@@ -2700,6 +2724,17 @@ class ENEMY_BOSS_DEATH
 		if(_this.x<_CANVAS.width){
 			_this._standby=false;
 		}
+	}
+	setDrawImage(){
+		let _this=this;
+		if(!_this.isMove()){return;}
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x,
+			y:_this.y,
+			deg:_this.deg+180,
+			basePoint:1
+		});		
 	}
 	move(){
 		//ここでは_this._cは250サイクルでアニメーションさせる

@@ -194,11 +194,13 @@ _setInitMap:function(_m){
 			if(_k.match(_MAP.collision_enemies)!==null){
 				//敵の表示
 //				console.log(_k)
+				let _st=_MAP_THEME[_m._theme]._enemies[_k]._st;
 				let _o=_MAP_THEME[_m._theme]._enemies[_k]._getObj();
 				_s='<div class="parts_block" '
 						+'style="width:'+parseInt(_o.width*0.8)+'px;height:'+parseInt(_o.height*0.8)+'px;'
 						+'background:url('+_o.img.src+') no-repeat;'
 						+'background-size:cover;'
+						+((_st!=='')?_st:'')
 						+'background-position:'+(20/_o.width*_o.imgPos[0]*-1)+'px 0px;'
 						+'" '
 						+'ondragstart="_GAME_STAGEEDIT_EVENTS._f_pb_dragstart(event);" '
@@ -291,6 +293,7 @@ _setInitPartsBlocksWrapper:function(_m){
 	//ENEMY
 	for(let [_k,_v] of Object.entries(_MAP_THEME[_m._theme]._enemies)){
 		let _o=_v._getObj();
+		let _st=_v._st;
 //		475:100=100:x
 //		x=100*h/w
 		let _h=parseInt(100*_o.height/_o.width);
@@ -302,6 +305,7 @@ _setInitPartsBlocksWrapper:function(_m){
 			'width:100px;height:'+_h+'px;'+
 			'background:url('+_o.img.src+') no-repeat;'+
 			'background-size:cover;'+
+			((_st!=='')?_st:'')+
 			'background-position:'+(100/_o.width*_o.imgPos[0]*-1)+'px 0px;'+
 			'">'+
 	//		'<img'+((_v._st==='')?'':' style="'+_v._st+'"')+' src="'+_v._getObj().img.src+'"></div>'+
@@ -758,12 +762,14 @@ _f_as_drop:function(e){
 		$_ect.appendChild($_cn);
 		if(_o.match(_MAP.collision_enemies)!==null){
 			//敵の表示
+			let _st=_MAP_THEME[_GAME_STAGEEDIT._theme]._enemies[_o]._st;
 			let _obj=_MAP_THEME[_GAME_STAGEEDIT._theme]._enemies[_o]._getObj();
 			$_cn.setAttribute('style',
 				'width:'+parseInt(_obj.width*0.8)+'px;'+
 				'height:'+parseInt(_obj.height*0.8)+'px;'+
 				'background:url('+_obj.img.src+') no-repeat;'+
 				'background-size:cover;'+
+				((_st!=='')?_st:'')+
 				'background-position:'+(20/_obj.width*_obj.imgPos[0]*-1)+'px 0px;'
 			);
 			// $_cn.children[0].width=parseInt(_obj.width*0.8);

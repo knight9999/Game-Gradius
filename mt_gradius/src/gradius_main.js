@@ -1700,7 +1700,7 @@ const _IS_ENEMIES_COLLISION=()=>{
 			:_shottype_lasers_col_max[_j];
 		// if(_j===1){console.log('_t.x:'+_t.x+'   ['+_shottype_lasers_col_max+']');}
 
-		if(_t.x>=_shottype_lasers_col_max[_j]+(_os.speed*1)){
+		if(_t.x>=_shottype_lasers_col_max[_j]+(_os.speed*2)){
 			//すでにレーザーの先端が
 			//衝突から超えた場合は、衝突なしとして照射
 			_t._laser_MaxX=_CANVAS.width;

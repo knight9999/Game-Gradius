@@ -2735,7 +2735,7 @@ class ENEMY_BOSS_DEATH
 	}
 	setDrawImage(){
 		let _this=this;
-		if(!_this.isMove()){return;}
+//		if(!_this.isMove()){return;}
 		_GAME._setDrawImage({
 			img:_this.img,
 			x:_this.x,
@@ -2743,10 +2743,6 @@ class ENEMY_BOSS_DEATH
 			deg:_this.deg+180,
 			basePoint:1
 		});		
-	}
-	move(){
-		//ここでは_this._cは250サイクルでアニメーションさせる
-		let _this=this;
 
 		_GAME._setDrawImage({
 			img:_CANVAS_IMGS['enemy_death_front'].obj,
@@ -2756,6 +2752,10 @@ class ENEMY_BOSS_DEATH
 			basePoint:1,
 			width:42
 		});
+	}
+	move(){
+		//ここでは_this._cは250サイクルでアニメーションさせる
+		let _this=this;
 
 		if(!_this.isMove()){return;}
 		if(!_this.isAllset()){return;}
@@ -2812,7 +2812,8 @@ class ENEMY_DEATH_LASER
 		});
 		let _this=this;
 		_this.bossx=_p.x;
-		_this._isbroken=false;
+		//衝突時、自機のショットを初期化させる
+		_this.is_collision_player_init=true;
 		//無敵だが衝突を無視し、"ある程度"ショットは通過できる
 		_this.is_able_collision=false;
 		_this.is_ignore_collision=false;

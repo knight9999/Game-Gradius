@@ -2095,7 +2095,8 @@ class GameObject_SHOTS_LASER
 				?(_t.x-_t.sx):this.speed;
 		if(_sl<=0){return null;}//_sl値はthis.speed以下
 		//移動分以外の判定処理
-		if(_e.x<_t.x-_sl){			
+		if(_e.x<_t.x-_sl){
+			if(_e.is_collision_player_init){_t._init();}
 			if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
 			_e.collision(_SHOTTYPE_LASER);
 			if(!_e.isalive()){return _CANVAS.width;}
@@ -2110,6 +2111,7 @@ class GameObject_SHOTS_LASER
 				_e.x+","+_e.y
 				);
 			if(_s.ret===_IS_SQ_NOTCOL){continue;}
+			if(_e.is_collision_player_init){_t._init();}
 			if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
 			_e.collision(_SHOTTYPE_LASER);
 			if(!_e.isalive()){return _CANVAS.width;}

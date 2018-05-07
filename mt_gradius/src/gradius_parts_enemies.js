@@ -65,6 +65,9 @@ class GameObject_ENEMY{
 		//true:衝突判定するが、ショットは通過
 		//false:衝突するものの無視
 		_this.is_ignore_collision=false;
+		//衝突時自機の攻撃を初期化させる
+		//主にレーザーに対して処理させる
+		_this.is_collision_player_init=false;
 
 		//衝突判定座標(x1,y1,x2,y2)
 		//左上：x1,y1

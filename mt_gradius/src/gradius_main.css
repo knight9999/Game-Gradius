@@ -19,7 +19,7 @@ html,body{
     user-select:none;
 }
 body::before {
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0,0,0,0.8);
     left: 0;
     content: '';
 	height: 100%;

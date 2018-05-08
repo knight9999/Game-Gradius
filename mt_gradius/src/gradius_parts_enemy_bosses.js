@@ -97,6 +97,18 @@ class GameObject_ENEMY_BOSS
 			_this.img.width,
 			_this.img.height
 		);
+
+		if(_ISDEBUG){
+			_CONTEXT.strokeStyle='rgba(200,200,255,0.5)';
+			_CONTEXT.beginPath();
+			_CONTEXT.rect(
+					_this.x,
+					_this.y,
+					_this.width,
+					_this.height
+			);
+			_CONTEXT.stroke();	
+		}
 	}
 	move_Allset(){}
 	isAllset(){
@@ -697,6 +709,15 @@ class ENEMY_BOSS_BIGCORE2
 		//自身を表示
 		_this.moveDraw();
 		_this.show_walls();
+		//上を表示
+		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
+			_this.hands_up[_i].moveDraw(_this);
+		}
+		//下を表示
+		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
+			_this.hands_down[_i].moveDraw(_this);
+		}
+		
 	}
 	move(){
 		let _this=this;
@@ -732,7 +753,6 @@ class ENEMY_BOSS_BIGCORE2
 				_GAME._setPlay(_this.audio_collision);
 				_this.hands_up[_i].set_hand_stop();
 			}			
-			_this.hands_up[_i].moveDraw(_this);
 		}
 		//下を表示
 		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
@@ -741,8 +761,7 @@ class ENEMY_BOSS_BIGCORE2
 				&&!_this.hands_down[_i].is_hand_stop()){
 				_GAME._setPlay(_this.audio_collision);
 				_this.hands_down[_i].set_hand_stop();
-			}			
-			_this.hands_down[_i].moveDraw(_this);
+			}
 		}
 
 		if(_this._wall_up_statuses.indexOf('1')===-1
@@ -799,6 +818,7 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		_this.y=_this._inity+_d._boss.y;
 		_this._standby=false;
 		_this.is_able_collision=false;
+		_this.width=250;
 
 		//ここでは先端のオブジェクトだけ、
 		//ショットさせる
@@ -882,6 +902,7 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		}
 		_this._c++;
 	}
+	setDrawImage(){}
 	move_hands_close(){
 		//手をクローズする。
 		let _this=this;
@@ -908,10 +929,6 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		_this._c--;
 //		_this.isHandsClose=false;
 	}
-	setDrawImage(){
-		let _this=this;
-		super.setDrawImage(250,110,250,_this.imgs[parseInt(_this._c/6)]);
-	}
 	moveDraw(_boss){
 		let _this=this;
 		_this._boss=_boss;
@@ -919,6 +936,33 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		_this.move_hands_close();
 		_this.x=_this._boss.x+parseInt(_this._initx)+_this.imgs_x;
 		_this.y=_this._boss.y+parseInt(_this._inity)+_this.imgs_y;
+
+		_CONTEXT.save();
+		_this.setDrawImageDirect();
+		_CONTEXT.drawImage(
+			_this.img,
+			_this.imgs[parseInt(_this._c/6)],
+			0,
+			_this.width,
+			_this.height,
+			_this.x,
+			_this.y,
+			_this.width,
+			_this.height
+		);
+
+		if(_ISDEBUG){
+			_CONTEXT.strokeStyle='rgba(200,200,255,0.5)';
+			_CONTEXT.beginPath();
+			_CONTEXT.rect(
+					_this.x,
+					_this.y,
+					_this.width,
+					_this.height
+			);
+			_CONTEXT.stroke();	
+		}
+		_CONTEXT.restore();
 	}
 	move(){}
 }
@@ -2701,9 +2745,16 @@ class ENEMY_BOSS_DEATH
 			_this._standby=false;
 		}
 	}
-	move(){
-		//ここでは_this._cは250サイクルでアニメーションさせる
+	setDrawImage(){
 		let _this=this;
+//		if(!_this.isMove()){return;}
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x,
+			y:_this.y,
+			deg:_this.deg+180,
+			basePoint:1
+		});		
 
 		_GAME._setDrawImage({
 			img:_CANVAS_IMGS['enemy_death_front'].obj,
@@ -2713,6 +2764,10 @@ class ENEMY_BOSS_DEATH
 			basePoint:1,
 			width:42
 		});
+	}
+	move(){
+		//ここでは_this._cは250サイクルでアニメーションさせる
+		let _this=this;
 
 		if(!_this.isMove()){return;}
 		if(!_this.isAllset()){return;}
@@ -2769,7 +2824,8 @@ class ENEMY_DEATH_LASER
 		});
 		let _this=this;
 		_this.bossx=_p.x;
-		_this._isbroken=false;
+		//衝突時、自機のショットを初期化させる
+		_this.is_collision_player_init=true;
 		//無敵だが衝突を無視し、"ある程度"ショットは通過できる
 		_this.is_able_collision=false;
 		_this.is_ignore_collision=false;

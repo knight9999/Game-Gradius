@@ -19,73 +19,49 @@ const _CANVAS_IMGS={
 	'shot1':{src:'images/gradius_shot1.png',rate:0.4,obj:new Image()},
 	'shot2':{src:'images/gradius_shot2.png',rate:0.4,obj:new Image()},
 	'shot3':{src:'images/gradius_shot3.png',rate:0.4,obj:new Image()},
-
 	'shot_laser_col':{src:'images/gradius_shot_laser_col.png',rate:1.00,obj:new Image()},
-	  
+
+	//パワーカプセル
+	'gradius_pc':{src:'images/gradius_pc.png',rate:1.0,obj:new Image()},
+
 	'meter':{src:'images/gradius_meter.png',rate:1.0,obj:new Image()}, 
 	'meter_c':{src:'images/gradius_meter_c.png',rate:1.0,obj:new Image()}, 
 
+	//===================================
+	//以下は敵画像
+	//===================================
 	'enemy_fan':{src:'images/gradius_enemy_fan.png',rate:1.00,obj:new Image()},
 
-	'enemy_a_1':{src:'images/gradius_enemy_a_1.png',rate:0.55,obj:new Image()},
-	'enemy_a_2':{src:'images/gradius_enemy_a_2.png',rate:0.55,obj:new Image()},
-	'enemy_b_1':{src:'images/gradius_enemy_b_1.png',rate:0.55,obj:new Image()},
-	'enemy_b_2':{src:'images/gradius_enemy_b_2.png',rate:0.55,obj:new Image()},
+	'enemy_a':{src:'images/gradius_enemy_a.png',rate:1.0,obj:new Image()},
+	'enemy_b':{src:'images/gradius_enemy_b.png',rate:1.0,obj:new Image()},
 
-	'enemy_c_1':{src:'images/gradius_enemy_c_1.png',rate:0.4,obj:new Image()},
-	'enemy_c_2':{src:'images/gradius_enemy_c_2.png',rate:0.4,obj:new Image()},
-	'enemy_c_3':{src:'images/gradius_enemy_c_3.png',rate:0.4,obj:new Image()},
-	'enemy_c_4':{src:'images/gradius_enemy_c_4.png',rate:0.4,obj:new Image()},
+	'enemy_c':{src:'images/gradius_enemy_c.png',rate:1.0,obj:new Image()},
+	'enemy_d':{src:'images/gradius_enemy_d.png',rate:1.0,obj:new Image()},
+	'enemy_e':{src:'images/gradius_enemy_e.png',rate:1.0,obj:new Image()},
+	'enemy_f':{src:'images/gradius_enemy_f.png',rate:1.0,obj:new Image()},
+	'enemy_g':{src:'images/gradius_enemy_g.png',rate:1.0,obj:new Image()},
 
-	'enemy_d_1':{src:'images/gradius_enemy_d_1.png',rate:0.2,obj:new Image()},
-	'enemy_d_2':{src:'images/gradius_enemy_d_2.png',rate:0.2,obj:new Image()},
-	'enemy_d_3':{src:'images/gradius_enemy_d_3.png',rate:0.2,obj:new Image()},
-	'enemy_d_4':{src:'images/gradius_enemy_d_4.png',rate:0.2,obj:new Image()},
-
-	'enemy_e_1':{src:'images/gradius_enemy_e_1.png',rate:0.2,obj:new Image()},
-	'enemy_e_2':{src:'images/gradius_enemy_e_2.png',rate:0.2,obj:new Image()},
-	'enemy_e_3':{src:'images/gradius_enemy_e_3.png',rate:0.2,obj:new Image()},
-	'enemy_e_4':{src:'images/gradius_enemy_e_4.png',rate:0.2,obj:new Image()},
-
-	'enemy_f_1':{src:'images/gradius_enemy_f_1.png',rate:0.4,obj:new Image()},
-	'enemy_f_2':{src:'images/gradius_enemy_f_2.png',rate:0.4,obj:new Image()},
-	'enemy_f_3':{src:'images/gradius_enemy_f_3.png',rate:0.4,obj:new Image()},
-	'enemy_f_4':{src:'images/gradius_enemy_f_4.png',rate:0.4,obj:new Image()},
-
-	'enemy_g_1':{src:'images/gradius_enemy_g_1.png',rate:0.4,obj:new Image()},
-	'enemy_g_2':{src:'images/gradius_enemy_g_2.png',rate:0.4,obj:new Image()},
-	'enemy_g_3':{src:'images/gradius_enemy_g_3.png',rate:0.4,obj:new Image()},
-	'enemy_g_4':{src:'images/gradius_enemy_g_4.png',rate:0.4,obj:new Image()},
-
-	'enemy_m_1':{src:'images/gradius_enemy_m_1.png',rate:0.24,obj:new Image()},
-	'enemy_m_2':{src:'images/gradius_enemy_m_2.png',rate:0.24,obj:new Image()},
-	'enemy_m_3':{src:'images/gradius_enemy_m_3.png',rate:0.24,obj:new Image()},
-	'enemy_m_4':{src:'images/gradius_enemy_m_4.png',rate:0.24,obj:new Image()},
-	'enemy_m_5':{src:'images/gradius_enemy_m_5.png',rate:0.24,obj:new Image()},
-	'enemy_m_6':{src:'images/gradius_enemy_m_6.png',rate:0.24,obj:new Image()},
-	'enemy_m_7':{src:'images/gradius_enemy_m_7.png',rate:0.24,obj:new Image()},
-	'enemy_m_8':{src:'images/gradius_enemy_m_8.png',rate:0.24,obj:new Image()},
-
+	'enemy_m1':{src:'images/gradius_enemy_m1.png',rate:1.0,obj:new Image()},
+	'enemy_m2':{src:'images/gradius_enemy_m2.png',rate:1.0,obj:new Image()},
 	'enemy_m_group':{src:'images/gradius_enemy_m_group.png',rate:1.00,obj:new Image()},
-	
-	'enemy_o_1':{src:'images/gradius_enemy_o_1.png',rate:0.3,obj:new Image()},
-	'enemy_o_2':{src:'images/gradius_enemy_o_2.png',rate:0.3,obj:new Image()},
+	//火山噴火
+	'enemy_o':{src:'images/gradius_enemy_o.png',rate:1.0,obj:new Image()},
 
 	'enemy_p_1':{src:'images/gradius_enemy_p_1.png',rate:1.00,obj:new Image()},
-	'enemy_p_2':{src:'images/gradius_enemy_p_2.png',rate:0.30,obj:new Image()},
-	'enemy_p_3':{src:'images/gradius_enemy_p_3.png',rate:0.30,obj:new Image()},
-	'enemy_p_4':{src:'images/gradius_enemy_p_4.png',rate:0.30,obj:new Image()},
-	'enemy_p_5':{src:'images/gradius_enemy_p_5.png',rate:0.30,obj:new Image()},
+	'enemy_p_2':{src:'images/gradius_enemy_p_2.png',rate:1.00,obj:new Image()},
+	'enemy_p_3':{src:'images/gradius_enemy_p_3.png',rate:1.00,obj:new Image()},
+	'enemy_p_4':{src:'images/gradius_enemy_p_4.png',rate:1.00,obj:new Image()},
+	'enemy_p_5':{src:'images/gradius_enemy_p_5.png',rate:1.00,obj:new Image()},
 
 	'enemy_moai_boss':{src:'images/gradius_enemy_moai_boss.png',rate:1.00,obj:new Image()},
 	'enemy_moai_mini_boss':{src:'images/gradius_enemy_moai_mini_boss.png',rate:1.00,obj:new Image()},
 	'enemy_moai_boss_ring':{src:'images/gradius_enemy_moai_boss_ring.png',rate:1.00,obj:new Image()},
 
-	'enemy_m_a_1':{src:'images/gradius_enemy_m_a_1.png',rate:0.25,obj:new Image()},
-	'enemy_m_a_2':{src:'images/gradius_enemy_m_a_2.png',rate:0.25,obj:new Image()},
-	'enemy_m_b_1':{src:'images/gradius_enemy_m_b_1.png',rate:0.25,obj:new Image()},
-	'enemy_m_b_2':{src:'images/gradius_enemy_m_b_2.png',rate:0.25,obj:new Image()},
-	'enemy_m_z':{src:'images/gradius_enemy_m_z.png',rate:0.25,obj:new Image()},
+	'enemy_m_a_1':{src:'images/gradius_enemy_m_a_1.png',rate:1.00,obj:new Image()},
+	'enemy_m_a_2':{src:'images/gradius_enemy_m_a_2.png',rate:1.00,obj:new Image()},
+	'enemy_m_b_1':{src:'images/gradius_enemy_m_b_1.png',rate:1.00,obj:new Image()},
+	'enemy_m_b_2':{src:'images/gradius_enemy_m_b_2.png',rate:1.00,obj:new Image()},
+	'enemy_m_z':{src:'images/gradius_enemy_m_z.png',rate:1.00,obj:new Image()},
 
 	'enemy_moai_ring':{src:'images/gradius_enemy_moai_ring.png',rate:1.00,obj:new Image()},
 
@@ -97,10 +73,8 @@ const _CANVAS_IMGS={
 	'enemy_cell_hand_2':{src:'images/gradius_enemy_cell_hand_2.png',rate:1.00,obj:new Image()},
 	'enemy_cell_hand_3':{src:'images/gradius_enemy_cell_hand_3.png',rate:1.00,obj:new Image()},
 
-	'enemy_cell_a_1':{src:'images/gradius_enemy_cell_a_1.png',rate:1.00,obj:new Image()},
-	'enemy_cell_a_2':{src:'images/gradius_enemy_cell_a_2.png',rate:1.00,obj:new Image()},
-	'enemy_cell_b_1':{src:'images/gradius_enemy_cell_b_1.png',rate:1.00,obj:new Image()},
-	'enemy_cell_b_2':{src:'images/gradius_enemy_cell_b_2.png',rate:1.00,obj:new Image()},
+	'enemy_cell_a':{src:'images/gradius_enemy_cell_a.png',rate:1.00,obj:new Image()},
+	'enemy_cell_b':{src:'images/gradius_enemy_cell_b.png',rate:1.00,obj:new Image()},
 
 	'enemy_frame_1':{src:'images/gradius_enemy_frame_1.png',rate:1.00,obj:new Image()},
 	'enemy_frame_2':{src:'images/gradius_enemy_frame_2.png',rate:1.00,obj:new Image()},
@@ -143,31 +117,32 @@ const _CANVAS_IMGS={
 	'enemy_death_shot':{src:'images/gradius_enemy_death_shot.png',rate:1.0,obj:new Image()},
 	'enemy_death_shot2':{src:'images/gradius_enemy_death_shot2.png',rate:1.0,obj:new Image()},
 
+	//===================================
+	//以下は敵の衝突用画像
+	//===================================
 	'enemy_collapes0':{src:'images/gradius_enemy_collapes0.png',rate:1.0,obj:new Image()},
 	'enemy_collapes1':{src:'images/gradius_enemy_collapes1.png',rate:1.0,obj:new Image()},
 	'enemy_collapes2':{src:'images/gradius_enemy_collapes2.png',rate:1.0,obj:new Image()},
 	'enemy_collapes8':{src:'images/gradius_enemy_collapes8.png',rate:1.0,obj:new Image()},
 	'enemy_collapes9':{src:'images/gradius_enemy_collapes9.png',rate:1.0,obj:new Image()},
 
+	//===================================
+	//以下は敵のショット画像
+	//===================================
 	'enemy_bullet':{src:'images/gradius_enemy_bullet.png',rate:1.0,obj:new Image()},
 	'enemy_bullet_cell':{src:'images/gradius_enemy_bullet_cell.png',rate:1.0,obj:new Image()},
+	'enemy_bullet_z':{src:'images/gradius_enemy_bullet_z.png',rate:1.0,obj:new Image()},
+	'enemy_bullet_laser':{src:'images/gradius_enemy_bullet_laser.png',rate:1.0,obj:new Image()},
 
-	'enemy_bullet_z':
-  		{src:'images/gradius_enemy_bullet_z.png',rate:1.0,obj:new Image()},
-	'enemy_bullet_laser':
-  		{src:'images/gradius_enemy_bullet_laser.png',rate:1.0,obj:new Image()},
-
-	//パワーカプセル
-	'gradius_pc':{src:'images/gradius_pc.png',rate:1.0,obj:new Image()},
-
-	//cube
+  	//===================================
+	//以下はマップ画像
+	//===================================
+ 	//cubeステージ用
 	'map_cube_A':{src:'images/gradius_map_cube_A.png',rate:1,obj:new Image()},
-
-	//モアイ画像
+	//モアイステージ用画像
 	'map_moai_A':{src:'images/gradius_map_moai_A.png',rate:1.00,obj:new Image()},
 	'map_moai_B':{src:'images/gradius_map_moai_B.png',rate:1.00,obj:new Image()},
-
-	//火山
+	//火山ステージ用画像
 	'map_volcano_A':{src:'images/gradius_map_volcano_A.png',rate:1,obj:new Image()},
 	'map_volcano_B':{src:'images/gradius_map_volcano_B.png',rate:1,obj:new Image()},
 	'map_volcano_C':{src:'images/gradius_map_volcano_C.png',rate:1,obj:new Image()},
@@ -184,16 +159,14 @@ const _CANVAS_IMGS={
 	'map_volcano_N':{src:'images/gradius_map_volcano_N.png',rate:1,obj:new Image()},
 	'map_volcano_O':{src:'images/gradius_map_volcano_O.png',rate:1,obj:new Image()},
 	'map_volcano_P':{src:'images/gradius_map_volcano_P.png',rate:1,obj:new Image()},
-
-	//炎
+	//炎ステージ
 	'map_frame_A':{src:'images/gradius_map_frame_A.png',rate:1.00,obj:new Image()},
 	'map_frame_B':{src:'images/gradius_map_frame_B.png',rate:1.00,obj:new Image()},
 	'map_frame_C':{src:'images/gradius_map_frame_C.png',rate:1.00,obj:new Image()},
 	'map_frame_D':{src:'images/gradius_map_frame_D.png',rate:1.00,obj:new Image()},
 	'map_frame_E':{src:'images/gradius_map_frame_E.png',rate:1.00,obj:new Image()},
 	'map_frame_F':{src:'images/gradius_map_frame_F.png',rate:1.00,obj:new Image()},
-
-	//細胞
+	//細胞ステージ
 	'map_cell_A':{src:'images/gradius_map_cell_A.png',rate:1.00,obj:new Image()},
 	'map_cell_B':{src:'images/gradius_map_cell_B.png',rate:1.00,obj:new Image()},
 	'map_cell_C':{src:'images/gradius_map_cell_C.png',rate:1.00,obj:new Image()},

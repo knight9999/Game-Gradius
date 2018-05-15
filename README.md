@@ -94,7 +94,7 @@ https://ja.wikipedia.org/wiki/%E3%82%B0%E3%83%A9%E3%83%87%E3%82%A3%E3%82%A6%E3%8
 <img src="https://user-images.githubusercontent.com/12569855/37718128-58fe5892-2d65-11e8-8dfb-1144e9f7af9f.GIF">
 </li>
 <li>クリスタルステージ(パワーアップ：タイプ3  iPhone 8Plus iOS11)
-<a href="https://youtu.be/qIet_lEy-wQ" target="_blank"><img src="https://user-images.githubusercontent.com/12569855/40031586-543899bc-582b-11e8-8992-9092bbfd0d72.png" width="50"></a><br>
+<a href="https://youtu.be/ITnsP8u_EQM" target="_blank"><img src="https://user-images.githubusercontent.com/12569855/40031586-543899bc-582b-11e8-8992-9092bbfd0d72.png" width="50"></a><br>
 <img src="https://user-images.githubusercontent.com/12569855/33915058-994c9b94-dfe4-11e7-83c7-d65bc5240852.GIF">
 </li>
 <li>フレームステージ：タイプ1  iPhone 8Plus iOS11)  

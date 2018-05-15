@@ -47,33 +47,34 @@ class GameObject_PLAYER_MAIN
 			extends GameObject_PLAYER{
 	constructor(){
 		super('vicviper',100,200,true);
-		this._isequipped=false;//装備可否
-		this._isequipped_count=0;//装備アニメカウントダウン
+		let _this=this;
+		_this._isequipped=false;//装備可否
+		_this._isequipped_count=0;//装備アニメカウントダウン
 
-		this.img=_CANVAS_IMGS['vicviper'].obj;
-		this.imgsize=this.img.height;
-		this.width=this.imgsize;
-		this.height=this.imgsize;
+		_this.img=_CANVAS_IMGS['vicviper'].obj;
+		_this.imgsize=_this.img.height;
+		_this.width=_this.imgsize;
+		_this.height=_this.imgsize;
 
-		this.img_vb=_CANVAS_IMGS['vicviper_back'].obj;
-		this.imgsize_vb=this.img_vb.height;
-		this.width_vb=this.imgsize_vb;
-		this.height_vb=this.imgsize_vb;
+		_this.img_vb=_CANVAS_IMGS['vicviper_back'].obj;
+		_this.imgsize_vb=_this.img_vb.height;
+		_this.width_vb=_this.imgsize_vb;
+		_this.height_vb=_this.imgsize_vb;
 
 		// this.vv_ani=[//アニメ定義
-		this.c_vv_ani=20;
-		this.vv_ani=[120,60,0,180,240];
-		this.vv_e_ani=[420,360,300,480,540];
-		this._img_vv='';
+		_this.c_vv_ani=20;
+		_this.vv_ani=[120,60,0,180,240];
+		_this.vv_e_ani=[420,360,300,480,540];
+		_this._img_vv='';
 
 		// this.vb_ani=[//噴射アニメ定義
-		this.c_vb_ani=0;
-		this.vb_ani=[0,14,28];
-		this.vb_e_ani=[42,42,42];
-		this._img_vb='';
+		_this.c_vb_ani=0;
+		_this.vb_ani=[0,14,28];
+		_this.vb_e_ani=[42,42,42];
+		_this._img_vb='';
 
-		this._col_ani_c=0;
-		this.col_ani=[//衝突時のアニメ定義
+		_this._col_ani_c=0;
+		_this.col_ani=[//衝突時のアニメ定義
 			{img:_CANVAS_IMGS['vicviper_bomb'].obj,
 			scale:0.5},
 			{img:_CANVAS_IMGS['vicviper_bomb'].obj,
@@ -86,7 +87,10 @@ class GameObject_PLAYER_MAIN
 			scale:0.1}
 		];
 
-		this.shotflag=true;//発射可否
+		_this.shotflag=true;//発射可否
+
+		_this.map_col_date=null;
+		_this.map_col_canint=0;//衝突可否範囲(ms)
 	}
 	collapes(){
 		let _this=this;
@@ -142,15 +146,19 @@ class GameObject_PLAYER_MAIN
 			&&_PLAYERS_MAIN_FORCE.isalive()){
 			return;
 		}
-		//プレーヤーの中心座標取得
-		let _pl=_this.getPlayerCenterPosition();
-		//MAPの位置を取得
-		let _map_x=_MAP.getMapX(_pl._x);
-		let _map_y=_MAP.getMapY(_pl._y);
 
-		if(!_MAP.isMapCollision(_map_x,_map_y)){return;}
-		// console.log(_map_x+':'+_map_y);
-		// console.log(_pl._x+'::'+_pl._y);
+		//自機移動分にて当たり判定を設定
+		let _ret=(()=>{
+			if(_MAP.isMapCollision(
+				_MAP.getMapX(_this.x+(_this.width/2)),
+				_MAP.getMapY(_this.y+(_this.height/2)))
+				){
+				_this.map_col_date=null;
+				return true;
+			}
+			return false;
+		})();
+		if(!_ret){return;}
 		_this.setfalsealive();
 
 	}
@@ -214,13 +222,13 @@ class GameObject_PLAYER_MAIN
 				return _y;
 			}
 			//////////////////
-			if(_y<=50-(_this.img.height/4)){
+			if(_y<=50-(_this.height/4)){
 				_this._y=0;
-				return 50-(_this.img.height/4);
+				return 50-(_this.height/4);
 			}
-			if(_y>=_CANVAS.height-75-(_this.img.height/4)){
+			if(_y>=_CANVAS.height-75-(_this.height/4)){
 				_this._y=0;
-				return _CANVAS.height-75-(_this.img.height/4);
+				return _CANVAS.height-75-(_this.height/4);
 			}
 			return _y;
 		})(_this.y);
@@ -259,6 +267,7 @@ class GameObject_PLAYER_MAIN
 	}
 	move(){
 		let _this=this;
+
 		//敵・弾に当たったら終了
 		if(!_this.isalive()){_this.collapes();return;}
 		_this.map_collition();
@@ -414,7 +423,7 @@ class GameObject_FORCEFIELD{
 		_this.ani=[0,105];
 
 		_this.col_date=null;//打たれた時間
-		_this.col_canint=50;//連続ショット許可間隔
+		_this.col_canint=25;//連続打たれる間隔
 	};
 	init(){
 		let _this=this;
@@ -795,7 +804,7 @@ class GameObject_SHOTS_MISSILE
 			},
 			'_st2':function(_t){
 				//真下
-				_t.x+=0;
+				_t.x+=1;
 				_t.y+=8;
 			},
 			'_st3':function(_t){
@@ -805,7 +814,7 @@ class GameObject_SHOTS_MISSILE
 			},
 			'_st4':function(_t){
 				_t.x+=2;
-				_t.y+=1;
+				_t.y+=3;
 			},
 			'_st5':function(_t){
 				//_st5→_st6
@@ -874,24 +883,6 @@ class GameObject_SHOTS_MISSILE
 		let _map_x=_MAP.getMapX(_t.x+_this.imgsize),
 			_map_y=_MAP.getMapY(_t.y);
 
-		const _setToSt3=function(){
-			_map_y=_MAP.getMapY(_t.y+_this.imgsize);
-			if(!_MAP.isMapCollision(_map_x,_map_y)){return false;}
-			if(_MAP.map_infinite===false){
-				//_st3に入る際、このタイミングのmap_yの位置を調整
-				//_MAP.t単位で調整させる
-				var _a=parseInt(_t.y/_MAP.t);
-				var _b=(_t.y%_MAP.t<(_MAP.t/2))?_a:_a+1;
-				_t.y=_b*_MAP.t;	
-
-			}
-//			_this.set_missile_status(_t,'_st3');
-			return true;
-		};
-
-//			console.log(_t.y)
-			
-//console.log(_this.get_missile_status(_t))			
 		//MAPに入る手前は無視する
 		if(_MAP.isMapBefore(_map_x,_map_y)){return;}
 		//MAPから抜けた後のミサイルの状態
@@ -913,49 +904,19 @@ class GameObject_SHOTS_MISSILE
 			_this.set_missile_status(_t,'_st5');
 		}
 
-		//ミサイル着地 _st1→_st6→_st7→→_st8→_st3
+		//ミサイル着地 _st1→_st6→_st7→_st8→_st3
 		//着座時、_st3が必ず壁より１マス上に
 		//配置する必要がある。
 		if(_this.get_missile_status(_t)==='_st6'){
-//			console.log('6')
-//			_map_x=_MAP.getMapX(_t.x+_this.imgsize);
-			//壁にぶつかる(壁中)
-			// if(_MAP.isMapCollision(_map_x,_map_y)){
-			// 	_t._init();
-			// 	return;
-			// }
-//			if(_setToSt3()){return;}			
+//			console.log('6')			
 			_this.set_missile_status(_t,'_st7');
 		}
 		if(_this.get_missile_status(_t)==='_st7'){
 //			console.log('7')
-//			_map_x=_MAP.getMapX(_t.x+_this.imgsize);
-			//壁にぶつかる(壁中)
- 			// if(_MAP.isMapCollision(_map_x,_map_y)){
-			// 	_t._init();
-			// 	return;
-			// }
-//			if(_setToSt3()){return;}
 			_this.set_missile_status(_t,'_st8');
 		}
 		if(_this.get_missile_status(_t)==='_st8'){
 //			console.log('8');
-			
-//			_map_x=_MAP.getMapX(_t.x+_this.imgsize);
-			//壁にぶつかる(壁中)
-			// if(_MAP.isMapCollision(_map_x,_map_y)){
-			// 	_t._init();
-			// 	return;
-			// }
-//			let y=parseInt(_t.y/_MAP.t);
-//			console.log(_t.y)
-			// let _y=_MAP_SCROLL_POSITION_Y%_MAP.t;
-//			_t.y-=(_t.y%_MAP.t)+_MAP.map_backgroundY_speed;
-			// _t.y+=_y;
-//			_t.y=_MAP.getMapYToPx(_t.y);
-			//			_t.y=(_map_y*_MAP.t)+3;		
-//			_t.y=_t.y+_MAP.t-(_t.y%_MAP.t);
-//			if(_setToSt3()){return;}
 			_this.set_missile_status(_t,'_st3');
 		}
 
@@ -965,8 +926,6 @@ class GameObject_SHOTS_MISSILE
 			//真下に衝突がある場合
 			if(_MAP.isMapCollision(_map_x,_map_y+1)){
 				//→st6→st7→st3への調整のためのy位置調整
-//				_t.y=_MAP.getMapYToPx(_t.y);			
-//				_t.y=(_map_y*_MAP.t)-5;
 				_this.set_missile_status(_t,'_st6');
 				return;
 			}
@@ -975,10 +934,13 @@ class GameObject_SHOTS_MISSILE
 
 
 		if(_this.get_missile_status(_t)==='_st3'){
-			_setToSt3();
 //			console.log('_st3');
-//			console.log('====='+(_MAP.y%25*-1));
-//			console.log(_t.y);			
+			//真下の障害物判定により縦位置を調整させる
+			_map_y=_MAP.getMapY(_t.y+_this.imgsize);
+			_t.y=(_MAP.isMapCollision(_map_x,_map_y))
+					?_t.y-1
+					:_t.y+1
+
 			_map_x=_MAP.getMapX(_t.x+(_this.imgsize/2));
 			_map_y=_MAP.getMapY(_t.y+(_this.imgsize/2));
 			//壁にぶつかる(壁中)
@@ -993,14 +955,6 @@ class GameObject_SHOTS_MISSILE
  				return;
  			}
 
-			//壁にぶつかる
-			//真横に壁がある場合、初期化
-// 			if(_MAP.isMapCollision(_map_x,_map_y)){
-// //				console.log('_st3 init() 2')
-// 				_t._init();
-// 				return;
-// 			}
-
 			//MAPからはみ出る
 			if(_MAP.isMapOver(_map_x,_map_y)){
 				_this.set_missile_status(_t,'_st4');
@@ -1011,7 +965,7 @@ class GameObject_SHOTS_MISSILE
 
 		if(_this.get_missile_status(_t)==='_st2'){
 //			console.log('_st2');
-			_map_y=_MAP.getMapY(_t.y+_this.imgsize+14);
+			_map_y=_MAP.getMapY(_t.y+_this.imgsize+15);
 			//下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x,_map_y)
 //				||_MAP.isMapCollision(_map_x,_map_y+1)
@@ -1023,7 +977,7 @@ class GameObject_SHOTS_MISSILE
 		}
 
 		if(_this.get_missile_status(_t)==='_st1'){
-			_map_y=_MAP.getMapY(_t.y+_this.imgsize+14);
+			_map_y=_MAP.getMapY(_t.y+_this.imgsize+15);
 			//自身、あるいはその下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x+1,_map_y)){
 				// let _a=parseInt((_t.y+_this.imgsize)/_MAP.t);
@@ -1052,12 +1006,13 @@ class GameObject_SHOTS_MISSILE
 		}
 
 	}
-	collapse_missile(_t,_pos){
+	collapse_missile(_t){
 		let _this=this;
-		_t.x=_MAP.getX(_t.x);
-		_pos=_pos||-5
+		let _x=_MAP.getX(_t.x+(_this.imgsize/2));
+		let _y=_MAP.getY(_t.y+(_this.imgsize/2));
 		//爆風を表示
 		if(_t._c>=_this.col_mis.length*5){
+			//爆風処理完了後初期化
 			_t._init();
 			return;
 		}
@@ -1066,8 +1021,7 @@ class GameObject_SHOTS_MISSILE
 
 		_CONTEXT.fillStyle=_this.col_mis[_c].fs;
  	 	_CONTEXT.beginPath();
- 		_CONTEXT.arc(_t.x,
- 					_t.y+_pos,
+ 		_CONTEXT.arc(_x,_y,
  					_this.col_mis[_c].scale,
  					0,
  					Math.PI*2,false);
@@ -1077,8 +1031,7 @@ class GameObject_SHOTS_MISSILE
 			_CONTEXT.fillStyle
 				=_this.col_mis[_c-1].fs;
 		 	_CONTEXT.beginPath();
-			_CONTEXT.arc(_t.x,
-						_t.y+_pos,
+			_CONTEXT.arc(_x,_y,
 						_this.col_mis[_c-1].scale,
 						0,
 						Math.PI*2,false);
@@ -1093,9 +1046,10 @@ class GameObject_SHOTS_MISSILE
 			if(!_t._shot_alive){continue;}
 			//爆発を表示させる
 			if(_t._c>0){
-				_this.collapse_missile(_t,10);
+				_this.collapse_missile(_t);
 				continue;
 			}
+//			console.log(_t.y)
 			_CONTEXT.drawImage(
 				_t._img,
 				_this.st[_this.get_missile_status(_t)],
@@ -1107,6 +1061,18 @@ class GameObject_SHOTS_MISSILE
 				_this.imgsize,
 				_this.imgsize
 			);
+
+			if(_ISDEBUG){
+				_CONTEXT.strokeStyle='rgba(200,200,255,0.5)';
+				_CONTEXT.beginPath();
+				_CONTEXT.rect(
+						_t.x,
+						_t.y,
+						_this.imgsize,
+						_this.imgsize
+				);
+				_CONTEXT.stroke();	
+			}
 		}
 	}
 	move(){
@@ -1122,12 +1088,14 @@ class GameObject_SHOTS_MISSILE
 			_t.y=_MAP.getShotY(_t.y);
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
+				_t.x=_MAP.getX(_t.x);
 				continue;
 			}
 //console.log('_j:'+_j+'   _t.x:'+_t.x+'   _t.y:'+_t.y);
 //console.log('_map_x:'+_map_x);
 
 			if(_GAME.isShotCanvasOut(_t)){
+				//キャンバスから離れた場合初期化
 				_t._init();
 				continue;
 			}
@@ -1140,19 +1108,7 @@ class GameObject_SHOTS_MISSILE
 				_t._init();				
 				continue;
 			}
-
-			// _CONTEXT.strokeStyle = 'rgb(200,200,255)';
-			// _CONTEXT.beginPath();
-			// _CONTEXT.rect(
-			// 	_t.x,
-			// 	_t.y,
-			// 	_t._img.width,
-			// 	_this.imgsize
-			// );
-			// _CONTEXT.stroke();
-
 			_t._shot_alive=true;
-//			console.log(_t._y);
 		}
 	}
 
@@ -1295,6 +1251,7 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 			_t.y=_MAP.getShotY(_t.y);
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
+				_t.x=_MAP.getX(_t.x);
 				continue;
 			}
 
@@ -1408,6 +1365,7 @@ class GameObject_SHOTS_MISSILE_2WAY
 			_t.y=_MAP.getShotY(_t.y);			
 			if(_t._c>0){
 				//爆発アニメ開始時はここで終了
+				_t.x=_MAP.getX(_t.x);
 				continue;
 			}
 

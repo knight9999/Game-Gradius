@@ -9,28 +9,21 @@ let $_bm=null;
 
 _MAP_PETTERN=0;
 
-const _AJAX=function(_url,_type,_f){
-    let _r=new XMLHttpRequest();
-    _r.onreadystatechange=function(){
-        if(_r.readyState!==4){return;}//通信の完了時
-		if(_r.status===200) {//通信の成功時
-			console.log('OK');
-			_f(_r.response);
-		}else{
-			//connecting
-			console.log('NG');
-		}
-    }
-    _r.open('GET',_url+'?date='+(new Date().getTime()));
-    _r.responseType=_type||'json';
-    _r.send(null);
-}// _AJAX
-
 const _DATAAPI={
 _data_api:'',
-_blog_id:2,
-_url:'/mt6/mt-data-api.cgi',
-_init:function(_this){
+_blog_id:0,
+_url:'',
+_init_config:()=>{
+	_AJAX({
+		'url':'./gradius_editing_stage_config.json',
+		'f':_DATAAPI._init
+	});
+},
+_init:function(_d){
+	let _this=_DATAAPI;
+	_this._blog_id=parseInt(_d.blog_id);
+	_this._url=_d.url;
+
 	_this._data_api=new MT.DataAPI({
 		baseUrl:_this._url,
 		clientId:"api11entries"
@@ -249,7 +242,7 @@ _setAudioInit:function(_obj,_func){
 					_audioLoadedCount++;
 					if(_audioLoadedCount>=
 						Object.keys(_obj).length){
-						_func(_DATAAPI);
+						_func();
 					}
 					//ローディングに進捗率を表示させる
 //					_gsl_r.innerHTML=parseInt(_audioLoadedCount/Object.keys(_obj).length*100)+'%';
@@ -873,9 +866,11 @@ window.addEventListener('load',()=>{
 	$_mp=document.querySelector('#menu .prev');
 	$_mn=document.querySelector('#menu .next'); 
 	$_bm=document.querySelector('#bgmusic');
+
+	_AUDIO_CONTEXT=new(window.AudioContext||window.webkitAudioContext)();
 	_GAME_STAGEEDIT._setAudioInit(
 		_CANVAS_AUDIOS,
-		_DATAAPI._init
+		_DATAAPI._init_config
 	);	
 });
 //_GAME_STAGEEDIT._init();

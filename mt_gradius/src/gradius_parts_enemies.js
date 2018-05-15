@@ -76,7 +76,7 @@ class GameObject_ENEMY{
 			"0,0,"+_this.width+","+_this.height
 		];
 		_this.col_date=null;//打たれた時間
-		_this.col_canint=150;//連続ショット許可間隔
+		_this.col_canint=150;//連続ショット許可間隔(ms)
 	}
 	init(){
 		let _this=this;
@@ -1539,13 +1539,13 @@ class ENEMY_moai_ring extends GameObject_ENEMY{
 
 //炎（大）
 class ENEMY_frame_1 extends GameObject_ENEMY{
-    // constructor(_x,_y,_d){
-	// 	super(_CANVAS_IMGS['enemy_frame_1'].obj,_x,_y)
 	constructor(_p){
 		super({
-			img:_p.img||_CANVAS_IMGS['enemy_frame_1'].obj,
+			img:_p.img||_CANVAS_IMGS['enemy_frame_large'].obj,
 			x:_p.x,
 			y:_p.y,
+			width:53,
+			imgPos:[0,53],
 			direct:_p.direct
 		});
 		
@@ -1558,10 +1558,6 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 		_this.speedy=0;
 		_this._isbroken=false;
 		_this._c=0;
-		_this.imgs=[
-			_CANVAS_IMGS['enemy_frame_1'].obj,
-			_CANVAS_IMGS['enemy_frame_2'].obj
-		];
 		_this.shotColMap=[
 			"5,5,"+(_this.img.width-5)+","+(_this.img.height-5)
 		];
@@ -1626,24 +1622,12 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 		_this.speedy=Math.sin(_this.rad);//単位y
 		_this._standby=false;
 	}
-	setDrawImage(){
-		let _this=this;
-		if(!_this.isMove()){return;}
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.x,
-			y:_this.y,
-			deg:_this.deg+180
-		});
-	}	
 	moveSet(){
-		let _this=this;
-		
+		let _this=this;		
 		_this.map_collition();
+		_this.set_imgPos();
 		_this.x-=_this.speedx*_this.speed;
 		_this.y-=_this.speedy*_this.speed;
-		_this._c=(_this._c>=(_this.imgs.length*5)-1)?0:_this._c+1;
-		_this.img=_this.imgs[parseInt(_this._c/5)];
 	}
 }
 //炎（中）

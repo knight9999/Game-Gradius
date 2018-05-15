@@ -76,8 +76,7 @@ const _CANVAS_IMGS={
 	'enemy_cell_a':{src:'images/gradius_enemy_cell_a.png',rate:1.00,obj:new Image()},
 	'enemy_cell_b':{src:'images/gradius_enemy_cell_b.png',rate:1.00,obj:new Image()},
 
-	'enemy_frame_1':{src:'images/gradius_enemy_frame_1.png',rate:1.00,obj:new Image()},
-	'enemy_frame_2':{src:'images/gradius_enemy_frame_2.png',rate:1.00,obj:new Image()},
+	'enemy_frame_large':{src:'images/gradius_enemy_frame_large.png',rate:1.00,obj:new Image()},
 	'enemy_frame_small':{src:'images/gradius_enemy_frame_small.png',rate:1.00,obj:new Image()},
 	'enemy_frame_mini':{src:'images/gradius_enemy_frame_mini.png',rate:1.00,obj:new Image()},
 
@@ -185,21 +184,15 @@ const _CANVAS_IMGS_INIT={
 
 	//POWER METER SELECT
 	'gradius_powermeterselect':
-  		{src:'images/gradius_powermeterselect.png',rate:0.28,obj:new Image()},
+  		{src:'images/gradius_powermeterselect.png',rate:1.00,obj:new Image()},
+	'gradius_powermeterselect_selected':
+  		{src:'images/gradius_powermeterselect_selected.png',rate:1.00,obj:new Image()},
+
 	'gradius_powermeterselect_shield':
-  		{src:'images/gradius_powermeterselect_shield.png',rate:0.28,obj:new Image()},
-	'gradius_powermeterselect_0':
-  		{src:'images/gradius_powermeterselect_0.png',rate:0.28,obj:new Image()},
-	'gradius_powermeterselect_1':
-  		{src:'images/gradius_powermeterselect_1.png',rate:0.28,obj:new Image()},
-	'gradius_powermeterselect_2':
-  		{src:'images/gradius_powermeterselect_2.png',rate:0.28,obj:new Image()},
-	'gradius_powermeterselect_3':
-  		{src:'images/gradius_powermeterselect_3.png',rate:0.28,obj:new Image()},
-	'gradius_powermeterselect_shield_0':
-  		{src:'images/gradius_powermeterselect_shield_0.png',rate:0.28,obj:new Image()},
-	'gradius_powermeterselect_shield_1':
-  		{src:'images/gradius_powermeterselect_shield_1.png',rate:0.28,obj:new Image()},
+  		{src:'images/gradius_powermeterselect_shield.png',rate:1.00,obj:new Image()},
+	'gradius_powermeterselect_shield_selected':
+  		{src:'images/gradius_powermeterselect_shield_selected.png',rate:1.00,obj:new Image()},
+
 };
 
 

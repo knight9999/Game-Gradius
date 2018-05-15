@@ -3,6 +3,12 @@
 //	コントローラー系処理
 //=====================================================
 'use strict';
+const _EVENT_KEYDOWN=(window.ontouchstart===null)?'touchstart':'keydown';
+const _EVENT_KEYMOVE=(window.ontouchstart===null)?'touchmove':'keydown';
+const _EVENT_KEYUP=(window.ontouchstart===null)?'touchend':'keyup';
+
+let _EVENT_POWERMETER_FLAG=false;
+let _EVENT_SELECT_STAGE_FLAG=false;
 
 const _KEYEVENT_MASTER={
 'addKeydownStart':function(){
@@ -36,7 +42,7 @@ const _KEYEVENT_MASTER={
 	if(_ISSP){
 		_SP_CONTROLLER._sp_main_center
 			.addEventListener(
-			'touchmove',
+			_EVENT_KEYMOVE,
 			_KEYEVENT_SP.keymove_select_stage);
 		_SP_CONTROLLER._sp_main_center
 			.addEventListener(
@@ -58,7 +64,7 @@ const _KEYEVENT_MASTER={
 	if(_ISSP){
 		_SP_CONTROLLER._sp_main_center
 			.removeEventListener(
-			'touchmove',
+			_EVENT_KEYMOVE,
 			_KEYEVENT_SP.keymove_select_stage);
 		_SP_CONTROLLER._sp_main_center
 			.removeEventListener(
@@ -82,7 +88,7 @@ const _KEYEVENT_MASTER={
 	if(_ISSP){
 		_SP_CONTROLLER._sp_main_center
 			.addEventListener(
-			'touchmove',
+			_EVENT_KEYMOVE,
 			_KEYEVENT_SP.keymove_select_powermeter);
 		_SP_CONTROLLER._sp_main_center
 			.addEventListener(
@@ -104,7 +110,7 @@ const _KEYEVENT_MASTER={
 	if(_ISSP){
 		_SP_CONTROLLER._sp_main_center
 			.removeEventListener(
-			'touchmove',
+			_EVENT_KEYMOVE,
 			_KEYEVENT_SP.keymove_select_powermeter);
 		_SP_CONTROLLER._sp_main_center
 			.removeEventListener(
@@ -151,11 +157,11 @@ const _KEYEVENT_MASTER={
 			_KEYEVENT_SP.keydown_game_a);
 		_SP_CONTROLLER._sp_main_center
 			.addEventListener(
-			'touchstart',
+			_EVENT_KEYDOWN,
 			_KEYEVENT_SP.keymove_game_controller);
 		_SP_CONTROLLER._sp_main_center
 			.addEventListener(
-			'touchmove',
+			_EVENT_KEYMOVE,
 			_KEYEVENT_SP.keymove_game_controller);
 	}else{
 		document.addEventListener(
@@ -170,7 +176,7 @@ const _KEYEVENT_MASTER={
 			_KEYEVENT_SP.keyup_game_a);
 		_SP_CONTROLLER._sp_main_center
 			.addEventListener(
-			'touchend',
+			_EVENT_KEYUP,
 			_KEYEVENT_SP.keyend_game_controller);
 
 		_SP_CONTROLLER._set_reset();
@@ -208,11 +214,11 @@ const _KEYEVENT_MASTER={
 			_KEYEVENT_SP.keydown_game_a);
 		_SP_CONTROLLER._sp_main_center
 			.removeEventListener(
-			'touchstart',
+			_EVENT_KEYDOWN,
 			_KEYEVENT_SP.keymove_game_controller);
 		_SP_CONTROLLER._sp_main_center
 			.removeEventListener(
-			'touchmove',
+			_EVENT_KEYMOVE,
 			_KEYEVENT_SP.keymove_game_controller);
 
 	}else{
@@ -228,7 +234,7 @@ const _KEYEVENT_MASTER={
 			_KEYEVENT_SP.keyup_game_a);
 		_SP_CONTROLLER._sp_main_center
 			.removeEventListener(
-			'touchend',
+			_EVENT_KEYUP,
 			_KEYEVENT_SP.keyend_game_controller);
 		//コントローラーをリセット
 		_SP_CONTROLLER._set_reset();
@@ -317,9 +323,13 @@ const _KEYEVENT_MASTER={
 }//removeKeydownGameover
 }//_KEYEVENT_MASTER
 
-//	キーイベントの定義
+//==============================================================
+//==============================================================
+//	キーイベントの定義(PC)
 //	イベントの追加は、各シーンに設定
 //	イベントの削除は、この関数内に設定
+//==============================================================
+//==============================================================
 const _KEYEVENT={
 'keydown_start':function(e){
 	if(e.key==='S'||e.key==='s'){
@@ -338,7 +348,7 @@ const _KEYEVENT={
 
 //パワーメーター選択イベント
 'keydown_select_powermeter':function(e){
-	clearInterval(_PLAYERS_SHOTS_SETINTERVAL);
+	cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
 	_PLAYERS_SHOTS_SETINTERVAL=null;
 
 	if(e.key==="Enter"||e.key==="enter"){
@@ -592,13 +602,15 @@ const _KEYEVENT={
 		_DRAW_STOP_PLAYERS_SHOTS();
 	}
 }//keyup_game
-
 }//_KEYEVENT
 
-
+//==============================================================
+//==============================================================
 //	キーイベントの定義(SP)
 //	イベントの追加は、各シーンに設定
 //	イベントの削除は、この関数内に設定
+//==============================================================
+//==============================================================
 const _KEYEVENT_SP={
 'keydown_start':function(e){
 	document
@@ -618,10 +630,8 @@ const _KEYEVENT_SP={
 	_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
 	return false;
 },
-
-
 'keymove_select_powermeter':function(e){
-	clearInterval(_PLAYERS_SHOTS_SETINTERVAL);
+	cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
 	_PLAYERS_SHOTS_SETINTERVAL=null;
 
 //	let _rad=_SP_CONTROLLER._get_st(e)._rad;
@@ -632,7 +642,6 @@ const _KEYEVENT_SP={
 
 	if(_EVENT_POWERMETER_FLAG===true){return false;}
 	_EVENT_POWERMETER_FLAG=true;
-
 
 	if(_r===_SP_CONTROLLER._DEF_DIR._L){
 //	if(_rad>-45&&_rad<=45){
@@ -692,12 +701,11 @@ const _KEYEVENT_SP={
 	_EVENT_POWERMETER_FLAG=false;
 },//keyend_select_powermeter
 
-//ステージ選択イベント
+//=========================
+// ステージ選択イベント
+//=========================
 'keymove_select_stage':function(e){
 	e.preventDefault(); // タッチによる画面スクロールを止める
-	// let _rad=_SP_CONTROLLER._get_st(e)._rad;
-	// let _dis=_SP_CONTROLLER._get_st(e)._dis;
-
 	if(_EVENT_SELECT_STAGE_FLAG){return;}
 	_EVENT_SELECT_STAGE_FLAG=true;
 
@@ -740,9 +748,9 @@ const _KEYEVENT_SP={
 
 },//keymove_select_stage
 'keyend_select_stage':function(e){
-	let _c1=_SP_CONTROLLER._sp_main_center
-	_c1.style.top="";
-	_c1.style.left="";
+	// let _c1=_SP_CONTROLLER._sp_main_center
+	// _c1.style.top="";
+	// _c1.style.left="";
 	_EVENT_SELECT_STAGE_FLAG=false;
 },//keyend_select_stage
 'keydown_select_stage_a':function(e){
@@ -752,6 +760,9 @@ const _KEYEVENT_SP={
 	return false;
 },//keydown_select_stage_a
 
+//=========================
+// KEYDOWN GAME CLEAR
+//=========================
 'keydown_gameclear_r':function(e){
 	_DRAW_STOP_PLAYERS_SHOTS();
 	_DRAW_RESET_OBJECT();
@@ -774,6 +785,9 @@ const _KEYEVENT_SP={
 	return false;
 },//keydown_gameclear_p
 
+//=========================
+// KEYDOWN GAME OVER
+//=========================
 'keydown_gameover_r':function(e){
 	_DRAW_STOP_PLAYERS_SHOTS();
 	_DRAW_RESET_OBJECT();
@@ -786,6 +800,8 @@ const _KEYEVENT_SP={
 	_DRAW_STAGE_SELECT();
 	return false;
 },//keydown_gameover_s
+
+
 'keymove_game_controller':function(e){
 	e.preventDefault(); // タッチによる画面スクロールを止める
 	// let _rad=_SP_CONTROLLER._get_st(e)._rad;
@@ -923,10 +939,16 @@ const _KEYEVENT_SP={
 }//keyup_game_a
 }//_KEYEVENT_SP
 
-//スマホ用コントローラー定義
+
+
+//==============================================================
+//==============================================================
+//SP用コントローラー定義
+//==============================================================
+//==============================================================
 const _SP_CONTROLLER={
-	_x:0,
-	_y:0,
+	x:0,
+	y:0,
 	_sp_main_center:new Object(),
 	_sp_main:new Object(),
 	_sp_bt_hide:new Object(),
@@ -945,34 +967,97 @@ const _SP_CONTROLLER={
 		_RU:6,//右上
 		_RD:7//右下
 	},
+	_SP_CONTROLLER_SETINTERVAL:false,
+	_set_sp_main_movePoint(e){
+		//_sp_main、タッチ時の相対座標をセットする
+		let _tr=_SP_CONTROLLER._sp_main.getBoundingClientRect();
+
+		for(let _i=0;_i<e.touches.length;_i++){
+			//マルチタップから
+			//自身のタッチ箇所のみ設定
+			if(_SP_CONTROLLER._sp_main_center===e.touches[_i].target){
+				this.x=e.touches[_i].clientX-_tr.left;
+				this.y=e.touches[_i].clientY-_tr.top;
+			}
+		}
+	},
+	_draw_sp_main(_p){
+		//タッチに合わせてコントローラを描画させる
+		//obj:イベントオブジェクト
+		//x:x位置
+		//y:y位置
+		if(!this._SP_CONTROLLER_SETINTERVAL){return;}
+		_p.obj.target.style.left=parseInt(_p.x)+'px';
+		_p.obj.target.style.top=parseInt(_p.y)+'px';
+	},
+	//=========================
+	//コントローラーの表示処理
+	//=========================
+	_keymove_sp_main(e){
+		let _this=_SP_CONTROLLER;
+		//コントローラ、touchmove表示定義
+		_this._SP_CONTROLLER_SETINTERVAL=true;
+		let _x,_y;
+
+		//sp_mainの相対座標をセット
+		_this._set_sp_main_movePoint(e);
+		// let _tr=_SP_CONTROLLER._sp_main.getBoundingClientRect();
+
+		// for(let _i=0;_i<e.touches.length;_i++){
+		// 	//マルチタップから
+		// 	//自身のタッチ箇所のみ設定
+		// 	if(_SP_CONTROLLER._sp_main_center===e.touches[_i].target){
+		// 		_x=e.touches[_i].clientX-_tr.left;
+		// 		_y=e.touches[_i].clientY-_tr.top;
+		// 	}
+		// }
+
+		//子要素の中心点設定
+		let _c1_x=_this.x-(parseInt(window.getComputedStyle(_this._sp_main_center).width)/2),
+			_c1_y=_this.y-(parseInt(window.getComputedStyle(_this._sp_main_center).height)/2)
+		_SP_CONTROLLER._draw_sp_main({obj:e,x:_c1_x,y:_c1_y});
+
+		e.stopPropagation();
+		e.preventDefault();
+	},
+	_keyup_sp_main(e){
+		let _this=_SP_CONTROLLER;
+		//コントローラ、touchend表示定義
+		_this._SP_CONTROLLER_SETINTERVAL=false;
+		e.target.style.top="";
+		e.target.style.left="";
+		e.stopPropagation();
+		e.preventDefault();
+	},
+	_keydown_sp_bts(e){
+		//ボタン用、touchdown表示定義
+		e.currentTarget.classList.add('on');
+		e.stopPropagation();
+		e.preventDefault();
+	},
+	_keyup_sp_bts(e){
+		//ボタン用、touchend表示定義
+		e.currentTarget.classList.remove('on');
+		e.stopPropagation();
+		e.preventDefault();
+	},
+	//=========================
+	//自機操作制御
+	//=========================
 	_get_st:function(e){
 		let _c1=this._sp_main_center;
 		let _c0=this._sp_main;
 		//親要素に対してイベントを定義し、
 		//子要素はタッチ位置に併せて調整
 
-		//相対座標を取得
-		let _tr=_c0.getBoundingClientRect();
-		for(var _i=0;_i<e.touches.length;_i++){
-			//マルチタップから
-			//自身のタッチ箇所のみ設定
-			if(_c1===e.touches[_i].target){
-				this._x=e.touches[_i].clientX-_tr.left;
-				this._y=e.touches[_i].clientY-_tr.top;
-			}
-		}
-//		console.log(this._x)
-		//子要素の中心点設定
-		let _c1_x=this._x-(parseInt(window.getComputedStyle(_c1).width)/2),
-			_c1_y=this._y-(parseInt(window.getComputedStyle(_c1).height)/2)
-		_c1.style.left=parseInt(_c1_x)+'px';
-		_c1.style.top=parseInt(_c1_y)+'px';
+		//sp_mainの相対座標をセット
+		this._set_sp_main_movePoint(e);
 
 		//親要素の中心点から角度を算出
 		let _w=parseInt(window.getComputedStyle(_c0).width);
 		let _h=parseInt(window.getComputedStyle(_c0).height);
-		let _dx=(_w/2)-this._x,
-			 _dy=(_h/2)-this._y;
+		let _dx=(_w/2)-this.x,
+			 _dy=(_h/2)-this.y;
 
 		let _d=Math.sqrt(
 			Math.pow(_dx,2)+Math.pow(_dy,2)
@@ -982,7 +1067,6 @@ const _SP_CONTROLLER={
 		let _a=parseInt(Math.atan2(_dy,_dx)*180/Math.PI);
 //		console.log('_a:::'+_a);
 		
-
 		if(_a>-40&&_a<=40){return this._DEF_DIR._L;}
 		if(_a>40&&_a<=50){return this._DEF_DIR._LU;}
 		if(_a>50&&_a<=130){return this._DEF_DIR._U;}
@@ -995,12 +1079,13 @@ const _SP_CONTROLLER={
 	},//_get_st
 	_set_reset(){
 		//コントローラーの位置を元に戻す
-		let _c1=
-			document
-				.querySelector('.sp_controller_main_center');
-		_c1.style.left='';
-		_c1.style.top='';
+		// let _c1=
+		// 	document
+		// 		.querySelector('.sp_controller_main_center');
+		// _c1.style.left='';
+		// _c1.style.top='';
 	},//_set_reset
+	//以下は初期処理
 	_set_obj(){
 		this._sp_main_center=
 			document.querySelector('.sp_controller_main_center');
@@ -1018,5 +1103,15 @@ const _SP_CONTROLLER={
 			document.querySelector('.sp_controller_bt.b');
 		this._sp_bt_a=
 			document.querySelector('.sp_controller_bt.a');
+		
+		//イベント定義
+		this._sp_main_center.addEventListener(_EVENT_KEYMOVE,this._keymove_sp_main);
+		this._sp_main_center.addEventListener(_EVENT_KEYUP,this._keyup_sp_main);
+
+		const _spc_bt=document.querySelectorAll('.sp_controller_bt');
+		for(let _i=0;_i<_spc_bt.length;_i++){
+			_spc_bt[_i].addEventListener(_EVENT_KEYDOWN,this._keydown_sp_bts);	
+			_spc_bt[_i].addEventListener(_EVENT_KEYUP,this._keyup_sp_bts);
+		}	
 	}
 }

@@ -833,10 +833,10 @@ class ENEMY_BOSS_BIGCORE2_HANDS
 		_this.shotColMap=[//衝突判定（下の定義を使って動的に設定）
 			(function(){
 				if(_this.direct===_DEF_DIR._U){//上
-					return "0,30,250,110,false";
+					return "25,70,250,110,false","90,30,250,70,false";
 				}
 				if(_this.direct===_DEF_DIR._D){//下
-					return "0,30,250,110,false";
+					return "25,0,250,40,false","90,40,250,100,false";
 				}
 			})()
 		]
@@ -1250,8 +1250,7 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 
 		_this._count_turn=0;//手をふる回数
 		_this._change=_d._change;//true:上向き,false:下向き
-		_this._standby=true;
-		_this._standby_tmp=_d._standby||false;
+		_this._standby=false;
 		_this.is_able_collision=false;
 		_this.is_ignore_collision=_d._ignore_collision||false;
 
@@ -1367,7 +1366,6 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		if(!_o.is_all_set){return;}
 		_this.shot();
 		_this.move_hands();
-		_this._standby=false;
 		_this._c++;
 	}
 	//moveはmain.jsから処理させない

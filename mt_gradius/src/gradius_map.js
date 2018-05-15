@@ -619,9 +619,9 @@ class GameObject_MAP{
 		_this.isboss=false;
 	}
 	init(_cb){
-		_AJAX('./gradius_map.json','json',function(_d){
-			_MAPDEFS=_d;
-			_cb();
+		_AJAX({
+			url:'./gradius_map.json',
+			f:function(_d){_MAPDEFS=_d;_cb();}
 		});
 	}
 	setInifinite(_f){
@@ -796,8 +796,11 @@ class GameObject_MAP{
 	getMapXToPx(_mx){
 		return (_mx*this.t)+this.initx-_MAP_SCROLL_POSITION_X;
 	}
-	getMapYToPx(_y){
-		return _y;
+	getMapYToPx(_my){
+		// Math.floor(
+		// 	((_y+_MAP_SCROLL_POSITION_Y)%1000)
+		// 	/this.t);
+		return _my*this.t;
 	}
 	getMapX(_x){
 		return Math.floor(

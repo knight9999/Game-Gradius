@@ -1046,7 +1046,7 @@ const _DRAW_SELECT_POWERMETER=()=>{
 		if(_c>40){
 			_PLAYERS_POWER_METER=_POWERMETER._c_pms;
 			_PLAYERS_POWER_METER_SHIELD=_POWERMETER._c_pmss;
-			cancelAnimationFrame(_si);			
+			window.cancelAnimationFrame(_si);			
 			_DRAW_INIT_OBJECT();
 		}
 		_c++;
@@ -1197,7 +1197,7 @@ const _DRAW_RESET_OBJECT=()=>{
 	_KEYEVENT_MASTER.removeKeyupGame();
 	_KEYEVENT_MASTER.removeKeydownGameover();
 
-	(_PLAYERS_SHOTS_SETINTERVAL);
+	window.cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
 	_PLAYERS_SHOTS_SETINTERVAL=null;
 	_DRAW_STOP();
 

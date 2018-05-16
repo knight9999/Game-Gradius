@@ -62,10 +62,9 @@ body *{box-sizing:border-box;}
 }
 #game{
 	background-color:#000000;
-	border-bottom:1px solid rgba(255,255,255,0.5);
-	border-top:1px solid rgba(255,255,255,0.5);
+	border-bottom:2px solid rgba(200,200,200,1.0);
+	border-top:2px solid rgba(200,200,200,1.0);
 	display:block;
-	filter:drop-shadow(0px 0px 10px rgba(0,0,0,1.0));
 	width:100%;
 }
 
@@ -211,7 +210,7 @@ body.sp section#sp_landscapemode{display:none !important;}
 }
 
 body.sp section#game_wrapper.on{display:block;}
-body.sp section#game_wrapper #game{border:2px solid rgba(255,255,255,1);}
+body.sp section#game_wrapper #game{border:2px solid rgba(190,190,190,1.0);}
 body.sp section#game_start_wrapper #game_start{top:5%;}
 
 body.sp section#sp_controller.on{
@@ -234,9 +233,8 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_main{
     border:1px solid rgba(255,255,255,1.0);
     border-radius:50%;
 	bottom:0px;
-	filter:drop-shadow(1px 1px 5px rgba(0,0,0,1.0));
 	height:100px;
-	opacity:0.6;
+	opacity:0.8;
 	overflow:hidden;
     position:absolute;
     width:100px;
@@ -256,8 +254,7 @@ body.sp section#sp_controller #sp_controller_inner>div[class*="bt"]{
     border-radius:50%;
     color:rgba(255,255,255,1);
     height:70px;
-	filter:drop-shadow(1px 1px 5px rgba(0,0,0,1.0));
-	opacity:0.6;
+	opacity:0.8;
     position:absolute;
     width:70px;
 }

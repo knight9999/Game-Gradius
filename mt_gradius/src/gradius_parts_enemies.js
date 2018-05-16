@@ -1559,7 +1559,7 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 		_this._isbroken=false;
 		_this._c=0;
 		_this.shotColMap=[
-			"5,5,"+(_this.img.width-5)+","+(_this.img.height-5)
+			"5,5,"+(_this.width-5)+","+(_this.height-5)
 		];
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 

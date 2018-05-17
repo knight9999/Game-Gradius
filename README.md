@@ -108,7 +108,7 @@ https://ja.wikipedia.org/wiki/%E3%82%B0%E3%83%A9%E3%83%87%E3%82%A3%E3%82%A6%E3%8
 Access URL (e.x below)  
 http://hosts/dist/gradius.html  
   
-<img src="https://user-images.githubusercontent.com/12569855/37572917-9155e9a6-2b55-11e8-8a27-3e7ee2c94b40.png">
+<img src="https://user-images.githubusercontent.com/12569855/40169493-144017ea-5a01-11e8-9b75-7b00ca869b53.png">
 
 ## Author
 

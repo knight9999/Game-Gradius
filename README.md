@@ -101,6 +101,10 @@ https://ja.wikipedia.org/wiki/%E3%82%B0%E3%83%A9%E3%83%87%E3%82%A3%E3%82%A6%E3%8
 <a href="https://youtu.be/bq4RG3lqMiM" target="_blank"><img src="https://user-images.githubusercontent.com/12569855/40031586-543899bc-582b-11e8-8992-9092bbfd0d72.png" width="50"></a><br>
 <img src="https://user-images.githubusercontent.com/12569855/37473155-0904d3ce-28b1-11e8-8da4-6eec098959b3.GIF">
 </li>
+<li>細胞ステージ：タイプ4  iPhone 8Plus iOS11)  
+<a href="https://youtu.be/XYH2CHFQaSI" target="_blank"><img src="https://user-images.githubusercontent.com/12569855/40031586-543899bc-582b-11e8-8992-9092bbfd0d72.png" width="50"></a><br>
+<img src="https://user-images.githubusercontent.com/12569855/40211831-c59fabe6-5a87-11e8-9ed6-8f6ae8b58602.GIF">
+</li>
 </ol>
   
 ## Getting Started

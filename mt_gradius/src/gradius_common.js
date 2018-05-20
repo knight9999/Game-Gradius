@@ -37,8 +37,6 @@ let _SCORE='';
 let _PLAYERS_MAIN='';
 let _PLAYERS_MAIN_FORCE='';
 
-let _PLAYERS_MAIN_COLLISION=false;
-
 let _PLAYERS_OPTION=new Array();
 let _PLAYERS_OPTION_ISALIVE=0;//オプション表示数
 const _PLAYERS_OPTION_MAX=4;

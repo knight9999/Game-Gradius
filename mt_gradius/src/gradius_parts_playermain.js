@@ -98,7 +98,6 @@ class GameObject_PLAYER_MAIN
 		_GAME._setStopOnBG();
 		_DRAW_STOP_PLAYERS_SHOTS();
 		_DRAW_SCROLL_STOP();
-		_PLAYERS_MAIN_COLLISION=true;
 		if(_this._col_ani_c===1){
 //			console.log(_this._col_ani_c)
 			_GAME._setPlay(_CANVAS_AUDIOS['vicviper_bomb']);

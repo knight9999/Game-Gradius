@@ -745,11 +745,13 @@ const _DRAW=()=>{
 		}
 
 		//ショットの移動調整
-		for(let _i=0;_i<_PLAYERS_MAX;_i++){
-			if(_PLAYERS_MISSILE_ISALIVE){
-				if(_PLAYERS_MAIN.isalive()){_PLAYERS_MISSILE[_i].move();}
-			}
-			if(_PLAYERS_MAIN.isalive()){_PLAYERS_SHOTS[_SHOTTYPE][_i].move();}
+		if(_PLAYERS_MAIN.isalive()){
+			for(let _i=0;_i<_PLAYERS_MAX;_i++){
+				if(_PLAYERS_MISSILE_ISALIVE){
+					_PLAYERS_MISSILE[_i].move();
+				}
+				_PLAYERS_SHOTS[_SHOTTYPE][_i].move();
+			}	
 		}
 
 		//敵衝突表示の移動・表示調整
@@ -819,8 +821,10 @@ const _DRAW=()=>{
 		
 		// if(_MAP_SCROLL_POSITION_X-100<=
 		// 	(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}
+		//一定距離を達するまでボスを登場させない
 		if(!_MAP.isboss){return;}
-
+		//自機が破壊された場合は、以降の処理を行わない
+		if(!_PLAYERS_MAIN.isalive()){return;}
 		//MATCH_BOSS
 		_DRAW_MATCH_BOSS();
 
@@ -830,14 +834,17 @@ const _DRAW=()=>{
 }
 
 const _DRAW_MATCH_BOSS=()=>{
-	_MAP.setBackGroundSpeedY(0);
-	_MAP.setInifinite(false);
+	//ボスの登場→表示→終了処理
 	if(!_DRAW_IS_MATCH_BOSS){
 		if(_MAP.map_boss===''
 			||_MAP.map_boss===undefined
 			||_MAP_ENEMIES_BOSS[_MAP.map_boss]===undefined){
 			_DRAW_GAMECLEAR();
 		}
+		//ここでY軸の動作を無効にさせる
+		_MAP.setBackGroundSpeedY(0);
+		_MAP.setInifinite(false);
+		//ボス登場後の1回処理
 		_DRAW_SCROLL_STOP();
 		_ENEMIES=[];
 		_ENEMIES_SHOTS=[];
@@ -881,7 +888,7 @@ const _DRAW_PLAYER_COLLAPES=()=>{
 	if(_this._col_ani_c
 		>=(_this.col_ani.length*10)-1){
 		//アニメーションが終わったら終了
-		cancelAnimationFrame(_si);
+		window.cancelAnimationFrame(_si);
 		_DRAW_GAMEOVER();
 		return;
 	}
@@ -1021,11 +1028,11 @@ const _DRAW_STOP_PLAYERS_SHOTS=()=>{
 }
 
 const _DRAW_STOP=()=>{
-	cancelAnimationFrame(_DRAW_SETINTERVAL);
+	window.cancelAnimationFrame(_DRAW_SETINTERVAL);
 	_DRAW_SETINTERVAL=null;
 }
 const _DRAW_STOP_GAMESTART=()=>{
-	cancelAnimationFrame(_DRAW_GAMESTART_SETINTERVAL);
+	window.cancelAnimationFrame(_DRAW_GAMESTART_SETINTERVAL);
 	_DRAW_GAMESTART_SETINTERVAL=null;
 }
 
@@ -1134,7 +1141,7 @@ const _DRAW_GAMEOVER=()=>{
 	_KEYEVENT_MASTER.removeKeyupGame();
 
 	_DRAW_STOP();
-	_DRAW_STOP_PLAYERS_SHOTS();
+//	_DRAW_STOP_PLAYERS_SHOTS();
 
 	_KEYEVENT_MASTER.addKeydownGameover();
 	_CONTEXT.clearRect(0,0,
@@ -1207,7 +1214,6 @@ const _DRAW_RESET_OBJECT=()=>{
 
 	_PLAYERS_MAIN='';
 	_PLAYERS_MAIN_FORCE='';
-	_PLAYERS_MAIN_COLLISION=false;
 	_PLAYERS_MOVE_FLAG=false;
 	_PLAYERS_OPTION=[];
 	_PLAYERS_OPTION_ISALIVE=0;

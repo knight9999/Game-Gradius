@@ -808,23 +808,24 @@ const _DRAW=()=>{
 		//MAP表示設定
 		_MAP.map_draw();
 
-		//自機のステータスが0になった時
-		if(!_PLAYERS_MAIN.isalive()){
-			_DRAW_PLAYER_COLLAPES();			
-		}
-
 		//DRAW POWER METERを表示
 		_POWERMETER.show();
 		//SCOREを表示
+//		console.log('score show');
 		_SCORE.show();
 
+		//自機のステータスが0になった時
+		if(!_PLAYERS_MAIN.isalive()){
+			//その後_DRAW_GAMEOVER();
+			//により_DRAW()から抜ける
+			_DRAW_PLAYER_COLLAPES();
+			return;			
+		}
 		
 		// if(_MAP_SCROLL_POSITION_X-100<=
 		// 	(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}
 		//一定距離を達するまでボスを登場させない
 		if(!_MAP.isboss){return;}
-		//自機が破壊された場合は、以降の処理を行わない
-		if(!_PLAYERS_MAIN.isalive()){return;}
 		//MATCH_BOSS
 		_DRAW_MATCH_BOSS();
 
@@ -893,20 +894,13 @@ const _DRAW_PLAYER_COLLAPES=()=>{
 		return;
 	}
 
-	let _c=parseInt(_this._col_ani_c/10);
-	let _w=_this.col_ani[_c].img.width;
-	let _h=_this.col_ani[_c].img.height;
-	let _sw=_w*_this.col_ani[_c].scale;
-	let _sh=_h*_this.col_ani[_c].scale;
-	_CONTEXT.drawImage(
-		_this.col_ani[_c].img,
-		_pl._x-(_sw/2),
-		_pl._y-(_sh/2),
-		_sw,
-		_sh
-	);
-	_this._col_ani_c++;
-
+	_GAME._setDrawImage({
+		img:_this.col_img,
+		x:_pl._x,
+		y:_pl._y,
+		scale:_this.col_ani[parseInt(_this._col_ani_c/10)].scale
+	});
+	_this._col_ani_c=(_this._col_ani_c>=(_this.col_ani.length*10)-1)?0:_this._col_ani_c+1;
 }
 
 //長押判定用変数
@@ -1141,21 +1135,23 @@ const _DRAW_GAMEOVER=()=>{
 	_KEYEVENT_MASTER.removeKeyupGame();
 
 	_DRAW_STOP();
-//	_DRAW_STOP_PLAYERS_SHOTS();
 
 	_KEYEVENT_MASTER.addKeydownGameover();
 	_CONTEXT.clearRect(0,0,
 				_CANVAS.width,
 				_CANVAS.height);
 
-	//BACKGROUND
+	//BACKGROUNDを表示
 	for(let _i=0;_i<_BACKGROUND_STAR_MAX;_i++){
 		_BACKGROUND[_i].move();
 	}
-
-	//SCORE
+	//DRAW POWER METERを表示
+	_POWERMETER.show();
+	//SCOREを表示
+//		console.log('score show');
 	_SCORE.show();
 
+//	console.log('gameover');
 	let _s='gameover';
 	_GAME._setDrawTextToFont(
 		_s,
@@ -1179,6 +1175,7 @@ const _DRAW_GAMEOVER=()=>{
 			(_CANVAS.height/2)+60,
 			0.3
 		);
+
 }// _DRAW_GAMEOVER
 
 //敵衝突表示

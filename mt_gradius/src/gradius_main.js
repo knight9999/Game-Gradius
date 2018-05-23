@@ -454,15 +454,13 @@ class GameObject_BACKGROUND{
 	constructor(){
 		this.x=_CANVAS.width*Math.random();
 		this.y=_CANVAS.height*Math.random();
-		this.rgba=
-				"rgba("+
+		this.rgb=parseInt(Math.random()*255)+","+
 				parseInt(Math.random()*255)+","+
-				parseInt(Math.random()*255)+","+
-				parseInt(Math.random()*255)+","+
-				Math.random()+")";
+				parseInt(Math.random()*255);
 		this.speed=Math.random()*5;
 
-		this.move_flash_count=0;
+		this._c=parseInt(Math.random()*200);
+		this._ar_alpha=[0.0,0.2,0.4,0.6,0.8,1.0,0.8,0.6,0.4,0.2];
 		this._r=Math.random()+1;
 	}
 	move(){
@@ -474,10 +472,13 @@ class GameObject_BACKGROUND{
 					?0
 					:_this.speed;
 
+		const alpha=_this._ar_alpha[parseInt(_this._c/20)];
 		_CONTEXT.beginPath();
         _CONTEXT.arc(_this.x,_this.y,_this._r,0,Math.PI*2,true);
-        _CONTEXT.fillStyle=this.rgba;
-        _CONTEXT.fill();
+		_CONTEXT.fillStyle='rgba('+_this.rgb+','+alpha+')';
+		_CONTEXT.fill();
+
+		_this._c=(_this._c>200)?0:_this._c+1;
 	}
 }
 

@@ -1635,6 +1635,9 @@ class ENEMY_BOSS_FRAME
 		_this._mpt=0;
 		_this._collision_type='t9';
 
+		//爆発直前設定フラグ
+		_this._collision_set=false;
+
 		//_CANVAS内マップ（以下マップ）位置定義
 		//フレームの先頭位置から判定(1-9)
 		//初期値は0
@@ -1952,9 +1955,14 @@ class ENEMY_BOSS_FRAME
 				_this.parts[_i]._status=0;
 				continue;
 			}
-			//身体を拡散させる
+			//爆発直前に各胴体の角度を設定させる
+			if(!_this._collision_set){
+				_this.parts[_i]._deg=_i*15;
+			}
+				//身体を拡散させる
 			_this.parts[_i].is_frame_heads_collision=true;
 		}
+		_this._collision_set=true;
 
 		if(_this._bodies_statuses.indexOf('1')===-1){
 			//拡散された身体が全てCANVASから外れた場合
@@ -1983,10 +1991,16 @@ class ENEMY_BOSS_FRAME
 		let _num=(this._deg+_n)%360;
 		return (_num<0)?360+_num:_num;
 	}
+	isAllPartsCanvasOut(){
+		let _this=this;
+		//全てのpartsが全てCANVASOUTか
+		return _this.parts.every((_tp)=>{
+			return _GAME.isEnemyCanvasOut(_tp);
+		});
+	}
 	move_standby(){
 		//スタンバイ状態
 		let _this=this;
-//		if(_this.move_before()){return;}
 		_this._deg=190;
 		_this.x+=_this.speed*Math.cos(_this._deg*Math.PI/180);
 		_this.y+=_this.speed*Math.sin(_this._deg*Math.PI/180);
@@ -2025,15 +2039,36 @@ class ENEMY_BOSS_FRAME
 	}
 	move(){
 		let _this=this;
-
 		if(!_this.isMove()){return;}
-
 //		console.log(_this.moves)
 		// console.log('_this.movePos._pos:'+_this.movePos._pos);
 		// console.log('_this._mpt:'+_this._mpt);
 // 		console.log('_this.x:'+_this.x);
 // 		console.log('_this.y:'+_this.y);
-		// console.log('_this._deg:'+_this._deg);
+//		console.log('_this._deg:'+_this._deg);
+
+		//全てのpartsがキャンバスから離れたら、
+		//CANVASに入れるように立て直し
+		(()=>{
+			//自身の座標、角度を調整。
+			if(_this._c%100!==0){return;}
+			//処理は間引きさせる。
+			if(_this.isAllPartsCanvasOut()){
+				//出現位置の定義
+				const _pos=[
+					{x:_CANVAS.width/2,y:-100,deg:90},//上から
+					{x:_CANVAS.width/2,y:_CANVAS.height+100,deg:270},//下から
+					{x:-150,y:_CANVAS.height/2,deg:0},//左から
+					{x:_CANVAS.width+150,y:_CANVAS.height/2,deg:180}//右から
+				];
+				const _elem=parseInt(Math.random()*4);
+				_this.x=_pos[_elem].x;
+				_this.y=_pos[_elem].y;
+				_this._deg=_pos[_elem].deg;
+				//切替直後は、直線に動くよう調整させる
+				_this._mpt=0;
+			}	
+		})();
 
 		//フレームの頭・身体のステータスを取得
 		_this.set_heads_bodies_status();
@@ -2048,28 +2083,31 @@ class ENEMY_BOSS_FRAME
 			>_this.parts.length*_this.moves_interval){
 			_this.moves.pop();
 		}			
-		
-		//マップ位置を取得
-		_this.movePos.move();
-		//マップ位置より方向を決定させる
-		_this.moves_pt[_this._mpt].move();
 
 		if(!_this._f&&!_this.parts[0].isalive()){
-//			_this.parts[0].showCollapes();
-//			_this.showCollapes(_this.moves[0].x,_this.moves[0].y);
-
 			//先頭の頭を破壊した場合は、
 			//動きを全て反転させる
 			_this._f=true;
 			_this.parts.reverse();
 			_this.moves.reverse();
+			//後方の頭に対して向きを反転させる
+			_this.parts[0].setDirect(_DEF_DIR._R);//切り替え後、頭の向きを変える。
+			//180度加算による転回をさせる
+			_this.parts=_this.parts.map((_a)=>{_a._deg=(_a._deg+180)%360;return _a;});
+			_this.moves=_this.moves.map((_a)=>{_a.deg=(_a.deg+180)%360;return _a;});
+
+			//自身の座標、角度を調整。
 			_this.x=_this.moves[0].x;
 			_this.y=_this.moves[0].y;
-			_this.parts[0].setDirect(_DEF_DIR._R);
-			_this._deg=_this.moves[0].deg+180;
-			_this.moves_pt[_this._mpt].switch(0);
+			_this._deg=_this.moves[0].deg;
+			//切替直後は、直線に動くよう調整させる
 			_this._mpt=0;
 		}
+
+		//マップ位置を取得
+		_this.movePos.move();
+		//マップ位置より方向を決定させる
+		_this.moves_pt[_this._mpt].move();
 
 //		console.log(_this.moves[0].deg);
 		//自爆
@@ -2094,7 +2132,7 @@ class ENEMY_BOSS_FRAME_HEAD
 				?_CANVAS_IMGS.enemy_frame_head3.obj
 				:_CANVAS_IMGS.enemy_frame_head1.obj;
 		_this._standby=false;
-		_this._status=75;
+		_this._status=70;
 		_this.getscore=5000;
 		_this._deg=0;
 		_this.shotColMap=[
@@ -2156,7 +2194,17 @@ class ENEMY_BOSS_FRAME_HEAD
 			);
 		}
 	}
-	setDrawImage(){}
+	setDrawImage(){
+		let _this=this;
+		if(!_this.isshow()){return;}
+		if(!_this.isalive()){return;}
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.x+(_this.img.width/4),
+			y:_this.y+(_this.img.height/4),
+			deg:_this._deg
+		});
+	}
 	moveDraw(_loc){
 		let _this=this;
 		if(!_this.isshow()){return;}
@@ -2169,12 +2217,6 @@ class ENEMY_BOSS_FRAME_HEAD
 		_this.x=_loc.x;
 		_this.y=_loc.y;
 		_this._deg=_loc.deg;
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.x+(_this.img.width/4),
-			y:_this.y+(_this.img.height/4),
-			deg:_this._deg
-		});
 	}
 	//moveはmain.jsから処理させない
 	move(){
@@ -2230,11 +2272,19 @@ class ENEMY_BOSS_FRAME_BODY
 			deg:_this._deg
 		});
 	}
-	setDrawImage(){}
+	setDrawImage(){
+		let _this=this;
+		if(!_this.isshow()){return;}
+		_GAME._setDrawImage({
+			img:_this.img,
+			x:_this.getEnemyCenterPosition()._x,
+			y:_this.getEnemyCenterPosition()._y,
+			deg:_this._deg,
+			scale:_this.ani[parseInt(_this._c/20)].scale
+		});
+	}
 	moveDraw(_loc){
 		let _this=this;
-		let _c=parseInt(_this._c/20);
-
 		if(!_this.isshow()){return;}
 		if(_this.is_frame_heads_collision){
 			//ここではフレームの頭が全破壊された時に
@@ -2248,14 +2298,6 @@ class ENEMY_BOSS_FRAME_BODY
 		_this.x=_loc.x;
 		_this.y=_loc.y;
 		_this._deg=_loc.deg;
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.getEnemyCenterPosition()._x,
-			y:_this.getEnemyCenterPosition()._y,
-			deg:_this._deg,
-			scale:_this.ani[_c].scale
-		});
-
 	}
 	//moveはmain.jsから処理させない
 	move(){

@@ -478,7 +478,7 @@ class GameObject_BACKGROUND{
 		_CONTEXT.fillStyle='rgba('+_this.rgb+','+alpha+')';
 		_CONTEXT.fill();
 
-		_this._c=(_this._c>200)?0:_this._c+1;
+		_this._c=(_this._c>=200-1)?0:_this._c+1;
 	}
 }
 

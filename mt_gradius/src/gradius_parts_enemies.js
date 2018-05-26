@@ -1753,20 +1753,34 @@ class ENEMY_cell_core
 			{scale:1},{scale:0.95},{scale:0.90},{scale:0.85},{scale:0.90},{scale:0.95}
 		];
 
+		//触手の上定義
 		_this.hands_up_rad=[];
 		_this.hands_up=[];
+		//触手の上、腕の切り替えタイミング調整
+		//自機をめがける、または適当な位置めがける切り替え
+		_this.hands_up_count={c:0,max:parseInt(Math.random()*300)+100};
 		//触手の下定義
 		_this.hands_down_rad=[];
 		_this.hands_down=[];
+		_this.hands_down_count={c:0,max:parseInt(Math.random()*300)+100};
 
 		//触手間の距離
 		_this.hands_distance=12;
-
 	}
-	set_hands_rad(_rads,_h1,_h2){
+	set_hands_target(_c,_max){
+		let _this=this;
+		let _pp=_PLAYERS_MAIN.getPlayerCenterPosition();
+		if(_c%_max>0&&_c%_max<parseInt(_max/2)){
+			return _pp;
+		}
+		return {_x:_this.x+200,_y:_this.y+100}		
+	}
+	set_hands_rad(_rads,_h1,_h2,_target){
 		//触手間の角度を求める
 		let _this=this;
-		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
+//		console.log(_this._c)
+		let _p=_target;
+
 		let _h=_h2.getEnemyCenterPosition();
 		let _range=parseInt(Math.random()*100)-50;
 //		console.log(_range)
@@ -1828,6 +1842,13 @@ class ENEMY_cell_core
 				return (_this.hands_down[_i].isalive());
 			}
 		}
+	}
+	isCanvasOut(){
+		return _GAME.isEnemyCanvasOut(
+			this,
+			{up:false,down:false,left:true,right:false},
+			{left:200}
+		);
 	}
 	showCollapes(){
 		//これを破壊した場合は、それに紐づく触手も全て破壊する。
@@ -1901,7 +1922,6 @@ class ENEMY_cell_core
 	setDrawImage(){
 		//細胞自身を表示
 		let _this=this;
-
 		//触手の上を表示
 		for(let _i=0;_i<_this.hands_up.length;_i++){
 			//求めた角度より、各触手の上を配置・表示させる。
@@ -1956,7 +1976,6 @@ class ENEMY_cell_core
 	moveSet(){
 		let _this=this;
 		_this.set_aniPos();
-//		let _c=parseInt(_this._c/20);
 
 		const _e=_this.getEnemyCenterPosition();
 		const _p=_PLAYERS_MAIN.getPlayerCenterPosition();
@@ -1965,9 +1984,7 @@ class ENEMY_cell_core
 			{x:_p._x,y:_p._y},
 			{x:_e._x,y:_e._y}
 		);
-//		_this.x+=Math.cos(_rad)*_this.speed;
 		_this.y+=Math.sin(_rad)*_this.speed;
-
 
 		if(!_this.is_hands_up_status()
 			&&_this.hands_up.length!==0){
@@ -1991,6 +2008,14 @@ class ENEMY_cell_core
 		//各触手・細胞間の角度を相対的に求め、
 		//位置表示のために、配列に角度を入れる
 		_this.hands_up_rad=[];
+		_this.hands_up_count.c=
+			(_this.hands_up_count.c>_this.hands_up_count.max)
+				?0
+				:_this.hands_up_count.c+1;
+		let _target_up=
+			_this.set_hands_target(
+				_this.hands_up_count.c,
+				_this.hands_up_count.max);
 		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
 			//触手の最後の要素は
 			//細胞との角度を求める
@@ -1998,31 +2023,47 @@ class ENEMY_cell_core
 				_this.set_hands_rad(
 					_this.hands_up_rad,
 					_this,
-					_this.hands_up[_i]);
+					_this.hands_up[_i],
+					_target_up
+					);
 				break;
 			}
 			_this.set_hands_rad(
 				_this.hands_up_rad,
 				_this.hands_up[_i-1],
-				_this.hands_up[_i]);
+				_this.hands_up[_i],
+				_target_up
+			);
 		}
 
 //		console.log(_this.hands_up_rad);
 
 		//触手の下を表示
 		_this.hands_down_rad=[];
+		_this.hands_down_count.c=
+			(_this.hands_down_count.c>_this.hands_down_count.max)
+				?0
+				:_this.hands_down_count.c+1;
+		let _target_down=
+			_this.set_hands_target(
+				_this.hands_down_count.c,
+				_this.hands_down_count.max);
 		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
 			if(_this.hands_down[_i-1]===undefined){
 				_this.set_hands_rad(
 					_this.hands_down_rad,
 					_this,
-					_this.hands_down[_i]);
+					_this.hands_down[_i],
+					_target_down
+				);
 				break;
 			}
 			_this.set_hands_rad(
 				_this.hands_down_rad,
 				_this.hands_down[_i-1],
-				_this.hands_down[_i]);
+				_this.hands_down[_i],
+				_target_down
+			);
 		}
 
 		//自身の衝突判定を変更
@@ -2035,7 +2076,6 @@ class ENEMY_cell_core
 				+","
 				+_this.img.height*_c.scale;
 		_this.shotColMap=[_sc];
-
 	}
 }
 class ENEMY_cell_hand_1
@@ -2069,6 +2109,13 @@ class ENEMY_cell_hand_1
 
 		_this._c=0;
 	}
+	isCanvasOut(){
+		return _GAME.isEnemyCanvasOut(
+			this,
+			{up:false,down:false,left:true,right:false},
+			{left:200}
+		);
+	}
 	showCollapes(){
 		let _this=this;
 		let _e=_this.getEnemyCenterPosition();
@@ -2085,13 +2132,12 @@ class ENEMY_cell_hand_1
 	moveDraw(){
 		let _this=this;
 		_this._c=(_this._c>=(_this.ani.length*20)-1)?0:_this._c+1;
-		let _c=parseInt(_this._c/20);
 		const _e=_this.getEnemyCenterPosition();
 		_GAME._setDrawImage({
 			img:_this.img,
 			x:_e._x,
 			y:_e._y,
-			scale:_this.ani[_c].scale
+			scale:_this.ani[parseInt(_this._c/20)].scale
 		});
 		_this.shot();
 	}
@@ -2134,14 +2180,16 @@ class ENEMY_cell_hand_3
 		_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SHOT_RATE){
 			return;
 		}
-
+		
+		let _e=this.getEnemyCenterPosition();
 		//敵の中心から弾を発射させるための位置調整
 		_ENEMIES_SHOTS.push(
 			new GameObject_ENEMY_SHOT({
-				x:this.getEnemyCenterPosition()._x,
-				y:this.getEnemyCenterPosition()._y,
+				x:_e._x,
+				y:_e._y,
 				img:_CANVAS_IMGS['enemy_bullet_cell'].obj,
-				imgPos:[0,15]
+				imgPos:[0,15],
+				width:15
 				})
 			);
 	}

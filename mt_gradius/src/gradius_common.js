@@ -237,18 +237,28 @@ const _GAME={//ゲーム用スクリプト
 		}
 		return false;
 	},
-	isEnemyCanvasOut(_oe,_dir){
+	isEnemyCanvasOut(_oe,_dir,_size){
 		//_dir {up,right,down,left}
+		//_size {up,right,down,left}
 		//	trueまたはfalseを指定
 		let _e=_oe.getEnemyCenterPosition();
+
+		//向き判別
 		let _d=_dir||{up:true,down:true,left:true,right:true}
 		let _e_w=_oe.width;
 		let _e_h=_oe.height;
+
+		//サイズ判別
+		let _s=_size||{up:0,down:0,left:0,right:0}
+		let _up=_s.up||0;
+		let _right=_s.right||0;
+		let _down=_s.down||0;
+		let _left=_s.left||0;
 	
-		if((_e._x<0-_e_w&&_d.left===true)
-			||(_e._x>_CANVAS.width+_e_w&&_d.right===true)
-			||(_e._y<0-_e_h&&_d.up===true)
-			||(_e._y>_CANVAS.height+_e_h&&_d.down===true)
+		if((_e._x<0-_e_w-_left&&_d.left===true)//左
+			||(_e._x>_CANVAS.width+_e_w+_right&&_d.right===true)//右
+			||(_e._y<0-_e_h-_up&&_d.up===true)//上
+			||(_e._y>_CANVAS.height+_e_h+_down&&_d.down===true)//下
 			){
 				return true;
 			}
@@ -598,13 +608,6 @@ const _GAME={//ゲーム用スクリプト
 		_CONTEXT.rotate(_deg*Math.PI/180);
 	//	console.log(_scale)
 		_CONTEXT.scale(_scale,_scale);
-		// _CONTEXT.drawImage(
-		// 	_d.img,
-		// 	-(_d.img.width/2),
-		// 	-(_d.img.height/2),
-		// 	_d.img.width,
-		// 	_d.img.height
-		// );
 		_CONTEXT.drawImage(
 			_d.img,
 			_imgPosx,

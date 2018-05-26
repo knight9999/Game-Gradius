@@ -107,7 +107,7 @@ class GameObject_PLAYER_MAIN
 			return;
 		}
 		if(_GAME.isSqCollision(
-			"25,25,45,35",
+			"25,28,45,35",
 			this.x+","+this.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
@@ -123,7 +123,7 @@ class GameObject_PLAYER_MAIN
 		}
 
 		if(_GAME.isSqCollision(
-			"25,25,45,35",
+			"25,28,45,35",
 			this.x+","+this.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
@@ -259,6 +259,19 @@ class GameObject_PLAYER_MAIN
 			_this.imgsize_vb
 		);
 
+		//デバッグモードでは当たり判定を表示させる
+		if(_ISDEBUG){
+			_CONTEXT.save();
+			_CONTEXT.fillStyle='rgba(0,0,255,0.5)';
+			_CONTEXT.fillRect(
+				_this.x+25,
+				_this.y+28,
+				20,
+				7
+			);
+			_CONTEXT.restore();
+		}
+
 	}
 	move(){
 		let _this=this;
@@ -344,12 +357,12 @@ class GameObject_PLAYER_OPTION
 					_isalive);
 		this._ani_c=0;
 		this.ani=[//アニメーション定義
-			{scale:1},
-			{scale:0.9},
-			{scale:0.8},
-			{scale:0.7},
-			{scale:0.8},
-			{scale:0.9}
+			{scale:0.70},
+			{scale:0.65},
+			{scale:0.60},
+			{scale:0.55},
+			{scale:0.60},
+			{scale:0.65}
 		];
 		this.imgsize=this.img.height;
 		this.width=this.imgsize;

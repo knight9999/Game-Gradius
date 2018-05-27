@@ -357,12 +357,12 @@ class GameObject_PLAYER_OPTION
 					_isalive);
 		this._ani_c=0;
 		this.ani=[//アニメーション定義
+			{scale:0.80},
 			{scale:0.70},
-			{scale:0.65},
 			{scale:0.60},
-			{scale:0.55},
+			{scale:0.50},
 			{scale:0.60},
-			{scale:0.65}
+			{scale:0.70}
 		];
 		this.imgsize=this.img.height;
 		this.width=this.imgsize;

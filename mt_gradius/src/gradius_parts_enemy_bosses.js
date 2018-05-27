@@ -1568,7 +1568,7 @@ class ENEMY_BOSS_CUBE
 				_this.rad*180/Math.PI;
 			_this.sx=Math.cos(_this.rad);//単位x
 			_this.sy=Math.sin(_this.rad);//単位y
-			_this.speed=10;
+			_this.speed=15;
 		}
 		//自機に向けて一気に加速
 		if(_this._c>_this.change_speed_c){

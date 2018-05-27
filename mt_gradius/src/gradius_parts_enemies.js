@@ -2034,6 +2034,10 @@ class ENEMY_cell_core
 				_this.hands_up[_i],
 				_target_up
 			);
+			//触手の先端から弾を発射させる
+			if(ENEMY_cell_hand_3.prototype.isPrototypeOf(_this.hands_up[_i])){
+				_this.hands_up[_i].shot();
+			}
 		}
 
 //		console.log(_this.hands_up_rad);
@@ -2064,6 +2068,10 @@ class ENEMY_cell_core
 				_this.hands_down[_i],
 				_target_down
 			);
+			//触手の先端から弾を発射させる
+			if(ENEMY_cell_hand_3.prototype.isPrototypeOf(_this.hands_down[_i])){
+				_this.hands_down[_i].shot();
+			}
 		}
 
 		//自身の衝突判定を変更
@@ -2204,7 +2212,7 @@ class ENEMY_cell_hand_3
 			y:_e._y,
 			deg:_r/Math.PI*180
 		});
-		_this.shot();
+//		_this.shot();
 	}
 }
 

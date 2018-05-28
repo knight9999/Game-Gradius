@@ -80,7 +80,7 @@ https://ja.wikipedia.org/wiki/%E3%82%B0%E3%83%A9%E3%83%87%E3%82%A3%E3%82%A6%E3%8
   
   
 ## Demo
-<p>実際にプレイしたゲームは、YouTubeのプレイリストとして集めております。→<a href="https://youtu.be/MxeTU1rs_-0" target="_blank"><img src="https://user-images.githubusercontent.com/12569855/40031586-543899bc-582b-11e8-8992-9092bbfd0d72.png" width="50"></a></p>
+<p>実際にプレイしたのを、YouTubeのプレイリストとして集めております。→<a href="https://youtu.be/MxeTU1rs_-0" target="_blank"><img src="https://user-images.githubusercontent.com/12569855/40031586-543899bc-582b-11e8-8992-9092bbfd0d72.png" width="50"></a></p>
 <ol>
 <li>モアイステージ(パワーアップ：タイプ1 iPhone 8Plus iOS11)
 <a href="https://youtu.be/GmzuXUYOeDg" target="_blank"><img src="https://user-images.githubusercontent.com/12569855/40031586-543899bc-582b-11e8-8992-9092bbfd0d72.png" width="50"></a><br>

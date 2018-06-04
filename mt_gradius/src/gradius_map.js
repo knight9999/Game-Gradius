@@ -116,7 +116,7 @@ _ENEMIES:{
 			_ENEMIES.push(_o);
 			},
 		'_st':'',
-		'_getObj':()=>{return new ENEMY_p({direct:null})}
+		'_getObj':()=>{return new ENEMY_p({direct: _DEF_DIR._D})}
 	},
 	'z':{
 		'_gamestart':(_x,_y,_md)=>{
@@ -167,7 +167,27 @@ const _MAP_THEME={//_parts要素番号0は空文字
 			'objs':{},//_MAP.moveDraw()で処理させる
 						//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_getObj':()=>{return new MAP_CRISTAL();}
-		}
+		},
+		'B': {
+			'_gamestart': function (_key) {
+				this.objs[_key] = new MAP_CRISTAL_UP();
+			}, //初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs': {}, //_MAP.moveDraw()で処理させる
+			//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_getObj': () => {
+				return new MAP_CRISTAL_UP();
+			}
+		},
+		'C': {
+			'_gamestart': function (_key) {
+				this.objs[_key] = new MAP_CRISTAL_DOWN();
+			}, //初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'objs': {}, //_MAP.moveDraw()で処理させる
+			//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
+			'_getObj': () => {
+				return new MAP_CRISTAL_DOWN();
+			}
+		},
 	},
 	'_enemies':_MAP_ENEMIES._ENEMIES
 },//_THEME1
@@ -922,30 +942,6 @@ class GameObject_MAP{
 			if(_k.match(_this.collision_enemies)!==null){
 				//敵
 				let _p=_MAP_THEME[_m._theme]._enemies[_k]._getObj();
-//				let img=_p._obj.img;
-				//画像サイズは、25x25px
-				//ここでは10x10pxに調整
-				// _CONTEXT.save();
-				// let _x=0+(_j*10);
-				// let _y=130+(_i*10);
-				// let _w=_p.width/2.5;
-				// let _h=_p.height/2.5;
-				// let _d=(_p.direct===null)?_MAP_ENEMIES._setDir(_j+100,_i):_p.direct;
-				// if(_d===_DEF_DIR._U){
-				// 	_CONTEXT.setTransform(1,0,0,-1,0,_y*2+_h);
-				// }
-				// if(_d===_DEF_DIR._LU){
-				// 	_CONTEXT.setTransform(-1,0,0,-1,_x*2+_w,_y*2+_h);
-				// }
-				// if(_d===_DEF_DIR._LD){
-				// 	_CONTEXT.setTransform(-1,0,0,1,_x*2+_w,0);
-				// }
-				// _CONTEXT.drawImage(
-				// 	_p.img,
-				// 	_x,_y,_w,_h
-				// );
-				// _CONTEXT.restore();
-
 				_CONTEXT.save();
 				let _d=(_p.direct===null)?_MAP_ENEMIES._setDir(_j+100,_i):_p.direct;
 				let _x=0+(_j*10);

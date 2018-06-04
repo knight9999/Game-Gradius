@@ -161,7 +161,7 @@ class GameObject_ENEMY{
 			);
 	}
 	get_move_bound_val(){
-		return parseInt(Math.random()*(3-1)+1)*((Math.random()>0.5)?1:-1);
+		return parseInt(Math.random() * (2 - 1) + 1) * ((Math.random() > 0.5) ? 1 : -1);
 	}
 	set_imgPos(){
 		let _this=this;
@@ -1070,7 +1070,7 @@ class ENEMY_n_small extends ENEMY_o_small{
 class ENEMY_p extends GameObject_ENEMY{
 	constructor(_p){
 		super({
-			img:_CANVAS_IMGS['enemy_p_1'].obj,
+			img:_p.img||_CANVAS_IMGS['enemy_p_1'].obj,
 			x:_p.x,
 			y:_p.y,
 			direct:_p.direct
@@ -1078,15 +1078,12 @@ class ENEMY_p extends GameObject_ENEMY{
 		let _this=this;
 		_this._status=4;
 		_this.getscore=100;
-		_this.speedx=_BACKGROUND_SPEED;
-		_this.speedy=
-			(Math.random()+1)
-			*((Math.random()>0.5)?1:-1);
-		_this._isbroken=false;
+		_this.speedx = _BACKGROUND_SPEED;
+		_this.speedy = _this.get_move_bound_val();
 		//レーザーのみ当たり判定を通常の半分にする。
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 
-		_this._s='000,000,000';
+		_this._s='0000,0000,0000,0000';
 	}
 	setAlive(){
 		let _this=this;
@@ -1101,15 +1098,31 @@ class ENEMY_p extends GameObject_ENEMY{
 		let _map_x=_MAP.getMapX(_e._x);
 		let _map_y=_MAP.getMapY(_e._y);
 
-		if(_MAP.isMapCollision(_map_x,_map_y-1)
-			||_MAP.isMapCollision(_map_x,_map_y+1)){
-			_this.speedx=(Math.random()>0.4)
-				?Math.abs(_this.speedx)
-				:_this.speedx*-1;
-			_this.speedy=(Math.random()>0.4)
-				?Math.abs(_this.speedy)
-				:_this.speedy*-1;
+		let _flag=false;
+
+		if (_MAP.isMapCollision(_map_x - 1, _map_y)) {
+			_this.speedx = Math.abs(_this.speedy);
+			_flag = true;
 		}
+		if (_MAP.isMapCollision(_map_x + 1, _map_y)) {
+			_this.speedx *= -1;
+			_flag = true;
+		}
+
+		if (_MAP.isMapCollision(_map_x, _map_y - 1)) {
+			_this.speedy = Math.abs(_this.speedy);
+			_flag = true;
+		}
+		if (_MAP.isMapCollision(_map_x, _map_y + 1)) {
+			_this.speedy *= -1;
+			_flag = true;
+		}
+
+		if(!_flag){return;}
+		if ((new Date()).getTime() - _this.col_date < 500) {
+			return;
+		}
+		_this.col_date = (new Date()).getTime();
 
 	}
 	move_bounds(){
@@ -1131,41 +1144,64 @@ class ENEMY_p extends GameObject_ENEMY{
 				_eb[_i].shotColMap,
 				_eb[_i].x+','+_eb[_i].y
 			);
-			if(_r!==_IS_SQ_NOTCOL){
-//				console.log(_a);
-				_this.speedx=_this.get_move_bound_val();
-				_this.speedy=_this.get_move_bound_val();
-				_eb[_i].speedx=_this.get_move_bound_val();
-				_eb[_i].speedy=_this.get_move_bound_val();
+			if(_r===_IS_SQ_NOTCOL){continue;}
+			if ((new Date()).getTime() - _this.col_date < 200) {
+				continue;
 			}
+			_this.speedx=_this.get_move_bound_val();
+			_this.speedy=_this.get_move_bound_val();
+			_eb[_i].speedx=_this.get_move_bound_val();
+			_eb[_i].speedy=_this.get_move_bound_val();
+
+			_this.col_date=(new Date()).getTime();
 		}
 	}
 	showCollapes(){
 		let _this=this;
-		let _cp=_this.getEnemyCenterPosition();
-		if(_this._status<=0&&!_this._isbroken){
-			for(let _i=0;_i<6;_i++){
-				//オブジェクト追加
-				let _cls=
-					new ENEMY_p_small({
-						img:_CANVAS_IMGS[
-							(['enemy_p_2',
-								'enemy_p_2',
-								'enemy_p_3',
-								'enemy_p_4',
-								'enemy_p_5',
-								'enemy_p_5'])[_i]
-							].obj,
-						x:_cp._x+([-30,0,30,-30,0,30])[_i],
-						y:_cp._y+([-30,-30,-30,30,30,30])[_i]
-						});
-				_ENEMIES.push(_cls);
+		if(_this._status>0){return;}
+		let _cp = _this.getEnemyCenterPosition();
+		const set_enemies_p_parts=[
+			{
+				img: _CANVAS_IMGS['enemy_p_2'].obj,
+				x: -30,
+				y: -30
+			},
+			{
+				img: _CANVAS_IMGS['enemy_p_3'].obj,
+				x: 0,
+				y: -30
+			},
+			{
+				img: _CANVAS_IMGS['enemy_p_4'].obj,
+				x: 30,
+				y: -30
+			},
+			{
+				img: _CANVAS_IMGS['enemy_p_5'].obj,
+				x: -30,
+				y: 30
+			},
+			{
+				img: _CANVAS_IMGS['enemy_p_6'].obj,
+				x: 0,
+				y: 30
+			},
+			{
+				img: _CANVAS_IMGS['enemy_p_3'].obj,
+				x: 30,
+				y: 30
 			}
-			_this._isbroken=true;
-			_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision4']);
-			_this.init();
-			return;
+		];
+		for (let _i = 0; _i < set_enemies_p_parts.length; _i++) {
+			let _obj = set_enemies_p_parts[_i];
+			_ENEMIES.push(new ENEMY_p_small({
+				img: _obj.img,
+				x: _cp._x+_obj.x,
+				y: _cp._y+_obj.y
+			}));
 		}
+		_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision4']);
+		_this.init();
 	}
 	shot(){}
 	moveSet(){
@@ -1173,25 +1209,24 @@ class ENEMY_p extends GameObject_ENEMY{
 		
 		_this.map_collition();
 		_this.move_bounds();
-		_this.x-=(function(_t){
-			if(_t.x+_t.img.width>_CANVAS.width){
-				_t.speedx=Math.abs(_t.speedx);
+		_this.x -= ((_t)=>{
+			if (_t.x + _t.img.width > _CANVAS.width) {
+				_t.speedx = Math.abs(_t.speedx);
 			}
 			return _t.speedx;
 		})(_this);
-		_this.y+=(function(_t){
-			if(_t.y<0){
-				_t.speedy=Math.abs(_t.speedy);
-			}else if(_t.y+_t.img.height>_CANVAS.height){
-				_t.speedy=-1;
-//				console.log(_t.speedy);
+		_this.y += ((_t)=>{
+			if (_t.y < 0) {
+				_t.speedy = Math.abs(_t.speedy);
+			} else if (_t.y + _t.img.height > _CANVAS.height) {
+				_t.speedy = -1;
 			}
 			return _t.speedy;
 		})(_this);
 	}
 }
 //クリスタル（分裂）
-class ENEMY_p_small extends GameObject_ENEMY{
+class ENEMY_p_small extends ENEMY_p {
 	constructor(_p){
 		super({
 			img:_p.img,
@@ -1216,77 +1251,17 @@ class ENEMY_p_small extends GameObject_ENEMY{
 		_SCORE.set(_this.getscore);
 		_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision5']);
 	}
-	move_bounds(){
-		//バウンド定義
-		//敵同士ぶつかったときに跳ね返り動作をする
-		let _this=this;
-
-		let _date=new Date();
-		if(_date-_this.col_date<1000){return;}
-
-		let _eb=_ENEMIES;
-		if(!_this.isalive()){return;}
-
-		for(let _i=0;_i<_eb.length;_i++){
-			if(!ENEMY_p_small.prototype.isPrototypeOf(_eb[_i])){continue;}
-			if(!_eb[_i].isalive()){continue;}//生きていない場合は無視
-			if(_eb[_i].x>_CANVAS.width){continue;}//キャンバスに入る前は無視
-			if(_this.id===_eb[_i].id){continue;}//自身の判定はしない
-
-			let _r=_GAME.isSqCollision(
-				_this.shotColMap[0],
-				_this.x+','+_this.y,
-				_eb[_i].shotColMap,
-				_eb[_i].x+','+_eb[_i].y
-			);
-			if(_r!==_IS_SQ_NOTCOL){
-				_this.speedx=_this.get_move_bound_val();
-				_this.speedy=_this.get_move_bound_val();
-				_eb[_i].speedx=_this.get_move_bound_val();
-				_eb[_i].speedy=_this.get_move_bound_val();
-			}
-		}
-	}
-	map_collition(){
-		let _this=this;
-		//中心座標取得
-		let _e=_this.getEnemyCenterPosition();
-		//MAPの位置を取得
-		let _map_x=_MAP.getMapX(_e._x);
-		let _map_y=_MAP.getMapY(_e._y);
-
-		if(_MAP.isMapCollision(_map_x,_map_y-1)
-			||_MAP.isMapCollision(_map_x,_map_y+1)){
-			_this.speedx=(_this.speedx<=0)
-				?Math.abs(_this.speedx)
-				:_this.speedx*-1;
-			_this.speedy=(_this.speedy<=0)
-				?Math.abs(_this.speedy)
-				:_this.speedy*-1;
-		}
-
-	}
-	shot(){}
-	moveSet(){
-		let _this=this;
-
-		_this.map_collition();
-		_this.move_bounds();
-
-		_this.x-=(function(_t){
-			if(_t.x+_t.img.width>_CANVAS.width){
-				_t.speedx=1.5;
-			}
-			return _t.speedx;
-		})(_this);
-		_this.y+=(function(_t){
-			if(_t.y<0){
-				_t.speedy=Math.abs(_t.speedy);
-			}else if(_t.y+_t.img.height>_CANVAS.height){
-				_t.speedy=-1.5;
-			}
-			return _t.speedy;
-		})(_this);
+	showCollapes(_x, _y) {
+		let _this = this;
+		//敵を倒した場合
+		_this._isshow = false;
+		//爆発して終了
+		_ENEMIES_COLLISIONS.push(
+			new GameObject_ENEMY_COLLISION(
+				_x || _this.x + (_this.width / 2),
+				_y || _this.y + (_this.height / 2),
+				_this._collision_type)
+		);
 	}
 }
 

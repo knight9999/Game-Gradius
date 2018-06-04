@@ -52,6 +52,11 @@ const _CANVAS_IMGS={
 	'enemy_p_3':{src:'images/gradius_enemy_p_3.png',rate:1.00,obj:new Image()},
 	'enemy_p_4':{src:'images/gradius_enemy_p_4.png',rate:1.00,obj:new Image()},
 	'enemy_p_5':{src:'images/gradius_enemy_p_5.png',rate:1.00,obj:new Image()},
+	'enemy_p_6': {
+		src: 'images/gradius_enemy_p_6.png',
+		rate: 1.00,
+		obj: new Image()
+	},
 
 	'enemy_moai_boss':{src:'images/gradius_enemy_moai_boss.png',rate:1.00,obj:new Image()},
 	'enemy_moai_mini_boss':{src:'images/gradius_enemy_moai_mini_boss.png',rate:1.00,obj:new Image()},
@@ -138,6 +143,17 @@ const _CANVAS_IMGS={
 	//===================================
  	//cubeステージ用
 	'map_cube_A':{src:'images/gradius_map_cube_A.png',rate:1,obj:new Image()},
+	//クリスタルステージ用
+	'map_cristal_up': {
+		src: 'images/gradius_map_cristal_up.png',
+		rate: 1.00,
+		obj: new Image()
+	},
+	'map_cristal_down': {
+		src: 'images/gradius_map_cristal_down.png',
+		rate: 1.00,
+		obj: new Image()
+	},
 	//モアイステージ用画像
 	'map_moai_A':{src:'images/gradius_map_moai_A.png',rate:1.00,obj:new Image()},
 	'map_moai_B':{src:'images/gradius_map_moai_B.png',rate:1.00,obj:new Image()},

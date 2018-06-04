@@ -59,34 +59,6 @@ class GameObject_ENEMY_BOSS
 		}
 		_GAME._setPlay(_this.audio_collision);
 	}
-	setWallCollision(){
-		//壁を壊す
-		let _this=this;
-//		console.log(_this._status)
-		if(_this.wall===undefined){return;}
-		for(let _i=0;_i<_this.wall.length;_i++){
-			let _w=_this.wall[_i];
-			if(!_w.isalive){continue;}
-			let _ec=_this.getEnemyCenterPosition();
-			//壁を表示
-			_CONTEXT.drawImage(
-				_w.img,
-				_this.x+_w.x,
-				_this.y+_w.y,
-				_w.img.width,
-				_w.img.height
-			);
-			//壁を壊した場合
-			if(_w.cs>=_this._status){
-				_ENEMIES_COLLISIONS.push(
-					new GameObject_ENEMY_COLLISION
-					(_this.x+_w.x,_this.y+_w.y));
-				_SCORE.set(500);
-				_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision5']);		
-				_w.isalive=false;
-			}
-		}
-	}
 	moveDraw(){
 		//画像を表示
 		let _this=this;
@@ -292,14 +264,16 @@ class ENEMY_BOSS_BIGCORE
 		let _this=this;
 		if(Math.random()>0.02){return;}
 		_this._moveYStop=true;
+		for(let _i=0;_i<=105;_i=_i+35){
 		_ENEMIES_SHOTS.push(
-			new ENEMY_SHOT_LASER({x:_this.x,y:_this.y,img:_CANVAS_IMGS['enemy_bullet_z'].obj}));
-		_ENEMIES_SHOTS.push(
-			new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+35,img:_CANVAS_IMGS['enemy_bullet_z'].obj}));
-		_ENEMIES_SHOTS.push(
-			new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+70,img:_CANVAS_IMGS['enemy_bullet_z'].obj}));
-		_ENEMIES_SHOTS.push(
-			new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+105,img:_CANVAS_IMGS['enemy_bullet_z'].obj}));
+			new ENEMY_SHOT_LASER({
+				x: _this.x,
+				y: _this.y+_i,
+				img: _CANVAS_IMGS['enemy_bullet_z'].obj,
+				width: 45,
+				imgPos:[0]
+			}));
+		}
 		_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);		
 		_this.tid=setTimeout(function(){
 			_this._moveYStop=false;
@@ -590,40 +564,101 @@ class ENEMY_BOSS_BIGCORE2
 		if(_this._c%150===70){
 			//止まってショットを放つ
 //			console.log(_this._hands_open_flag)
+			let _ar=[];
 			if(_this._hands_open_flag){
 				if(_this._wall_up_statuses.indexOf('1')!==-1){
-					//上の壁が全て破壊されたらショットしない
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+85,y:_this.y-75}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+70,y:_this.y-45}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+120,y:_this.y-20}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+100,y:_this.y+0}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+80,y:_this.y+25}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+60,y:_this.y+45}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+55}));	
+					_ar=_ar.concat([{
+							x: 85,
+							y: -75
+						},
+						{
+							x: 70,
+							y: -45
+						},
+						{
+							x: 120,
+							y: -20
+						},
+						{
+							x: 100,
+							y: 0
+						},
+						{
+							x: 80,
+							y: 25
+						},
+						{
+							x: 60,
+							y: 45
+						},
+						{
+							x: 0,
+							y: 55
+						}
+					]);
 				}
 				if(_this._wall_down_statuses.indexOf('1')!==-1){
 					//下の壁が全て破壊されたらショットしない
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+85}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+60,y:_this.y+95}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+80,y:_this.y+115}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+100,y:_this.y+135}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+120,y:_this.y+160}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+70,y:_this.y+170}));
-					_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({x:_this.x+85,y:_this.y+200}));
+					_ar=_ar.concat([{
+							x: 0,
+							y: 85
+						},
+						{
+							x: 60,
+							y: 95
+						},
+						{
+							x: 80,
+							y: 115
+						},
+						{
+							x: 100,
+							y: 135
+						},
+						{
+							x: 120,
+							y: 160
+						},
+						{
+							x: 70,
+							y: 170
+						},
+						{
+							x: 85,
+							y: 200
+						}
+					]);
 				}
 			}else{
 				if(_this._wall_up_statuses.indexOf('1')!==-1){
-					_ENEMIES_SHOTS.push(
-						new ENEMY_SHOT_LASER({x:_this.x+60,y:_this.y+20}));
-					_ENEMIES_SHOTS.push(
-						new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+55}));
+					_ar=_ar.concat([{
+							x: 60,
+							y: 20
+						},
+						{
+							x: 0,
+							y: 55
+						}
+					]);
 				}
 				if(_this._wall_down_statuses.indexOf('1')!==-1){
-					_ENEMIES_SHOTS.push(
-						new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+95}));
-					_ENEMIES_SHOTS.push(
-						new ENEMY_SHOT_LASER({x:_this.x+60,y:_this.y+130}));
+					_ar=_ar.concat([{
+							x: 0,
+							y: 95
+						},
+						{
+							x: 60,
+							y: 130
+						}
+					]);
 				}
+			}
+
+			for (let _i = 0; _i < _ar.length; _i++) {
+				_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({
+					x: _this.x + _ar[_i].x,
+					y: _this.y + _ar[_i].y
+				}));
 			}
 			_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);
 		}

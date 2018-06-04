@@ -70,18 +70,6 @@ class GameObject_ENEMY_COLLISION{
 			width:_this.width,
 			height:_this.height
 		});
-		// let _s=_this.height;
-		// _CONTEXT.drawImage(
-		// 	_this.img,
-		// 	_s*parseInt(_this._c_anime_collosion/_this.intv),
-		// 	0,
-		// 	_s,
-		// 	_s,
-		// 	_this.x-(_s/2),
-		// 	_this.y-(_s/2),
-		// 	_s,
-		// 	_s
-		// );
 	}
 	move(){
 		let _this=this;

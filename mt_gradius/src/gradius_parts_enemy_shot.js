@@ -17,7 +17,6 @@
 //	_p.speed:弾のスピード
 //====================
 class GameObject_ENEMY_SHOT{
-//	constructor(_x,_y,_tx,_ty){
 	constructor(_p){
 		let _this=this;
 		_this.x=_p.x||500;
@@ -29,6 +28,7 @@ class GameObject_ENEMY_SHOT{
 		_this.imgPos=_p.imgPos||[0,18];//スプライトのコマポジション
 		_this._c=0;//アニメーションカウント
 		_this.aniItv=_p.aniItv||5;//アニメーション間隔
+		_this.basePoint=_p.basePoint||1;
 
 		_this.width=_p.width||18;
 		_this.height=_p.height||_this.img.height;
@@ -50,6 +50,8 @@ class GameObject_ENEMY_SHOT{
 		// 	_this.rad*180/Math.PI;
 		_this.sx=Math.cos(_this.rad);//単位x
 		_this.sy=Math.sin(_this.rad);//単位y
+
+		_this.viewDeg=_p.viewDeg||false;
 
 		_this._isshow=true;//弾の状態
 		_this.is_ignore_collision=false;//自機衝突したら消えるのを無視する
@@ -91,9 +93,24 @@ class GameObject_ENEMY_SHOT{
 			img:_this.img,
 			x:_this.x,
 			y:_this.y,
+			deg:(_this.viewDeg)?_this.deg:0,
 			width:_this.width,
+			basePoint:_this.basePoint,
 			imgPosx:_this.get_imgPos()
 		});
+
+		if (_ISDEBUG) {
+			_CONTEXT.strokeStyle = 'rgba(200,200,255,0.5)';
+			_CONTEXT.beginPath();
+			_CONTEXT.rect(
+				_this.x,
+				_this.y,
+				_this.width,
+				_this.height
+			);
+			_CONTEXT.stroke();
+		}
+
 	}
 	move(){
 		let _this=this;
@@ -113,18 +130,22 @@ class GameObject_ENEMY_SHOT{
 class ENEMY_SHOT_LASER
 	extends GameObject_ENEMY_SHOT{
 	constructor(_p){
-		super({x:_p.x,y:_p.y});
-		this.img=_p.img||_CANVAS_IMGS['enemy_bullet_laser'].obj;
+		super({
+			x: _p.x,
+			y: _p.y,
+			img:_p.img||_CANVAS_IMGS['enemy_bullet_laser'].obj,
+			width:_p.width||30
+		});
 		this.speed=10;
 	}
-	setDrawImage(){
-		let _this=this;
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.x,
-			y:_this.y
-		});
-	}
+	// setDrawImage(){
+	// 	let _this=this;
+	// 	_GAME._setDrawImage({
+	// 		img:_this.img,
+	// 		x:_this.x,
+	// 		y:_this.y
+	// 	});
+	// }
 	move(){
 		let _this=this;
 		if(_GAME.isEnemyCanvasOut(_this)){
@@ -140,20 +161,25 @@ class ENEMY_SHOT_LASER
 class ENEMY_SHOT_CRYSTALCORE
 	extends GameObject_ENEMY_SHOT{
 	constructor(_p){
-		super({x:_p.x,y:_p.y,deg:_p.deg});
+		super({
+			x: _p.x,
+			y: _p.y,
+			deg: _p.deg,
+			viewDeg: true,
+			img:_CANVAS_IMGS['enemy_cristalcore_shot'].obj
+		});
 		let _this=this;
-		_this.img=_CANVAS_IMGS['enemy_cristalcore_shot'].obj;
 		_this.speed=10;
 	}
-	setDrawImage(){
-		let _this=this;
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.x,
-			y:_this.y,
-			deg:_this.deg
-		});
-	}
+	// setDrawImage(){
+	// 	let _this=this;
+	// 	_GAME._setDrawImage({
+	// 		img:_this.img,
+	// 		x:_this.x,
+	// 		y:_this.y,
+	// 		deg:_this.deg
+	// 	});
+	// }
 	move(){
 		let _this=this;
 		if(_GAME.isEnemyCanvasOut(_this)){
@@ -175,13 +201,16 @@ class ENEMY_SHOT_FRAME
 			x:_p.x,
 			y:_p.y,
 			deg:_p.deg,
+			viewDeg:true,
 			width:_p.width,
 			imgPos:_p.imgPos,
+			basePoint:_p.basePoint||5,
 			img:_p.img
 		});
 		let _this=this;
 		_this.speed=1;
 		_this.ani_c=0;
+		_this.shotColMap = ["-10,-10,10,10"];
 	}
 	shot(){
 		let _this=this;
@@ -200,17 +229,6 @@ class ENEMY_SHOT_FRAME
 			}
 			_this.init();
 		}
-	}
-	setDrawImage(){
-		let _this=this;
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.x,
-			y:_this.y,
-			width:_this.width,
-			deg:_this.deg,
-			imgPosx:_this.get_imgPos()
-		});
 	}
 	move(){
 		let _this=this;
@@ -234,12 +252,15 @@ class ENEMY_SHOT_FRAME_SMALL
 			x:_p.x,
 			y:_p.y,
 			deg:_p.deg,
+			viewDeg:true,
 			img:_p.img,
 			imgPos:_p.imgPos,
+			basePoint:5,
 			width:_p.width
 		});
 		let _this=this;
 		_this.speed=5;
+		_this.shotColMap=["-7,-7,7,7"];
 	}
 	shot(){}
 }
@@ -253,21 +274,22 @@ class ENEMY_SHOT_DEATH
 			y:_p.y,
 			width:25,
 			height:10,
-			deg:_p.deg
+			deg:_p.deg,
+			viewDeg:true
 		});
 		let _this=this;
 		_this.img=_CANVAS_IMGS['enemy_death_shot'].obj;
 		_this.speed=1;
 	}
-	setDrawImage(){
-		let _this=this;
-		_GAME._setDrawImage({
-			img:_this.img,
-			x:_this.x,
-			y:_this.y,
-			deg:_this.deg
-		});
-	}
+	// setDrawImage(){
+	// 	let _this=this;
+	// 	_GAME._setDrawImage({
+	// 		img:_this.img,
+	// 		x:_this.x,
+	// 		y:_this.y,
+	// 		deg:_this.deg
+	// 	});
+	// }
 	move(){
 		let _this=this;
 		if(_GAME.isEnemyCanvasOut(_this)){

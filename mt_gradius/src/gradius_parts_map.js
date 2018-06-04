@@ -93,11 +93,34 @@ class MAP_CUBE_A extends MAP_OBJECT{
 //=====================
 class MAP_CRISTAL extends MAP_OBJECT{
 	constructor(){
-		super({img:_CANVAS_IMGS['enemy_p_1'].obj,width:84,height:83});
+		super({img:_CANVAS_IMGS['enemy_p_1'].obj,width:100,height:100});
 		let _this=this;
-		_this._s='011,111,110';
+		_this._s='0111,1111,0111,0111';
 	}
 }
+class MAP_CRISTAL_UP extends MAP_OBJECT {
+	constructor() {
+		super({
+			img: _CANVAS_IMGS['map_cristal_up'].obj,
+			width: 100,
+			height: 50
+		});
+		let _this = this;
+		_this._s = '1111,1111';
+	}
+}
+class MAP_CRISTAL_DOWN extends MAP_OBJECT {
+	constructor() {
+		super({
+			img: _CANVAS_IMGS['map_cristal_down'].obj,
+			width: 100,
+			height: 50
+		});
+		let _this = this;
+		_this._s = '1111,1111';
+	}
+}
+
 
 //=====================
 //moai

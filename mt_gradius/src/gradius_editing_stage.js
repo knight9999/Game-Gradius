@@ -81,7 +81,7 @@ _set_entryupdate:function(_ed){
 
 			//area_parts内、parts_blockイベント設定
 			const $_ap_pb=document.querySelectorAll('#area_parts .parts_block');
-			for(var _i=0;_i<$_ap_pb.length;_i++){
+			for(let _i=0;_i<$_ap_pb.length;_i++){
 			    $_ap_pb[_i].setAttribute('draggable',true);
 			    $_ap_pb[_i].addEventListener('dragstart',_GAME_STAGEEDIT_EVENTS._f_ap_dragstart,false);
 				$_ap_pb[_i].addEventListener('dragend',_GAME_STAGEEDIT_EVENTS._f_ap_dragend,false);
@@ -89,7 +89,7 @@ _set_entryupdate:function(_ed){
 
 			//入力フォームのイベント設定
 			const $_fg_range=document.querySelectorAll('.form_group .col_r input[type="range"]');
-			for(var _i=0;_i<$_fg_range.length;_i++){
+			for(let _i=0;_i<$_fg_range.length;_i++){
 			    $_fg_range[_i].addEventListener('input',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
 			    $_fg_range[_i].addEventListener('change',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
 			}
@@ -176,11 +176,11 @@ _setInitMap:function(_m){
     _str+='<div class="area_blocks_rows">';
     for(let _j=0;_j<_mo[_i].length;_j++){
         _str+='<div class="area_block" data-val="'+_mo[_i][_j]+'" '+
-			'onmouseover="_GAME_STAGEEDIT_EVENTS._f_as_mouseover(event);" '+
-			'onmouseout="_GAME_STAGEEDIT_EVENTS._f_as_mouseout(event);" '+
+			'ondragleave="_GAME_STAGEEDIT_EVENTS._f_as_dragleave(event);" '+
 			'ondragenter="_GAME_STAGEEDIT_EVENTS._f_as_dragenter(event);" '+
-			'ondrop="_GAME_STAGEEDIT_EVENTS._f_as_drop(event);">'+
-        (function(_k){
+			'ondrop="_GAME_STAGEEDIT_EVENTS._f_as_drop(event);"'+
+			'>'+
+        ((_k)=>{
             if(_k==='0'){return '';}
 			//パーツがある場合はイベントを追加する
 			let _s='';
@@ -190,6 +190,8 @@ _setInitMap:function(_m){
 				let _st=_MAP_THEME[_m._theme]._enemies[_k]._st;
 				let _o=_MAP_THEME[_m._theme]._enemies[_k]._getObj();
 				_s='<div class="parts_block" '
+						+'data-width="' + parseInt(_o.width * 0.8) + '" '
+						+'data-height="' + parseInt(_o.height * 0.8) + '" '
 						+'style="width:'+parseInt(_o.width*0.8)+'px;height:'+parseInt(_o.height*0.8)+'px;'
 						+'background:url('+_o.img.src+') no-repeat;'
 						+'background-size:cover;'
@@ -203,6 +205,8 @@ _setInitMap:function(_m){
 				//マップの表示
 				let _o=_MAP_THEME[_m._theme]._map[_k]._getObj();
 				_s='<div class="parts_block" '
+						+'data-width="' + parseInt(_o.width * 0.8) + '" '
+						+'data-height="' + parseInt(_o.height * 0.8) + '" '
 						+'style="width:'+parseInt(_o.width*0.8)+'px;height:'+parseInt(_o.height*0.8)+'px;'
 						+'background:url('+_o.img.src+') no-repeat;'
 						+'background-size:cover;'
@@ -219,9 +223,10 @@ _setInitMap:function(_m){
     _str+='</div><!-- /.area_blocks_rows -->';
     }//_i
     //MAPを表示
-    document
-		.querySelector('.area_blocks.drop')
-		.innerHTML=_str;
+    document.querySelector('.area_blocks.drop').innerHTML = _str;
+	// $_ab.addEventListener('dragleave',_GAME_STAGEEDIT_EVENTS._f_as_dragleave);
+	// $_ab.addEventListener('dragenter', _GAME_STAGEEDIT_EVENTS._f_as_dragenter);
+	// $_ab.addEventListener('drop', _GAME_STAGEEDIT_EVENTS._f_as_drop);
 
 },//_setInitMap
 
@@ -270,7 +275,7 @@ _setAudioPlay(_obj){
 	if(_obj===null||_obj===undefined){return;}
 	if(_this._as!==null){return;}
 
-	var _s=_this._ac.createBufferSource();
+	const _s=_this._ac.createBufferSource();
 	_s.buffer=_obj.buf;
 	_s.loop=false;
     _s.connect(_this._ac.destination);
@@ -289,19 +294,21 @@ _setInitPartsBlocksWrapper:function(_m){
 		let _st=_v._st;
 //		475:100=100:x
 //		x=100*h/w
-		let _h=parseInt(100*_o.height/_o.width);
+		let _w = (_o.width > _o.height) ? 100 : parseInt(100 * _o.width / _o.height);
+		let _h = (_o.width > _o.height) ? parseInt(100 * _o.height / _o.width) : 100;
 		_str+=
 			'<div class="parts_block_wrapper" data-val="'+_k+'">'+
 			'<div class="text">enemy '+_k+'</div>'+
 			'<div class="parts_block" '+
+			'data-width="' + parseInt(_o.width * 0.8) + '" '+
+			'data-height="' + parseInt(_o.height * 0.8) + '" ' +
 			'style="'+
-			'width:100px;height:'+_h+'px;'+
+			'width:'+_w+'px;height:'+_h+'px;'+
 			'background:url('+_o.img.src+') no-repeat;'+
 			'background-size:cover;'+
 			((_st!=='')?_st:'')+
 			'background-position:'+(100/_o.width*_o.imgPos[0]*-1)+'px 0px;'+
 			'">'+
-	//		'<img'+((_v._st==='')?'':' style="'+_v._st+'"')+' src="'+_v._getObj().img.src+'"></div>'+
 			'</div>'+
 			'</div><!-- /.parts_block_wrapper -->'
 	}
@@ -314,19 +321,21 @@ _setInitPartsBlocksWrapper:function(_m){
 		let _o=_v._getObj();
 //		475:100=100:x
 //		x=100*h/w
-		let _h=parseInt(100*_o.height/_o.width);
+		let _w = (_o.width > _o.height) ? 100 : parseInt(100 * _o.width / _o.height);
+		let _h = (_o.width > _o.height) ? parseInt(100 * _o.height / _o.width) : 100;
 //		console.log(_o.imgPos[0]);
 		_str+=
 			'<div class="parts_block_wrapper" data-val="'+_k+'">'+
 			'<div class="text">MAP '+_k+'</div>'+
 			'<div class="parts_block" '+
+			'data-width="' + parseInt(_o.width * 0.8) + '" ' +
+			'data-height="' + parseInt(_o.height * 0.8) + '" ' +
 			'style="'+
-			'width:100px;height:'+_h+'px;'+
+			'width:'+_w+'px;height:'+_h+'px;'+
 			'background:url('+_o.img.src+') no-repeat;'+
 			'background-size:cover;'+
 			'background-position:'+(100/_o.width*_o.imgPos[0]*-1)+'px 0px;'+
 			'">'+
-//			'<img src="'+_v._o.src+'">'+
 			'</div>'+
 			'</div><!-- /.parts_block_wrapper -->'
 	}
@@ -490,7 +499,7 @@ _setEntryLink:function(){
 _setPartsBlockEvent:function(){
 	//area_parts内、parts_blockイベント設定
 	const $_ap_pb=document.querySelectorAll('#area_parts .parts_block');
-	for(var _i=0;_i<$_ap_pb.length;_i++){
+	for(let _i=0;_i<$_ap_pb.length;_i++){
 		$_ap_pb[_i].setAttribute('draggable',true);
 		$_ap_pb[_i].addEventListener('dragstart',_GAME_STAGEEDIT_EVENTS._f_ap_dragstart,false);
 		$_ap_pb[_i].addEventListener('dragend',_GAME_STAGEEDIT_EVENTS._f_ap_dragend,false);
@@ -519,7 +528,7 @@ _init:()=>{
 	const $bgm=document.querySelector('#bgmusic select');
 	Object.keys(_CANVAS_AUDIOS).forEach(function(_k){
 		if(_k.indexOf('bg_type')===-1){return;}
-		var _op=document.createElement('option');
+		let _op=document.createElement('option');
 		_op.setAttribute('value',_k.replace('bg_',''));
 		_op.innerHTML=_k.replace('bg_','');
 		$bgm.appendChild(_op);
@@ -528,7 +537,7 @@ _init:()=>{
 
 	const $boss=document.querySelector('#boss select');
 	Object.keys(_MAP_ENEMIES_BOSS).forEach(function(_k){
-		var _op=document.createElement('option');
+		let _op=document.createElement('option');
 		_op.setAttribute('value',_k);
 		_op.innerHTML=_k;
 		$boss.appendChild(_op);
@@ -545,7 +554,7 @@ _init:()=>{
 		
 		//入力フォームのイベント設定
 		const $_fg_range=document.querySelectorAll('.form_group .col_r input[type="range"]');
-		for(var _i=0;_i<$_fg_range.length;_i++){
+		for(let _i=0;_i<$_fg_range.length;_i++){
 		    $_fg_range[_i].addEventListener('input',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
 		    $_fg_range[_i].addEventListener('change',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
 		}
@@ -695,60 +704,73 @@ _f_map_remove:function(e){
 },
 
 //====================
-//	area_selectable events
+//	area_block events
 //	parts for copy,move
 //====================
-_f_as_mouseover:function(e){
-//	console.log(e.target);
-//	パーツドラッグ中はこのイベントは発生しない
-	let _this=this;
-	if(e.target.tagName==="IMG"){
-		_GAME_STAGEEDIT_EVENTS.$_mouseover_area_parts_obj=e.target;
-		e.target.classList.add('over');
-	}
-	e.stopPropagation();
-    e.preventDefault();
-	return false;
-},//_f_as_mouseover
-_f_as_mouseout:function(e){
+_f_as_dragleave:function(e){
+	//dragout at the area_block
+//	console.log('dragleave')
 	if(_GAME_STAGEEDIT_EVENTS.$_mouseover_area_parts_obj===null
 		||_GAME_STAGEEDIT_EVENTS.$_mouseover_area_parts_obj===undefined)
 		{return;}
 	_GAME_STAGEEDIT_EVENTS.$_mouseover_area_parts_obj.classList.remove('over');
 	e.stopPropagation();
-    e.preventDefault();
+	e.preventDefault();
 	return false;
-},//_f_as_mouseout
+}, //_f_as_dragleave
 _f_as_dragenter:function(e){
-	//マップのブロック内ドラッグ
+	//dragin at the area_block to control not out of .area_blocks
 //	console.log(e.target);
 	if(this.$_do_area_parts_obj!==null){
 		this.$_do_area_parts_obj.classList.remove('over');
 	}
-	this.$_do_area_parts_obj=e.target;
+
+	//マップエリアのサイズを取得
+	const _p_w = document.querySelector('.area_blocks').offsetWidth,
+		_p_h = document.querySelector('.area_blocks').offsetHeight,
+		//ドラッグオブジェクトのサイズを取得
+		_c_w = this.$_start_area_parts_obj.getAttribute('data-width'),
+		_c_h = this.$_start_area_parts_obj.getAttribute('data-height'),
+		//area_partsの座標を取得
+		_c_l = e.currentTarget.offsetLeft,
+		_c_t = e.currentTarget.offsetTop;
+
+	const _rows = document.querySelector('.area_blocks_rows');
+
+	let _posX = parseInt((_c_l) / 20);
+	let _posY = parseInt((_c_t) / 20);
+	//ドラッグオブジェクトが、マップエリアを超えないように処理をする。
+	if (_p_w - _c_l <= _c_w) {
+		//横幅
+//		console.log('left');
+		_posX = parseInt((_p_w - _c_w) / 20);
+	}
+	if (_p_h - _c_t <= _c_h) {
+		//縦幅
+//		console.log('top');
+		_posY = parseInt((_p_h - _c_h) / 20);
+	}
+	//マップエリア内にある全area_partsから、上記算出によるarea_partsを採取
+	this.$_do_area_parts_obj = $_ab[_rows.children.length * (_posY) + _posX];
 	this.$_do_area_parts_obj.classList.add('over');
+	
     e.stopPropagation();
     e.preventDefault();
 	return false;
 },//_f_as_dragenter
-
-
 _f_as_drop:function(e){
     console.log('as_drop');
     let _o=e.dataTransfer.getData("text");//data-val
-	let $_ect=e.currentTarget;//ドロップ先.area_block
-    let $_e=this.$_start_area_parts_obj;//元.area_block
+	let $_ect = document.querySelector('.area_block.over'); //ドロップ先.area_block
+	let $_e=this.$_start_area_parts_obj;//元.area_block
+	$_e.style.zIndex = null;
+	$_e.style.visibility = null;
 
 	$_ect.classList.remove('over');
-	if($_ect.childNodes.length!==0){
-		//画像タグの場合（すでにarea_block内に画像がある場合）
-		//area_block内を全て空にする
-		$_ect.textContent=null;
-	}
     //コピー・移動先にオブジェクトを配置
 	if(e.dataTransfer.effectAllowed==='move'){
 		//移動
-		$_ect.appendChild(this.$_start_area_parts_obj);
+		$_ect.appendChild($_e);
 	}else{
 		//コピー
 		let $_cn=$_e.cloneNode(true);
@@ -765,6 +787,8 @@ _f_as_drop:function(e){
 				((_st!=='')?_st:'')+
 				'background-position:'+(20/_obj.width*_obj.imgPos[0]*-1)+'px 0px;'
 			);
+			$_cn.setAttribute('data-width', parseInt(_obj.width * 0.8));
+			$_cn.setAttribute('data-height', parseInt(_obj.height * 0.8));
 			// $_cn.children[0].width=parseInt(_obj.width*0.8);
 			// $_cn.children[0].height=parseInt(_obj.height*0.8);
 		}
@@ -778,6 +802,8 @@ _f_as_drop:function(e){
 				'background-size:cover;'+
 				'background-position:'+(20/_obj.width*_obj.imgPos[0]*-1)+'px 0px;'
 			);
+			$_cn.setAttribute('data-width', parseInt(_obj.width * 0.8));
+			$_cn.setAttribute('data-height', parseInt(_obj.height * 0.8));
 			// $_cn.style.width=parseInt(_obj.width*0.8);
 			// $_cn.style.height=parseInt(_obj.height*0.8);
 //			$_cn.children[0].width=parseInt(_obj.width*0.8);
@@ -805,6 +831,9 @@ _f_i_dragover:function(e){
 },//_f_i_dragover
 _f_i_drop:function(e){
 	console.log('form_inner drop');
+	for (let _i = 0; _i < $_ab.length; _i++) {
+		$_ab[_i].classList.remove('over');
+	}
 	if(e.dataTransfer.effectAllowed!=='move'){return false;}
 	this.$_start_area_parts_obj.parentNode.textContent=null;
 	return false;
@@ -830,12 +859,14 @@ _f_ap_dragend:function(e){
 
 //====================
 //	parts_block
-//	drag events
+//	drag events over the area
 //====================
 _f_pb_dragstart:function(e){
+	e.target.style.zIndex = 100; //手前に移動。
+	e.target.style.visibility = 'hidden'; //非表示。
 	console.log('_f_pb_dragstart');
 	e.dataTransfer.effectAllowed='move';
-    e.dataTransfer.dropEffect='move';
+	e.dataTransfer.dropEffect='move';
 	_GAME_STAGEEDIT_EVENTS.$_start_area_parts_obj=e.currentTarget;
 	e.dataTransfer.setData("text",e.currentTarget.parentNode.getAttribute('data-val'));
 	e.currentTarget.parentNode.setAttribute('data-val',0);

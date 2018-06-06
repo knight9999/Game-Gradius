@@ -720,29 +720,36 @@ class GameObject_MAP{
 		for(let _j=0;_j<_m.length;_j++){
 			//MAP衝突用1行分ループ
 			if((_m[_j]).match(/[A-Za-z]/)===null){continue;}
-			//MAPテーマより、MAPビットを取得する
+			//MAPテーマより、MAP・敵ビットを取得する
 			let _p=
 				(_this.isEnemiesBit(_m[_j]))
 				?_MAP_THEME[_this.map_theme]._enemies[_m[_j]]._getObj()
 				:_MAP_THEME[_this.map_theme]._map[_m[_j]]._getObj();
 			if(_p===undefined){
+				//テーマに対するMAP・敵ビットが存在しない場合
 				console.log('テーマ:'+_this.map_theme+'に対して '+_m[_j]+'の定義がありません。');
 			}
+			//MAP・敵ビットに定義されてる衝突ビットを取得
 			let _p_s=_p._s.split(',');
 			for(let _l=0;_l<_p_s.length;_l++){//p._s分ループ
 				let _s_mapdef_col=_this.mapdef_col[_i+_l];
 				let _s_mapdef=_this.mapdef[_i+_l];
+				//マップからはみ出る(縦)場合は無視
+				if (_s_mapdef_col === undefined
+					|| _s_mapdef === undefined ){continue;}
 				//置換箇所は文字列を分割、置換、結合処理
 				_this.mapdef_col[_i+_l]=
 					_s_mapdef_col.substr(0,_j)
-					+(function(_s_md,_s_mdc,_psl){
+					+(function(_s_mdc,_psl){
 						return _this.setCollisionBit(_psl,_s_mdc);
-					})(_s_mapdef.substr(_j,_p_s[_l].length),
-						_s_mapdef_col.substr(_j,_p_s[_l].length),
+					})(_s_mapdef_col.substr(_j,_p_s[_l].length),
 						_p_s[_l])
 					+_s_mapdef_col.substr(_j+_p_s[_l].length,_m.length);			
 			}//_l
 		}//_j
+		//マップからはみ出る(横)後方部分を削り、
+		//1行分の衝突データを完成
+		_this.mapdef_col[_i]=_this.mapdef_col[_i].substr(0, _this.mapdef[_i].length);
 		}//_i	
 	}
 	set_mapdef_col(_mx,_my,_bit){

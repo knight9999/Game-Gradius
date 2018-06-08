@@ -2747,6 +2747,8 @@ class ENEMY_BOSS_DEATH
 		_this._front_imgPosx=0;
 		//レーザをショットするまでの判別
 		_this._isfirstbreak=false;
+		_this._laser_count = 0;
+		_this._laser_count_unit = 4;
 
 	}
 	shot(){
@@ -2757,7 +2759,9 @@ class ENEMY_BOSS_DEATH
 		if(_this._isfirstbreak){
 			//レーザーを発射させる
 			_this._front_imgPosx=126;
-			if(_this._c%250===210){
+			let _c = _this._c - _this._laser_count;
+			if ( _c % (_this._laser_count_unit * 50) === ((_this._laser_count_unit - 1) * 50) + 10) {
+//			if (_this._c % 250 === 210) {
 				//ここではデスを最後にdrawImageするため、
 				//_ENEMIES配列の先頭にレーザーを挿入させる。
 				_ENEMIES.unshift(
@@ -2767,10 +2771,15 @@ class ENEMY_BOSS_DEATH
 					}));
 				_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser_long']);
 			}
+			if (_c % (_this._laser_count_unit * 50) === (_this._laser_count_unit * 50) - 1){
+				_this._laser_count_unit = parseInt(Math.random()*(6-3)+3);
+				_this._laser_count = _this._c;
+			}
 			return;
 		}
 
 		//前面が開くアニメーション
+		//ここでは250単位でショットさせる
 		if(_this._c%250>200&&_this._c%250<210){_this._front_imgPosx=42;}
 		if(_this._c%250>210&&_this._c%250<230){_this._front_imgPosx=84;}		
 		if(_this._c%250>230&&_this._c%250<240){_this._front_imgPosx=42;}
@@ -2863,14 +2872,31 @@ class ENEMY_BOSS_DEATH
 
 		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
 
+		//スピード、向き先調整
+		//単位50
 		_this.speed=(()=>{
-			if(_this._c%250>=200&&_this._c%250<249){return 0;}
-			if(_this._c%50>=40&&_this._c%50<49){return 0;}
+			if (_this._isfirstbreak) {
+				//このタイミングはshot()も同様
+				let _c = _this._c - _this._laser_count;
+				//レーザーショット時
+				if (_c % (_this._laser_count_unit * 50) >= (_this._laser_count_unit - 1) * 50
+					&& _c % (_this._laser_count_unit * 50) < (_this._laser_count_unit * 50)) {
+					return 0;
+				}
+			}else{
+				if (_this._c % 250 >= 200 && _this._c % 250 < 250) {
+					return 0;
+				}
+			}
+			//止まるタイミング
+			if(_this._c%50>=40&&_this._c%50<50){return 0;}
+			//止まった時に自機位置に合わせて向き先を調整させる
 			if(_this._c%50===0){
 				return (_p._y<_this.y+_this.height)
 							?_this.defSpeed*-1
 							:_this.defSpeed;
 			}
+			//画面からはみ出ないようにする
 			if(_this.y<0&&_this.speed<0){return _this.defSpeed;}	
 			if(_this.y+_this.height>_CANVAS.height&&_this.speed>0){return _this.defSpeed*-1;}
 			return _this.speed;

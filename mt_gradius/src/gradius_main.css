@@ -71,58 +71,47 @@ body *{box-sizing:border-box;}
 
 #game_start_wrapper{
 	align-items:center;
-	display:none;
+	display:flex;
 	height:100%;
 	justify-content:center;
-	left:0px;
-	position:absolute;
-	top:0px;
 	opacity:0;
 	width:100%;
 	z-index:1;
 }
 #game_start_wrapper.on{
 	animation:_fadein 1.0s;
-	display:flex;
 	opacity:1;
 }
 #game_start{
-	height:500px;
-	max-width:1000px;
 	position:relative;
-	width:100%;
+	text-align: center;
+	width:90%;
 }
 #game_start img.gradius_logo{
-	position:absolute;
-	left:calc(50% - 400px);
-	top:0px;
+	padding-bottom: 20px;
+	width: 100%;
 }
 
 #game_start .title{
-	left:50%;
-	position:absolute;
 	opacity:1;
-	top:180px;
-    transform:translateX(-50%);
+	padding-bottom: 20px;
+	position:relative;
+	text-align: center;
 	white-space:nowrap;
 }
 
 #game_start .text{
-    left:50%;
-	position:absolute;
+	padding-bottom: 20px;
+	position:relative;
 	opacity:1;
-	top:50%;
-    transform:translateX(-50%);
+	text-align: center;
 	white-space:nowrap;
 }
 #game_start .text.on{animation:_flashing 0.1s infinite linear;}
 
 #game_start .text_loading{
-    left:50%;
-	position:absolute;
+	position:relative;
 	opacity:0;
-	top:60%;
-    transform:translateX(-50%);
 	white-space:nowrap;
 }
 #game_start .text_loading.on{opacity:1;animation:_flashing 0.1s infinite linear;}
@@ -212,7 +201,7 @@ body.sp section#sp_landscapemode{display:none !important;}
 
 body.sp section#game_wrapper.on{display:block;}
 body.sp section#game_wrapper #game{border:2px solid rgba(190,190,190,1.0);}
-body.sp section#game_start_wrapper #game_start{top:5%;}
+body.sp section#game_start_wrapper #game_start{}
 
 body.sp section#sp_controller.on{
     bottom:0px;
@@ -295,12 +284,24 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a::before{
 }
 
 
-
-@media screen and (min-width: 768px) and (max-width: 1024px) {
+/********
+iPad
+********/
+@media screen and (min-width: 1024px) and (orientation: landscape){
 body.sp section#game_start_wrapper{display:block;}
-body.sp section#game_start_wrapper #game_start{top:calc(50% - 250px);}
+body.sp section#game_start_wrapper #game_start{
+	max-width:80%;
+	margin:0px auto;
+	transform: scale(1.0) translateY(20%);
+	width:80%;
+}
 
-
+#game_start .text {
+	top: 260px;
+}
+#game_start .text_loading {
+	top: 300px;
+}
 body.sp section#sp_controller.on{height:250px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main{
 	height:200px;
@@ -331,59 +332,240 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b{right:100
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px;top:40px;}
 }
 
-@media screen and (max-width: 767px) {
-/* 5.5 4.7 4.0inch */
-body.sp section#game_wrapper{height:100%;transform:scale(0.80);transform-origin:top;}
-body.sp section#game_start_wrapper.on{
-	height:calc(100% - 120px);
-	top:0px;
+/********
+iPhoneX
+********/
+@media screen and (min-width: 737px) and (max-width: 1023px) and (orientation: landscape) {
+body.sp section#game_wrapper {
+	height: 100%;
+	transform: scale(0.60);
+	transform-origin: top;
 }
-body.sp section#game_start_wrapper #game_start{
-	height:100%;
-	transform: scale(0.75) translateY(0%);
+
+body.sp section#game_start_wrapper #game_start {
+	transform: scale(0.75);
 	transform-origin: top center;
 }
-#game_start .text{top:260px;}
-#game_start .text_loading{top:300px;}
 
-body.sp section#sp_controller #sp_controller_inner .sp_controller_main{height:100px;width:100px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_controller_main_center{
-	left:calc(50% - 45px);
-	height:90px;
-	top:calc(50% - 45px);
-	width:90px;
+body.sp section#game_start_wrapper #game_start .title {
+	padding-bottom:0px;
+	transform: scale(0.75);
+}
+body.sp section#game_start_wrapper #game_start .text {
+	padding-bottom:0px;
+	transform: scale(0.75);
+}
+body.sp section#game_start_wrapper #game_start .text_loading {
+	padding-bottom:0px;
+	transform: scale(0.75);
 }
 
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide{right:350px;bottom:0px;height:30px !important;width:30px !important;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r{right:280px;bottom:20px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:210px;bottom:0px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:140px;bottom:20px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b{right:70px;bottom:0px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px;bottom:20px;}
+body.sp section#sp_controller #sp_controller_inner {
+	width: 80%;
 }
 
-@media screen and (max-width: 666px) {
-/* 4.0inch */
-body.sp section#game_start_wrapper #game_start{
+body.sp section#sp_controller #sp_controller_inner .sp_controller_main {
+	height: 100px;
+	width: 100px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_controller_main_center {
+	left: calc(50% - 45px);
+	height: 90px;
+	top: calc(50% - 45px);
+	width: 90px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide {
+	right: 350px;
+	bottom: 0px;
+	height: 30px !important;
+	width: 30px !important;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r {
+	right: 280px;
+	bottom: 20px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s {
+	right: 210px;
+	bottom: 0px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p {
+	right: 140px;
+	bottom: 20px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b {
+	right: 70px;
+	bottom: 0px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a {
+	right: 0px;
+	bottom: 20px;
+}
+
+}
+
+/********
+iPhone 5.5 4.7 4.0inch
+********/
+@media screen and (min-width: 569px) and (max-width: 736px) and (orientation: landscape) {
+body.sp section#game_wrapper {
 	height: 100%;
-	transform: scale(0.6) translateY(0%);
+	transform: scale(0.80);
+	transform-origin: top;
 }
-#game_start .text{top:260px;}
-#game_start .text_loading{top:300px;}
 
-body.sp section#sp_controller #sp_controller_inner{width:95%;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_main{height:100px;width:100px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_controller_main_center{
-	left:calc(50% - 45px);
-	height:90px;
-	top:calc(50% - 45px);
-	width:90px;
+body.sp section#game_start_wrapper #game_start {
+	transform: scale(0.8);
+	transform-origin: top center;
 }
-body.sp section#sp_controller #sp_controller_inner>div[class*="bt"]{height:60px;width:60px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide{right:350px;bottom:10px;height:30px !important;width:30px !important;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r{right:280px;bottom:10px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:210px;bottom:10px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:140px;bottom:10px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b{right:70px;bottom:10px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px;bottom:10px;}
+
+body.sp section#game_start_wrapper #game_start .title {
+	padding-bottom:0px;
+	transform: scale(0.8);
+}
+
+body.sp section#game_start_wrapper #game_start .text {
+	padding-bottom:0px;
+	transform: scale(0.8);
+}
+
+body.sp section#game_start_wrapper #game_start .text_loading {
+	padding-bottom:0px;
+	transform: scale(0.8);
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_main {
+	height: 100px;
+	width: 100px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_controller_main_center {
+	left: calc(50% - 45px);
+	height: 90px;
+	top: calc(50% - 45px);
+	width: 90px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide {
+	right: 350px;
+	bottom: 0px;
+	height: 30px !important;
+	width: 30px !important;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r {
+	right: 280px;
+	bottom: 20px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s {
+	right: 210px;
+	bottom: 0px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p {
+	right: 140px;
+	bottom: 20px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b {
+	right: 70px;
+	bottom: 0px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a {
+	right: 0px;
+	bottom: 20px;
+}
+
+}
+
+/********
+iPhone 4.0inch
+********/
+@media screen and (max-width: 568px) and (orientation: landscape) {
+body.sp section#game_wrapper {
+	height: 100%;
+	transform: scale(0.80);
+	transform-origin: top;
+}
+body.sp section#game_start_wrapper #game_start {
+	transform: scale(0.75);
+	transform-origin: top center;
+}
+
+body.sp section#game_start_wrapper #game_start .title {
+	padding-bottom:0px;
+	transform: scale(0.75);
+}
+
+body.sp section#game_start_wrapper #game_start .text {
+	padding-bottom:0px;
+	transform: scale(0.75);
+}
+
+body.sp section#game_start_wrapper #game_start .text_loading {
+	padding-bottom:0px;
+	transform: scale(0.75);
+}
+
+body.sp section#sp_controller #sp_controller_inner {
+	width: 95%;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_main {
+	height: 100px;
+	width: 100px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_controller_main_center {
+	left: calc(50% - 45px);
+	height: 90px;
+	top: calc(50% - 45px);
+	width: 90px;
+}
+
+body.sp section#sp_controller #sp_controller_inner>div[class*="bt"] {
+	height: 60px;
+	width: 60px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide {
+	right: 350px;
+	bottom: 10px;
+	height: 30px !important;
+	width: 30px !important;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r {
+	right: 280px;
+	bottom: 10px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s {
+	right: 210px;
+	bottom: 10px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p {
+	right: 140px;
+	bottom: 10px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b {
+	right: 70px;
+	bottom: 10px;
+}
+
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a {
+	right: 0px;
+	bottom: 10px;
+}
+
 }

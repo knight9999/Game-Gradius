@@ -2746,22 +2746,55 @@ class ENEMY_BOSS_DEATH
 		//前画像（スプライト）調整するための変数
 		_this._front_imgPosx=0;
 		//レーザをショットするまでの判別
-		_this._isfirstbreak=false;
-		_this._laser_count = 0;
-		_this._laser_count_unit = 4;
+		_this._is_laser_status=false;
+		_this._shot_count = 0;
+		_this._shot_count_unit = 5;
 
+	}
+	setShotCountUnit(){
+		//ショット調整
+		let _this=this;
+		let _c = _this._c - _this._shot_count;
+		if (_c % (_this._shot_count_unit * 50) === (_this._shot_count_unit * 50) - 1) {
+			//弾とレーザーでショットタイミングを調整させる
+			_this._shot_count_unit = 
+				(_this._is_laser_status)
+					?parseInt(Math.random() * (6 - 3) + 3)//レーザー
+					:_this._shot_count_unit;//弾（固定）
+			//発射完了後にその時の_this._cを基準値にする。
+			_this._shot_count = _this._c;
+		}
+	}
+	isShooting(){
+		//ショット中判定フラグ
+		let _this = this;
+		let _c = _this._c - _this._shot_count;
+		if (_c % (_this._shot_count_unit * 50) >= (_this._shot_count_unit - 1) * 50 &&
+			_c % (_this._shot_count_unit * 50) < (_this._shot_count_unit * 50)) {
+			return true;
+		}
+		return false;
+	}
+	isShot(){
+		//ショット判定フラグ	
+		let _this=this;
+		let _c = _this._c - _this._shot_count;
+//			if (_this._c % 250 === 210)
+		if (_c % (_this._shot_count_unit * 50) === ((_this._shot_count_unit - 1) * 50) + 10) {return true;}
+		return false;
 	}
 	shot(){
 		//特定のタイミングで発射させる
 		let _this=this;
 		//初回は無視する
 		if(_this._c===0){return;}
-		if(_this._isfirstbreak){
-			//レーザーを発射させる
+
+		//========
+		//レーザーを発射させる
+		//========
+		if(_this._is_laser_status){
 			_this._front_imgPosx=126;
-			let _c = _this._c - _this._laser_count;
-			if ( _c % (_this._laser_count_unit * 50) === ((_this._laser_count_unit - 1) * 50) + 10) {
-//			if (_this._c % 250 === 210) {
+			if ( _this.isShot() ) {
 				//ここではデスを最後にdrawImageするため、
 				//_ENEMIES配列の先頭にレーザーを挿入させる。
 				_ENEMIES.unshift(
@@ -2771,22 +2804,26 @@ class ENEMY_BOSS_DEATH
 					}));
 				_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser_long']);
 			}
-			if (_c % (_this._laser_count_unit * 50) === (_this._laser_count_unit * 50) - 1){
-				_this._laser_count_unit = parseInt(Math.random()*(6-3)+3);
-				_this._laser_count = _this._c;
-			}
 			return;
 		}
 
-		//前面が開くアニメーション
+		//========
+		//弾を発射させる
+		//========
 		//ここでは250単位でショットさせる
-		if(_this._c%250>200&&_this._c%250<210){_this._front_imgPosx=42;}
-		if(_this._c%250>210&&_this._c%250<230){_this._front_imgPosx=84;}		
-		if(_this._c%250>230&&_this._c%250<240){_this._front_imgPosx=42;}
-		if(_this._c%250>240&&_this._c%250<250){_this._front_imgPosx=0;}
+		//_this._shot_count_unit=5
+		let _c = _this._c - _this._shot_count;
+		let _uc = _this._shot_count_unit * 50;
+
+		//前面が開くアニメーション
+		//200カウントに達したら、前面の壁を開く
+		if(_c%_uc>200&&_c%_uc<210){_this._front_imgPosx=42;}
+		if(_c%_uc>210&&_c%_uc<230){_this._front_imgPosx=84;}		
+		if(_c%_uc>230&&_c%_uc<240){_this._front_imgPosx=42;}
+		if(_c%_uc>240&&_c%_uc<250){_this._front_imgPosx=0;}
 
 		//弾を発射させる
-		if(_this._c%250===210){
+		if (_this.isShot()) {
 //			console.log('shot!');
 			for(let _i=0;_i<5;_i++){
 				_ENEMIES_SHOTS.push(
@@ -2856,10 +2893,10 @@ class ENEMY_BOSS_DEATH
 		if(!_this.isMove()){return;}
 		if(!_this.isAllset()){return;}
 
-		if(_this._isfirstbreak===false
+		if(_this._is_laser_status===false
 			&&(_this._c>=2000
 			||_this._status<=75)){
-			_this._isfirstbreak=true;
+			_this._is_laser_status=true;
 			//爆発して終了
 			_ENEMIES_COLLISIONS.push(
 				new GameObject_ENEMY_COLLISION(
@@ -2875,19 +2912,8 @@ class ENEMY_BOSS_DEATH
 		//スピード、向き先調整
 		//単位50
 		_this.speed=(()=>{
-			if (_this._isfirstbreak) {
-				//このタイミングはshot()も同様
-				let _c = _this._c - _this._laser_count;
-				//レーザーショット時
-				if (_c % (_this._laser_count_unit * 50) >= (_this._laser_count_unit - 1) * 50
-					&& _c % (_this._laser_count_unit * 50) < (_this._laser_count_unit * 50)) {
-					return 0;
-				}
-			}else{
-				if (_this._c % 250 >= 200 && _this._c % 250 < 250) {
-					return 0;
-				}
-			}
+			//ショット中
+			if (_this.isShooting()) {return 0;}
 			//止まるタイミング
 			if(_this._c%50>=40&&_this._c%50<50){return 0;}
 			//止まった時に自機位置に合わせて向き先を調整させる
@@ -2903,6 +2929,9 @@ class ENEMY_BOSS_DEATH
 		})();
 		_this.y+=_this.speed;
 		_this.shot();
+
+		//ショット完了後のステータス調整
+		_this.setShotCountUnit();
 
 		//自爆
 		_this.setSelfCollision();

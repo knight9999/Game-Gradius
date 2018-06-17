@@ -21,8 +21,8 @@ class GameObject_ENEMY_SHOT{
 		let _this=this;
 		_this.x=_p.x||500;
 		_this.y=_p.y||300;
-		_this.tx=_PLAYERS_MAIN.getPlayerCenterPosition()._x;
-		_this.ty=_PLAYERS_MAIN.getPlayerCenterPosition()._y;
+		_this.tx=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition()._x;
+		_this.ty=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition()._y;
 
 		_this.img=_p.img||_CANVAS_IMGS['enemy_bullet'].obj;
 		_this.imgPos=_p.imgPos||[0,18];//スプライトのコマポジション
@@ -298,7 +298,7 @@ class ENEMY_SHOT_DEATH
 		}
 		_this.map_collition();
 		_this.speed+=0.17;
-		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
+		let _p=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 		if(_p._y<_this.y){_this.deg++;}
 		if(_p._y>_this.y){_this.deg--;}
 

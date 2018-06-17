@@ -468,14 +468,14 @@ class ENEMY_a extends GameObject_ENEMY{
 		let _this=this;
 		//向き・表示の設定
 		if(_this.direct===_DEF_DIR._U){
-			if(_PLAYERS_MAIN.x<_this.x){
+			if(_PARTS_PLAYERMAIN._players_obj.x<_this.x){
 				_CONTEXT.setTransform(1,0,0,-1,0,_this.y*2+_this.height);
 			}else{
 				_CONTEXT.setTransform(-1,0,0,-1,_this.x*2+_this.width,_this.y*2+_this.height);			
 			}
 		}
 		if(_this.direct===_DEF_DIR._D){
-			if(_PLAYERS_MAIN.x<_this.x){
+			if(_PARTS_PLAYERMAIN._players_obj.x<_this.x){
 				_CONTEXT.setTransform(1,0,0,1,0,0);
 			}else{
 				_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.width,0);
@@ -493,7 +493,7 @@ class ENEMY_a extends GameObject_ENEMY{
 			}else{
 				return [50];
 			}
-		})(Math.abs(_PLAYERS_MAIN.y-_this.y));
+		})(Math.abs(_PARTS_PLAYERMAIN._players_obj.y-_this.y));
 	}
 }
 
@@ -623,14 +623,14 @@ class ENEMY_c extends GameObject_ENEMY{
 	setDrawImageDirect(){
 		let _this=this;
 		if(_this.direct===_DEF_DIR._U){
-			if(_PLAYERS_MAIN.x<_this.x){
+			if(_PARTS_PLAYERMAIN._players_obj.x<_this.x){
 				_CONTEXT.setTransform(1,0,0,-1,0,_this.y*2+_this.height);
 			}else{
 				_CONTEXT.setTransform(-1,0,0,-1,_this.x*2+_this.width,_this.y*2+_this.height);			
 			}
 		}
 		if(_this.direct===_DEF_DIR._D){
-			if(_PLAYERS_MAIN.x<_this.x){
+			if(_PARTS_PLAYERMAIN._players_obj.x<_this.x){
 				_CONTEXT.setTransform(1,0,0,1,0,0);
 			}else{
 				_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.width,0);
@@ -640,7 +640,7 @@ class ENEMY_c extends GameObject_ENEMY{
 	}
 	set_speed(){
 		let _p=
-			_PLAYERS_MAIN.getPlayerCenterPosition();
+			_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 
 		if(this._c>5000*Math.random()){
 			this._c=0;
@@ -659,7 +659,7 @@ class ENEMY_c extends GameObject_ENEMY{
 			return;
 		}
 
-		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
+		let _p=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 		let _e=_this.getEnemyCenterPosition();
 		let _deg=_GAME.getDeg({x:_p._x,y:_p._y},{x:_e._x,y:_e._y});
 		_ENEMIES_SHOTS.push(
@@ -902,7 +902,7 @@ class ENEMY_m_group extends GameObject_ENEMY{
 	moveSet(){
 		let _this=this;
 
-		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
+		let _p=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 		_this._change=(function(){
 			if(_this._change){return true;}
 			if(_this.direct===_DEF_DIR._U){
@@ -1329,10 +1329,10 @@ class ENEMY_q extends GameObject_ENEMY{
 		//モアイがキャンバスから外れた場合
 		if(_GAME.isEnemyCanvasOut(_this)){return false;}
 		//自機とのY距離が100ピクセル以上の場合
-		if(Math.abs(_PLAYERS_MAIN.y-_this.y)>100){return false;}
+		if(Math.abs(_PARTS_PLAYERMAIN._players_obj.y-_this.y)>100){return false;}
 		if(_this.direct===_DEF_DIR._LU
 			||_this.direct===_DEF_DIR._LD){
-			if(_PLAYERS_MAIN.x<_this.x){return false;}
+			if(_PARTS_PLAYERMAIN._players_obj.x<_this.x){return false;}
 		 }
 		return true;
 	}
@@ -1468,7 +1468,7 @@ class ENEMY_moai_ring extends GameObject_ENEMY{
 		});
         let _this=this;
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision2'];		
-		_this.rad=_GAME.getRad(_PLAYERS_MAIN,{x:_p.x,y:_p.y});
+		_this.rad=_GAME.getRad(_PARTS_PLAYERMAIN._players_obj,{x:_p.x,y:_p.y});
 		_this.sx=Math.cos(_this.rad);
 		_this.sy=Math.sin(_this.rad);
 		_this.speed=_MAPDEFS[_MAP_PETTERN]._speed*1.5;
@@ -1617,7 +1617,7 @@ class ENEMY_frame_2 extends GameObject_ENEMY{
 			imgPos:_p.imgPos||[0,35]
 		});
 		let _this=this;
-		_this.speed=(Math.random()*(8-4)+4)*-1;
+		_this.speed=(Math.random()*(6-4)+4)*-1;
 		_this.deg=Math.random()*(235-125)+125;
 		_this.speedx=Math.cos(_this.deg*Math.PI/180);//単位x
 		_this.speedy=Math.sin(_this.deg*Math.PI/180);//単位y
@@ -1744,7 +1744,7 @@ class ENEMY_cell_core
 	}
 	set_hands_target(_c,_max){
 		let _this=this;
-		let _pp=_PLAYERS_MAIN.getPlayerCenterPosition();
+		let _pp=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 		if(_c%_max>0&&_c%_max<parseInt(_max/2)){
 			return _pp;
 		}
@@ -1953,7 +1953,7 @@ class ENEMY_cell_core
 		_this.set_aniPos();
 
 		const _e=_this.getEnemyCenterPosition();
-		const _p=_PLAYERS_MAIN.getPlayerCenterPosition();
+		const _p=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 
 		let _rad=_GAME.getRad(
 			{x:_p._x,y:_p._y},
@@ -2178,7 +2178,7 @@ class ENEMY_cell_hand_3
 	}
 	moveDraw(){
 		let _this=this;
-		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
+		let _p=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 		let _e=_this.getEnemyCenterPosition();
 		let _r=Math.atan2(_e._y-_p._y,_e._x-_p._x);
 		_GAME._setDrawImage({

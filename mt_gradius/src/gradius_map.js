@@ -909,8 +909,8 @@ class GameObject_MAP{
 	isPlayersShotCollision(){
 		let _this=this;
 		//プレーヤーのショットあたり判定
-		for(let _i=0;_i<_PLAYERS_SHOTS[_SHOTTYPE].length;_i++){
-		let _ps=_PLAYERS_SHOTS[_SHOTTYPE][_i];
+		for(let _i=0;_i<_PARTS_PLAYERMAIN._shots.shot[_PARTS_PLAYERMAIN._shot_type].length;_i++){
+		let _ps=_PARTS_PLAYERMAIN._shots.shot[_PARTS_PLAYERMAIN._shot_type][_i];
 		for(let _j=0;_j<_ps.shots.length;_j++){
 			let _pss=_ps.shots[_j];
 			//ショット中でない場合無視
@@ -920,8 +920,8 @@ class GameObject_MAP{
 		}//_i
 
 		//ミサイルのあたり判定
-		for(let _i=0;_i<_PLAYERS_MISSILE.length;_i++){
-		let _pm=_PLAYERS_MISSILE[_i];
+		for(let _i=0;_i<_PARTS_PLAYERMAIN._shots.missile.length;_i++){
+		let _pm=_PARTS_PLAYERMAIN._shots.missile[_i];
 		if(!_pm.player.isalive()){continue;}
 		for(let _j=0;_j<_pm.shots.length;_j++){
 			let _pms=_pm.shots[_j];

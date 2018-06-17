@@ -24,38 +24,7 @@ let _CONTEXT;
 
 let _DRAW_IS_GAMECLEAR=false;//GameClearフラグ
 
-const _SHOTTYPE_MISSILE='_SHOTTYPE_MISSILE';
-const _SHOTTYPE_NORMAL='_SHOTTYPE_NORMAL';
-const _SHOTTYPE_DOUBLE='_SHOTTYPE_DOUBLE';
-const _SHOTTYPE_LASER='_SHOTTYPE_LASER';
-
-const _SHOTTYPE_RIPPLE_LASER='_SHOTTYPE_RIPPLE_LASER';
-let _SHOTTYPE=_SHOTTYPE_NORMAL;
-
 let _SCORE='';
-
-let _PLAYERS_MAIN='';
-let _PLAYERS_MAIN_FORCE='';
-
-let _PLAYERS_OPTION=new Array();
-let _PLAYERS_OPTION_ISALIVE=0;//オプション表示数
-const _PLAYERS_OPTION_MAX=4;
-
-const _PLAYERS_MOVE_DRAW_MAX=100;
-let _PLAYERS_MOVE_FLAG=false;
-let _PLAYERS_MOVE_DRAW_X=new Array();//自機移動分Xの配列
-let _PLAYERS_MOVE_DRAW_Y=new Array();//自機移動分Yの配列
-
-const _PLAYERS_MAX=5;
-const _PLAYERS_SHOTS_MAX=2;
-
-let _PLAYERS_SHOTS={
-	'_SHOTTYPE_NORMAL':new Array(),
-	'_SHOTTYPE_DOUBLE':new Array(),
-	'_SHOTTYPE_LASER':new Array()
-}
-let _PLAYERS_MISSILE=new Array();
-let _PLAYERS_MISSILE_ISALIVE=false;
 
 let _ENEMIES=new Array();
 let _ENEMIES_SHOTS=new Array();
@@ -133,6 +102,7 @@ const _GAME={//ゲーム用スクリプト
 		//マップ用jsonを取得したあとに、
 		//スタート画面をコールバックで表示させる
 		//SCORE
+		_PARTS_PLAYERMAIN._set_shot_type('_SHOTTYPE_NORMAL');
 		_SCORE=new GameObject_SCORE();
 		_MAP=new GameObject_MAP();
 		_MAP.init(_GAME._showGameStart);
@@ -430,87 +400,13 @@ const _GAME={//ゲーム用スクリプト
 		_o.innerHTML=_s;
 	},//_setTextToFont
 	_getPlayerMoveDrawX(_elem){
-		if(_PLAYERS_MOVE_DRAW_X[_elem]
-				===undefined){return null;}
-		return _PLAYERS_MOVE_DRAW_X[_elem];
+		return _PARTS_PLAYERMAIN._get_move_drawX(_elem);
 	},
 	_getPlayerMoveDrawY(_elem){
-		if(_PLAYERS_MOVE_DRAW_Y[_elem]
-				===undefined){return null;}
-		return _PLAYERS_MOVE_DRAW_Y[_elem];
+		return _PARTS_PLAYERMAIN._get_move_drawY(_elem);
 	},
 	_setPlayerMoveDraw(){
-		//自機移動分配列をセットする。
-		//Y軸無限:配列0番目からY起点にして要素0番目からリフレッシュさせる
-		//Y軸有限:配列0番目から軸を流し込む
-		let _w=_PLAYERS_MAIN.width;
-		let _h=_PLAYERS_MAIN.height;
-		let _x=_PLAYERS_MAIN.x+parseInt(_w/4);
-		let _y=_PLAYERS_MAIN.y+parseInt(_h/4);
-		let _mgs=_MAP.getBackGroundSpeedY()*-1;
-		let _pmdy=_PLAYERS_MOVE_DRAW_Y;
-	
-		//配列要素数が所定より大きい場合は、
-		//最後の要素を外す。
-		if(_PLAYERS_MOVE_DRAW_X.length
-			===_PLAYERS_MOVE_DRAW_MAX){
-				_PLAYERS_MOVE_DRAW_X.pop();
-		}
-		if(_PLAYERS_MOVE_DRAW_Y.length
-			===_PLAYERS_MOVE_DRAW_MAX){
-				_PLAYERS_MOVE_DRAW_Y.pop();
-		}
-	
-		_PLAYERS_MOVE_DRAW_X.unshift(_x);
-	//	console.log(_pmdy);
-	//	console.log('y==============:'+_PLAYERS_MAIN.y);
-	//	console.log('mgs==============:'+_mgs);
-	
-		//Y軸の処理（縦スクロールなし）
-		//Y軸では、縦スクロールが発生しない間は、
-		//要素0から順に自機移動座標を追加する。
-		if(!_MAP.map_infinite){
-			_pmdy.unshift(_y);
-			return;
-		}
-	
-		//Y軸の処理（縦スクロール発生時）
-		if(_mgs===0){
-			//縦スクロールが発生しない場合は、
-			//要素0から追加
-			_pmdy.unshift(_y);
-			return;		
-		}
-	
-		//この時点での、自機移動分配列を要素0から
-		//Y座標の値を参照し、必要に応じて上書きする。
-		//オプション1つ目：要素10
-		//オプション2つ目：要素20
-		//オプション3つ目：要素30
-		//オプション4つ目：要素40
-		for(let _i=0;_i<_PLAYERS_MOVE_DRAW_MAX;_i++){
-			if(_pmdy[_i]===undefined){
-				//要素内未定義の場合は、
-				//自機座標Yと移動分を加算させる
-				_pmdy.push(_y+(_mgs*_i));
-				continue;
-			}
-			if(_mgs>0){
-				//下スクロール時
-				_pmdy[_i]=(_pmdy[_i]>=_y+(_mgs*_i))
-							?_y+(_mgs*_i)
-							:_pmdy[_i]+_mgs;
-				continue;
-			}
-			if(_mgs<0){
-				//上スクロール時
-				_pmdy[_i]=(_pmdy[_i]<=_y+(_mgs*_i))
-							?_y+(_mgs*_i)
-							:_pmdy[_i]+_mgs;
-				continue;				
-			}
-		}
-	//	console.log(_pmdy);
+		_PARTS_PLAYERMAIN._set_move_draw({_mapobj:_MAP});
 	},
 	_setPlay(_obj){
 		if(_obj===null||_obj===undefined){return;}

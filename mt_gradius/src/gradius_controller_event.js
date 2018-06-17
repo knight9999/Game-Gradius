@@ -444,24 +444,24 @@ const _KEYEVENT={
 	}
 
 	if(e.key==='ArrowLeft'||e.key==='Left'){
-		_PLAYERS_MOVE_FLAG=true;
-		_PLAYERS_MAIN._x
-			=_PLAYERS_MAIN.accel*-1;
+		_PARTS_PLAYERMAIN._move_ismove=true;
+		_PARTS_PLAYERMAIN._players_obj._x
+			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
 	}
 	if(e.key==='ArrowRight'||e.key==='Right'){
-		_PLAYERS_MOVE_FLAG=true;
-		_PLAYERS_MAIN._x
-			=_PLAYERS_MAIN.accel;
+		_PARTS_PLAYERMAIN._move_ismove=true;
+		_PARTS_PLAYERMAIN._players_obj._x
+			=_PARTS_PLAYERMAIN._players_obj.accel;
 	}
 	if(e.key==='ArrowUp'||e.key==='Up'){
-		_PLAYERS_MOVE_FLAG=true;
-		_PLAYERS_MAIN._y
-			=_PLAYERS_MAIN.accel*-1;
+		_PARTS_PLAYERMAIN._move_ismove=true;
+		_PARTS_PLAYERMAIN._players_obj._y
+			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
 	}
 	if(e.key==='ArrowDown'||e.key==='Down'){
-		_PLAYERS_MOVE_FLAG=true;
-		_PLAYERS_MAIN._y
-			=_PLAYERS_MAIN.accel;
+		_PARTS_PLAYERMAIN._move_ismove=true;
+		_PARTS_PLAYERMAIN._players_obj._y
+			=_PARTS_PLAYERMAIN._players_obj.accel;
 	}
 	//装備
 	if(e.key==='B'||e.key==='b'){
@@ -488,7 +488,7 @@ const _KEYEVENT={
 //ゲーム開始時
 'keydown_game':function(e){
 	//撃たれたら機種操作不可
-	if(!_PLAYERS_MAIN.isalive()){return false;}
+	if(!_PARTS_PLAYERMAIN._players_obj.isalive()){return false;}
 //	console.log(_MAP.map_backgroundY_speed);	
 	if(e.key==='R'||e.key==='r'){
 		_DRAW_STOP_PLAYERS_SHOTS();
@@ -522,12 +522,12 @@ const _KEYEVENT={
 		if(_DEF_KEYSAFTERPAUSE===
 				_KEYSAFTERPAUSE.toString()){
 //			console.log('match');
-			_SHOTTYPE=_SHOTTYPE_NORMAL;
-			_PLAYERS_MISSILE_ISALIVE=true;
-			for(let _i=0;_i<_PLAYERS_OPTION_MAX;_i++){
-				_PLAYERS_OPTION[_i].settruealive();
+			_PARTS_PLAYERMAIN._shot_type=_PARTS_PLAYERMAIN._shot_type_def.NORMAL;
+			_PARTS_PLAYERMAIN._shot_missle_isalive=true;
+			for(let _i=0;_i<_PARTS_PLAYERMAIN._option_max;_i++){
+				_PARTS_PLAYERMAIN._option_obj[_i].settruealive();
 			}
-			_PLAYERS_MAIN_FORCE.init();
+			_PARTS_PLAYERMAIN._players_force_obj.init();
 			_KEYSAFTERPAUSE=[];
 
 			_POWERMETER._set_current_reset();
@@ -542,26 +542,26 @@ const _KEYEVENT={
 	}
 
 	if(e.key==='ArrowLeft'||e.key==='Left'){
-		_PLAYERS_MOVE_FLAG=true;
-		_PLAYERS_MAIN._x
-			=_PLAYERS_MAIN.accel*-1;
+		_PARTS_PLAYERMAIN._move_ismove=true;
+		_PARTS_PLAYERMAIN._players_obj._x
+			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
 	}
 	if(e.key==='ArrowRight'||e.key==='Right'){
-		_PLAYERS_MOVE_FLAG=true;
-		_PLAYERS_MAIN._x
-			=_PLAYERS_MAIN.accel;
+		_PARTS_PLAYERMAIN._move_ismove=true;
+		_PARTS_PLAYERMAIN._players_obj._x
+			=_PARTS_PLAYERMAIN._players_obj.accel;
 	}
 	if(e.key==='ArrowUp'||e.key==='Up'){
-		_PLAYERS_MOVE_FLAG=true;
-		_PLAYERS_MAIN._y
-			=_PLAYERS_MAIN.accel*-1;
-		_PLAYERS_MAIN.set_vv_ani(e.key);
+		_PARTS_PLAYERMAIN._move_ismove=true;
+		_PARTS_PLAYERMAIN._players_obj._y
+			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
+		_PARTS_PLAYERMAIN._players_obj.set_vv_ani(e.key);
 	}
 	if(e.key==='ArrowDown'||e.key==='Down'){
-		_PLAYERS_MOVE_FLAG=true;
-		_PLAYERS_MAIN._y
-			=_PLAYERS_MAIN.accel;
-		_PLAYERS_MAIN.set_vv_ani(e.key);
+		_PARTS_PLAYERMAIN._move_ismove=true;
+		_PARTS_PLAYERMAIN._players_obj._y
+			=_PARTS_PLAYERMAIN._players_obj.accel;
+		_PARTS_PLAYERMAIN._players_obj.set_vv_ani(e.key);
 	}
 	//装備
 	if(e.key==='B'||e.key==='b'){
@@ -584,19 +584,19 @@ const _KEYEVENT={
 },//keydown_game
 
 'keyup_game':function(e){
-	if(!_PLAYERS_MAIN.isalive()){return false;}//撃たれたら操作不可
+	if(!_PARTS_PLAYERMAIN._players_obj.isalive()){return false;}//撃たれたら操作不可
 
 	if(e.key==='ArrowLeft'||e.key==='Left'){
-		_PLAYERS_MOVE_FLAG=false;
+		_PARTS_PLAYERMAIN._move_ismove=false;
 	}
 	if(e.key==='ArrowRight'||e.key==='Right'){
-		_PLAYERS_MOVE_FLAG=false;
+		_PARTS_PLAYERMAIN._move_ismove=false;
 	}
 	if(e.key==='ArrowUp'||e.key==='Up'){
-		_PLAYERS_MOVE_FLAG=false;
+		_PARTS_PLAYERMAIN._move_ismove=false;
 	}
 	if(e.key==='ArrowDown'||e.key==='Down'){
-		_PLAYERS_MOVE_FLAG=false;
+		_PARTS_PLAYERMAIN._move_ismove=false;
 	}
 	if(e.key===' '||e.key==='Spacebar'){
 		_DRAW_STOP_PLAYERS_SHOTS();
@@ -807,73 +807,73 @@ const _KEYEVENT_SP={
 	// let _rad=_SP_CONTROLLER._get_st(e)._rad;
 	// let _dis=_SP_CONTROLLER._get_st(e)._dis;
 	// if(_dis<5){return false;}
-	_PLAYERS_MOVE_FLAG=true;	
+	_PARTS_PLAYERMAIN._move_ismove=true;	
 	let _r=_SP_CONTROLLER._get_st(e);
 	if(_r===false){return;}
-	_PLAYERS_MAIN._x=0;
-	_PLAYERS_MAIN._y=0;
+	_PARTS_PLAYERMAIN._players_obj._x=0;
+	_PARTS_PLAYERMAIN._players_obj._y=0;
 
 	if(_r===_SP_CONTROLLER._DEF_DIR._L){
 //	if(_rad>-40&&_rad<=40){
 			// 	console.log('left');
- 		_PLAYERS_MAIN._x
-			 =_PLAYERS_MAIN.accel*-1;
+ 		_PARTS_PLAYERMAIN._players_obj._x
+			 =_PARTS_PLAYERMAIN._players_obj.accel*-1;
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._LU){
 //	if(_rad>40&&_rad<=50){
 		// 	console.log('left-top');
- 		_PLAYERS_MAIN._x
- 			=_PLAYERS_MAIN.accel*-1;
-		_PLAYERS_MAIN._y
- 			=_PLAYERS_MAIN.accel*-1;
-		_PLAYERS_MAIN.set_vv_ani('Up');
+ 		_PARTS_PLAYERMAIN._players_obj._x
+ 			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
+		_PARTS_PLAYERMAIN._players_obj._y
+ 			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
+		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Up');
 	 }
 	if(_r===_SP_CONTROLLER._DEF_DIR._U){
 //	if(_rad>50&&_rad<=130){
-		_PLAYERS_MAIN._y
- 			=_PLAYERS_MAIN.accel*-1;
-		_PLAYERS_MAIN.set_vv_ani('Up');
+		_PARTS_PLAYERMAIN._players_obj._y
+ 			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
+		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Up');
 	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._RU){
 //	if(_rad>130&&_rad<=140){
 		// 	console.log('right-top');
-		_PLAYERS_MAIN._x
- 			=_PLAYERS_MAIN.accel*1;
-		_PLAYERS_MAIN._y
- 			=_PLAYERS_MAIN.accel*-1;
-		_PLAYERS_MAIN.set_vv_ani('Up');
+		_PARTS_PLAYERMAIN._players_obj._x
+ 			=_PARTS_PLAYERMAIN._players_obj.accel*1;
+		_PARTS_PLAYERMAIN._players_obj._y
+ 			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
+		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Up');
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._R){
 		// if((_rad>140&&_rad<=180)
 		// ||(_rad<-140&&_rad>=-180)){
 		// console.log('right');
- 		_PLAYERS_MAIN._x
- 			=_PLAYERS_MAIN.accel;
+ 		_PARTS_PLAYERMAIN._players_obj._x
+ 			=_PARTS_PLAYERMAIN._players_obj.accel;
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._RD){
 //		if(_rad<-130&&_rad>=-140){
 		// console.log('right-bottom');
-		_PLAYERS_MAIN._x
- 			=_PLAYERS_MAIN.accel*1;
- 		_PLAYERS_MAIN._y
- 			=_PLAYERS_MAIN.accel*1;
-		_PLAYERS_MAIN.set_vv_ani('Down');
+		_PARTS_PLAYERMAIN._players_obj._x
+ 			=_PARTS_PLAYERMAIN._players_obj.accel*1;
+ 		_PARTS_PLAYERMAIN._players_obj._y
+ 			=_PARTS_PLAYERMAIN._players_obj.accel*1;
+		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Down');
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._D){
 //	if(_rad<-50&&_rad>=-130){
 		// console.log('bottom');
- 		_PLAYERS_MAIN._y
- 			=_PLAYERS_MAIN.accel;
-		_PLAYERS_MAIN.set_vv_ani('Down');
+ 		_PARTS_PLAYERMAIN._players_obj._y
+ 			=_PARTS_PLAYERMAIN._players_obj.accel;
+		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Down');
 	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._LD){
 //	if(_rad<-40&&_rad>=-50){
 		// console.log('left-bottom');
-		_PLAYERS_MAIN._x
- 			=_PLAYERS_MAIN.accel*-1;
- 		_PLAYERS_MAIN._y
- 			=_PLAYERS_MAIN.accel*1;
-		_PLAYERS_MAIN.set_vv_ani('Down');
+		_PARTS_PLAYERMAIN._players_obj._x
+ 			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
+ 		_PARTS_PLAYERMAIN._players_obj._y
+ 			=_PARTS_PLAYERMAIN._players_obj.accel*1;
+		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Down');
  	}
 
 	return false;
@@ -881,17 +881,17 @@ const _KEYEVENT_SP={
 },//keymove_game_controller
 'keyend_game_controller':function(e){
 	_SP_CONTROLLER._set_reset();
-	_PLAYERS_MAIN.set_moveamount_reset();
-	_PLAYERS_MOVE_FLAG=false;
+	_PARTS_PLAYERMAIN._players_obj.set_moveamount_reset();
+	_PARTS_PLAYERMAIN._move_ismove=false;
 },//keyend_game_controller
 
 'keydown_game_hide':function(e){
-	_SHOTTYPE=_SHOTTYPE_NORMAL;
-	_PLAYERS_MISSILE_ISALIVE=true;
-	for(let _i=0;_i<_PLAYERS_OPTION_MAX;_i++){
-		_PLAYERS_OPTION[_i].settruealive();
+	_PARTS_PLAYERMAIN._shot_type=_PARTS_PLAYERMAIN._shot_type_def.NORMAL;
+	_PARTS_PLAYERMAIN._shot_missle_isalive=true;
+	for(let _i=0;_i<_PARTS_PLAYERMAIN._option_max;_i++){
+		_PARTS_PLAYERMAIN._option_obj[_i].settruealive();
 	}
-	_PLAYERS_MAIN_FORCE.init();
+	_PARTS_PLAYERMAIN._players_force_obj.init();
 	_KEYSAFTERPAUSE=[];
 
 	_POWERMETER._set_current_reset();

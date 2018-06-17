@@ -538,7 +538,7 @@ class ENEMY_BOSS_BIGCORE2
 		//カウント150で1周
 		let _this=this;
 		let _ec=_this.getEnemyCenterPosition();
-		let _pc=_PLAYERS_MAIN.getPlayerCenterPosition();
+		let _pc=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 
 		if(_this._c%150===0){//自機動かす
 			_this._moveYStop=false;		
@@ -1054,7 +1054,7 @@ class ENEMY_BOSS_CRYSTALCORE
 		_this.shotColMap=[
 			"25,0,227,10,false",
 			"25,242,227,250,false",
-			"160,0,227,250,false"
+			"120,0,227,250,false"
 		];
 
 		//壁の初期化
@@ -1593,8 +1593,8 @@ class ENEMY_BOSS_CUBE
 		//切り替えて自機へ
 		if(_this._c===_this.change_speed_c){
 			//ここは自機へ向かわせる切替の準備
-			_this.tx=_PLAYERS_MAIN.getPlayerCenterPosition()._x;
-			_this.ty=_PLAYERS_MAIN.getPlayerCenterPosition()._y;
+			_this.tx=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition()._x;
+			_this.ty=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition()._y;
 			_this.rad=//自身と相手までのラジアン
 				Math.atan2(
 					(_this.ty-_this.y),
@@ -1691,7 +1691,7 @@ class ENEMY_BOSS_FRAME
 // 				//フレームが回転する角度が、
 // 				//true:自機（中心位置）の角度と一致する場合
 // 				//false:一致しない場合
-// 				let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
+// 				let _p=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 // 				let _e=_this.getEnemyCenterPosition();
 
 // 				//自機・敵・敵の中心点間の3辺の距離を求める。
@@ -2639,7 +2639,7 @@ class ENEMY_BOSS_CELL_EYE
 	shot(){
 		let _this=this;
 		//敵の中心から弾を発射させるための位置調整
-		let _deg=_GAME.getDeg(_PLAYERS_MAIN,_this);
+		let _deg=_GAME.getDeg(_PARTS_PLAYERMAIN._players_obj,_this);
 		for(let _i=-30;_i<=30;_i=_i+30){
 			_ENEMIES_SHOTS.push(
 				new GameObject_ENEMY_SHOT({
@@ -2907,7 +2907,7 @@ class ENEMY_BOSS_DEATH
 			_GAME._setPlay(_this.audio_collision);
 		}
 
-		let _p=_PLAYERS_MAIN.getPlayerCenterPosition();
+		let _p=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 
 		//スピード、向き先調整
 		//単位50

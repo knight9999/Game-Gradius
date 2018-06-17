@@ -1,6 +1,6 @@
 //=====================================================
-//	gradius_parts_platermain.js
-//	プレーヤーパーツ
+//	gradius_parts_playermain.js
+//	プレーヤー・ショットパーツ
 //	※デバッグモードはURLパラメータをつかう
 //		debug:（true/false）:デバッグモード有無
 //		mp:（数値）:debug有効時、デバッグしたいマップの配列要素（0スタート）
@@ -9,6 +9,583 @@
 //=====================================================
 'use strict';
 
+const _PARTS_PLAYERMAIN={
+	_players_obj:'',//プレーヤーのオブジェクトを格納
+	_players_force_obj:'',//フォース・シールドオブジェクト
+	_players_max:5,//プレーヤーの最大表示(自機1、オプション4)	
+	_players_main_isalive:true,//自機の生存
+	
+	_option_obj:new Array(),//オプションのオブジェクト
+	_option_count:0,
+	_option_max:4,//オプションの最大表示
+	_option_ani_count:0, //オプションアニメーション（拡縮）カウント
+	_option_ani_def:[ //オプションアニメーション定義
+		{scale:0.80},
+		{scale:0.70},
+		{scale:0.60},
+		{scale:0.50},
+		{scale:0.60},
+		{scale:0.70}
+	],
+
+	_shots:{//プレーヤーのショット、このソースにあるショットクラス一式格納
+		'shot': {
+			'_SHOTTYPE_NORMAL': new Array(),
+			'_SHOTTYPE_DOUBLE': new Array(),
+			'_SHOTTYPE_LASER': new Array()
+		},
+		'missile':new Array(),
+	},
+	_shot_type_def:{//ショットタイプ定義
+		MISSILE: '_SHOTTYPE_MISSILE',
+		NORMAL : '_SHOTTYPE_NORMAL',
+		DOUBLE : '_SHOTTYPE_DOUBLE',
+		LASER : '_SHOTTYPE_LASER',
+		RIPPLE_LASER : '_SHOTTYPE_RIPPLE_LASER'
+	},
+	_shot_type: '',
+	_shot_max:2,//一度のショットの最大値
+	_shot_missle_isalive:false,//ミサイル装備有無
+
+
+	_move_ismove:false,
+	_move_drawX:new Array(),
+	_move_drawY:new Array(),
+	_move_draw_max:100,
+
+	_reset:function(){
+		//以下定義をリセット
+		let _this=this;
+
+		_this._players_obj = '';
+		_this._players_force_obj = '';
+		_this._option_obj = new Array();
+
+		_this._option_count = 0;
+
+		_this._shots = {
+			'shot': {
+				'_SHOTTYPE_NORMAL': new Array(),
+				'_SHOTTYPE_DOUBLE': new Array(),
+				'_SHOTTYPE_LASER': new Array()
+			},
+			'missile':new Array(),
+		};
+		_this._shot_type = _this._shot_type_def.NORMAL;
+		_this._shot_missle_isalive = false;
+
+		_this._move_ismove = false;
+		_this._move_drawX = new Array();
+		_this._move_drawY = new Array();
+
+	},
+
+	_draw_players:function(){
+		let _this = this;
+		//自機とフォース・シールドの表示処理
+		_this._players_force_obj.setDrawImage();
+		if(_this._players_obj.isalive()){_this._players_obj.setDrawImage();}
+	},
+	_move_players:function(){
+		let _this = this;
+		//自機とフォース・シールドの移動処理
+		if(_this._players_obj.isalive()){_this._players_force_obj.move();}
+		_this._players_obj.move();
+	},
+	_draw_option:function(){
+		//オプションの移動・表示処理
+		let _this=this;
+		//オプションのアニメーションカウント設定
+		_this._set_option_count();
+		for(let _i=0;_i<_this._option_max;_i++){
+			if(_this._players_obj.isalive()){_this._option_obj[_i].move(10*(_i+1));}
+			_this._option_obj[_i].setDrawImage();
+		}
+	},
+	_get_option_scale:function(){
+		//アニメーションカウントより、
+		//オプションアニメーション定義から
+		//オプションのスケールを取得
+		let _this=this;
+		return _this._option_ani_def[_this._get_option_count()].scale;
+	},
+
+	//ショットタイプ設定
+	_set_shot_type:function(_t){
+		this._shot_type=_t;
+	},
+	_is_shottype_laser() {
+		//_shots.shot._SHOTTYPE_LASERを参照して
+		//オブジェクトがレーザーである判定
+		let _this=this;
+		let _os=_this._shots.shot._SHOTTYPE_LASER[0];
+		if(_os===undefined){return false;}
+		//現在のショットがLASERでなければfalse
+		if(_this._shot_type!==_this._shot_type_def.LASER){return false;}
+		//LASERで、レーザー装備である場合はtrue
+		if (GameObject_SHOTS_LASER.prototype.isPrototypeOf(_os) ||
+			GameObject_SHOTS_LASER_CYCLONE.prototype.isPrototypeOf(_os)
+		) {return true;}
+		//上記以外はfalseを返す
+		return false;
+	},
+	_move_shots:function(){
+		//ショット移動
+		let _this = this;
+		if(!_this._players_obj.isalive()){return;}
+		for(let _i=0;_i<_this._players_max;_i++){
+			if(_this._shot_missle_isalive){
+				_this._shots.missile[_i].move();
+			}
+			_this._shots.shot[_this._shot_type][_i].move();
+		}	
+	}, //_move_shots
+	_draw_shots:function(){
+		//ショット表示
+		let _this=this;
+		for(let _i=0;_i<_this._players_max;_i++){
+			if(_this._shot_missle_isalive){
+//				if(_this._players_obj.isalive()){_this._shots.missile[_i].move();}
+				_this._shots.missile[_i].setDrawImage();
+			}
+//			if(_this._players_obj.isalive()){_this._shots.shot[_this._shot_type][_i].move();}
+			_this._shots.shot[_this._shot_type][_i].setDrawImage();
+		}
+	}, //_draw_shots
+	_start_shots:function(){
+		let _this=this;
+		//自機・オプションのショット
+		for(var _i=0;_i<_this._shots.shot[_this._shot_type].length;_i++){
+			let _ps=_this._shots.shot[_this._shot_type][_i];
+			if(!_ps.player._isalive){continue;}
+			//ここで同時ショットと
+			//個別ショットで判別させる
+			if(_this._shot_type===_this._shot_type_def.DOUBLE){
+				if(_ps.shots[0]._shot_alive||
+					_ps.shots[1]._shot_alive){continue;}
+				_ps.shots[0]._shot=true;
+				_ps.shots[1]._shot=true;
+				//最初の要素（自機）のみショット音をだす
+				if(_i!==0){continue;}
+				_GAME._setPlay(_ps.shots[0]._audio);
+				continue;
+			}
+
+			_ps._sq=
+			(_ps._sq===_ps.shots.length-1)
+				?0
+				:_ps._sq+1;
+			var _s=_ps.shots[_ps._sq];
+
+			if(_s._shot_alive){continue;}
+			//ショット中は、ショットを有効にしない
+			_s._shot=true;
+
+			//最初の要素（自機）のみショット音をだす
+			if(_i!==0){continue;}
+			_GAME._setPlay(_s._audio);
+		}
+	}, //_start_shots
+	_stop_shots:function(){
+		let _this=this;
+		for(var _i=0;_i<_this._shots.shot[_this._shot_type].length;_i++){
+			let _ps=_this._shots.shot[_this._shot_type][_i];
+			for(let _j=0;_j<_ps.shots.length;_j++){
+				_ps.shots[_j]._shot=false;
+			}
+		}
+	}, //_move_shots_stop
+	_start_missile_shots:function(){
+		let _this=this;
+		//自機・オプションのミサイルショット
+		if(!_this._shot_missle_isalive){return;}
+		//ミサイル
+		for(var _i=0;_i<_this._shots.missile.length;_i++){
+			let _pm=_this._shots.missile[_i];
+			if(!_pm.player._isalive){continue;}
+			//ここで同時ショット(2WAY)と
+			//個別ショットで判別させる
+			if(_PLAYERS_POWER_METER===3){
+				if(_pm.shots[0]._shot_alive||
+					_pm.shots[1]._shot_alive){continue;}
+				_pm.shots[0]._shot=true;
+				_pm.shots[1]._shot=true;
+				//最初の要素（自機）のみショット音をだす
+				if(_i!==0){continue;}
+				_GAME._setPlay(_pm.shots[0]._audio);
+				continue;
+			}
+
+			_pm._sq=
+				(_pm._sq===_pm.shots.length-1)?
+					0
+					:_pm._sq+1;
+			var _sm=_pm.shots[_pm._sq];
+			//ショット中は、ショットを有効にしない
+			if(_sm._shot_alive){continue;}
+			_sm._shot=true;
+			//最初の要素（自機）のみショット音をだす
+			if(_i!==0){continue;}
+			_GAME._setPlay(_sm._audio);
+		}
+	}, //_start_missile_shots
+	_stop_missile_shots:function(){
+		let _this = this;
+		for(var _i=0;_i<_this._shots.missile.length;_i++){
+			let _pm=_this._shots.missile[_i];
+			for(let _j=0;_j<_pm.shots.length;_j++){
+				_pm.shots[_j]._shot=false;
+			}
+		}
+	}, //_stop_missile_shots
+
+	//敵衝突判定処理
+	_enemy_collision:function(_e){
+		let _this=this;
+		_this._init_laser_col_max();
+		//敵分をループさせる
+		for (let _i = 0; _i < _e.length; _i++) {
+			let _oe = _e[_i];
+			//スタンバイ状態は無視する
+			if (_oe.isIgnore()) {continue;}
+			if (_oe.isStandBy()) {continue;}
+			if (!_oe.isalive()) {continue;}
+
+			for (let _j = 0; _j < _this._shots.shot[_this._shot_type].length; _j++) {
+				let _os = _this._shots.shot[_this._shot_type][_j];
+				if (!_os.player._isalive) {
+					continue;
+				}
+				if (_this._is_shottype_laser()) {
+					//レーザーの処理
+					let _m = _os.enemy_collision(_oe);
+					_os.set_laser_col_max(_m);
+					continue;
+				}
+				//レーザー以外の処理
+				_os.enemy_collision(_oe);
+			}
+
+			//自機衝突判定
+			_this._players_obj.enemy_collision(_oe);
+			_this._players_force_obj.enemy_collision(_oe);
+
+			//ミサイルが装備されていない場合は無視する
+			if (!_this._shot_missle_isalive) {
+				continue;
+			}
+			for (let _k = 0; _k < _this._shots.missile.length; _k++) {
+				let _pm = _this._shots.missile[_k];
+				if (!_pm.player.isalive()) {
+					continue;
+				}
+				for (let _j = 0; _j < _pm.shots.length; _j++) {
+					let _pms = _pm.shots[_j];
+					_pm.enemy_collision(_oe, _pms);
+				} //_j
+			} //_k
+
+		} //_i
+		//ここでレーザーに対して、
+		//自機・オプション共に、衝突位置を決定させる
+		_this._set_shot_laser_MaxX();
+
+	}, //_enemy_collision
+	//敵弾衝突判定処理
+	_enemy_shot_collision:function(_es){
+		let _this=this;
+		if(_es===undefined){return;}
+		for(let _i=0;_i<_es.length;_i++){
+			let _e=_es[_i];
+			//自機衝突判定
+			_this._players_obj.enemy_shot_collision(_e);
+			_this._players_force_obj.enemy_shot_collision(_e);
+		}
+	}, //_enemy_shot_collision
+
+
+	_init_laser_col_max:function(){
+		let _this = this;
+		if (_this._shot_type !== _this._shot_type_def.LASER) {return;}
+		if (!_this._is_shottype_laser()){return;}
+		for (let _j = 0; _j < _this._shots.shot[_this._shot_type].length; _j++) {
+			let _os = _this._shots.shot[_this._shot_type][_j];
+			if (!_os.player._isalive) {
+				continue;
+			}
+			//レーザーのx位置も調整する。
+			let _t = _os.shots[0];
+			_t._laser_col_max=null;
+		}
+	},
+	_set_shot_laser_MaxX:function(){
+		let _this=this;
+		if(_this._shot_type!==_this._shot_type_def.LASER){return;}
+		if (!_this._is_shottype_laser()){return;}
+
+		for(let _j=0;
+			_j<_this._shots.shot[_this._shot_type].length;
+			_j++){
+		let _os=_this._shots.shot[_this._shot_type][_j];
+		if(!_os.player._isalive){continue;}
+		//レーザーのx位置も調整する。
+		let _t=_os.shots[0];
+		_t._laser_col_max=
+			(_t._laser_col_max===0||_t._laser_col_max===null)
+			?_CANVAS.width
+			:_t._laser_col_max;
+		// if(_j===1){console.log('_t.x:'+_t.x+'   ['+_shottype_lasers_col_max+']');}
+
+		if(_t.x>=_t._laser_col_max+(_os.speed*2)){
+			//すでにレーザーの先端が
+			//衝突から超えた場合は、衝突なしとして照射
+			_t._laser_MaxX=_CANVAS.width;
+		}else{
+	//			console.log(_shottype_lasers_shottype_lasers_col_max)
+			//※LASERクラスのmove()は、
+			//この数字より超えないようにする
+			_t._laser_MaxX=_t._laser_col_max+10;
+		}
+
+		}//_j
+	},
+
+	_get_move_drawX:function(_elem){
+		let _this=this;
+		if (_this._move_drawX[_elem] === undefined) {return null;}
+		return _this._move_drawX[_elem];
+	}, //_get_move_drawX
+	_get_move_drawY:function(_elem){
+		let _this=this;
+		if (_this._move_drawY[_elem] === undefined) {return null;}
+		return _this._move_drawY[_elem];
+	}, //_get_move_drawY
+	_set_move_draw:function(_p){
+		let _this=this;
+		//自機移動分配列をセットする。
+		//Y軸無限:配列0番目からY起点にして要素0番目からリフレッシュさせる
+		//Y軸有限:配列0番目から軸を流し込む
+		let _w=_this._players_obj.width;
+		let _h=_this._players_obj.height;
+		let _x=_this._players_obj.x+parseInt(_w/4);
+		let _y=_this._players_obj.y+parseInt(_h/4);
+		let _mgs=_p._mapobj.getBackGroundSpeedY() * -1;
+		let _pmdy=_this._move_drawY;
+	
+		//配列要素数が所定より大きい場合は、
+		//最後の要素を外す。
+		if(_this._move_drawX.length
+			===_this._move_draw_max){
+				_this._move_drawX.pop();
+		}
+		if(_this._move_drawY.length
+			===_this._move_draw_max){
+				_this._move_drawY.pop();
+		}
+	
+		_this._move_drawX.unshift(_x);
+	//	console.log(_pmdy);
+	//	console.log('y==============:'+_this._players_obj.y);
+	//	console.log('mgs==============:'+_mgs);
+	
+		//Y軸の処理（縦スクロールなし）
+		//Y軸では、縦スクロールが発生しない間は、
+		//要素0から順に自機移動座標を追加する。
+		if(!_p._mapobj.map_infinite){
+			_pmdy.unshift(_y);
+			return;
+		}
+	
+		//Y軸の処理（縦スクロール発生時）
+		if(_mgs===0){
+			//縦スクロールが発生しない場合は、
+			//要素0から追加
+			_pmdy.unshift(_y);
+			return;		
+		}
+	
+		//この時点での、自機移動分配列を要素0から
+		//Y座標の値を参照し、必要に応じて上書きする。
+		//オプション1つ目：要素10
+		//オプション2つ目：要素20
+		//オプション3つ目：要素30
+		//オプション4つ目：要素40
+		for(let _i=0;_i<_this._move_draw_max;_i++){
+			if(_pmdy[_i]===undefined){
+				//要素内未定義の場合は、
+				//自機座標Yと移動分を加算させる
+				_pmdy.push(_y+(_mgs*_i));
+				continue;
+			}
+			if(_mgs>0){
+				//下スクロール時
+				_pmdy[_i]=(_pmdy[_i]>=_y+(_mgs*_i))
+							?_y+(_mgs*_i)
+							:_pmdy[_i]+_mgs;
+				continue;
+			}
+			if(_mgs<0){
+				//上スクロール時
+				_pmdy[_i]=(_pmdy[_i]<=_y+(_mgs*_i))
+							?_y+(_mgs*_i)
+							:_pmdy[_i]+_mgs;
+				continue;				
+			}
+		}
+	}, //_set_move_draw
+
+	//=============================
+	//オブジェクト初期設定
+	//=============================
+	_init_players_obj:function(_pm){
+		//自機オブジェクトの初期設定
+		//_pm：PowerMeterSelectで決定した値
+		let _this=this;
+		_this._players_obj=(
+				(_pm===0
+					||_pm===2)
+				?new GameObject_PLAYER_MAIN()
+				:new GameObject_PLAYER_MAIN_RED()
+			);
+		const _std = _this._shot_type_def;
+		_this._shots.shot[_std.NORMAL].push(
+			new GameObject_SHOTS_NORMAL(_this._players_obj));
+		_this._shots.shot[_std.DOUBLE].push(
+			(function(_o){
+				if(_pm===0
+					||_pm===2){
+					return new GameObject_SHOTS_DOUBLE(_o);
+				}else{
+					return new GameObject_SHOTS_TAILGUN(_o);
+				}
+			})(_this._players_obj)
+		);
+		_this._shots.shot[_std.LASER].push(
+			(function(_o){
+				if(_pm===0){
+					return new GameObject_SHOTS_LASER(_o);
+				}else if(_pm===1){
+					return new GameObject_SHOTS_LASER_CYCLONE(_o);
+				}else if(_pm===2){
+					return new GameObject_SHOTS_RIPPLE_LASER(_o);
+				}else if(_pm===3){
+					return new GameObject_SHOTS_RIPPLE_LASER_RED(_o);
+				}else{
+				}
+			})(_this._players_obj)
+		);
+
+		_this._shots.missile.push(
+			(function(_o){
+				if(_pm===0){
+					return new	GameObject_SHOTS_MISSILE(_o);
+				}else if(_pm===1){
+					return new	GameObject_SHOTS_MISSILE_SPREADBOMB(_o);
+				}else if(_pm===2){
+					return new	GameObject_SHOTS_MISSILE_PHOTOM(_o);
+				}else if(_pm===3){
+					return new	GameObject_SHOTS_MISSILE_2WAY(_o);
+				}
+			})(_this._players_obj)
+		);
+	}, //_init_players_obj
+	_init_players_force_obj:function(_pm){
+		//フォースフィールドオブジェクトの初期設定
+		let _this=this;
+		_this._players_force_obj =
+		(function () {
+			if (_pm === 0 ||
+				_pm === 2) {
+				return ((_PLAYERS_POWER_METER_SHIELD === 1) ?
+					new GameObject_FORCEFIELD() :
+					new GameObject_SHIELD()
+				);
+			} else {
+				return ((_PLAYERS_POWER_METER_SHIELD === 1) ?
+					new GameObject_FORCEFIELD_RED() :
+					new GameObject_SHIELD_RED()
+				);
+			}
+		})();
+	}, //_init_players_force_obj
+	_init_option_obj:function(_pm){
+		//オプションの初期設定
+		let _this=this;
+		const _std = _this._shot_type_def;
+		for (let _i = 0; _i < _this._option_max; _i++) {
+			_this._option_obj.push(
+				new GameObject_PLAYER_OPTION(
+					'option', 110, 70 * (_i + 1), false)
+			);
+			_this._shots.shot[_std.NORMAL].push(
+				new GameObject_SHOTS_NORMAL(
+					_this._option_obj[_i])
+			);
+			_this._shots.shot[_std.DOUBLE].push(
+				(function (_o) {
+					if (_pm === 0 ||
+						_pm === 2) {
+						return new GameObject_SHOTS_DOUBLE(_o);
+					} else {
+						return new GameObject_SHOTS_TAILGUN(_o);
+					}
+				})(_this._option_obj[_i])
+			);
+			_this._shots.shot[_std.LASER].push(
+				(function (_o) {
+					if (_pm === 0) {
+						return new GameObject_SHOTS_LASER(_o);
+					} else if (_pm === 1) {
+						return new GameObject_SHOTS_LASER_CYCLONE(_o);
+					} else if (_pm === 2) {
+						return new GameObject_SHOTS_RIPPLE_LASER(_o);
+					} else if (_pm === 3) {
+						return new GameObject_SHOTS_RIPPLE_LASER_RED(_o);
+					} else {}
+				})(_this._option_obj[_i])
+			);
+
+			_this._shots.missile.push(
+				(function (_o) {
+					if (_pm === 0) {
+						return new GameObject_SHOTS_MISSILE(_o);
+					} else if (_pm === 1) {
+						return new GameObject_SHOTS_MISSILE_SPREADBOMB(_o);
+					} else if (_pm === 2) {
+						return new GameObject_SHOTS_MISSILE_PHOTOM(_o);
+					} else if (_pm === 3) {
+						return new GameObject_SHOTS_MISSILE_2WAY(_o);
+					}
+				})(_this._option_obj[_i])
+			);
+		}
+	},
+
+	//=============================
+	//ローカル（外部からアクセスしない）
+	//=============================
+	_get_option_count:function(){
+		//オプションのアニメーションカウントを取得
+		let _this=this;
+		return parseInt(_this._option_ani_count/3);
+	},
+	_set_option_count:function(){
+		//オプションのアニメーションカウントを設定
+		let _this=this;
+		if(!_this._players_obj.isalive()){return;}
+		_this._option_ani_count=
+			(_this._option_ani_count>=(_this._option_ani_def.length*3)-1)
+			?0
+			:_this._option_ani_count+1
+	},
+
+}; //_PARTS_PLAYERMAIN
+
+
+
+//==========================================
+//	以下はクラス定義
+//==========================================
 class GameObject_PLAYER{
 	constructor(_imgfile,
 				_x,
@@ -103,7 +680,7 @@ class GameObject_PLAYER_MAIN
 	enemy_collision(_e){
 		//forcefieldが生きてる間はスルー
 		if(_PLAYERS_POWER_METER_SHIELD===1
-			&&_PLAYERS_MAIN_FORCE.isalive()){
+			&&_PARTS_PLAYERMAIN._players_force_obj.isalive()){
 			return;
 		}
 		if(_GAME.isSqCollision(
@@ -118,7 +695,7 @@ class GameObject_PLAYER_MAIN
 	enemy_shot_collision(_e){
 		//forcefieldが生きてる間はスルー
 		if(_PLAYERS_POWER_METER_SHIELD===1
-			&&_PLAYERS_MAIN_FORCE.isalive()){
+			&&_PARTS_PLAYERMAIN._players_force_obj.isalive()){
 			return;
 		}
 
@@ -138,7 +715,7 @@ class GameObject_PLAYER_MAIN
 		let _this=this;
 		//forcefieldが生きてる間はスルー
 		if(_PLAYERS_POWER_METER_SHIELD===1
-			&&_PLAYERS_MAIN_FORCE.isalive()){
+			&&_PARTS_PLAYERMAIN._players_force_obj.isalive()){
 			return;
 		}
 
@@ -178,7 +755,7 @@ class GameObject_PLAYER_MAIN
 		let _this=this;
 		//移動量の設定
 //		console.log('======='+_this.y)
-		if(!_PLAYERS_MOVE_FLAG){
+		if(!_PARTS_PLAYERMAIN._move_ismove){
 			_this.set_moveamount_reset();
 			return;
 		}
@@ -284,7 +861,7 @@ class GameObject_PLAYER_MAIN
 		_this.set_moveamount();
 
 		//本機のアニメーション設定
-		if(!_PLAYERS_MOVE_FLAG){
+		if(!_PARTS_PLAYERMAIN._move_ismove){
 			//コントローラーから離れたら
 			//自機を元に戻す
 			if(_this.c_vv_ani>25){
@@ -355,15 +932,6 @@ class GameObject_PLAYER_OPTION
 					_x,
 					_y,
 					_isalive);
-		this._ani_c=0;
-		this.ani=[//アニメーション定義
-			{scale:0.80},
-			{scale:0.70},
-			{scale:0.60},
-			{scale:0.50},
-			{scale:0.60},
-			{scale:0.70}
-		];
 		this.imgsize=this.img.height;
 		this.width=this.imgsize;
 		this.height=this.imgsize;
@@ -381,13 +949,13 @@ class GameObject_PLAYER_OPTION
 			img:_this.img,
 			x:_p._x,
 			y:_p._y,
-			scale:_this.ani[parseInt(_this._ani_c/3)].scale
+			scale:_PARTS_PLAYERMAIN._get_option_scale()
 		});		
 	}
 	move(_pmd_elem){
 		let _this=this;
 		_this.x=_GAME._getPlayerMoveDrawX(_pmd_elem);
-		_this.y=_GAME._getPlayerMoveDrawY(_pmd_elem);
+		_this.y=_GAME._getPlayerMoveDrawY(_pmd_elem)-2;
 		//装備していない場合
 		if(!_this._isalive){return;}
 		//要素がない場合は飛ばす
@@ -397,7 +965,6 @@ class GameObject_PLAYER_OPTION
 			||_this.y===undefined){return;}
 
 		_this.shotflag=true;
-		_this._ani_c=(_this._ani_c>=(_this.ani.length*3)-1)?0:_this._ani_c+1;
 	}
 }
 
@@ -523,7 +1090,7 @@ class GameObject_FORCEFIELD{
 	setDrawImage(){
 		let _this=this;
 		//画像を中心起点とし、拡縮を中心基準点で処理させる
-		let _p=_PLAYERS_MAIN;
+		let _p=_PARTS_PLAYERMAIN._players_obj;
 		let _x=_p.getPlayerCenterPosition()._x;
 		let _y=_p.getPlayerCenterPosition()._y;
 		_GAME._setDrawImage({
@@ -537,9 +1104,9 @@ class GameObject_FORCEFIELD{
 		});
 	}
 	move(){
-		//_PLAYERS_MAIN
+		//_PARTS_PLAYERMAIN._players_obj
 		let _this=this;
-		let _p=_PLAYERS_MAIN;
+		let _p=_PARTS_PLAYERMAIN._players_obj;
 		if(!_this.isalive()){return;}
 		_this.map_collition();
 		_this.x=_p.x;
@@ -684,7 +1251,7 @@ class GameObject_SHIELD
 	move(){
 		let _this=this;
 		if(!_this.isalive()){return;}
-		let _p=_PLAYERS_MAIN;
+		let _p=_PARTS_PLAYERMAIN._players_obj;
 		let _pl=_p.getPlayerCenterPosition();
 		_this.map_collition(_p);
 		_this.x=_p.x+_p.width;
@@ -723,7 +1290,7 @@ class GameObject_SHOTS{
 			);
 			if(_s===_IS_SQ_NOTCOL){continue;}
 			if(_s===_IS_SQ_COL){
-				_e.collision(_SHOTTYPE_NORMAL);					
+				_e.collision(_PARTS_PLAYERMAIN._shot_type_def.NORMAL);					
 			}
 			_t._init();
 		}//for
@@ -754,9 +1321,9 @@ class GameObject_SHOTS_MISSILE
 		this.imgsize=_CANVAS_IMGS['gradius_missile'].obj.height;
 
 		let _t=this;
-		for(let _i=0;_i<_PLAYERS_SHOTS_MAX;_i++){
+		for(let _i=0;_i<_PARTS_PLAYERMAIN._shot_max;_i++){
 			this.shots.push({
-				sid:_SHOTTYPE_MISSILE,
+				sid:_PARTS_PLAYERMAIN._shot_type_def.MISSILE,
 				id:_i,
 				x:0,//処理変数：照射x軸
 				y:0,
@@ -858,7 +1425,7 @@ class GameObject_SHOTS_MISSILE
 		if(_t._c===0){_t._c=1;}
 		
 		if(_s===_IS_SQ_COL_NONE){return;}
-		_e.collision(_SHOTTYPE_MISSILE);
+		_e.collision(_PARTS_PLAYERMAIN._shot_type_def.MISSILE);
 
 	}
 	get_missile_status(_t){return _t._st;}
@@ -1133,7 +1700,7 @@ class GameObject_SHOTS_MISSILE_PHOTOM
 			//衝突した敵を覚える
 			return;
 		}
-		_e.collision(_SHOTTYPE_MISSILE);
+		_e.collision(_PARTS_PLAYERMAIN._shot_type_def.MISSILE);
 		//敵を倒した場合は貫通させる。
 		if(!_e.isalive()){return;}
 		if(_t._c===0){_t._c=1;}
@@ -1195,7 +1762,7 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 		//前回衝突した敵と同じ場合は無視する。
 		if(_t._c===0){_t._c=1;}
 		if(_s===_IS_SQ_COL_NONE){return;}
-		_e.collision(_SHOTTYPE_MISSILE);
+		_e.collision(_PARTS_PLAYERMAIN._shot_type_def.MISSILE);
 	}
 	map_collition(_t){
 		//MAPの位置を取得
@@ -1286,7 +1853,7 @@ class GameObject_SHOTS_MISSILE_2WAY
 		if(_t._c===0){_t._c=1;}
 		
 		if(_s===_IS_SQ_COL_NONE){return;}		
-		_e.collision(_SHOTTYPE_MISSILE);
+		_e.collision(_PARTS_PLAYERMAIN._shot_type_def.MISSILE);
 
 	}
 	map_collition(_t){
@@ -1398,9 +1965,9 @@ class GameObject_SHOTS_NORMAL
 		this.shots=new Array();
 		this.speed=20;
 
-		for(let _i=0;_i<_PLAYERS_SHOTS_MAX;_i++){
+		for(let _i=0;_i<_PARTS_PLAYERMAIN._shot_max;_i++){
 			this.shots.push({
-				sid:_SHOTTYPE_NORMAL,
+				sid:_PARTS_PLAYERMAIN._shot_type_def.NORMAL,
 				x:0,//処理変数：照射x軸
 				y:0,
 				_img:_CANVAS_IMGS['shot1'].obj,
@@ -1492,9 +2059,9 @@ class GameObject_SHOTS_DOUBLE
 			_CANVAS_IMGS['shot3'].obj
 			];
 		
-		for(let _i=0;_i<_PLAYERS_SHOTS_MAX;_i++){
+		for(let _i=0;_i<_PARTS_PLAYERMAIN._shot_max;_i++){
 			this.shots.push({
-				sid:_SHOTTYPE_DOUBLE,
+				sid:_PARTS_PLAYERMAIN._shot_type_def.DOUBLE,
 				x:0,//処理変数：照射x軸
 				y:0,
 				img:null,//this.imgsからの画像
@@ -1534,7 +2101,7 @@ class GameObject_SHOTS_DOUBLE
 			if(_e.isalive()){
 				//硬い敵に対して、
 				//同時ショット判定を避ける
-				_e.collision(_SHOTTYPE_DOUBLE);
+				_e.collision(_PARTS_PLAYERMAIN._shot_type_def.DOUBLE);
 				_t._init();
 			}
 		}
@@ -1714,9 +2281,9 @@ class GameObject_SHOTS_RIPPLE_LASER
 		this.lineWidth_2=4;
 		this.strokeStyle_2="rgba(100,180,255,0.7)";
 
-		for(let _i=0;_i<_PLAYERS_SHOTS_MAX;_i++){
+		for(let _i=0;_i<_PARTS_PLAYERMAIN._shot_max;_i++){
 			this.shots.push({
-				sid:_SHOTTYPE_LASER,
+				sid:_PARTS_PLAYERMAIN._shot_type_def.LASER,
 				x:0,//処理変数：X位置の中心点
 				y:0,//処理変数：Y位置の中心点
 				_t:0,//アニメーション時間ripple
@@ -1754,7 +2321,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 				);
 			if(_s===_IS_SQ_NOTCOL){continue;}
 			if(_s===_IS_SQ_COL){
-				_e.collision(_SHOTTYPE_RIPPLE_LASER);
+				_e.collision(_PARTS_PLAYERMAIN._shot_type_def.RIPPLE_LASER);
 				(function(){
 					//RIPPLELASERでは、当たり判定後、
 					//画面内の全ての敵を参照し、
@@ -1778,7 +2345,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 						_en.x+","+_en.y
 					);
 					if(_s1===_IS_SQ_COL){
-						_en.collision(_SHOTTYPE_RIPPLE_LASER);						
+						_en.collision(_PARTS_PLAYERMAIN._shot_type_def.RIPPLE_LASER);						
 					}
 		
 					}//for
@@ -1901,7 +2468,7 @@ class GameObject_SHOTS_LASER
 
 		for(let _i=0;_i<1;_i++){
 			_this.shots.push({
-				sid:_SHOTTYPE_LASER,
+				sid:_PARTS_PLAYERMAIN._shot_type_def.LASER,
 				x:0,//処理変数：レーザー右端x
 				sx:0,//処理変数：レーザー左端x
 				y:0,
@@ -1912,6 +2479,8 @@ class GameObject_SHOTS_LASER
 				_laser_ts:0,//処理変数：照射終了後時間
 				_laser_MaxX:_CANVAS.width,
 						//処理変数レーザー最大右端
+				_laser_col_max:null,//処理変数 右端衝突位置
+						//enemy_collision時に最大右端位置を設定する
 				_l_x:0,//処理変数：レーザー右端移動量
 				_l_sx:0,//処理変数：レーザー左端移動量
 				_shot:false,//処理変数：照射フラグ
@@ -1928,10 +2497,26 @@ class GameObject_SHOTS_LASER
 					this._l_x=0,//処理変数：レーザー右端x
 					this._l_sx=0,//処理変数：レーザー左端x
 					this._laser_MaxX=_CANVAS.width,
+					this._laser_col_max=null,
 					this._shot=false,
 					this._shot_alive=false
 				}
 			});
+		}
+	}
+	set_laser_col_max(_v){
+		//衝突判定にてレーザーの最大右端を設定する
+		let _this=this;
+		if (_v === undefined || _v === null) {
+			//衝突していないのでスルー
+			return;
+		}
+		for (let _k = 0; _k < _this.shots.length; _k++) {
+			let _t = _this.shots[_k];
+			_t._laser_col_max=
+				(_t._laser_col_max<_v|| _t._laser_col_max === null)
+					? _v
+					: _t._laser_col_max
 		}
 	}
 	laser_collision(_t,_v){
@@ -1982,7 +2567,7 @@ class GameObject_SHOTS_LASER
 		if(_e.x<_t.x-_sl){
 			if(_e.is_collision_player_init){_t._init();}
 			if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
-			_e.collision(_SHOTTYPE_LASER);
+			_e.collision(_PARTS_PLAYERMAIN._shot_type_def.LASER);
 			if(!_e.isalive()){return _CANVAS.width;}
 			return _s.val;
 		}
@@ -1997,7 +2582,7 @@ class GameObject_SHOTS_LASER
 			if(_s.ret===_IS_SQ_NOTCOL){continue;}
 			if(_e.is_collision_player_init){_t._init();}
 			if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
-			_e.collision(_SHOTTYPE_LASER);
+			_e.collision(_PARTS_PLAYERMAIN._shot_type_def.LASER);
 			if(!_e.isalive()){return _CANVAS.width;}
 			return _s.val;
 		}
@@ -2026,7 +2611,7 @@ class GameObject_SHOTS_LASER
 		let _map_sx=_MAP.getMapX(_t.sx);
 		for(let _i=_map_sx+1;_i<=_map_x;_i++){
 			if(_MAP.isMapCollision(_i,_map_y)){
-				_MAP.setPlayersShotAbleCollision(_i,_map_y,_SHOTTYPE_LASER);
+				_MAP.setPlayersShotAbleCollision(_i,_map_y,_PARTS_PLAYERMAIN._shot_type_def.LASER);
 			}
 		}
 	}

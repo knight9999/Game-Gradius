@@ -114,6 +114,21 @@ const _PARTS_PLAYERMAIN={
 	_set_shot_type:function(_t){
 		this._shot_type=_t;
 	},
+	_is_shottype_laser() {
+		//_shots.shot._SHOTTYPE_LASERを参照して
+		//オブジェクトがレーザーである判定
+		let _this=this;
+		let _os=_this._shots.shot._SHOTTYPE_LASER[0];
+		if(_os===undefined){return false;}
+		//現在のショットがLASERでなければfalse
+		if(_this._shot_type!==_this._shot_type_def.LASER){return false;}
+		//LASERで、レーザー装備である場合はtrue
+		if (GameObject_SHOTS_LASER.prototype.isPrototypeOf(_os) ||
+			GameObject_SHOTS_LASER_CYCLONE.prototype.isPrototypeOf(_os)
+		) {return true;}
+		//上記以外はfalseを返す
+		return false;
+	},
 	_move_shots:function(){
 		//ショット移動
 		let _this = this;
@@ -232,67 +247,23 @@ const _PARTS_PLAYERMAIN={
 		for (let _i = 0; _i < _e.length; _i++) {
 			let _oe = _e[_i];
 			//スタンバイ状態は無視する
-			if (_oe.isIgnore()) {
-				continue;
-			}
-			if (_oe.isStandBy()) {
-				continue;
-			}
-			if (!_oe.isalive()) {
-				continue;
-			}
+			if (_oe.isIgnore()) {continue;}
+			if (_oe.isStandBy()) {continue;}
+			if (!_oe.isalive()) {continue;}
 
-			//各ショットの当たり判定の処理
-			if (_this._shot_type === _this._shot_type_def.LASER) {
-				//レーザーの場合は、さらに衝突時の値を
-				//自機・オプションにそれぞれセットする。
-				for (let _j = 0; _j < _this._shots.shot[_this._shot_type].length; _j++) {
-					let _os = _this._shots.shot[_this._shot_type][_j];
-					if (!_os.player._isalive) {
-						continue;
-					}
-					let _m = _os.enemy_collision(_oe);
-
-					_os.set_laser_col_max(_m);
-					//		console.log(_m)
-					// if(_m===undefined||_m===null){continue;}
-					// //以前より衝突が右端にある場合は、
-					// //値を置き換える
-					// _shottype_lasers_col_max[_j]=
-					// 	(_shottype_lasers_col_max[_j]<_m
-					// 	||_shottype_lasers_col_max[_j]===undefined)
-					// 		?_m
-					// 		:_shottype_lasers_col_max[_j];
-
-					// 	//敵判定からレーザーの最右端を決定し、
-					// 	//レーザーのx位置も調整する。
-					// 	let _t=_os.shots[0];
-					// 	_col_max[_j]=
-					// 		(_col_max[_j]===0)
-					// 		?_CANVAS.width
-					// 		:_col_max[_j];
-					// 	// if(_j===1){console.log('_t.x:'+_t.x+'   ['+_col_max+']');}
-
-					// 	if(_t.x>_col_max+(_os.speed*2)){
-					// 		//すでにレーザーの先端が
-					// 		//衝突から超えた場合は、衝突なしとして照射
-					// 		_t._laser_MaxX=_CANVAS.width;
-					// 	}else{
-					// //			console.log(_col_max)
-					// 		//※LASERクラスのmove()は、
-					// 		//この数字より超えないようにする
-					// 		_t._laser_MaxX=_col_max[_j];
-					// 	}
-
-				} //_j
-			} else if (_this._shot_type !== _this._shot_type_def.LASER) {
-				for (let _j = 0; _j < _this._shots.shot[_this._shot_type].length; _j++) {
-					let _os = _this._shots.shot[_this._shot_type][_j];
-					if (!_os.player._isalive) {
-						continue;
-					}
-					_os.enemy_collision(_oe);
+			for (let _j = 0; _j < _this._shots.shot[_this._shot_type].length; _j++) {
+				let _os = _this._shots.shot[_this._shot_type][_j];
+				if (!_os.player._isalive) {
+					continue;
 				}
+				if (_this._is_shottype_laser()) {
+					//レーザーの処理
+					let _m = _os.enemy_collision(_oe);
+					_os.set_laser_col_max(_m);
+					continue;
+				}
+				//レーザー以外の処理
+				_os.enemy_collision(_oe);
 			}
 
 			//自機衝突判定
@@ -315,6 +286,10 @@ const _PARTS_PLAYERMAIN={
 			} //_k
 
 		} //_i
+		//ここでレーザーに対して、
+		//自機・オプション共に、衝突位置を決定させる
+		_this._set_shot_laser_MaxX();
+
 	}, //_enemy_collision
 	//敵弾衝突判定処理
 	_enemy_shot_collision:function(_es){
@@ -331,9 +306,8 @@ const _PARTS_PLAYERMAIN={
 
 	_init_laser_col_max:function(){
 		let _this = this;
-		if (_this._shot_type !== _this._shot_type_def.LASER) {
-			return;
-		}
+		if (_this._shot_type !== _this._shot_type_def.LASER) {return;}
+		if (!_this._is_shottype_laser()){return;}
 		for (let _j = 0; _j < _this._shots.shot[_this._shot_type].length; _j++) {
 			let _os = _this._shots.shot[_this._shot_type][_j];
 			if (!_os.player._isalive) {
@@ -347,6 +321,8 @@ const _PARTS_PLAYERMAIN={
 	_set_shot_laser_MaxX:function(){
 		let _this=this;
 		if(_this._shot_type!==_this._shot_type_def.LASER){return;}
+		if (!_this._is_shottype_laser()){return;}
+
 		for(let _j=0;
 			_j<_this._shots.shot[_this._shot_type].length;
 			_j++){
@@ -586,7 +562,7 @@ const _PARTS_PLAYERMAIN={
 	},
 
 	//=============================
-	//ローカル
+	//ローカル（外部からアクセスしない）
 	//=============================
 	_get_option_count:function(){
 		//オプションのアニメーションカウントを取得

@@ -560,9 +560,6 @@ const _IS_ENEMIES_COLLISION=()=>{
 	//最大の衝突位置を取得させる
 //	let _shottype_lasers_col_max=[];
 	_PARTS_PLAYERMAIN._enemy_collision(_ENEMIES);
-	//ここでレーザーに対して、
-	//自機・オプション共に、衝突位置を決定させる
-	_PARTS_PLAYERMAIN._set_shot_laser_MaxX();
 	// if(_PARTS_PLAYERMAIN._shot_type===_PARTS_PLAYERMAIN._shot_type_def.LASER){
 	// 	for(let _j=0;
 	// 		_j<_PARTS_PLAYERMAIN._shots.shot[_PARTS_PLAYERMAIN._shot_type].length;

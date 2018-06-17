@@ -477,8 +477,8 @@ const _GAME={//ゲーム用スクリプト
 	//		console.log('here')
 			_CONTEXT.drawImage(
 				_d.img,
-				_d.x,
-				_d.y,
+				_x,
+				_y,
 				_width,
 				_height		
 			);

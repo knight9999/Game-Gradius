@@ -579,8 +579,13 @@ const _PARTS_PLAYERMAIN={
 			:_this._option_ani_count+1
 	},
 
-};
+}; //_PARTS_PLAYERMAIN
 
+
+
+//==========================================
+//	以下はクラス定義
+//==========================================
 class GameObject_PLAYER{
 	constructor(_imgfile,
 				_x,

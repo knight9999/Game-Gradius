@@ -208,7 +208,7 @@ class GameObject_PM{
 			_CANVAS.width,
 			_CANVAS.height);
 
-		_GAME._setDrawTextToFont(
+		_GAME._setDrawText(
 				'power meter select',
 				(_CANVAS.width/2)
 					-(36*('power meter select').length/2),
@@ -216,7 +216,7 @@ class GameObject_PM{
 				0.6
 			);
 
-		_GAME._setDrawTextToFont(
+		_GAME._setDrawText(
 				'shield select',
 				200,
 				400,
@@ -313,7 +313,7 @@ class GameObject_STAGESELECT{
 					_CANVAS.width,
 					_CANVAS.height);
 		//テキスト表示
-		_GAME._setDrawTextToFont(
+		_GAME._setDrawText(
 				'stage select',
 				(_CANVAS.width/2)
 					-(70*0.5*('stage select').length/2),
@@ -343,7 +343,7 @@ class GameObject_STAGESELECT{
 		_MAP.showMapForStageselect(_this.mapdef);
 
 		//テキスト表示
-		_GAME._setDrawTextToFont('stage title',400,130,0.3);
+		_GAME._setDrawText('stage title',400,130,0.3);
 		_CONTEXT.moveTo(400,160);
 		_CONTEXT.lineTo(950,160);
 		_CONTEXT.stroke();
@@ -353,12 +353,12 @@ class GameObject_STAGESELECT{
 			_CONTEXT.fillText(_ar[_i],400,190+(_i*26));
 		}
 
-		_GAME._setDrawTextToFont(('difficult:'+this.mapdef._difficult),400,230,0.3);
+		_GAME._setDrawText(('difficult:'+this.mapdef._difficult),400,230,0.3);
 		_CONTEXT.moveTo(400,260);
 		_CONTEXT.lineTo(950,260);
 		_CONTEXT.stroke();
 
-		_GAME._setDrawTextToFont('detail',400,300,0.3);
+		_GAME._setDrawText('detail',400,300,0.3);
 		_CONTEXT.moveTo(400,330);
 		_CONTEXT.lineTo(950,330);
 		_CONTEXT.stroke();
@@ -390,13 +390,13 @@ class GameObject_SCORE{
 	show(){
 		let _img=_CANVAS_IMGS_INIT['font'].obj;
 		let _s='1p'+('        '+this.score1p).slice(-8);
-		_GAME._setDrawTextToFont(_s,180,10,0.3);
+		_GAME._setDrawText(_s,180,10,0.3);
 
 		_s='hi'+('        '+this.scorehi).slice(-8);
-		_GAME._setDrawTextToFont(_s,400,10,0.3);
+		_GAME._setDrawText(_s,400,10,0.3);
 
 		_s='2p'+('        '+this.score2p).slice(-8);
-		_GAME._setDrawTextToFont(_s,620,10,0.3);
+		_GAME._setDrawText(_s,620,10,0.3);
 	}
 }
 
@@ -879,6 +879,14 @@ const _DRAW_GAMESTART=()=>{
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
 
+	//BACKGROUND
+	for (let _i = 0; _i < _BACKGROUND_STAR_MAX; _i++) {
+		_BACKGROUND[_i] = new GameObject_BACKGROUND();
+	}
+	//MAP
+	_MAP.set_gamestart();
+
+
 	if(_ISDEBUG){_DRAW();return;}
 	let _c=0;
 	const _loop=()=>{
@@ -908,7 +916,7 @@ const _DRAW_GAMESTART=()=>{
 
 		}else{
 			let _txt='start';
-			_GAME._setDrawTextToFont(
+			_GAME._setDrawText(
 				_txt,
 				(_CANVAS.width/2)-(60*_txt.length/2),
 				(_CANVAS.height/2)-(60/2)-20,
@@ -924,14 +932,14 @@ const _DRAW_GAMECLEAR=()=>{
 	var _img=_CANVAS_IMGS_INIT['font'].obj;
 	//クリアしたら敵を全て消す
 	let _s='gameclear';
-	_GAME._setDrawTextToFont(
+	_GAME._setDrawText(
 		_s,
 		(_CANVAS.width/2)-(60*_s.length/2),
 		(_CANVAS.height/2)-(60/2)-40,
 		1.0);
 
 	_s='press r to restart';
-	_GAME._setDrawTextToFont(
+	_GAME._setDrawText(
 			_s,
 			(_CANVAS.width/2)
 	 			-(18*_s.length/2),
@@ -939,7 +947,7 @@ const _DRAW_GAMECLEAR=()=>{
 			0.3
 		);
 	_s='press s to change to another stage';
-	_GAME._setDrawTextToFont(
+	_GAME._setDrawText(
 			_s,
 			(_CANVAS.width/2)
 	 			-(18*_s.length/2),
@@ -973,14 +981,14 @@ const _DRAW_GAMEOVER=()=>{
 
 //	console.log('gameover');
 	let _s='gameover';
-	_GAME._setDrawTextToFont(
+	_GAME._setDrawText(
 		_s,
 		(_CANVAS.width/2)-(60*_s.length/2),
 		(_CANVAS.height/2)-(60/2)-40,
 		1.0);
 
 	_s='press r to restart';
-	_GAME._setDrawTextToFont(
+	_GAME._setDrawText(
 			_s,
 			(_CANVAS.width/2)
 				-(18*_s.length/2),
@@ -988,7 +996,7 @@ const _DRAW_GAMEOVER=()=>{
 			0.3
 		);
 	_s='press s to change to another stage';
-	_GAME._setDrawTextToFont(
+	_GAME._setDrawText(
 			_s,
 			(_CANVAS.width/2)
 				-(18*_s.length/2),
@@ -1046,8 +1054,8 @@ const _DRAW_RESET_OBJECT=()=>{
 }
 
 const _DRAW_INIT_OBJECT=()=>{
-	_KEYEVENT_MASTER	//パワーメータイベント削除
-		.removeKeydownSelectPowermeter();
+	//パワーメータイベント削除
+	_KEYEVENT_MASTER.removeKeydownSelectPowermeter();
 
 	//自機の初期設定
 	_PARTS_PLAYERMAIN._init_players_obj(_PLAYERS_POWER_METER);
@@ -1055,7 +1063,7 @@ const _DRAW_INIT_OBJECT=()=>{
 	_PARTS_PLAYERMAIN._init_players_force_obj(_PLAYERS_POWER_METER);
 	//OPTIONの初期設定
 	_PARTS_PLAYERMAIN._init_option_obj(_PLAYERS_POWER_METER);
-
+ 
 	//METER
 	_POWERMETER=new GameObject_PM();
 	//SCORE
@@ -1064,14 +1072,6 @@ const _DRAW_INIT_OBJECT=()=>{
 		_SCORE.init();
 	}
 	_DRAW_IS_GAMECLEAR=false;
-
-	//BACKGROUND
-	for(let _i=0;_i<_BACKGROUND_STAR_MAX;_i++){
-		_BACKGROUND[_i]=new GameObject_BACKGROUND();
-	}
-
-	//MAP
-	_MAP.set_gamestart();
 
 	_DRAW_GAMESTART();
 }

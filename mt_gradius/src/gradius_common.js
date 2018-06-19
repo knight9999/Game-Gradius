@@ -358,7 +358,7 @@ const _GAME={//ゲーム用スクリプト
 			document.querySelector('#game_start>.text_loading'),
 			 'now loading',30);
 	},
-	_setDrawTextToFont(_s,_x,_y,_r){
+	_setDrawText(_s,_x,_y,_r){
 		//キャンバス用にテキストからフォントに置換させる。
 		//_s:テキスト
 		//_x:テキスト開始x座標位置
@@ -382,7 +382,7 @@ const _GAME={//ゲーム用スクリプト
 				basePoint:1
 			});
 		}
-	},//_setDrawTextToFont
+	},//_setDrawText
 	_setTextToFont(_o,_str,_w){
 		//ブラウザ用にテキストからフォントに置換させる。
 		if(_o===undefined||_o===null){return;}
@@ -399,15 +399,6 @@ const _GAME={//ゲーム用スクリプト
 		}
 		_o.innerHTML=_s;
 	},//_setTextToFont
-	_getPlayerMoveDrawX(_elem){
-		return _PARTS_PLAYERMAIN._get_move_drawX(_elem);
-	},
-	_getPlayerMoveDrawY(_elem){
-		return _PARTS_PLAYERMAIN._get_move_drawY(_elem);
-	},
-	_setPlayerMoveDraw(){
-		_PARTS_PLAYERMAIN._set_move_draw({_mapobj:_MAP});
-	},
 	_setPlay(_obj){
 		if(_obj===null||_obj===undefined){return;}
 	
@@ -446,6 +437,10 @@ const _GAME={//ゲーム用スクリプト
 	_setDrawImage(_d){
 		//画像表示
 		//画像自体、canvasimgで定義したrateは1.0を使用すること。
+		//imgPosx:画像からのx位置
+		//imgPosy:画像からのy位置
+		//t_width:トリミングする画像幅
+		//t_height:トリミングする画像高さ
 		//deg:角度
 		//scale:画像中心を基点とした比率維持の拡大縮小。
 		//		0の場合は表示しない。
@@ -459,6 +454,8 @@ const _GAME={//ゲーム用スクリプト
 		//引数は以下
 		let _width=_d.width||_d.img.width;
 		let _height=_d.height||_d.img.height;
+		let _t_width=_d.t_width||_width;
+		let _t_height=_d.t_height||_height;
 		let _deg=_d.deg||0;
 		let _imgPosx=_d.imgPosx||0;
 		let _imgPosy=_d.imgPosy||0;
@@ -508,8 +505,8 @@ const _GAME={//ゲーム用スクリプト
 			_d.img,
 			_imgPosx,
 			_imgPosy,
-			_width,
-			_height,
+			_t_width,
+			_t_height,
 			_DEF_BASEPOINT[_basePoint].x,
 			_DEF_BASEPOINT[_basePoint].y,
 			_width,

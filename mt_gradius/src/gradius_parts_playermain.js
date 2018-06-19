@@ -349,18 +349,13 @@ const _PARTS_PLAYERMAIN={
 
 		}//_j
 	},
-
 	_get_move_drawX:function(_elem){
-		let _this=this;
-		if (_this._move_drawX[_elem] === undefined) {return null;}
-		return _this._move_drawX[_elem];
+		return this._move_drawX[_elem];
 	}, //_get_move_drawX
 	_get_move_drawY:function(_elem){
-		let _this=this;
-		if (_this._move_drawY[_elem] === undefined) {return null;}
-		return _this._move_drawY[_elem];
+		return this._move_drawY[_elem];
 	}, //_get_move_drawY
-	_set_move_draw:function(_p){
+	_set_move_draw:function(){
 		let _this=this;
 		//自機移動分配列をセットする。
 		//Y軸無限:配列0番目からY起点にして要素0番目からリフレッシュさせる
@@ -369,7 +364,6 @@ const _PARTS_PLAYERMAIN={
 		let _h=_this._players_obj.height;
 		let _x=_this._players_obj.x+parseInt(_w/4);
 		let _y=_this._players_obj.y+parseInt(_h/4);
-		let _mgs=_p._mapobj.getBackGroundSpeedY() * -1;
 		let _pmdy=_this._move_drawY;
 	
 		//配列要素数が所定より大きい場合は、
@@ -391,17 +385,18 @@ const _PARTS_PLAYERMAIN={
 		//Y軸の処理（縦スクロールなし）
 		//Y軸では、縦スクロールが発生しない間は、
 		//要素0から順に自機移動座標を追加する。
-		if(!_p._mapobj.map_infinite){
+		if(!_MAP.map_infinite){
 			_pmdy.unshift(_y);
 			return;
 		}
 	
 		//Y軸の処理（縦スクロール発生時）
-		if(_mgs===0){
+		let _mgs = _MAP.getBackGroundSpeedY() * -1;
+		if (_mgs === 0) {
 			//縦スクロールが発生しない場合は、
 			//要素0から追加
 			_pmdy.unshift(_y);
-			return;		
+			return;
 		}
 	
 		//この時点での、自機移動分配列を要素0から
@@ -441,12 +436,11 @@ const _PARTS_PLAYERMAIN={
 		//自機オブジェクトの初期設定
 		//_pm：PowerMeterSelectで決定した値
 		let _this=this;
-		_this._players_obj=(
-				(_pm===0
-					||_pm===2)
-				?new GameObject_PLAYER_MAIN()
-				:new GameObject_PLAYER_MAIN_RED()
-			);
+		_this._players_obj = (
+			(_pm === 0 || _pm === 2) ?
+			new GameObject_PLAYER_MAIN() :
+			new GameObject_PLAYER_MAIN_RED()
+		);
 		const _std = _this._shot_type_def;
 		_this._shots.shot[_std.NORMAL].push(
 			new GameObject_SHOTS_NORMAL(_this._players_obj));
@@ -606,11 +600,8 @@ class GameObject_PLAYER{
 
 		this._c=0;
 		this.accel=3.0;
-
-		this.shotflag=false;//発射可否
 	}
 	isalive(){return this._isalive;}
-	isshotflag(){return this.shotflag;}
 	enemy_collision(){}
 	getPlayerCenterPosition(){
 		return {_x:this.x+(this.width/2),
@@ -659,8 +650,6 @@ class GameObject_PLAYER_MAIN
 			{scale:0.4},
 			{scale:0.3}
 		];
-
-		_this.shotflag=true;//発射可否
 
 		_this.map_col_date=null;
 		_this.map_col_canint=0;//衝突可否範囲(ms)
@@ -806,7 +795,7 @@ class GameObject_PLAYER_MAIN
 		})(_this.y);
 		//自機移動分配列をセット
 //		console.log('mgs==============:'+_MAP.map_backgroundY_speed);		
-		_GAME._setPlayerMoveDraw();
+		_PARTS_PLAYERMAIN._set_move_draw();
 	}
 	setDrawImage(){
 		let _this=this;
@@ -954,17 +943,8 @@ class GameObject_PLAYER_OPTION
 	}
 	move(_pmd_elem){
 		let _this=this;
-		_this.x=_GAME._getPlayerMoveDrawX(_pmd_elem);
-		_this.y=_GAME._getPlayerMoveDrawY(_pmd_elem)-2;
-		//装備していない場合
-		if(!_this._isalive){return;}
-		//要素がない場合は飛ばす
-		if(_this.x===null
-			||_this.y===null
-			||_this.x===undefined
-			||_this.y===undefined){return;}
-
-		_this.shotflag=true;
+		_this.x = _PARTS_PLAYERMAIN._get_move_drawX(_pmd_elem);
+		_this.y = _PARTS_PLAYERMAIN._get_move_drawY(_pmd_elem) - 2;
 	}
 }
 
@@ -1619,7 +1599,6 @@ class GameObject_SHOTS_MISSILE
 		let _this=this;
 		let _p=_this.player;
 		if(!_p.isalive()){return;}
-		if(!_p.isshotflag()){return;}
 		if(_p.x===undefined){return;}
 		for(let _j=0;_j<_this.shots.length;_j++){
 			let _t=_this.shots[_j];
@@ -1641,13 +1620,6 @@ class GameObject_SHOTS_MISSILE
 			}
 
 			_this.mis_status[_t._st](_t);
-			if(_this.get_missile_status(_t)==='_st1'
-				&&_MAP.isMapCollision(
-				_MAP.getMapX(_t.x),
-				_MAP.getMapY(_t.y))){
-				_t._init();				
-				continue;
-			}
 			_t._shot_alive=true;
 		}
 	}
@@ -1780,7 +1752,6 @@ class GameObject_SHOTS_MISSILE_SPREADBOMB
 		let _this=this;
 		let _p=_this.player;
 		if(!_p.isalive()){return;}
-		if(!_p.isshotflag()){return;}
 		if(_p.x===undefined){return;}
 		let _pl=_p.getPlayerCenterPosition();
 
@@ -1875,7 +1846,6 @@ class GameObject_SHOTS_MISSILE_2WAY
 		let _this=this;
 		let _p=_this.player;
 		if(!_p.isalive()){return;}
-		if(!_p.isshotflag()){return;}
 		if(_p.x===undefined){return;}
 
 		//プレーヤーの中心座標取得
@@ -2020,22 +1990,16 @@ class GameObject_SHOTS_NORMAL
 	move(){
 		let _p=this.player;
 		if(!_p.isalive()){return;}
-		if(!_p.isshotflag()){return;}
+		if(_p.x===undefined){return;}
 		//プレーヤーの中心座標取得
 		let _pl=_p.getPlayerCenterPosition();
-
 		for(let _j=0;_j<this.shots.length;_j++){
 			let _t=this.shots[_j];
 			if(!_t._shot&&!_t._shot_alive){continue;}
-// 			console.log(_p._x);
 			let _s=this.speed;
-			_t.x=(function(_i){
-				//撃ち始めは自機位置から放つ
-				return (!_t._shot_alive)?_pl._x:_i+_s;
-			})(_t.x);
-			_t.y=(function(_i){
-				return (!_t._shot_alive)?_pl._y:_i;
-			})(_t.y);
+			//撃ち始めは自機位置から放つ
+			_t.x=(!_t._shot_alive)?_pl._x:_t.x+_s;
+			_t.y=(!_t._shot_alive)?_pl._y:_t.y;
 			_t.y=_MAP.getShotY(_t.y);
 
 			if(_GAME.isShotCanvasOut(_t)){
@@ -2051,24 +2015,39 @@ class GameObject_SHOTS_DOUBLE
 			extends GameObject_SHOTS{
 	constructor(_p){
 		super(_p);
-		this.shots=new Array();
-		this.speed=30;
-		this.imgs=[
-			_CANVAS_IMGS['shot1'].obj,
-			_CANVAS_IMGS['shot2'].obj,
-			_CANVAS_IMGS['shot3'].obj
-			];
-		
+		let _this=this;
+		_this.shots=new Array();
+		_this.speed = 30;
+
+		//ショット1とショット2の画像と、ショット時のx,yの挙動を定義
+		//それらをshotsメンバーに定義させる
+		//_sa:ショット中の判別（true,false）
+		//_pl._x→ショット開始時は自機から発射
+		//_x→ショット中で、その時点のx,yから移動させる
+		_this.set = _p.set || {
+			imgs: [_CANVAS_IMGS['shot1'].obj,_CANVAS_IMGS['shot2'].obj],
+			setX: [
+				(function(_sa, _pl, _x){return (!_sa) ? _pl._x : _x + 30;}),
+				(function(_sa, _pl, _x){return (!_sa) ? _pl._x : _x + 30;})
+			],
+			setY: [
+				(function (_sa, _pl, _y) {return (!_sa) ? _pl._y : _y;}),
+				(function (_sa, _pl, _y) {return (!_sa) ? _pl._y - 23 : _y - 23;})
+			]
+		};
+
 		for(let _i=0;_i<_PARTS_PLAYERMAIN._shot_max;_i++){
 			this.shots.push({
 				sid:_PARTS_PLAYERMAIN._shot_type_def.DOUBLE,
 				x:0,//処理変数：照射x軸
 				y:0,
-				img:null,//this.imgsからの画像
+				img:this.set.imgs[_i],//this.imgsからの画像
 				_audio:_CANVAS_AUDIOS['shot_normal'],				
 				_enemyid:null,//敵ID
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
+				_setX:(this.set.setX)[_i],				
+				_setY:(this.set.setY)[_i],
 				_init:function(){//初期化
 					this.x=0,
 					this.y=0,
@@ -2142,7 +2121,7 @@ class GameObject_SHOTS_DOUBLE
 	move(){
 		let _p=this.player;
 		if(!_p.isalive()){return;}
-		if(!_p.isshotflag()){return;}
+		if(_p.x===undefined){return;}
 		//プレーヤーの中心座標取得
 		let _pl=_p.getPlayerCenterPosition();
 		//ここでは各要素にショット権限を与え、
@@ -2166,29 +2145,14 @@ class GameObject_SHOTS_DOUBLE
 			let _t=this.shots[_j];
 
 			if(!_t._shot_alive){continue;}
-			_t.x=(function(_i){
-				//撃ち始めは自機位置から放つ
-				if(_j===0){
-					return (!_sa)?_pl._x:_i+30;
-				}else{
-					return (!_sa)?_pl._x:_i+30;
-				}
-			})(_t.x);
-			_t.y=(function(_i){
-				if(_j===0){
-					return (!_sa)?_pl._y:_i;
-				}else{
-					return (!_sa)?_pl._y-23:_i-23;
-				}
-			})(_t.y);
+			_t.x = _t._setX(_sa, _pl, _t.x);
+			_t.y = _t._setY(_sa, _pl, _t.y);
 			_t.y=_MAP.getShotY(_t.y);			
 			
 			if(_GAME.isShotCanvasOut(_t)){
 				_t._init();
 				continue;
 			}
-
-			_t.img=(_j===0)?this.imgs[0]:this.imgs[1];
 
 			_t._shot_alive=true;
 		}
@@ -2197,7 +2161,21 @@ class GameObject_SHOTS_DOUBLE
 
 class GameObject_SHOTS_TAILGUN
 			extends GameObject_SHOTS_DOUBLE{
-	constructor(_p){super(_p);}
+	constructor(_p){
+		//親クラスに渡す前に画像、ショット挙動を上書きさせる
+		_p.set = {
+			imgs: [_CANVAS_IMGS['shot1'].obj, _CANVAS_IMGS['shot3'].obj],
+			setX: [
+				(function (_sa, _pl, _x) {return (!_sa) ? _pl._x : _x + 30;}),
+				(function (_sa, _pl, _x) {return (!_sa) ? _pl._x : _x - 30;})
+			],
+			setY: [
+				(function (_sa, _pl, _y) {return (!_sa) ? _pl._y : _y;}),
+				(function (_sa, _pl, _y) {return (!_sa) ? _pl._y : _y;})
+			]
+		};
+		super(_p);
+	}
 	map_collition(_t){
 		//MAPの位置を取得
 		let _map_x=_MAP.getMapX(_t.x);
@@ -2218,56 +2196,6 @@ class GameObject_SHOTS_TAILGUN
 		}
 
 	}
-	move(){
-		let _p=this.player;
-		if(!_p.isalive()){return;}
-		if(!_p.isshotflag()){return;}
-		//プレーヤーの中心座標取得
-		let _pl=_p.getPlayerCenterPosition();
-		//ここでは各要素にショット権限を与え、
-		//各弾に対して、敵に弾を当てた、
-		//あるいは画面からはみ出た時に、
-		//_shot_aliveをfalseにする。
-
-		//0番目の要素は前
-		//1番目の要素は後
-		let _s=this.shots[0]._shot|
-					this.shots[1]._shot;
-		let _sa=this.shots[0]._shot_alive|
-					this.shots[1]._shot_alive;
-		if(!_s&&!_sa){return;}
-		if(_s&&!_sa){
-			//ショット打ち始め
-			this.shots[0]._shot_alive=true;
-			this.shots[1]._shot_alive=true;
-		}
-		for(let _j=0;_j<this.shots.length;_j++){
-			let _t=this.shots[_j];
-
-			if(!_t._shot_alive){continue;}
-			_t.x=(function(_i){
-				//撃ち始めは自機位置から放つ
-				if(_j===0){
-					return (!_sa)?_pl._x:_i+30;
-				}else{
-					return (!_sa)?_pl._x:_i-30;
-				}
-			})(_t.x);
-			_t.y=(function(_i){
-				return (!_sa)?_pl._y:_i;
-			})(_t.y);
-			_t.y=_MAP.getShotY(_t.y);			
-
-			if(_GAME.isShotCanvasOut(_t)){
-				_t._init();
-				continue;
-			}
-
-			_t.img=(_j===0)?this.imgs[0]:this.imgs[2];
-			_t._shot_alive=true;
-		}
-	}
-
 }
 
 class GameObject_SHOTS_RIPPLE_LASER
@@ -2408,7 +2336,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 		let _this=this;
 		let _p=_this.player;
 		if(!_p.isalive()){return;}
-		if(!_p.isshotflag()){return;}
+		if(_p.x===undefined){return;}
 		//プレーヤーの中心座標取得
 		let _pl=_p.getPlayerCenterPosition();
 
@@ -2629,7 +2557,6 @@ class GameObject_SHOTS_LASER
 		let _this=this;
 		let _p=_this.player;
 		if(!_p.isalive()){return;}
-		if(!_p.isshotflag()){return;}
 		//プレーヤーの中心座標取得
 		let _pl=_p.getPlayerCenterPosition();
 		let _px=_pl._x;
@@ -2666,7 +2593,7 @@ class GameObject_SHOTS_LASER
 		let _this=this;
 		let _p=_this.player;
 		if(!_p.isalive()){return;}
-		if(!_p.isshotflag()){return;}
+		if(_p.x===undefined){return;}
 		//プレーヤーの中心座標取得
 		let _pl=_p.getPlayerCenterPosition();
 		let _px=_pl._x;

@@ -86,12 +86,27 @@ const _PARTS_PLAYERMAIN={
 		_this._players_force_obj.setDrawImage();
 		if(_this._players_obj.isalive()){_this._players_obj.setDrawImage();}
 	},
+	_set_move_players(_p){
+		let _this = this;
+		//自機とフォース・シールドの移動処理
+		if(!_this._players_obj.isalive()){return;}
+		_this._players_obj.set_move(_p);
+		_this._move_ismove = true;
+	},
+	_set_stop_players(){
+		let _this = this;
+		//自機とフォース・シールドの移動処理
+		if(!_this._players_obj.isalive()){return;}
+		_this._players_obj.set_stop();
+		_this._move_ismove = false;
+	},
 	_move_players:function(){
 		let _this = this;
 		//自機とフォース・シールドの移動処理
 		if(_this._players_obj.isalive()){_this._players_force_obj.move();}
 		_this._players_obj.move();
 	},
+
 	_draw_option:function(){
 		//オプションの移動・表示処理
 		let _this=this;
@@ -733,19 +748,12 @@ class GameObject_PLAYER_MAIN
 			this.c_vv_ani+=2;
 		}
 	}
-	set_moveamount_reset(){
-		let _this=this;
-		_MAP.setBackGroundSpeedY(0);
-		_this._x=0;
-		_this._y=0;
-		return;
-	}
 	set_moveamount(){
 		let _this=this;
 		//移動量の設定
 //		console.log('======='+_this.y)
 		if(!_PARTS_PLAYERMAIN._move_ismove){
-			_this.set_moveamount_reset();
+			_MAP.setBackGroundSpeedY(0);
 			return;
 		}
 		//キーが押された場合
@@ -796,6 +804,21 @@ class GameObject_PLAYER_MAIN
 		//自機移動分配列をセット
 //		console.log('mgs==============:'+_MAP.map_backgroundY_speed);		
 		_PARTS_PLAYERMAIN._set_move_draw();
+	}
+	set_move(_p){
+		//イベントからの移動司令
+		if(_p===undefined){return;}
+		let _this=this;
+		_this._x=_p.x*_this.accel||0;
+		_this._y=_p.y*_this.accel||0;
+		if(_this._y>0){_this.set_vv_ani('Down')}
+		if(_this._y<0){_this.set_vv_ani('Up')}
+	}
+	set_stop(){
+		//イベントからの停止司令
+		let _this=this;
+		_this._x=0;
+		_this._y=0;
 	}
 	setDrawImage(){
 		let _this=this;

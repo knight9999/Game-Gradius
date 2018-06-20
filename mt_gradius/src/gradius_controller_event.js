@@ -8,7 +8,7 @@ const _EVENT_KEYMOVE=(window.ontouchstart===null)?'touchmove':'keydown';
 const _EVENT_KEYUP=(window.ontouchstart===null)?'touchend':'keyup';
 
 let _EVENT_POWERMETER_FLAG=false;
-let _EVENT_SELECT_STAGE_FLAG=false;
+let _EVENT_SELECTSTAGE_FLAG=false;
 
 const _KEYEVENT_MASTER={
 'addKeydownStart':function(){
@@ -358,31 +358,18 @@ const _KEYEVENT={
 	}
 
 	if(e.key==='ArrowUp'||e.key==='Up'){
-		_POWERMETER._c_pms=
-			(_POWERMETER._c_pms<=0)
-			?0:_POWERMETER._c_pms-1;
-		}
+		_POWERMETER.set_pms_status({num:-1});
+	}
 	if(e.key==='ArrowDown'||e.key==='Down'){
-		_POWERMETER._c_pms=
-			(_POWERMETER._c_pms>=_POWERMETER.pms_selected.length-1)
-			?_POWERMETER._c_pms
-			:_POWERMETER._c_pms+1;
-		}
+		_POWERMETER.set_pms_status({num:1});
+	}
 	if(e.key==='ArrowLeft'||e.key==='Left'){
-		_POWERMETER._c_pmss=
-			(_POWERMETER._c_pmss<=0)
-			?0
-			:_POWERMETER._c_pmss-1;
-		}
+		_POWERMETER.set_pmss_status({num:-1});
+	}
 	if(e.key==='ArrowRight'||e.key==='Right'){
-		_POWERMETER._c_pmss=
-			(_POWERMETER._c_pmss
-				>=_POWERMETER.pmss_selected.length-1)
-			?_POWERMETER._c_pmss
-			:_POWERMETER._c_pmss+1;
-		}
+		_POWERMETER.set_pmss_status({num:1});
+	}
 
-	_POWERMETER.pms_disp();
 	_POWERMETER.pms_select();
 	_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
 	
@@ -396,20 +383,11 @@ const _KEYEVENT={
 		return false;
 	}
 	if(e.key==='ArrowLeft'||e.key==='Left'){
-		_STAGESELECT.mapdef_status=
-			(_STAGESELECT.mapdef_status<=0)
-			?0
-			:_STAGESELECT.mapdef_status-1;
-
+		_STAGESELECT.set_map_status({num:-1});
 	}
 	if(e.key==='ArrowRight'||e.key==='Right'){
-		_STAGESELECT.mapdef_status=
-			(_STAGESELECT.mapdef_status
-				>=_MAPDEFS.length-1)
-			?_STAGESELECT.mapdef_status
-			:_STAGESELECT.mapdef_status+1;
+		_STAGESELECT.set_map_status({num:1});
 	}
-	_STAGESELECT.set_map_status();
 	_STAGESELECT.disp_thumb_map();
 	_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);	
 },
@@ -444,24 +422,16 @@ const _KEYEVENT={
 	}
 
 	if(e.key==='ArrowLeft'||e.key==='Left'){
-		_PARTS_PLAYERMAIN._move_ismove=true;
-		_PARTS_PLAYERMAIN._players_obj._x
-			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
+		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:0});
 	}
 	if(e.key==='ArrowRight'||e.key==='Right'){
-		_PARTS_PLAYERMAIN._move_ismove=true;
-		_PARTS_PLAYERMAIN._players_obj._x
-			=_PARTS_PLAYERMAIN._players_obj.accel;
+		_PARTS_PLAYERMAIN._set_move_players({x:1,y:0});
 	}
 	if(e.key==='ArrowUp'||e.key==='Up'){
-		_PARTS_PLAYERMAIN._move_ismove=true;
-		_PARTS_PLAYERMAIN._players_obj._y
-			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
+		_PARTS_PLAYERMAIN._set_move_players({x:0,y:-1});
 	}
 	if(e.key==='ArrowDown'||e.key==='Down'){
-		_PARTS_PLAYERMAIN._move_ismove=true;
-		_PARTS_PLAYERMAIN._players_obj._y
-			=_PARTS_PLAYERMAIN._players_obj.accel;
+		_PARTS_PLAYERMAIN._set_move_players({x:0,y:1});
 	}
 	//装備
 	if(e.key==='B'||e.key==='b'){
@@ -542,26 +512,16 @@ const _KEYEVENT={
 	}
 
 	if(e.key==='ArrowLeft'||e.key==='Left'){
-		_PARTS_PLAYERMAIN._move_ismove=true;
-		_PARTS_PLAYERMAIN._players_obj._x
-			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
+		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:0});
 	}
 	if(e.key==='ArrowRight'||e.key==='Right'){
-		_PARTS_PLAYERMAIN._move_ismove=true;
-		_PARTS_PLAYERMAIN._players_obj._x
-			=_PARTS_PLAYERMAIN._players_obj.accel;
+		_PARTS_PLAYERMAIN._set_move_players({x:1,y:0});
 	}
 	if(e.key==='ArrowUp'||e.key==='Up'){
-		_PARTS_PLAYERMAIN._move_ismove=true;
-		_PARTS_PLAYERMAIN._players_obj._y
-			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
-		_PARTS_PLAYERMAIN._players_obj.set_vv_ani(e.key);
+		_PARTS_PLAYERMAIN._set_move_players({x:0,y:-1});
 	}
 	if(e.key==='ArrowDown'||e.key==='Down'){
-		_PARTS_PLAYERMAIN._move_ismove=true;
-		_PARTS_PLAYERMAIN._players_obj._y
-			=_PARTS_PLAYERMAIN._players_obj.accel;
-		_PARTS_PLAYERMAIN._players_obj.set_vv_ani(e.key);
+		_PARTS_PLAYERMAIN._set_move_players({x:0,y:1});
 	}
 	//装備
 	if(e.key==='B'||e.key==='b'){
@@ -584,19 +544,17 @@ const _KEYEVENT={
 },//keydown_game
 
 'keyup_game':function(e){
-	if(!_PARTS_PLAYERMAIN._players_obj.isalive()){return false;}//撃たれたら操作不可
-
 	if(e.key==='ArrowLeft'||e.key==='Left'){
-		_PARTS_PLAYERMAIN._move_ismove=false;
+		_PARTS_PLAYERMAIN._set_stop_players();
 	}
 	if(e.key==='ArrowRight'||e.key==='Right'){
-		_PARTS_PLAYERMAIN._move_ismove=false;
+		_PARTS_PLAYERMAIN._set_stop_players();
 	}
 	if(e.key==='ArrowUp'||e.key==='Up'){
-		_PARTS_PLAYERMAIN._move_ismove=false;
+		_PARTS_PLAYERMAIN._set_stop_players();
 	}
 	if(e.key==='ArrowDown'||e.key==='Down'){
-		_PARTS_PLAYERMAIN._move_ismove=false;
+		_PARTS_PLAYERMAIN._set_stop_players();
 	}
 	if(e.key===' '||e.key==='Spacebar'){
 		_DRAW_STOP_PLAYERS_SHOTS();
@@ -644,55 +602,20 @@ const _KEYEVENT_SP={
 	_EVENT_POWERMETER_FLAG=true;
 
 	if(_r===_SP_CONTROLLER._DEF_DIR._L){
-//	if(_rad>-45&&_rad<=45){
-//		 	console.log('left');
-		_POWERMETER._c_pmss=
-			(_POWERMETER._c_pmss<=0)
-			?0
-			:_POWERMETER._c_pmss-1;
-		_POWERMETER.pms_disp();
-		_POWERMETER.pms_select();
-		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
-		return false;
+		_POWERMETER.set_pmss_status({num:-1});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._U){
-//	if(_rad>45&&_rad<=135){
-//		 	console.log('top');
-		_POWERMETER._c_pms=
-			(_POWERMETER._c_pms<=0)
-			?0:_POWERMETER._c_pms-1;
-		_POWERMETER.pms_disp();
-		_POWERMETER.pms_select();
-		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
-		return false;
+		_POWERMETER.set_pms_status({num:-1});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._R){
-	 // if((_rad>135&&_rad<=180)
-	// 	||(_rad<-135&&_rad>=-180)){
-//		 console.log('right');
-		_POWERMETER._c_pmss=
-			(_POWERMETER._c_pmss
-				>=_POWERMETER.pmss_selected.length-1)
-			?_POWERMETER._c_pmss
-			:_POWERMETER._c_pmss+1;
-		_POWERMETER.pms_disp();
-		_POWERMETER.pms_select();
-		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
-		return false;
+		_POWERMETER.set_pmss_status({num:1});
 	}
-	if(_r===_SP_CONTROLLER._DEF_DIR._D){	
-//	if(_rad<-45&&_rad>=-135){
-//		 console.log('bottom');
-		_POWERMETER._c_pms=
-			(_POWERMETER._c_pms>=_POWERMETER.pms_selected.length-1)
-			?_POWERMETER._c_pms
-			:_POWERMETER._c_pms+1;
-		_POWERMETER.pms_disp();
-		_POWERMETER.pms_select();
-		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
-		return false;
+	if(_r===_SP_CONTROLLER._DEF_DIR._D){
+		_POWERMETER.set_pms_status({num:1});
  	}
 
+	_POWERMETER.pms_select();
+	_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
 	// console.log(_rad);
 },//keymove_select_powermeter
 
@@ -706,44 +629,22 @@ const _KEYEVENT_SP={
 //=========================
 'keymove_select_stage':function(e){
 	e.preventDefault(); // タッチによる画面スクロールを止める
-	if(_EVENT_SELECT_STAGE_FLAG){return;}
-	_EVENT_SELECT_STAGE_FLAG=true;
+	if(_EVENT_SELECTSTAGE_FLAG){return;}
+	_EVENT_SELECTSTAGE_FLAG=true;
 
 	let _r=_SP_CONTROLLER._get_st(e);
 	//所定の距離に達しない場合は無効
 	if(!_r){return;}
 
-	if(_r===_SP_CONTROLLER._DEF_DIR._L){		
-//	if(_rad>-45&&_rad<=45){
-		// 	console.log('left');
-		_STAGESELECT.mapdef_status=
-			(_STAGESELECT.mapdef_status<=0)
-			?0
-			:_STAGESELECT.mapdef_status-1;
-		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
+	if(_r===_SP_CONTROLLER._DEF_DIR._L){
+		_STAGESELECT.set_map_status({num:-1});
 	}
-	if(_r===_SP_CONTROLLER._DEF_DIR._U){		
-//	if(_rad>45&&_rad<=135){
-		// 	console.log('top');
-	}
-	if(_r===_SP_CONTROLLER._DEF_DIR._R){		
-	// if((_rad>135&&_rad<=180)
-	// 	||(_rad<-135&&_rad>=-180)){
-		// console.log('right');
-		_STAGESELECT.mapdef_status=
-			(_STAGESELECT.mapdef_status
-				>=_MAPDEFS.length-1)
-			?_STAGESELECT.mapdef_status
-			:_STAGESELECT.mapdef_status+1;
-		_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
-	}
-	if(_r===_SP_CONTROLLER._DEF_DIR._U){
-//	if(_rad<-45&&_rad>=-135){
-		// console.log('bottom');
+	if(_r===_SP_CONTROLLER._DEF_DIR._R){
+		_STAGESELECT.set_map_status({num:1});
 	}
 
-	_STAGESELECT.set_map_status();
 	_STAGESELECT.disp_thumb_map();
+	_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
 	return false;
 
 },//keymove_select_stage
@@ -751,7 +652,7 @@ const _KEYEVENT_SP={
 	// let _c1=_SP_CONTROLLER._sp_main_center
 	// _c1.style.top="";
 	// _c1.style.left="";
-	_EVENT_SELECT_STAGE_FLAG=false;
+	_EVENT_SELECTSTAGE_FLAG=false;
 },//keyend_select_stage
 'keydown_select_stage_a':function(e){
 	_MAP.set_stage_map_pattern(_STAGESELECT.mapdef_status);
@@ -807,82 +708,40 @@ const _KEYEVENT_SP={
 	// let _rad=_SP_CONTROLLER._get_st(e)._rad;
 	// let _dis=_SP_CONTROLLER._get_st(e)._dis;
 	// if(_dis<5){return false;}
-	_PARTS_PLAYERMAIN._move_ismove=true;	
 	let _r=_SP_CONTROLLER._get_st(e);
 	if(_r===false){return;}
-	_PARTS_PLAYERMAIN._players_obj._x=0;
-	_PARTS_PLAYERMAIN._players_obj._y=0;
 
 	if(_r===_SP_CONTROLLER._DEF_DIR._L){
-//	if(_rad>-40&&_rad<=40){
-			// 	console.log('left');
- 		_PARTS_PLAYERMAIN._players_obj._x
-			 =_PARTS_PLAYERMAIN._players_obj.accel*-1;
+		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:0});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._LU){
-//	if(_rad>40&&_rad<=50){
-		// 	console.log('left-top');
- 		_PARTS_PLAYERMAIN._players_obj._x
- 			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
-		_PARTS_PLAYERMAIN._players_obj._y
- 			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
-		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Up');
+		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:-1});
 	 }
 	if(_r===_SP_CONTROLLER._DEF_DIR._U){
-//	if(_rad>50&&_rad<=130){
-		_PARTS_PLAYERMAIN._players_obj._y
- 			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
-		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Up');
+		_PARTS_PLAYERMAIN._set_move_players({x:0,y:-1});
 	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._RU){
-//	if(_rad>130&&_rad<=140){
-		// 	console.log('right-top');
-		_PARTS_PLAYERMAIN._players_obj._x
- 			=_PARTS_PLAYERMAIN._players_obj.accel*1;
-		_PARTS_PLAYERMAIN._players_obj._y
- 			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
-		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Up');
+		_PARTS_PLAYERMAIN._set_move_players({x:1,y:-1});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._R){
-		// if((_rad>140&&_rad<=180)
-		// ||(_rad<-140&&_rad>=-180)){
-		// console.log('right');
- 		_PARTS_PLAYERMAIN._players_obj._x
- 			=_PARTS_PLAYERMAIN._players_obj.accel;
+		_PARTS_PLAYERMAIN._set_move_players({x:1,y:0});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._RD){
-//		if(_rad<-130&&_rad>=-140){
-		// console.log('right-bottom');
-		_PARTS_PLAYERMAIN._players_obj._x
- 			=_PARTS_PLAYERMAIN._players_obj.accel*1;
- 		_PARTS_PLAYERMAIN._players_obj._y
- 			=_PARTS_PLAYERMAIN._players_obj.accel*1;
-		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Down');
+		_PARTS_PLAYERMAIN._set_move_players({x:1,y:1});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._D){
-//	if(_rad<-50&&_rad>=-130){
-		// console.log('bottom');
- 		_PARTS_PLAYERMAIN._players_obj._y
- 			=_PARTS_PLAYERMAIN._players_obj.accel;
-		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Down');
+		_PARTS_PLAYERMAIN._set_move_players({x:0,y:1});
 	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._LD){
-//	if(_rad<-40&&_rad>=-50){
-		// console.log('left-bottom');
-		_PARTS_PLAYERMAIN._players_obj._x
- 			=_PARTS_PLAYERMAIN._players_obj.accel*-1;
- 		_PARTS_PLAYERMAIN._players_obj._y
- 			=_PARTS_PLAYERMAIN._players_obj.accel*1;
-		_PARTS_PLAYERMAIN._players_obj.set_vv_ani('Down');
+		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:1});
  	}
 
 	return false;
 	// console.log(_rad);
 },//keymove_game_controller
 'keyend_game_controller':function(e){
-	_SP_CONTROLLER._set_reset();
-	_PARTS_PLAYERMAIN._players_obj.set_moveamount_reset();
-	_PARTS_PLAYERMAIN._move_ismove=false;
+//	_SP_CONTROLLER._set_reset();
+	_PARTS_PLAYERMAIN._set_stop_players();
 },//keyend_game_controller
 
 'keydown_game_hide':function(e){

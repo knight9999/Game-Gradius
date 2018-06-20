@@ -257,8 +257,25 @@ class GameObject_PM{
 		);
 
 	}
+	set_pms_status(_p){
+		if(_p===undefined){return;}
+		let _this=this;
+		let _n = _this._c_pms + _p.num;
+		_n=(_n<=0)?0:_n;
+		_n=(_n>=_this.pms_selected.length-1)?_this.pms_selected.length-1:_n;
+		_this._c_pms = _n;
+	}
+	set_pmss_status(_p) {
+		if(_p===undefined){return;}
+		let _this=this;
+		let _n = _this._c_pmss + _p.num;
+		_n=(_n<=0)?0:_n;
+		_n=(_n>=_this.pmss_selected.length-1)?_this.pmss_selected.length-1:_n;
+		_this._c_pmss = _n;
+	}
 	pms_select(){
 		let _this=this;
+		_this.pms_disp();
 		//パワーメータ選択済み
 		_CONTEXT.drawImage(
 			_this.pms_img_selected,
@@ -302,8 +319,14 @@ class GameObject_STAGESELECT{
 		}
 		this.disp_thumb_map();
 	}
-	set_map_status(){
-		this.mapdef=_MAPDEFS[this.mapdef_status];
+	set_map_status(_p){
+		if(_p===undefined){return;}
+		let _this=this;
+		let _n = _this.mapdef_status + _p.num;
+		_n=(_n<=0)?0:_n;
+		_n=(_n>=_MAPDEFS.length-1)?_MAPDEFS.length-1:_n;
+		_this.mapdef=_MAPDEFS[_n];
+		_this.mapdef_status=_n;
 	}
 	disp_thumb_map(){
 		let _this=this;

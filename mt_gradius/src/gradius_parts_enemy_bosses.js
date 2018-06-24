@@ -1486,10 +1486,10 @@ class ENEMY_BOSS_CUBE
 			img:_CANVAS_IMGS['enemy_cube'].obj,
 			x:_p.x,
 			y:_p.y,
-			imgPos:[0,45,90,135],
+			imgPos:[0,50,100,150],
 			aniItv:10,
-			width:45,
-			height:45
+			width:50,
+			height:50
 		});
 		let _this=this;
 		_this._standby=false;
@@ -1510,6 +1510,7 @@ class ENEMY_BOSS_CUBE
 		_this.sx=0;//単位x
 		_this.sy=0;//単位y
 
+		_this.shotColMap = ["10,10,"+parseInt(_this.width-10)+","+parseInt(_this.height-10)];
 	}
 	isCanvasOut(){
 		return _GAME.isEnemyCanvasOut(
@@ -1545,9 +1546,9 @@ class ENEMY_BOSS_CUBE
 
 			//キューブ同士の衝突判定
 			let _r=_GAME.isSqCollision(
-				'10,10,35,35',
+				'12,12,38,38',
 				_this.x+','+_this.y,
-				['10,10,35,35'],
+				['12,12,38,38'],
 				_eb[_i].x+','+_eb[_i].y
 			);
 			if(_r!==_IS_SQ_NOTCOL){return true;}
@@ -1580,7 +1581,7 @@ class ENEMY_BOSS_CUBE
 			_MAP.set_mapdef_col(
 				_MAP.getMapX(_ec._x),
 				_MAP.getMapY(_ec._y),
-				'1'
+				'11,11'
 			);	
 			_this._status=0;
 			_this._stop=true;
@@ -2287,6 +2288,7 @@ class ENEMY_BOSS_FRAME_BODY
 			{scale:0.90},
 			{scale:0.95}
 		];
+		_this._deg_col=0;
 	}
 	showCollapes(){
 		let _this=this;
@@ -2299,17 +2301,19 @@ class ENEMY_BOSS_FRAME_BODY
 		}
 		_this.x+=Math.cos(_this._deg*Math.PI/180)*_this.speed;
 		_this.y+=Math.sin(_this._deg*Math.PI/180)*_this.speed;
+		_this._deg_col+=10;
 
 		_GAME._setDrawImage({
 			img:_this.img,
 			x:_this.getEnemyCenterPosition()._x,
 			y:_this.getEnemyCenterPosition()._y,
-			deg:_this._deg
+			deg:_this._deg_col
 		});
 	}
 	setDrawImage(){
 		let _this=this;
 		if(!_this.isshow()){return;}
+		if(_this.is_frame_heads_collision){return;}
 		_GAME._setDrawImage({
 			img:_this.img,
 			x:_this.getEnemyCenterPosition()._x,
@@ -2333,6 +2337,7 @@ class ENEMY_BOSS_FRAME_BODY
 		_this.x=_loc.x;
 		_this.y=_loc.y;
 		_this._deg=_loc.deg;
+		_this._deg_col=_loc.deg;
 	}
 	//moveはmain.jsから処理させない
 	move(){

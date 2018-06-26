@@ -417,7 +417,6 @@ const _KEYEVENT={
 	}
 
 	if(e.key===' '||e.key==='Spacebar'){
-		if(_PLAYERS_SHOTS_SETINTERVAL!==null){return;}
 		_DRAW_PLAYERS_SHOTS();
 	}
 
@@ -507,7 +506,6 @@ const _KEYEVENT={
 	}
 
 	if(e.key===' '||e.key==='Spacebar'){
-		if(_PLAYERS_SHOTS_SETINTERVAL!==null){return;}
 		_DRAW_PLAYERS_SHOTS();
 	}
 
@@ -781,14 +779,11 @@ const _KEYEVENT_SP={
 },//keydown_game_p
 
 'keydown_game_a':function(e){
-	if(_DRAW_SETINTERVAL===null){return;}
-	if(_PLAYERS_SHOTS_SETINTERVAL!==null){return;}
 	_DRAW_PLAYERS_SHOTS();
 	return false;
 },//keydown_game_a
 'keydown_game_b':function(e){
 	//装備
-	if(_DRAW_SETINTERVAL===null){return;}
 	_POWERMETER.playerset();
 	return false;
 },//keydown_game_b

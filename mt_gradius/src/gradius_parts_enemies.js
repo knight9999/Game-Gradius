@@ -1243,6 +1243,7 @@ class ENEMY_p_small extends ENEMY_p {
 
 		_this.col_date=new Date();
 		_this._collision_type='t1';
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER = 1;
 		
 	}
 	setAlive(){

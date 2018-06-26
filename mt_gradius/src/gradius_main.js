@@ -129,6 +129,9 @@ class GameObject_PM{
 				this.meterdef_current);
 	}
 	playerset(){
+		//停止中は無視
+		if(_DRAW_SETINTERVAL===null){return;}
+
 		let _mc=parseInt(this.meterdef_current,2);
 		let _ms=parseInt(this.meterdef_status,2);
 		//メーターにアクティブなし
@@ -583,35 +586,6 @@ const _IS_ENEMIES_COLLISION=()=>{
 	//最大の衝突位置を取得させる
 //	let _shottype_lasers_col_max=[];
 	_PARTS_PLAYERMAIN._enemy_collision(_ENEMIES);
-	// if(_PARTS_PLAYERMAIN._shot_type===_PARTS_PLAYERMAIN._shot_type_def.LASER){
-	// 	for(let _j=0;
-	// 		_j<_PARTS_PLAYERMAIN._shots.shot[_PARTS_PLAYERMAIN._shot_type].length;
-	// 		_j++){
-	// 	let _os=_PARTS_PLAYERMAIN._shots.shot[_PARTS_PLAYERMAIN._shot_type][_j];
-	// 	if(!_os.player._isalive){continue;}
-	// 	//レーザーのx位置も調整する。
-	// 	let _t=_os.shots[0];
-	// 	_shottype_lasers_col_max[_j]=
-	// 		(_shottype_lasers_col_max[_j]===0||_shottype_lasers_col_max[_j]===undefined)
-	// 		?_CANVAS.width
-	// 		:_shottype_lasers_col_max[_j];
-	// 	// if(_j===1){console.log('_t.x:'+_t.x+'   ['+_shottype_lasers_col_max+']');}
-
-	// 	if(_t.x>=_shottype_lasers_col_max[_j]+(_os.speed*2)){
-	// 		//すでにレーザーの先端が
-	// 		//衝突から超えた場合は、衝突なしとして照射
-	// 		_t._laser_MaxX=_CANVAS.width;
-	// 	}else{
-	// //			console.log(_shottype_lasers_shottype_lasers_col_max)
-	// 		//※LASERクラスのmove()は、
-	// 		//この数字より超えないようにする
-	// 		_t._laser_MaxX=_shottype_lasers_col_max[_j]+10;
-	// 	}
-
-	// 	}//_j
-	// }//if
-//	console.log('102:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
-
 }
 
 //敵ショットによる衝突判定
@@ -636,7 +610,6 @@ const _DRAW=()=>{
 	_KEYEVENT_MASTER.addKeydownGame();
 	_KEYEVENT_MASTER.addKeyupGame();
 
-	let _c=0;
 	const _loop=()=>{
 		_DRAW_SETINTERVAL=window.requestAnimationFrame(_loop);		
 		_CONTEXT.clearRect(0,0,
@@ -680,9 +653,6 @@ const _DRAW=()=>{
 			_POWERCAPSELLS[_i].setDrawImage();
 		}
 
-		//ショットの移動調整
-		_PARTS_PLAYERMAIN._move_shots();
-
 		//敵衝突表示の移動・表示調整
 		for(let _i=0;_i<_ENEMIES_COLLISIONS.length;_i++){
 			if(_PARTS_PLAYERMAIN._players_obj.isalive()){_ENEMIES_COLLISIONS[_i].move();}
@@ -705,6 +675,8 @@ const _DRAW=()=>{
 			// console.log('10:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 		}
 
+		//ショットの移動調整
+		_PARTS_PLAYERMAIN._move_shots();
 		//ショットを表示
 		_PARTS_PLAYERMAIN._draw_shots();
 		// console.log('11:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
@@ -714,6 +686,8 @@ const _DRAW=()=>{
 		// console.log('12:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 		//自機移動
 		_PARTS_PLAYERMAIN._move_players();
+		//自機移動分配列をセット
+		_PARTS_PLAYERMAIN._set_move_draw();
 		//自機表示
 		_PARTS_PLAYERMAIN._draw_players();
 		// console.log('13:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
@@ -792,40 +766,29 @@ const _DRAW_PLAYER_COLLAPES=()=>{
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
 
-	const _this=_PARTS_PLAYERMAIN._players_obj;
-	if(_this===undefined){return;}
-	//自機の爆発表示
-	let _si=null;
-	let _pl=_this.getPlayerCenterPosition();
+	_GAME._setStopOnBG();
+	_DRAW_STOP_PLAYERS_SHOTS();
+	_DRAW_SCROLL_STOP();
 
-	if(_this._col_ani_c
-		>=(_this.col_ani.length*10)-1){
+	if (_PARTS_PLAYERMAIN._is_finished_player_collision){
 		//アニメーションが終わったら終了
-		window.cancelAnimationFrame(_si);
+		_DRAW_STOP();
 		_DRAW_GAMEOVER();
 		return;
 	}
 
-	_GAME._setDrawImage({
-		img:_this.col_img,
-		x:_pl._x,
-		y:_pl._y,
-		scale:_this.col_ani[parseInt(_this._col_ani_c/10)].scale
-	});
-	_this._col_ani_c=(_this._col_ani_c>=(_this.col_ani.length*10)-1)?0:_this._col_ani_c+1;
+	_PARTS_PLAYERMAIN._draw_player_collision();
 }
 
 //長押判定用変数
 let _DRAW_PLAYERS_SHOTS_TIMES=0;
 //自機ショット処理の本体
-const _DRAW_START_PLAYERS_SHOTS=()=>{
-	_PARTS_PLAYERMAIN._start_shots();
-	_PARTS_PLAYERMAIN._start_missile_shots();
-}//_DRAW_START_PLAYERS_SHOTS
-
 //自機ショットのコントロール
 //ボタン押下による、長押判定とショット処理を開始させる
 const _DRAW_PLAYERS_SHOTS=()=>{
+	if(_DRAW_SETINTERVAL===null){return;}
+	if(_PLAYERS_SHOTS_SETINTERVAL!==null){return;}
+
 	let _date=new Date();
 	_DRAW_PLAYERS_SHOTS_TIMES=0;
 	const _loop=()=>{
@@ -850,7 +813,8 @@ const _DRAW_PLAYERS_SHOTS=()=>{
 //			console.log('shot!');
 		}
 		//ショットさせる
-		_DRAW_START_PLAYERS_SHOTS();
+		_PARTS_PLAYERMAIN._start_shots();
+		_PARTS_PLAYERMAIN._start_missile_shots();
 	}//_loop
 	_PLAYERS_SHOTS_SETINTERVAL=window.requestAnimationFrame(_loop);	
 }
@@ -858,7 +822,7 @@ const _DRAW_PLAYERS_SHOTS=()=>{
 //自機ショットのコントロール
 //ボタンを離して、ショット処理をクリアさせる。
 const _DRAW_STOP_PLAYERS_SHOTS=()=>{
-	cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
+	window.cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
 	_PLAYERS_SHOTS_SETINTERVAL=null;
 	_PARTS_PLAYERMAIN._stop_shots();
 	_PARTS_PLAYERMAIN._stop_missile_shots();

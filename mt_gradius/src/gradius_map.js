@@ -761,6 +761,8 @@ class GameObject_MAP{
 		let _p_s=_bit.split(',');
 		for(let _l=0;_l<_p_s.length;_l++){//p._s分ループ
 			let _s_mapdef_col=_this.mapdef_col[_my+_l];
+			//行を超える場合は、置換させない
+			if (_s_mapdef_col===undefined){continue;}
 			//置換箇所は文字列を分割、置換、結合処理
 			_this.mapdef_col[_my+_l]=
 				_s_mapdef_col.substr(0,_mx)

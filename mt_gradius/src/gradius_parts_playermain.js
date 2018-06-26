@@ -14,6 +14,7 @@ const _PARTS_PLAYERMAIN={
 	_players_force_obj:'',//フォース・シールドオブジェクト
 	_players_max:5,//プレーヤーの最大表示(自機1、オプション4)	
 	_players_main_isalive:true,//自機の生存
+	_is_finished_player_collision:false,//自機の爆発表示完了フラグ
 	
 	_option_obj:new Array(),//オプションのオブジェクト
 	_option_count:0,
@@ -47,8 +48,6 @@ const _PARTS_PLAYERMAIN={
 	_shot_max:2,//一度のショットの最大値
 	_shot_missle_isalive:false,//ミサイル装備有無
 
-
-	_move_ismove:false,
 	_move_drawX:new Array(),
 	_move_drawY:new Array(),
 	_move_draw_max:100,
@@ -59,6 +58,8 @@ const _PARTS_PLAYERMAIN={
 
 		_this._players_obj = '';
 		_this._players_force_obj = '';
+		_this._is_finished_player_collision = false;
+
 		_this._option_obj = new Array();
 
 		_this._option_count = 0;
@@ -74,7 +75,6 @@ const _PARTS_PLAYERMAIN={
 		_this._shot_type = _this._shot_type_def.NORMAL;
 		_this._shot_missle_isalive = false;
 
-		_this._move_ismove = false;
 		_this._move_drawX = new Array();
 		_this._move_drawY = new Array();
 
@@ -91,14 +91,12 @@ const _PARTS_PLAYERMAIN={
 		//自機とフォース・シールドの移動処理
 		if(!_this._players_obj.isalive()){return;}
 		_this._players_obj.set_move(_p);
-		_this._move_ismove = true;
 	},
 	_set_stop_players(){
 		let _this = this;
 		//自機とフォース・シールドの移動処理
 		if(!_this._players_obj.isalive()){return;}
 		_this._players_obj.set_stop();
-		_this._move_ismove = false;
 	},
 	_move_players:function(){
 		let _this = this;
@@ -254,6 +252,22 @@ const _PARTS_PLAYERMAIN={
 		}
 	}, //_stop_missile_shots
 
+	_draw_player_collision(){
+		let _this = this;
+		let _o = _this._players_obj;
+		//自機の爆発表示
+		if (_o._col_ani_c === 1) {
+			_GAME._setPlay(_CANVAS_AUDIOS['vicviper_bomb']);
+		}
+		if (_o._col_ani_c
+			>= (_o.col_ani.length * 10) - 1) {
+			//アニメーションが終わったら終了
+			_this._is_finished_player_collision=true;
+			return;
+		}
+		_o._draw_collapes();
+	},
+
 	//敵衝突判定処理
 	_enemy_collision:function(_e){
 		let _this=this;
@@ -345,21 +359,27 @@ const _PARTS_PLAYERMAIN={
 		if(!_os.player._isalive){continue;}
 		//レーザーのx位置も調整する。
 		let _t=_os.shots[0];
-		_t._laser_col_max=
-			(_t._laser_col_max===0||_t._laser_col_max===null)
-			?_CANVAS.width
-			:_t._laser_col_max;
+
+		if(_t._laser_col_max===0||_t._laser_col_max===null){
+			//衝突がない場合。
+			_os.setLaserMaxX(_t, _CANVAS.width);
+			continue;
+		}
+		// _t._laser_col_max=
+		// 	(_t._laser_col_max===0||_t._laser_col_max===null)
+		// 	?_CANVAS.width
+		// 	:_t._laser_col_max;
 		// if(_j===1){console.log('_t.x:'+_t.x+'   ['+_shottype_lasers_col_max+']');}
 
 		if(_t.x>=_t._laser_col_max+(_os.speed*2)){
 			//すでにレーザーの先端が
 			//衝突から超えた場合は、衝突なしとして照射
-			_t._laser_MaxX=_CANVAS.width;
+			_os.setLaserMaxX(_t,_CANVAS.width);
 		}else{
 	//			console.log(_shottype_lasers_shottype_lasers_col_max)
 			//※LASERクラスのmove()は、
 			//この数字より超えないようにする
-			_t._laser_MaxX=_t._laser_col_max+10;
+			_os.setLaserMaxX(_t,_t._laser_col_max + 10);
 		}
 
 		}//_j
@@ -372,6 +392,8 @@ const _PARTS_PLAYERMAIN={
 	}, //_get_move_drawY
 	_set_move_draw:function(){
 		let _this=this;
+		//移動していない場合はセットしない
+		if(!_this._players_obj._ismove){return;}
 		//自機移動分配列をセットする。
 		//Y軸無限:配列0番目からY起点にして要素0番目からリフレッシュさせる
 		//Y軸有限:配列0番目から軸を流し込む
@@ -668,18 +690,20 @@ class GameObject_PLAYER_MAIN
 
 		_this.map_col_date=null;
 		_this.map_col_canint=0;//衝突可否範囲(ms)
+
+		_this._ismove=false;//イベントより自機移動フラグ
 	}
-	collapes(){
+	_draw_collapes(){
 		let _this=this;
-		if(_DRAW_SETINTERVAL===null){return;}
-		_GAME._setStopOnBG();
-		_DRAW_STOP_PLAYERS_SHOTS();
-		_DRAW_SCROLL_STOP();
-		if(_this._col_ani_c===1){
-//			console.log(_this._col_ani_c)
-			_GAME._setPlay(_CANVAS_AUDIOS['vicviper_bomb']);
-		}
-//		console.log(this._col_ani_c)
+		const _pl=_this.getPlayerCenterPosition();
+		_GAME._setDrawImage({
+			img:_this.col_img,
+			x:_pl._x,
+			y:_pl._y,
+			scale:_this.col_ani[parseInt(_this._col_ani_c/10)].scale
+		});
+		_this._col_ani_c=(_this._col_ani_c>=(_this.col_ani.length*10)-1)?0:_this._col_ani_c+1;
+		//		console.log(this._col_ani_c)
 	}
 	enemy_collision(_e){
 		//forcefieldが生きてる間はスルー
@@ -752,7 +776,7 @@ class GameObject_PLAYER_MAIN
 		let _this=this;
 		//移動量の設定
 //		console.log('======='+_this.y)
-		if(!_PARTS_PLAYERMAIN._move_ismove){
+		if(!_this._ismove){
 			_MAP.setBackGroundSpeedY(0);
 			return;
 		}
@@ -773,37 +797,35 @@ class GameObject_PLAYER_MAIN
 		})(_this.x);
 		_this.y=(function(_i){
 			let _y=_i+_this._y;
+			let _pl=_this.getPlayerCenterPosition();
 			/////////////////
 //				console.log(_i)
 			//Y軸ループの場合
+			//_MAPのy位置を調整させる
 			if(_MAP.map_infinite){
-				if(_y<100){
+				let _y_pos=100;
+				if(_y<_y_pos){
 					_MAP.setBackGroundSpeedY(_this._y);
-					return 100;
+					return _y_pos;
 				}
-				if(_y>=100&&_y<=300){
-					_MAP.setBackGroundSpeedY(0);
-				}
-				if(_y>300){
+				if(_y>_CANVAS.height-_this.height-_y_pos){
 					_MAP.setBackGroundSpeedY(_this._y);
-					return 300;
+					return _CANVAS.height-_this.height-_y_pos;
 				}
+				_MAP.setBackGroundSpeedY(0);
 				return _y;
 			}
 			//////////////////
-			if(_y<=50-(_this.height/4)){
-				_this._y=0;
-				return 50-(_this.height/4);
+			let _y_pos=_this.height*1/2;
+			if(_y<_y_pos){//30
+				return _y_pos;
 			}
-			if(_y>=_CANVAS.height-75-(_this.height/4)){
-				_this._y=0;
-				return _CANVAS.height-75-(_this.height/4);
+			if(_y>_CANVAS.height-_this.height-_y_pos){//410
+				return _CANVAS.height-_this.height-_y_pos;
 			}
 			return _y;
 		})(_this.y);
-		//自機移動分配列をセット
 //		console.log('mgs==============:'+_MAP.map_backgroundY_speed);		
-		_PARTS_PLAYERMAIN._set_move_draw();
 	}
 	set_move(_p){
 		//イベントからの移動司令
@@ -813,12 +835,14 @@ class GameObject_PLAYER_MAIN
 		_this._y=_p.y*_this.accel||0;
 		if(_this._y>0){_this.set_vv_ani('Down')}
 		if(_this._y<0){_this.set_vv_ani('Up')}
+ 		_this._ismove = true;
 	}
 	set_stop(){
 		//イベントからの停止司令
 		let _this=this;
 		_this._x=0;
 		_this._y=0;
+		_this._ismove = false;
 	}
 	setDrawImage(){
 		let _this=this;
@@ -866,14 +890,14 @@ class GameObject_PLAYER_MAIN
 		let _this=this;
 
 		//敵・弾に当たったら終了
-		if(!_this.isalive()){_this.collapes();return;}
+		if(!_this.isalive()){return;}
 		_this.map_collition();
 
 		//移動量の設定
 		_this.set_moveamount();
 
 		//本機のアニメーション設定
-		if(!_PARTS_PLAYERMAIN._move_ismove){
+		if(!_this._ismove){
 			//コントローラーから離れたら
 			//自機を元に戻す
 			if(_this.c_vv_ani>25){
@@ -2488,6 +2512,7 @@ class GameObject_SHOTS_LASER
 		);
 	}
 	enemy_collision(_e){
+		let _this=this;
 		//敵数分ループ
 		//return:衝突時→衝突時のx値
 		//		:null 衝突していない
@@ -2519,7 +2544,7 @@ class GameObject_SHOTS_LASER
 			if(_e.is_collision_player_init){_t._init();}
 			if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
 			_e.collision(_PARTS_PLAYERMAIN._shot_type_def.LASER);
-			if(!_e.isalive()){return _CANVAS.width;}
+			if(!_e.isalive()){return _t._laser_MaxX+_this.speed;}
 			return _s.val;
 		}
 		//移動分内、細かく当たり判定を処理させる
@@ -2534,7 +2559,7 @@ class GameObject_SHOTS_LASER
 			if(_e.is_collision_player_init){_t._init();}
 			if(_s.ret===_IS_SQ_COL_NONE){return _s.val;}
 			_e.collision(_PARTS_PLAYERMAIN._shot_type_def.LASER);
-			if(!_e.isalive()){return _CANVAS.width;}
+			if(!_e.isalive()){return _t._laser_MaxX+_this.speed;}
 			return _s.val;
 		}
 		}//_k
@@ -2543,9 +2568,6 @@ class GameObject_SHOTS_LASER
 	map_collition(_t){
 		let _this=this;
 		if(!_t._shot_alive){return;}
-
-		//プレーヤーの中心座標取得
-		let _pl=_this.player.getPlayerCenterPosition();
 
 		let _map_x=_MAP.getMapX(_t.x);
 		let _map_y=_MAP.getMapY(_t.y);
@@ -2574,7 +2596,7 @@ class GameObject_SHOTS_LASER
 		//衝突判定が発生した場合、
 		//レーザーの先端位置を設定する。
 		let _this=this;
-		_t._laser_MaxX=_v;
+		_t._laser_MaxX = (_v>_CANVAS.width)?_CANVAS.width:_v;
 	}
 	setDrawImage(){
 		let _this=this;
@@ -2593,7 +2615,7 @@ class GameObject_SHOTS_LASER
 			if(!_t._shot_alive){continue;}
 			//小粒のレーザーは無視
 			if(_t.x<_t.sx||Math.abs(_t.x-_t.sx)<20){continue;}
-
+			
 			_CONTEXT.beginPath();
 			_CONTEXT.strokeStyle=_this.strokeStyle_u;
 			_CONTEXT.moveTo(_t.sx,_pl._y+1);

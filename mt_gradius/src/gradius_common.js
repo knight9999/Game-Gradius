@@ -98,15 +98,15 @@ const _AJAX=function(_p){
 
 const _GAME={//ゲーム用スクリプト
 	_url_params:new Array(),
-	_init(){
-		//マップ用jsonを取得したあとに、
-		//スタート画面をコールバックで表示させる
-		//SCORE
-		_PARTS_PLAYERMAIN._set_shot_type('_SHOTTYPE_NORMAL');
-		_SCORE=new GameObject_SCORE();
-		_MAP=new GameObject_MAP();
-		_MAP.init(_GAME._showGameStart);
-	},
+	// _init(){
+	// 	//マップ用jsonを取得したあとに、
+	// 	//スタート画面をコールバックで表示させる
+	// 	//SCORE
+	// 	_PARTS_PLAYERMAIN._set_shot_type('_SHOTTYPE_NORMAL');
+	// 	_SCORE=new GameObject_SCORE();
+	// 	_MAP=new GameObject_MAP();
+	// 	_MAP.init(_GAME._showGameStart);
+	// },
 	_txt:{//スプライトされたフォントのマッピング
 		"0":"0",
 		"1":"60",
@@ -314,50 +314,47 @@ const _GAME={//ゲーム用スクリプト
 		}//_i
 		return {ret:_IS_SQ_NOTCOL,val:_CANVAS.width};
 	},
-	_showGameStart(){
-		let _gsl=document
-		.querySelector('#game_start_loading');
-		_gsl.classList.remove('on');
+	// _showGameStart(){
+	// 	let _gsl=document.querySelector('#game_start_loading');
+	// 	_gsl.classList.remove('on');
 	
-		//SPのみコントローラーのオブジェクトを取得
-		if(_ISSP){
-			let _spc=document
-			.querySelector('#sp_controller');
-			_spc.classList.add('on');
-				_SP_CONTROLLER._set_obj();
-		}
+	// 	//SPのみコントローラーのオブジェクトを取得
+	// 	if(_ISSP){
+	// 		let _spc=document.querySelector('#sp_controller');
+	// 		_spc.classList.add('on');
+	// 		_SP_CONTROLLER._set_obj();
+	// 	}
 	
-		if(_ISDEBUG){
-			let _gw=document
-					.querySelector('#game_wrapper');
-			_gw.classList.add('on');
+	// 	if(_ISDEBUG){
+	// 		let _gw=document.querySelector('#game_wrapper');_gw.classList.add('on');
 	
-			_STAGESELECT=new GameObject_STAGESELECT();
-			_STAGESELECT.init();
+	// 		_STAGESELECT=new GameObject_STAGESELECT();
+	// 		_STAGESELECT.init();
 	
-			_MAP.set_stage_map_pattern(_MAP_PETTERN);
+	// 		_MAP.set_stage_map_pattern(_MAP_PETTERN);
 	
-			_DRAW_INIT(_CANVAS_IMGS,_DRAW_POWER_METER_SELECT);
+	// 		_DRAW_INIT(_CANVAS_IMGS).then(()=>{
+	// 			_DRAW_POWER_METER_SELECT();
+	// 		});
 	
-			return;
-		}
+	// 		return;
+	// 	}
 	
-		//スタート画面表示
-		_KEYEVENT_MASTER.addKeydownStart();
-		let _gsw=document
-				  .querySelector('#game_start_wrapper');
-		_gsw.classList.add('on');
+	// 	//スタート画面表示
+	// 	_KEYEVENT_MASTER.addKeydownStart();
+	// 	let _gsw=document.querySelector('#game_start_wrapper');
+	// 	_gsw.classList.add('on');
 	
-		_GAME._setTextToFont(
-			 document.querySelector('#game_start>.title'),
-			 'no pakuri',50);
-		_GAME._setTextToFont(
-			document.querySelector('#game_start>.text'),
-			 'press s to start',30);
-		_GAME._setTextToFont(
-			document.querySelector('#game_start>.text_loading'),
-			 'now loading',30);
-	},
+	// 	_GAME._setTextToFont(
+	// 		 document.querySelector('#game_start>.title'),
+	// 		 'no pakuri',50);
+	// 	_GAME._setTextToFont(
+	// 		document.querySelector('#game_start>.text'),
+	// 		 'press s to start',30);
+	// 	_GAME._setTextToFont(
+	// 		document.querySelector('#game_start>.text_loading'),
+	// 		 'now loading',30);
+	// },
 	_setDrawText(_s,_x,_y,_r){
 		//キャンバス用にテキストからフォントに置換させる。
 		//_s:テキスト

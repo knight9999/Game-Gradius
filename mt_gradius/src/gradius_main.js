@@ -1098,17 +1098,15 @@ const _DRAW_STAGE_SELECT=()=>{
 	_KEYEVENT_MASTER.removeKeyupGame();
 	_KEYEVENT_MASTER.removeKeydownGameover();
 
-	_MAP.init(function(){
-		_STAGESELECT=new GameObject_STAGESELECT();
-		_STAGESELECT.init();
-		_KEYEVENT_MASTER.addKeydownSelectStage();
-	});
+	_STAGESELECT=new GameObject_STAGESELECT();
+	_STAGESELECT.init();
+	_KEYEVENT_MASTER.addKeydownSelectStage();
 	_GAME._setPlayOnBG(_CANVAS_AUDIOS['bg_powermeterselect']);
 }
 
-const _DRAW_AUDIO_INIT=(_obj,_func)=>{
+const _DRAW_AUDIO_INIT=(_obj)=>{
+	return new Promise((_res, _rej)=>{
 	let _audioLoadedCount=0;
-	let _alertFlag=false;
 	let _gsl_r=document.querySelector('#game_start_loading .rate');
 	
 	for(let _i in _obj){
@@ -1122,23 +1120,25 @@ const _DRAW_AUDIO_INIT=(_obj,_func)=>{
 				function(_buf){
 					_obj[_i].buf=_buf;
 					_audioLoadedCount++;
-					if(_audioLoadedCount>=
-						Object.keys(_obj).length){
-							_DRAW_INIT(_CANVAS_IMGS_INIT,_GAME._init);
+					if(_audioLoadedCount>=Object.keys(_obj).length){
+						_res();
+						return;
 					}
 					//ローディングに進捗率を表示させる
 					_gsl_r.innerHTML=parseInt(_audioLoadedCount/Object.keys(_obj).length*100)+'%';
 				},
 				function(_error){
 					alert('一部音声読み込みに失敗しました。再度立ち上げなおしてください:'+_error);
+					_rej();
 					return;
 				});
 		};
 		_r.send();
 	}
+	});//promise
 }
-const _DRAW_INIT=(_obj,_func)=>{
-//	return new Promise(function(_res,_rej){
+const _DRAW_INIT=(_obj)=>{
+	return new Promise((_res,_rej)=>{
 	let _imgLoadedCount=0;
 	let _alertFlag=false;
 	for(let _i in _obj){
@@ -1148,12 +1148,9 @@ const _DRAW_INIT=(_obj,_func)=>{
 			_o.obj.width*=_o.rate;
 			_o.obj.height*=_o.rate;
 			_imgLoadedCount++;
-			if(_imgLoadedCount>=
-				Object.keys(_obj).length){
-				_func();
-//				alert(_imgLoadedCount);
-//				_res();
-//				return;
+			if(_imgLoadedCount>=Object.keys(_obj).length){
+				_res();
+				return;
 			}
 			let _s=parseInt(_imgLoadedCount/Object.keys(_obj).length*100);
 			//ローディングに進捗率を表示させる
@@ -1162,15 +1159,18 @@ const _DRAW_INIT=(_obj,_func)=>{
 				 'now loading '+_s+' per',30);
 		}
 		_o.obj.onabort=function(){
+			_rej();
+			return;
 		}
 		_o.obj.onerror=function(){
 			if(_alertFlag){return;}
 			_alertFlag=true;
 			alert('一部画像読み込みに失敗しました。再度立ち上げなおしてください');
+			_rej();
 			return;
 		}
 	}
-//	});//promise
+	});//promise
 }
 
 
@@ -1190,11 +1190,60 @@ window.addEventListener('load',()=>{
 	_ENEMY_DIFFICULT=_GAME._url_params['ed']||0;
 
 	if(_ISSP){
-		document
-			.querySelector('body')
-			.classList.add('sp');
+		document.querySelector('body').classList.add('sp');
 	}
-	_DRAW_AUDIO_INIT(_CANVAS_AUDIOS);
+	_DRAW_AUDIO_INIT(_CANVAS_AUDIOS)
+	.then(()=>{
+		_DRAW_INIT(_CANVAS_IMGS_INIT);
+	}).then(()=>{
+		_PARTS_PLAYERMAIN._set_shot_type('_SHOTTYPE_NORMAL');
+		_SCORE = new GameObject_SCORE();
+		_MAP = new GameObject_MAP();
+		_MAP.init();
+	}).then(()=>{
+		let _gsl = document.querySelector('#game_start_loading');
+		_gsl.classList.remove('on');
+
+		//SPのみコントローラーのオブジェクトを取得
+		if (_ISSP) {
+			let _spc = document.querySelector('#sp_controller');
+			_spc.classList.add('on');
+			_SP_CONTROLLER._set_obj();
+		}
+
+		if (_ISDEBUG) {
+			let _gw = document.querySelector('#game_wrapper');
+			_gw.classList.add('on');
+
+			_STAGESELECT = new GameObject_STAGESELECT();
+			_STAGESELECT.init();
+
+			_MAP.set_stage_map_pattern(_MAP_PETTERN);
+
+			_DRAW_INIT(_CANVAS_IMGS).then(() => {
+				_DRAW_POWER_METER_SELECT();
+			});
+
+			return;
+		}
+
+		//スタート画面表示
+		_KEYEVENT_MASTER.addKeydownStart();
+		let _gsw = document.querySelector('#game_start_wrapper');
+		_gsw.classList.add('on');
+
+		_GAME._setTextToFont(
+			document.querySelector('#game_start>.title'),
+			'no pakuri', 50);
+		_GAME._setTextToFont(
+			document.querySelector('#game_start>.text'),
+			'press s to start', 30);
+		_GAME._setTextToFont(
+			document.querySelector('#game_start>.text_loading'),
+			'now loading', 30);
+
+	});
+//	_DRAW_AUDIO_INIT(_CANVAS_AUDIOS);
 
 });
 

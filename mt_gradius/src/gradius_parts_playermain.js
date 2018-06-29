@@ -1395,7 +1395,7 @@ class GameObject_SHOTS_MISSILE
 			},
 			'_st2':function(_t){
 				//真下
-				_t.x+=1;
+				_t.x+=0;
 				_t.y+=8;
 			},
 			'_st3':function(_t){
@@ -1414,18 +1414,18 @@ class GameObject_SHOTS_MISSILE
 			},
 			'_st6':function(_t){
 				//_st6→_st7
-				_t.x+=2;
-				_t.y+=2;
+				_t.x+=4;
+				_t.y+=4;
 			},
 			'_st7':function(_t){
 				//_st7→_st8
 				_t.x+=6;
-				_t.y+=1;
+				_t.y+=4;
 			},
 			'_st8':function(_t){
 				//_st7→_st8
 				_t.x+=6;
-				_t.y+=1;
+				_t.y+=3;
 			}
 		}
 
@@ -1513,6 +1513,7 @@ class GameObject_SHOTS_MISSILE
 				_this.set_missile_status(_t,'_st6');
 				return;
 			}
+			_t.x+=5;
 			_this.set_missile_status(_t,'_st2');
 		}
 
@@ -1550,7 +1551,7 @@ class GameObject_SHOTS_MISSILE
 			if(_MAP.isMapOver(_map_x,_map_y)){
 				return;
 			}
-			_map_y=_MAP.getMapY(_t.y+_this.imgsize+15);
+			_map_y=_MAP.getMapY(_t.y+_this.imgsize+25);
 			//下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x,_map_y)){
 				_this.set_missile_status(_t,'_st6');
@@ -1560,7 +1561,7 @@ class GameObject_SHOTS_MISSILE
 
 		if(_this.get_missile_status(_t)==='_st1'){
 //			console.log('_st1');
-			_map_y=_MAP.getMapY(_t.y+_this.imgsize+15);
+			_map_y=_MAP.getMapY(_t.y+_this.imgsize+25);
 			//自身、あるいはその下の壁にぶつかる
 			if(_MAP.isMapCollision(_map_x+1,_map_y)){
 				_this.set_missile_status(_t,'_st6');

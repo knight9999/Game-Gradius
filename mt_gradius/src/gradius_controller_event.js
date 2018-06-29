@@ -341,7 +341,7 @@ const _KEYEVENT={
 			.classList.add('on');
 
 		//メイン画像を読み込んでステージセレクトに遷移
-		_DRAW_INIT(_CANVAS_IMGS,_DRAW_STAGE_SELECT);
+		_DRAW_INIT(_CANVAS_IMGS).then(()=>{_DRAW_STAGE_SELECT();});
 		_GAME._setPlay(_CANVAS_AUDIOS['playerset']);		
 	}
 },//keydown_start
@@ -576,7 +576,7 @@ const _KEYEVENT_SP={
 		.querySelector('#game_start_wrapper .text_loading')
 		.classList.add('on');
 	//メイン画像を読み込んでステージセレクトに遷移
-	_DRAW_INIT(_CANVAS_IMGS,_DRAW_STAGE_SELECT);
+	_DRAW_INIT(_CANVAS_IMGS).then(()=>{_DRAW_STAGE_SELECT();});
 	_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
 },//keydown_start
 
@@ -823,13 +823,14 @@ const _SP_CONTROLLER={
 	},
 	_SP_CONTROLLER_SETINTERVAL:false,
 	_set_sp_main_movePoint(e){
+		let _this = this;
 		//_sp_main、タッチ時の相対座標をセットする
 		let _tr=_SP_CONTROLLER._sp_main.getBoundingClientRect();
 
 		for(let _i=0;_i<e.touches.length;_i++){
-			//マルチタップから
-			//自身のタッチ箇所のみ設定
 			if(_SP_CONTROLLER._sp_main_center===e.touches[_i].target){
+				// マルチタップから
+				// 自身のタッチ箇所のみ設定
 				this.x=e.touches[_i].clientX-_tr.left;
 				this.y=e.touches[_i].clientY-_tr.top;
 			}

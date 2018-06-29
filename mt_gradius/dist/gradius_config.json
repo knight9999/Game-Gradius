@@ -1,0 +1,15 @@
+{
+    "controller_event":{
+        "sp_controller_main":{
+            "l":[{"from":"-40","to":"40"}],
+            "lu":[{"from":"40","to":"50"}],
+            "u":[{"from":"50","to":"130"}],
+            "ru":[{"from":"130","to":"140"}],
+            "r":[{"from":"140","to":"180"},{"from":"-140","to":"-180"}],
+            "rd":[{"from":"-130","to":"-140"}],
+            "d":[{"from":"-50","to":"-130"}],
+            "ld":[{"from":"-50","to":"-40"}]
+        },
+        "sp_controller_main_dist_within": "0"
+    }
+}

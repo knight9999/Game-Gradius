@@ -638,10 +638,12 @@ class GameObject_MAP{
 		_this.map_boss='';
 		_this.isboss=false;
 	}
-	init(_cb){
-		_AJAX({
-			url:'./gradius_map.json',
-			f:function(_d){_MAPDEFS=_d;_cb();}
+	init(){
+		return new Promise((_res,_rej)=>{
+			_AJAX({
+				url:'./gradius_map.json',
+				f:(_d)=>{_MAPDEFS=_d;_res(_d);}
+			});
 		});
 	}
 	setInifinite(_f){

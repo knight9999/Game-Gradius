@@ -341,8 +341,8 @@ const _KEYEVENT={
 			.classList.add('on');
 
 		//メイン画像を読み込んでステージセレクトに遷移
-		_DRAW_INIT(_CANVAS_IMGS,_DRAW_STAGE_SELECT);
-		_GAME._setPlay(_CANVAS_AUDIOS['playerset']);		
+		_DRAW_IMG_INIT(_CANVAS_IMGS).then(()=>{_DRAW_STAGE_SELECT();});
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['playerset']);		
 	}
 },//keydown_start
 
@@ -353,7 +353,7 @@ const _KEYEVENT={
 
 	if(e.key==="Enter"||e.key==="enter"){
 		_DRAW_SELECT_POWERMETER();
-		_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['playerset']);
 		return false;
 	}
 
@@ -371,7 +371,7 @@ const _KEYEVENT={
 	}
 
 	_POWERMETER.pms_select();
-	_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
+	_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['pms_select']);
 	
 },
 //ステージ選択イベント
@@ -379,7 +379,7 @@ const _KEYEVENT={
 	if(e.key==="Enter"||e.key==="enter"){
 		_MAP.set_stage_map_pattern(_STAGESELECT.mapdef_status);
 		_DRAW_POWER_METER_SELECT();
-		_GAME._setPlay(_CANVAS_AUDIOS['playerset']);		
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['playerset']);		
 		return false;
 	}
 	if(e.key==='ArrowLeft'||e.key==='Left'){
@@ -389,7 +389,7 @@ const _KEYEVENT={
 		_STAGESELECT.set_map_status({num:1});
 	}
 	_STAGESELECT.disp_thumb_map();
-	_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);	
+	_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['pms_select']);	
 },
 'keydown_gameclear':function(e){
 	if(e.key==='R'||e.key==='r'){
@@ -476,11 +476,9 @@ const _KEYEVENT={
 	if(e.key==='P'||e.key==='p'){
 		if(_DRAW_SETINTERVAL!==null){
 			_DRAW_STOP();
-			_GAME._setStopOnBG();
 		}else{
 			_KEYSAFTERPAUSE=[];
 			_DRAW();
-			_GAME._setPlayOnBG(_GAME._audio_now_obj_bg);			
 		}
 		return false;
 	}
@@ -576,14 +574,14 @@ const _KEYEVENT_SP={
 		.querySelector('#game_start_wrapper .text_loading')
 		.classList.add('on');
 	//メイン画像を読み込んでステージセレクトに遷移
-	_DRAW_INIT(_CANVAS_IMGS,_DRAW_STAGE_SELECT);
-	_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
+	_DRAW_IMG_INIT(_CANVAS_IMGS).then(()=>{_DRAW_STAGE_SELECT();});
+	_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['playerset']);
 },//keydown_start
 
 //パワーメーター選択イベント
 'keydown_select_powermeter_a':function(e){
 	_DRAW_SELECT_POWERMETER();
-	_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
+	_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['playerset']);
 	return false;
 },
 'keymove_select_powermeter':function(e){
@@ -613,7 +611,7 @@ const _KEYEVENT_SP={
  	}
 
 	_POWERMETER.pms_select();
-	_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
+	_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['pms_select']);
 	// console.log(_rad);
 },//keymove_select_powermeter
 
@@ -642,7 +640,7 @@ const _KEYEVENT_SP={
 	}
 
 	_STAGESELECT.disp_thumb_map();
-	_GAME._setPlay(_CANVAS_AUDIOS['pms_select']);
+	_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['pms_select']);
 	return false;
 
 },//keymove_select_stage
@@ -655,7 +653,7 @@ const _KEYEVENT_SP={
 'keydown_select_stage_a':function(e){
 	_MAP.set_stage_map_pattern(_STAGESELECT.mapdef_status);
 	_DRAW_POWER_METER_SELECT();
-	_GAME._setPlay(_CANVAS_AUDIOS['playerset']);	
+	_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['playerset']);	
 	return false;
 },//keydown_select_stage_a
 
@@ -769,11 +767,9 @@ const _KEYEVENT_SP={
 'keydown_game_p':function(e){
 	if(_DRAW_SETINTERVAL!==null){
 		_DRAW_STOP();
-		_GAME._setStopOnBG();		
 	}else{
 		_KEYSAFTERPAUSE=[];
 		_DRAW();
-		_GAME._setPlayOnBG(_GAME._audio_now_obj_bg);		
 	}
 	return false;
 },//keydown_game_p
@@ -823,13 +819,14 @@ const _SP_CONTROLLER={
 	},
 	_SP_CONTROLLER_SETINTERVAL:false,
 	_set_sp_main_movePoint(e){
+		let _this = this;
 		//_sp_main、タッチ時の相対座標をセットする
 		let _tr=_SP_CONTROLLER._sp_main.getBoundingClientRect();
 
 		for(let _i=0;_i<e.touches.length;_i++){
-			//マルチタップから
-			//自身のタッチ箇所のみ設定
 			if(_SP_CONTROLLER._sp_main_center===e.touches[_i].target){
+				// マルチタップから
+				// 自身のタッチ箇所のみ設定
 				this.x=e.touches[_i].clientX-_tr.left;
 				this.y=e.touches[_i].clientY-_tr.top;
 			}

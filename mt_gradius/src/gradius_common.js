@@ -24,22 +24,15 @@ let _CONTEXT;
 
 let _DRAW_IS_GAMECLEAR=false;//GameClearフラグ
 
-let _SCORE='';
-
 let _ENEMIES=new Array();
 let _ENEMIES_SHOTS=new Array();
 let _ENEMIES_COLLISIONS=new Array();//敵衝突の表示
 let _ENEMY_DIFFICULT=4;//主にデバッグ用。
 
-let _POWERCAPSELLS=new Array();//パワーカプセルの表示
-
 let _POWERMETER='';
 let _STAGESELECT='';
 
 let _MAP='';
-
-let _BACKGROUND=new Array();
-const _BACKGROUND_STAR_MAX=70;
 
 let _KEYSAFTERPAUSE=new Array();
 let _DEF_KEYSAFTERPAUSE	//for full equipment
@@ -56,10 +49,6 @@ const _DEF_DIFFICULT=[//難易度
 const _IS_SQ_COL=0;
 const _IS_SQ_COL_NONE=1;
 const _IS_SQ_NOTCOL=2;
-
-//オーディオコンテキストはロードが完了してから。
-//gradius_main.js
-let _AUDIO_CONTEXT=null;
 
 const _DEF_DIR={//向き
 	_U:0,//上
@@ -95,18 +84,140 @@ const _AJAX=function(_p){
 	_r.send(null);
 }// _AJAX
 
+const _GAME_IMG={//画像系スクリプト
+	_img_loaded_count:0,
+	_init_imgs(_obj, _progressfunc){
+		return new Promise((_res, _rej) => {
+
+		let _this = this;
+		let _alertFlag = false;
+		for (let _i in _obj) {
+			let _o = _obj[_i];
+			_o.obj.src = _obj[_i].src;
+			_o.obj.onload = function () {
+				_o.obj.width *= _o.rate;
+				_o.obj.height *= _o.rate;
+				_this._img_loaded_count++;
+				if (_this._img_loaded_count >= Object.keys(_obj).length) {
+					_res();
+					return;
+				}
+				let _s = parseInt(_this._img_loaded_count / Object.keys(_obj).length * 100);
+				_progressfunc(_s);
+			}
+			_o.obj.onabort = function () {
+				_rej();
+				return;
+			}
+			_o.obj.onerror = function () {
+				if (_alertFlag) {
+					return;
+				}
+				_alertFlag = true;
+				alert('一部画像読み込みに失敗しました。再度立ち上げなおしてください');
+				_rej();
+				return;
+			}
+		}
+		});
+	}//_init_imgs
+};
+
+const _GAME_AUDIO={//オーディオ系スクリプト
+	_audio_context:null,
+	_audio_buffer_loader:null,
+	_audio_now_obj_bg:null,//バックグラウンド現在再生用
+	_audio_context_source_bg:null,//バックグラウンド再生用
+	_is_audio_context_source_bg:false,//バックグラウンド再生中判別フラグ
+
+	_audio_loaded_count:0,
+	_init(){
+		let _this = this;
+		_this._audio_context = new(window.AudioContext || window.webkitAudioContext)();
+	},
+	_init_audios(_obj,_progressfunc){
+		return new Promise((_res, _rej) => {
+		let _this = this;
+		for (let _i in _obj) {
+			let _r = new XMLHttpRequest();
+			_r.open('GET', _obj[_i].src, true);
+			_r.responseType = 'arraybuffer'; //ArrayBufferとしてロード
+			_r.onload = function () {
+				// contextにArrayBufferを渡し、decodeさせる
+				_this._audio_context.decodeAudioData(
+					_r.response,
+					function (_buf) {
+						_obj[_i].buf = _buf;
+						_this._audio_loaded_count++;
+						if (_this._audio_loaded_count >= Object.keys(_obj).length) {
+							_res();
+							return;
+						}
+						//ローディングに進捗率を表示させる
+						_progressfunc(_this._audio_loaded_count/Object.keys(_obj).length*100);
+					},
+					function (_error) {
+						alert('一部音声読み込みに失敗しました。再度立ち上げなおしてください:' + _error);
+						_rej();
+						return;
+					});
+			};
+			_r.send();
+			}
+		});
+	},
+	_reset(){
+		let _this = this;
+		_this._audio_context=null;
+		_this._audio_buffer_loader=null;
+		_this._audio_now_obj_bg=null;
+		_this._audio_context_source_bg = null;
+		_this._is_audio_context_source_bg = false;
+
+		_this._audio_loaded_count = 0;
+	},
+	_setPlay(_obj){
+		if(_obj===null||_obj===undefined){return;}
+		let _this = this;
+	
+		var _s=_this._audio_context.createBufferSource();
+		_s.buffer=_obj.buf;
+		_s.loop=false;
+		_s.connect(_this._audio_context.destination);
+		_s.start(0);
+		
+	},
+	_setPlayOnBG(_obj){
+		//バックグラウンド用再生
+		if(_obj===null||_obj===undefined){return;}
+		let _this = this;
+		
+		if(_this._is_audio_context_source_bg===true){
+			_this._audio_context_source_bg.stop();
+			_this._is_audio_context_source_bg=false;
+		}
+		let _t=_this._audio_context.createBufferSource();
+		_t.buffer=_obj.buf;
+		_this._audio_now_obj_bg=_obj;//バッファの一時保存用
+		_t.loop=true;
+		_t.loopStart=0;
+		_t.connect(_this._audio_context.destination);
+		_t.start(0);
+		
+		_this._audio_context_source_bg=_t;
+		_this._is_audio_context_source_bg=true;
+	},
+	_setStopOnBG(){
+		//バックグラウンド用停止
+		if(!this._is_audio_context_source_bg){return;}
+		this._audio_context_source_bg.stop();
+		this._is_audio_context_source_bg=false;
+	},
+};
+
 
 const _GAME={//ゲーム用スクリプト
 	_url_params:new Array(),
-	_init(){
-		//マップ用jsonを取得したあとに、
-		//スタート画面をコールバックで表示させる
-		//SCORE
-		_PARTS_PLAYERMAIN._set_shot_type('_SHOTTYPE_NORMAL');
-		_SCORE=new GameObject_SCORE();
-		_MAP=new GameObject_MAP();
-		_MAP.init(_GAME._showGameStart);
-	},
 	_txt:{//スプライトされたフォントのマッピング
 		"0":"0",
 		"1":"60",
@@ -146,10 +257,6 @@ const _GAME={//ゲーム用スクリプト
 		"z":"2100",
 		":":"2160"
 	},
-	_audio_buffer_loader:null,
-	_audio_now_obj_bg:null,//バックグラウンド現在再生用
-	_audio_context_source_bg:null,//バックグラウンド再生用
-	_is_audio_context_source_bg:false,//バックグラウンド再生中判別フラグ
 	_ac:{
 		//_DRAWのsetIntervalのアニメに併せ
 		//アニメカウントを調整させる
@@ -314,50 +421,6 @@ const _GAME={//ゲーム用スクリプト
 		}//_i
 		return {ret:_IS_SQ_NOTCOL,val:_CANVAS.width};
 	},
-	_showGameStart(){
-		let _gsl=document
-		.querySelector('#game_start_loading');
-		_gsl.classList.remove('on');
-	
-		//SPのみコントローラーのオブジェクトを取得
-		if(_ISSP){
-			let _spc=document
-			.querySelector('#sp_controller');
-			_spc.classList.add('on');
-				_SP_CONTROLLER._set_obj();
-		}
-	
-		if(_ISDEBUG){
-			let _gw=document
-					.querySelector('#game_wrapper');
-			_gw.classList.add('on');
-	
-			_STAGESELECT=new GameObject_STAGESELECT();
-			_STAGESELECT.init();
-	
-			_MAP.set_stage_map_pattern(_MAP_PETTERN);
-	
-			_DRAW_INIT(_CANVAS_IMGS,_DRAW_POWER_METER_SELECT);
-	
-			return;
-		}
-	
-		//スタート画面表示
-		_KEYEVENT_MASTER.addKeydownStart();
-		let _gsw=document
-				  .querySelector('#game_start_wrapper');
-		_gsw.classList.add('on');
-	
-		_GAME._setTextToFont(
-			 document.querySelector('#game_start>.title'),
-			 'no pakuri',50);
-		_GAME._setTextToFont(
-			document.querySelector('#game_start>.text'),
-			 'press s to start',30);
-		_GAME._setTextToFont(
-			document.querySelector('#game_start>.text_loading'),
-			 'now loading',30);
-	},
 	_setDrawText(_s,_x,_y,_r){
 		//キャンバス用にテキストからフォントに置換させる。
 		//_s:テキスト
@@ -399,41 +462,6 @@ const _GAME={//ゲーム用スクリプト
 		}
 		_o.innerHTML=_s;
 	},//_setTextToFont
-	_setPlay(_obj){
-		if(_obj===null||_obj===undefined){return;}
-	
-		var _s=_AUDIO_CONTEXT.createBufferSource();
-		_s.buffer=_obj.buf;
-		_s.loop=false;
-		_s.connect(_AUDIO_CONTEXT.destination);
-		_s.start(0);
-		
-	},
-	_setPlayOnBG(_obj){
-		//バックグラウンド用再生
-		if(_obj===null||_obj===undefined){return;}
-		
-		if(this._is_audio_context_source_bg===true){
-			this._audio_context_source_bg.stop();
-			this._is_audio_context_source_bg=false;
-		}
-		let _t=_AUDIO_CONTEXT.createBufferSource();
-		_t.buffer=_obj.buf;
-		this._audio_now_obj_bg=_obj;//バッファの一時保存用
-		_t.loop=true;
-		_t.loopStart=0;
-		_t.connect(_AUDIO_CONTEXT.destination);
-		_t.start(0);
-		
-		this._audio_context_source_bg=_t;
-		this._is_audio_context_source_bg=true;
-	},
-	_setStopOnBG(){
-		//バックグラウンド用停止
-		if(!this._is_audio_context_source_bg){return;}
-		this._audio_context_source_bg.stop();
-		this._is_audio_context_source_bg=false;
-	},
 	_setDrawImage(_d){
 		//画像表示
 		//画像自体、canvasimgで定義したrateは1.0を使用すること。

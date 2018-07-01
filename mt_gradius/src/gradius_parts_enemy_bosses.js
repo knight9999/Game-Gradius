@@ -57,7 +57,7 @@ class GameObject_ENEMY_BOSS
 		for(let _i=0;_i<_ENEMIES.length;_i++){
 			_ENEMIES[_i]._status=0;
 		}
-		_GAME._setPlay(_this.audio_collision);
+		_GAME_AUDIO._setPlay(_this.audio_collision);
 	}
 	moveDraw(){
 		//画像を表示
@@ -82,6 +82,7 @@ class GameObject_ENEMY_BOSS
 			_CONTEXT.stroke();	
 		}
 	}
+	set_wall_standBy(){}
 	move_Allset(){}
 	isAllset(){
 		let _this=this;
@@ -274,7 +275,7 @@ class ENEMY_BOSS_BIGCORE
 				imgPos:[0]
 			}));
 		}
-		_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);		
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);		
 		_this.tid=setTimeout(function(){
 			_this._moveYStop=false;
 			clearTimeout(_this.tid);
@@ -372,6 +373,7 @@ class ENEMY_BOSS_BIGCORE2
 		});
 		let _this=this;
 		_this.speed=2;
+		_this.speed_mount=2;
 		_this.is_able_collision=false;
 		_this.wall_up=[
 			new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_wall'].obj,boss:_this,x:90,y:38}),
@@ -482,14 +484,8 @@ class ENEMY_BOSS_BIGCORE2
 		_this.shotColMap=["130,0,240,156,false"];
 		_this._collision_type='t9';
 
-		//壁の初期化（上）
-		for(let _i=0;_i<_this.wall_up.length;_i++){
-			_ENEMIES.push(_this.wall_up[_i]);			
-		}
-		//壁の初期化（下）
-		for(let _i=0;_i<_this.wall_down.length;_i++){
-			_ENEMIES.push(_this.wall_down[_i]);			
-		}
+		_this.wall_up.map((_o)=>{_ENEMIES.push(_o);});//壁の初期化（上）
+		_this.wall_down.map((_o)=>{_ENEMIES.push(_o);});//壁の初期化（下）
 
 		//上の手初期化
 		_this.hands_up=[
@@ -506,32 +502,19 @@ class ENEMY_BOSS_BIGCORE2
 //		_this._c_self_collision=100;
 
 	}
-	init(){
-		this._isshow=false;
-		this._status=0;
-	}
 	set_wall_standBy(){
 		let _this=this;
-		for(let _i=0;_i<_this.wall_up.length;_i++){
-			_this.wall_up[_i].setStandByDone();
-		}		
-		for(let _i=0;_i<_this.wall_down.length;_i++){
-			_this.wall_down[_i].setStandByDone();
-		}		
+		_this.wall_up.map((_o)=>{_o.setStandByDone();});
+		_this.wall_down.map((_o)=>{_o.setStandByDone();});
 	}
 	set_wall_status(){
 		//壁オブジェクトのステータスを取得して変数に設定する。
 		let _this=this;
 		_this._wall_up_statuses='';
 		_this._wall_down_statuses='';
-		//上の壁
-		for(let _i=0;_i<_this.wall_up.length;_i++){
-			_this._wall_up_statuses+=(_this.wall_up[_i].isalive())?1:0;
-		}
-		//下の壁
-		for(let _i=0;_i<_this.wall_down.length;_i++){
-			_this._wall_down_statuses+=(_this.wall_down[_i].isalive())?1:0;
-		}
+
+		_this.wall_up.map((_o)=>{_this._wall_up_statuses+=(_o.isalive())?1:0;});//上の壁
+		_this.wall_down.map((_o)=>{_this._wall_down_statuses+=(_o.isalive())?1:0;});//下の壁
 	}
 	shot(){
 		//ショット
@@ -551,14 +534,8 @@ class ENEMY_BOSS_BIGCORE2
 //			console.log(_this._hands_open_flag)
 			if(_this._hands_open_flag){
 				//腕を開く
-				for(let _i=_this.hands_up.length-1;_i>=0;_i--){
-					//上を表示
-					_this.hands_up[_i].isHandsOpen=true;
-				}
-				for(let _i=_this.hands_down.length-1;_i>=0;_i--){
-					//下を表示
-					_this.hands_down[_i].isHandsOpen=true;
-				}
+				_this.hands_up.reverse().map((_o)=>{_o.isHandsOpen=true;});//上を表示
+				_this.hands_down.reverse().map((_o)=>{_o.isHandsOpen=true;});//下を表示
 			}
 		}
 		if(_this._c%150===70){
@@ -567,89 +544,38 @@ class ENEMY_BOSS_BIGCORE2
 			let _ar=[];
 			if(_this._hands_open_flag){
 				if(_this._wall_up_statuses.indexOf('1')!==-1){
-					_ar=_ar.concat([{
-							x: 85,
-							y: -75
-						},
-						{
-							x: 70,
-							y: -45
-						},
-						{
-							x: 120,
-							y: -20
-						},
-						{
-							x: 100,
-							y: 0
-						},
-						{
-							x: 80,
-							y: 25
-						},
-						{
-							x: 60,
-							y: 45
-						},
-						{
-							x: 0,
-							y: 55
-						}
+					_ar=_ar.concat([
+						{x: 85,y: -75},
+						{x: 70,y: -45},
+						{x: 120,y: -20},
+						{x: 100,y: 0},
+						{x: 80,y: 25},
+						{x: 60,y: 45},
+						{x: 0,y: 55}
 					]);
 				}
 				if(_this._wall_down_statuses.indexOf('1')!==-1){
 					//下の壁が全て破壊されたらショットしない
-					_ar=_ar.concat([{
-							x: 0,
-							y: 85
-						},
-						{
-							x: 60,
-							y: 95
-						},
-						{
-							x: 80,
-							y: 115
-						},
-						{
-							x: 100,
-							y: 135
-						},
-						{
-							x: 120,
-							y: 160
-						},
-						{
-							x: 70,
-							y: 170
-						},
-						{
-							x: 85,
-							y: 200
-						}
+					_ar=_ar.concat([{x: 0,y: 85},
+						{x: 60,y: 95},
+						{x: 80,y: 115},
+						{x: 100,y: 135},
+						{x: 120,y: 160},
+						{x: 70,y: 170},
+						{x: 85,y: 200}
 					]);
 				}
 			}else{
 				if(_this._wall_up_statuses.indexOf('1')!==-1){
-					_ar=_ar.concat([{
-							x: 60,
-							y: 20
-						},
-						{
-							x: 0,
-							y: 55
-						}
+					_ar=_ar.concat([
+						{x: 60,y: 20},
+						{x: 0,y: 55}
 					]);
 				}
 				if(_this._wall_down_statuses.indexOf('1')!==-1){
-					_ar=_ar.concat([{
-							x: 0,
-							y: 95
-						},
-						{
-							x: 60,
-							y: 130
-						}
+					_ar=_ar.concat([
+						{x: 0,y: 95},
+						{x: 60,y: 130}
 					]);
 				}
 			}
@@ -660,18 +586,12 @@ class ENEMY_BOSS_BIGCORE2
 					y: _this.y + _ar[_i].y
 				}));
 			}
-			_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);
+			_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);
 		}
 		if(_this._c%150===110){
-			//開いた腕を閉じる
-			for(let _i=_this.hands_up.length-1;_i>=0;_i--){
-				//上を表示
-				_this.hands_up[_i].isHandsClose=true;
-			}
-			for(let _i=_this.hands_down.length-1;_i>=0;_i--){
-				//下を表示
-				_this.hands_down[_i].isHandsClose=true;
-			}			
+			//開いた腕を閉じる			
+			_this.hands_up.reverse().map((_o)=>{_o.isHandsClose=true;});//上を表示
+			_this.hands_down.reverse().map((_o)=>{_o.isHandsClose=true;});//下を表示
 		}
 	}
 	move_Allset(){
@@ -679,27 +599,18 @@ class ENEMY_BOSS_BIGCORE2
 		_this.x-=4;
 		_this.moveDraw();
 
+		//噴射を表示
 		_this.back_img_up.s2();
 		_this.back_img_up.f();
 		_this.back_img_down.s2();
 		_this.back_img_down.f();
 
-		//上の壁を表示
-		for(let _i=0;_i<_this.wall_up.length;_i++){
-			_this.wall_up[_i].moveDraw(_this);
-		}
-		//下の壁を表示
-		for(let _i=0;_i<_this.wall_down.length;_i++){
-			_this.wall_down[_i].moveDraw(_this);
-		}
+		_this.wall_up.map((_o)=>{_o.moveDraw(_this);});//上の壁を表示
+		_this.wall_down.map((_o)=>{_o.moveDraw(_this);});//下の壁を表示
+
 		//上を表示
-		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
-			_this.hands_up[_i].moveDraw(_this);
-		}
-		//下を表示
-		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
-			_this.hands_down[_i].moveDraw(_this);
-		}
+		_this.hands_up.reverse().map((_o)=>{_o.moveDraw(_this);});
+		_this.hands_down.reverse().map((_o)=>{_o.moveDraw(_this);});
 
 		if(_this.x<_CANVAS.width
 				-_this.img.width
@@ -719,40 +630,32 @@ class ENEMY_BOSS_BIGCORE2
 	show_walls(){
 		let _this=this;
 		//上の壁を表示
-		for(let _i=0;_i<_this.wall_up.length;_i++){
-			if(_this.wall_up[_i-1]===undefined
-				||_this.wall_up[_i-1]._status<=0){
+		_this.wall_up.map((_o,_i,_ar)=>{
+			if(_ar[_i-1]===undefined||_ar[_i-1]._status<=0){
 				//直前の壁が破壊されない間、
 				//自身のダメージは不可。
-				_this.wall_up[_i].is_able_collision=true;
+				_o.is_able_collision=true;
 			}
-			_this.wall_up[_i].moveDraw(_this);
-		}
+			_o.moveDraw(_this);			
+		});
 		//下の壁を表示
-		for(let _i=0;_i<_this.wall_down.length;_i++){
-			if(_this.wall_down[_i-1]===undefined
-				||_this.wall_down[_i-1]._status<=0){
+		_this.wall_down.map((_o,_i,_ar)=>{
+			if(_ar[_i-1]===undefined||_ar[_i-1]._status<=0){
 				//直前の壁が破壊されない間、
 				//自身のダメージは不可。
-				_this.wall_down[_i].is_able_collision=true;
+				_o.is_able_collision=true;
 			}
-			_this.wall_down[_i].moveDraw(_this);
-		}		
+			_o.moveDraw(_this);			
+		});	
 	}
 	setDrawImage(){
 		let _this=this;
 		//自身を表示
 		_this.moveDraw();
 		_this.show_walls();
-		//上を表示
-		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
-			_this.hands_up[_i].moveDraw(_this);
-		}
-		//下を表示
-		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
-			_this.hands_down[_i].moveDraw(_this);
-		}
 		
+		_this.hands_up.reverse().map((_o)=>{_o.moveDraw(_this);});//上を表示
+		_this.hands_down.reverse().map((_o)=>{_o.moveDraw(_this);});//下を表示
 	}
 	move(){
 		let _this=this;
@@ -761,11 +664,15 @@ class ENEMY_BOSS_BIGCORE2
 			
 //		console.log(_this._moveYStop)
 		_this.y+=(_this._moveYStop)?0:_this.speed;
-		_this.speed=(_this.y<50
-					||_this.y+_this.img.height>450)
-					?_this.speed*-1
-					:_this.speed;
-
+		_this.speed=(()=>{
+			if (_this.y < 50){return _this.speed_mount;}
+			if (_this.y + _this.img.height > 450){return _this.speed_mount * -1;}
+			if (_this._c % 150 !== 0) {return _this.speed;}
+			let _e_y=_this.getEnemyCenterPosition()._y;
+			let _p_y=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition()._y;
+			if(_e_y<_p_y){return _this.speed_mount;}
+			if(_e_y>=_p_y){return _this.speed_mount*-1;}
+		})();
 		_this.shot();
 
 		(_this.speed>0&&!_this._moveYStop)
@@ -781,33 +688,29 @@ class ENEMY_BOSS_BIGCORE2
 		_this.set_wall_status();
 
 		//上を表示
-		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
+		_this.hands_up.reverse().map((_o)=>{
 			//上の壁を全部壊したら、腕を動かさない。
 			if(_this._wall_up_statuses.indexOf('1')===-1
-				&&!_this.hands_up[_i].is_hand_stop()){
-				_GAME._setPlay(_this.audio_collision);
-				_this.hands_up[_i].set_hand_stop();
-			}			
-		}
+				&&!_o.is_hand_stop()){
+				_GAME_AUDIO._setPlay(_this.audio_collision);
+				_o.set_hand_stop();
+			}	
+		});
 		//下を表示
-		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
+		_this.hands_down.reverse().map((_o)=>{
 			//下の壁を全部壊したら、腕を動かさない。
 			if(_this._wall_down_statuses.indexOf('1')===-1
-				&&!_this.hands_down[_i].is_hand_stop()){
-				_GAME._setPlay(_this.audio_collision);
-				_this.hands_down[_i].set_hand_stop();
+				&&!_o.is_hand_stop()){
+				_GAME_AUDIO._setPlay(_this.audio_collision);
+				_o.set_hand_stop();
 			}
-		}
+		});
 
 		if(_this._wall_up_statuses.indexOf('1')===-1
 			&&_this._wall_down_statuses.indexOf('1')===-1){
 			//全ての壁が壊れたら敵全部のステータスを0にする。
-			for(let _i=_this.hands_up.length-1;_i>=0;_i--){
-				_this.hands_up[_i]._status=0;
-			}
-			for(let _i=_this.hands_down.length-1;_i>=0;_i--){
-				_this.hands_down[_i]._status=0;
-			}
+			_this.hands_up.reverse().map((_o)=>{_o._status=0;});
+			_this.hands_down.reverse().map((_o)=>{_o._status=0;});
 			_this._status=0;
 			_this.setAlive();
 		}
@@ -1136,7 +1039,7 @@ class ENEMY_BOSS_CRYSTALCORE
 			new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+111}));
 		_ENEMIES_SHOTS.push(
 			new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+140}));
-		_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);
 	}
 	showCollapes(){
 		let _this=this;
@@ -1486,10 +1389,10 @@ class ENEMY_BOSS_CUBE
 			img:_CANVAS_IMGS['enemy_cube'].obj,
 			x:_p.x,
 			y:_p.y,
-			imgPos:[0,50,100,150],
+			imgPos:[0,70,140,210],
 			aniItv:10,
-			width:50,
-			height:50
+			width:70,
+			height:70
 		});
 		let _this=this;
 		_this._standby=false;
@@ -1585,7 +1488,7 @@ class ENEMY_BOSS_CUBE
 			);	
 			_this._status=0;
 			_this._stop=true;
-			_GAME._setPlay(_this.audio_collision);
+			_GAME_AUDIO._setPlay(_this.audio_collision);
 			return;
 		}
 
@@ -2192,7 +2095,7 @@ class ENEMY_BOSS_FRAME_HEAD
 					_this._collision_type)
 				);	
 		}
-		_GAME._setPlay(_this.audio_collision);
+		_GAME_AUDIO._setPlay(_this.audio_collision);
 	}
 	setDirect(_dir){//向きを変更する
 		this.direct=_dir;
@@ -2428,7 +2331,7 @@ class ENEMY_BOSS_CELL
 			//_ENEMIESもこのタイミングで
 			//全て要素がなくなりGAME CLEAR
 			_this._status=0;
-			_SCORE.set(_this.getscore);
+			_PARTS_OTHERS._set_score(_this.getscore);
 			return;
 		}
 
@@ -2449,7 +2352,7 @@ class ENEMY_BOSS_CELL
 					_o.y+Math.random()*100,
 					_this._collision_type)
 			);		
-			_GAME._setPlay(_this.audio_collision);
+			_GAME_AUDIO._setPlay(_this.audio_collision);
 		}
 		//爆発表示のカウント
 		_this._col_c=(_this._col_c>40)?0:_this._col_c+1;	
@@ -2689,7 +2592,7 @@ class ENEMY_BOSS_CELL_EYE
 			width:_this.width,
 			basePoint:1
 		});
-		_GAME._setPlay(_this.audio_alive);
+		_GAME_AUDIO._setPlay(_this.audio_alive);
 	}
 	setDrawImage(){}
 	moveDraw(_d){
@@ -2807,7 +2710,7 @@ class ENEMY_BOSS_DEATH
 						x:_this.x+50,
 						y:_this.y+35
 					}));
-				_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser_long']);
+				_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser_long']);
 			}
 			return;
 		}
@@ -2909,7 +2812,7 @@ class ENEMY_BOSS_DEATH
 					_this.y+65,
 					't1')
 			);
-			_GAME._setPlay(_this.audio_collision);
+			_GAME_AUDIO._setPlay(_this.audio_collision);
 		}
 
 		let _p=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();

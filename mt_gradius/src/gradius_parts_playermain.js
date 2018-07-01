@@ -180,7 +180,7 @@ const _PARTS_PLAYERMAIN={
 				_ps.shots[1]._shot=true;
 				//最初の要素（自機）のみショット音をだす
 				if(_i!==0){continue;}
-				_GAME._setPlay(_ps.shots[0]._audio);
+				_GAME_AUDIO._setPlay(_ps.shots[0]._audio);
 				continue;
 			}
 
@@ -196,7 +196,7 @@ const _PARTS_PLAYERMAIN={
 
 			//最初の要素（自機）のみショット音をだす
 			if(_i!==0){continue;}
-			_GAME._setPlay(_s._audio);
+			_GAME_AUDIO._setPlay(_s._audio);
 		}
 	}, //_start_shots
 	_stop_shots:function(){
@@ -225,7 +225,7 @@ const _PARTS_PLAYERMAIN={
 				_pm.shots[1]._shot=true;
 				//最初の要素（自機）のみショット音をだす
 				if(_i!==0){continue;}
-				_GAME._setPlay(_pm.shots[0]._audio);
+				_GAME_AUDIO._setPlay(_pm.shots[0]._audio);
 				continue;
 			}
 
@@ -239,7 +239,7 @@ const _PARTS_PLAYERMAIN={
 			_sm._shot=true;
 			//最初の要素（自機）のみショット音をだす
 			if(_i!==0){continue;}
-			_GAME._setPlay(_sm._audio);
+			_GAME_AUDIO._setPlay(_sm._audio);
 		}
 	}, //_start_missile_shots
 	_stop_missile_shots:function(){
@@ -257,7 +257,7 @@ const _PARTS_PLAYERMAIN={
 		let _o = _this._players_obj;
 		//自機の爆発表示
 		if (_o._col_ani_c === 1) {
-			_GAME._setPlay(_CANVAS_AUDIOS['vicviper_bomb']);
+			_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['vicviper_bomb']);
 		}
 		if (_o._col_ani_c
 			>= (_o.col_ani.length * 10) - 1) {
@@ -1111,7 +1111,7 @@ class GameObject_FORCEFIELD{
 		}
 		// _this.width*=_this._scale;
 		// _this.height*=_this._scale;
-		_GAME._setPlay(_CANVAS_AUDIOS['vicviper_shield_reduce']);
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['vicviper_shield_reduce']);
 		
 	}
 	setDrawImage(){

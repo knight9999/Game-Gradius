@@ -123,10 +123,10 @@ class GameObject_ENEMY{
 	setAlive(){
 		let _this=this;
 		if(!_this.isalive()){
-			_SCORE.set(_this.getscore);
-			_GAME._setPlay(_this.audio_collision);
+			_PARTS_OTHERS._set_score(_this.getscore);
+			_GAME_AUDIO._setPlay(_this.audio_collision);
 		}else{
-			_GAME._setPlay(_this.audio_alive);			
+			_GAME_AUDIO._setPlay(_this.audio_alive);			
 		}
 	}
 	setStatus(_s_type){
@@ -259,9 +259,7 @@ class GameObject_ENEMY{
 		if(_this.haspc){
 			//パワーカプセルを持ってる場合は、
 			//パワーカプセルを表示
-			_POWERCAPSELLS.push(
-				(new GameObject_POWERCAPSELL(_this.x,_this.y))
-			);
+			_PARTS_OTHERS._add_powercapsell({x:_this.x,y:_this.y});
 			return;
 		}
 		//爆発して終了
@@ -1088,7 +1086,7 @@ class ENEMY_p extends GameObject_ENEMY{
 	setAlive(){
 		let _this=this;
 		if(_this.isalive()){return;}
-		_SCORE.set(_this.getscore);
+		_PARTS_OTHERS._set_score(_this.getscore);
 	}
 	map_collition(){
 		let _this=this;
@@ -1200,7 +1198,7 @@ class ENEMY_p extends GameObject_ENEMY{
 				y: _cp._y+_obj.y
 			}));
 		}
-		_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision4']);
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_collision4']);
 		_this.init();
 	}
 	shot(){}
@@ -1249,8 +1247,8 @@ class ENEMY_p_small extends ENEMY_p {
 	setAlive(){
 		let _this=this;
 		if(_this.isalive()){return;}
-		_SCORE.set(_this.getscore);
-		_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision5']);
+		_PARTS_OTHERS._set_score(_this.getscore);
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_collision5']);
 	}
 	showCollapes(_x, _y) {
 		let _this = this;
@@ -1543,7 +1541,7 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 	setAlive(){
 		let _this=this;
 		if(_this.isalive()){return;}
-		_SCORE.set(_this.getscore);
+		_PARTS_OTHERS._set_score(_this.getscore);
 	}
 	map_collition(){
 		let _this=this;
@@ -1582,7 +1580,7 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 			);
 		}
 		_this._isbroken=true;
-		_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision1']);
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_collision1']);
 		_this.init();
 	}
 	shot(){}
@@ -1667,7 +1665,7 @@ class ENEMY_frame_2 extends GameObject_ENEMY{
 			);
 		}
 		_this._isbroken=true;
-		_GAME._setPlay(_CANVAS_AUDIOS['enemy_collision1']);
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_collision1']);
 		_this.init();
 	}
 	moveSet(){
@@ -1845,7 +1843,7 @@ class ENEMY_cell_core
 				_e._y,
 				_this._collision_type)
 			);
-		_GAME._setPlay(_this.audio_collision);
+		_GAME_AUDIO._setPlay(_this.audio_collision);
 	}
 	move_standby(){
 		let _this=this;

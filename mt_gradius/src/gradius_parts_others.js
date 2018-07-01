@@ -5,6 +5,130 @@
 //=====================================================
 'use strict';
 
+const _PARTS_OTHERS = {
+	_pm:new Object(),
+	_stageselect:new Object(),
+	_score:new Object(),
+
+	_background_ar:new Array(),
+	_background_star_max:70,
+	_powercapsell_ar:new Array(),
+
+	_reset(){
+		let _this = this;
+		_this._pm= new Object();
+		_this._stageselect= new Object();
+//		_this._score= new Object();スコアは永続させる
+
+		_this._background_ar=new Array();
+		_this._powercapsell_ar= new Array();
+	},
+	_init_score(){
+		this._score = new GameObject_SCORE();
+	},
+	_draw_score(){
+		this._score.setDrawImage();
+	},
+	_set_score(_score){
+		this._score.set(_score);
+	},
+	_reset_score() {
+		this._score.reset();
+	},
+	_init_background(){
+		let _this = this;
+		for (let _i = 0; _i < _this._background_star_max; _i++) {
+			_this._background_ar.push(new GameObject_BACKGROUND());
+		}
+	},
+	_move_background(){
+		let _this = this;
+		_this._background_ar.map((_o)=>{_o.move();});
+	},
+	_draw_background(){
+		let _this = this;
+		_this._background_ar.map((_o)=>{_o.setDrawImage();});
+	},
+
+	_add_powercapsell(_p){
+		if(_p===undefined){return;}
+		let _this = this;
+		_this._powercapsell_ar.push(new GameObject_POWERCAPSELL(_p.x, _p.y));
+	},
+	_optimized_powercapsell(){
+		let _this = this;
+		//パワーカプセル取得済み、またはCANVASからすぎた場合は配列を外す
+		_this._powercapsell_ar.map((_o,_i,_ar)=>{
+			if(_o.x+_o.width<0||_o.gotpc){_ar.splice(_i,1);}
+		});
+	},
+	_move_powercapsell(){
+		let _this = this;
+		_this._powercapsell_ar.map((_o)=>{_o.move();});
+	},
+	_draw_powercapsell() {
+		let _this = this;
+		_this._powercapsell_ar.map((_o) => {_o.setDrawImage();});
+	},
+	_set_powercapsell(){
+		let _this = this;
+
+		for(let _i=0;_i<_this._powercapsell_ar.length;_i++){
+			let _pwc=_this._powercapsell_ar[_i];
+			if(_pwc.gotpc){continue;}
+
+			let _pl=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
+			let _pwc_c=_pwc.getPCCenterPosition();
+
+			let _a=Math.sqrt(
+				Math.pow(_pwc_c._x-_pl._x,2)+
+				Math.pow(_pwc_c._y-_pl._y,2)
+				);
+			let _d=Math.sqrt(
+				Math.pow(_PARTS_PLAYERMAIN._players_obj.width,2)+
+				Math.pow(_PARTS_PLAYERMAIN._players_obj.height,2)
+			);
+
+			let _s=(_a<_d/2)?true:false;
+			if(!_s){continue;}
+
+			_pwc.getPowerCapcell();
+			if(_pwc.type==='red'){
+				_POWERMETER.move();
+				_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['pc']);
+				_PARTS_OTHERS._set_score(_pwc.getscore);
+				continue;
+			}
+			if(_pwc.type==='blue'){
+				//CANVAS内の敵を外す
+				var _ar=_ENEMIES.concat();
+				for(let _i=0;_i<_ar.length;_i++){
+					let _e=_ar[_i];
+					if(_GAME.isEnemyCanvasOut(_e)){continue;}
+					if(_e.isStandBy()){continue;}
+					if(!_e.isAbleCollision()){continue;}
+
+					_e._status-=1;
+					if(!_e.isalive()){
+						_PARTS_OTHERS._set_score(_e.getscore);
+						_e.showCollapes();
+					}
+				}
+				//CANVAS内の敵のショットを全て外す
+				_ar=_ENEMIES_SHOTS.concat();
+				for(let _i=0;_i<_ar.length;_i++){
+					let _es=_ar[_i];
+					if(_GAME.isEnemyCanvasOut(_es)){continue;}
+					_es.init();
+				}
+				_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_all_out']);
+				continue;
+			}
+		}
+	}
+};
+
+
 class GameObject_PM{
 	constructor(){
 		let _this=this;
@@ -137,7 +261,7 @@ class GameObject_PM{
 
 		//自機のパワーアップ演出
 		_PARTS_PLAYERMAIN._players_obj.set_equipped();
-		_GAME._setPlay(_CANVAS_AUDIOS['playerset']);
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['playerset']);
 		this.meterdef_status=
 			this._get_bit(
 					(parseInt(this.meterdef_status,2)
@@ -399,7 +523,7 @@ class GameObject_SCORE{
 		this.def_scorehi=57300;
 		this.scorehi=this.def_scorehi;
 	}
-	init(){
+	reset(){
 		//1p,2pのスコアを初期化
 		this.score1p=0;
 		this.score2p=0;
@@ -409,7 +533,7 @@ class GameObject_SCORE{
 		if(this.scorehi>=this.score1p){return;}
 		this.scorehi=this.score1p;
 	}
-	show(){
+	setDrawImage(){
 		let _img=_CANVAS_IMGS_INIT['font'].obj;
 		let _s='1p'+('        '+this.score1p).slice(-8);
 		_GAME._setDrawText(_s,180,10,0.3);
@@ -485,20 +609,21 @@ class GameObject_BACKGROUND{
 		this._ar_alpha=[0.0,0.2,0.4,0.6,0.8,1.0,0.8,0.6,0.4,0.2];
 		this._r=Math.random()+1;
 	}
+	setDrawImage(){
+		let _this = this;
+		_CONTEXT.beginPath();
+		_CONTEXT.arc(_this.x, _this.y, _this._r, 0, Math.PI * 2, true);
+		_CONTEXT.fillStyle = 'rgba(' + _this.rgb + ',' + _this._ar_alpha[parseInt(_this._c / 20)] + ')';
+		_CONTEXT.fill();
+	}
 	move(){
-		let _this=this;
+		let _this = this;
 		_this.x=(_this.x<0)
 					?_CANVAS.width
 					:_this.x;
 		_this.x-=(_BACKGROUND_SPEED===0)
 					?0
 					:_this.speed;
-
-		const alpha=_this._ar_alpha[parseInt(_this._c/20)];
-		_CONTEXT.beginPath();
-        _CONTEXT.arc(_this.x,_this.y,_this._r,0,Math.PI*2,true);
-		_CONTEXT.fillStyle='rgba('+_this.rgb+','+alpha+')';
-		_CONTEXT.fill();
 
 		_this._c=(_this._c>=200-1)?0:_this._c+1;
 	}

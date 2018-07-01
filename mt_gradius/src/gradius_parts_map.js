@@ -521,7 +521,7 @@ class MAP_CELL_WALL extends MAP_OBJECT{
 		}
 		if(_this._status<=0){
 			if(_this._status_count===0){
-				_GAME._setPlay(_this.audio_collision);
+				_GAME_AUDIO._setPlay(_this.audio_collision);
 			}
 			_MAP.set_mapdef_col(
 				_MAP.getMapX(_x),

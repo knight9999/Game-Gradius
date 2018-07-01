@@ -57,7 +57,7 @@ class GameObject_ENEMY_BOSS
 		for(let _i=0;_i<_ENEMIES.length;_i++){
 			_ENEMIES[_i]._status=0;
 		}
-		_GAME._setPlay(_this.audio_collision);
+		_GAME_AUDIO._setPlay(_this.audio_collision);
 	}
 	moveDraw(){
 		//画像を表示
@@ -275,7 +275,7 @@ class ENEMY_BOSS_BIGCORE
 				imgPos:[0]
 			}));
 		}
-		_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);		
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);		
 		_this.tid=setTimeout(function(){
 			_this._moveYStop=false;
 			clearTimeout(_this.tid);
@@ -586,7 +586,7 @@ class ENEMY_BOSS_BIGCORE2
 					y: _this.y + _ar[_i].y
 				}));
 			}
-			_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);
+			_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);
 		}
 		if(_this._c%150===110){
 			//開いた腕を閉じる			
@@ -692,7 +692,7 @@ class ENEMY_BOSS_BIGCORE2
 			//上の壁を全部壊したら、腕を動かさない。
 			if(_this._wall_up_statuses.indexOf('1')===-1
 				&&!_o.is_hand_stop()){
-				_GAME._setPlay(_this.audio_collision);
+				_GAME_AUDIO._setPlay(_this.audio_collision);
 				_o.set_hand_stop();
 			}	
 		});
@@ -701,7 +701,7 @@ class ENEMY_BOSS_BIGCORE2
 			//下の壁を全部壊したら、腕を動かさない。
 			if(_this._wall_down_statuses.indexOf('1')===-1
 				&&!_o.is_hand_stop()){
-				_GAME._setPlay(_this.audio_collision);
+				_GAME_AUDIO._setPlay(_this.audio_collision);
 				_o.set_hand_stop();
 			}
 		});
@@ -1039,7 +1039,7 @@ class ENEMY_BOSS_CRYSTALCORE
 			new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+111}));
 		_ENEMIES_SHOTS.push(
 			new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+140}));
-		_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);
+		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);
 	}
 	showCollapes(){
 		let _this=this;
@@ -1389,10 +1389,10 @@ class ENEMY_BOSS_CUBE
 			img:_CANVAS_IMGS['enemy_cube'].obj,
 			x:_p.x,
 			y:_p.y,
-			imgPos:[0,50,100,150],
+			imgPos:[0,70,140,210],
 			aniItv:10,
-			width:50,
-			height:50
+			width:70,
+			height:70
 		});
 		let _this=this;
 		_this._standby=false;
@@ -1488,7 +1488,7 @@ class ENEMY_BOSS_CUBE
 			);	
 			_this._status=0;
 			_this._stop=true;
-			_GAME._setPlay(_this.audio_collision);
+			_GAME_AUDIO._setPlay(_this.audio_collision);
 			return;
 		}
 
@@ -2095,7 +2095,7 @@ class ENEMY_BOSS_FRAME_HEAD
 					_this._collision_type)
 				);	
 		}
-		_GAME._setPlay(_this.audio_collision);
+		_GAME_AUDIO._setPlay(_this.audio_collision);
 	}
 	setDirect(_dir){//向きを変更する
 		this.direct=_dir;
@@ -2331,7 +2331,7 @@ class ENEMY_BOSS_CELL
 			//_ENEMIESもこのタイミングで
 			//全て要素がなくなりGAME CLEAR
 			_this._status=0;
-			_SCORE.set(_this.getscore);
+			_PARTS_OTHERS._set_score(_this.getscore);
 			return;
 		}
 
@@ -2352,7 +2352,7 @@ class ENEMY_BOSS_CELL
 					_o.y+Math.random()*100,
 					_this._collision_type)
 			);		
-			_GAME._setPlay(_this.audio_collision);
+			_GAME_AUDIO._setPlay(_this.audio_collision);
 		}
 		//爆発表示のカウント
 		_this._col_c=(_this._col_c>40)?0:_this._col_c+1;	
@@ -2592,7 +2592,7 @@ class ENEMY_BOSS_CELL_EYE
 			width:_this.width,
 			basePoint:1
 		});
-		_GAME._setPlay(_this.audio_alive);
+		_GAME_AUDIO._setPlay(_this.audio_alive);
 	}
 	setDrawImage(){}
 	moveDraw(_d){
@@ -2710,7 +2710,7 @@ class ENEMY_BOSS_DEATH
 						x:_this.x+50,
 						y:_this.y+35
 					}));
-				_GAME._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser_long']);
+				_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser_long']);
 			}
 			return;
 		}
@@ -2812,7 +2812,7 @@ class ENEMY_BOSS_DEATH
 					_this.y+65,
 					't1')
 			);
-			_GAME._setPlay(_this.audio_collision);
+			_GAME_AUDIO._setPlay(_this.audio_collision);
 		}
 
 		let _p=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();

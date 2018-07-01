@@ -9,70 +9,6 @@
 //=====================================================
 'use strict';
 
-//自機とパワーカプセルの取得
-const _IS_GET_POWERCAPSELL=()=>{
-//	if(!_PARTS_PLAYERMAIN._players_obj.isalive()){return;}
-	for(let _i=0;_i<_POWERCAPSELLS.length;_i++){
-		if(_POWERCAPSELLS[_i].gotpc){
-			_POWERCAPSELLS.splice(_i,1);
-		}
-	}
-
-	for(let _i=0;_i<_POWERCAPSELLS.length;_i++){
-		let _pwc=_POWERCAPSELLS[_i];
-		if(_pwc.gotpc){continue;}
-
-		let _pl=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
-		let _pwc_c=_pwc.getPCCenterPosition();
-
-		let _a=Math.sqrt(
-			Math.pow(_pwc_c._x-_pl._x,2)+
-			Math.pow(_pwc_c._y-_pl._y,2)
-			);
-		let _d=Math.sqrt(
-			Math.pow(_PARTS_PLAYERMAIN._players_obj.width,2)+
-			Math.pow(_PARTS_PLAYERMAIN._players_obj.height,2)
-		);
-
-		let _s=(_a<_d/2)?true:false;
-		if(!_s){continue;}
-
-		_pwc.getPowerCapcell();
-		if(_pwc.type==='red'){
-			_POWERMETER.move();
-			_GAME._setPlay(_CANVAS_AUDIOS['pc']);
-			_SCORE.set(_pwc.getscore);
-			continue;
-		}
-		if(_pwc.type==='blue'){
-			//CANVAS内の敵を外す
-			var _ar=_ENEMIES.concat();
-			for(let _i=0;_i<_ar.length;_i++){
-				let _e=_ar[_i];
-				if(_GAME.isEnemyCanvasOut(_e)){continue;}
-				if(_e.isStandBy()){continue;}
-				if(!_e.isAbleCollision()){continue;}
-
-				_e._status-=1;
-				if(!_e.isalive()){
-					_SCORE.set(_e.getscore);
-					_e.showCollapes();
-				}
-//				_e.collision();
-			}
-			//CANVAS内の敵のショットを全て外す
-			_ar=_ENEMIES_SHOTS.concat();
-			for(let _i=0;_i<_ar.length;_i++){
-				let _es=_ar[_i];
-				if(_GAME.isEnemyCanvasOut(_es)){continue;}
-				_es.init();
-			}
-			_GAME._setPlay(_CANVAS_AUDIOS['enemy_all_out']);
-			continue;
-		}
-	}
-}
-
 //自機ショット、また自機と敵による衝突判定
 const _IS_ENEMIES_COLLISION=()=>{
 	for(let _i=0;_i<_ENEMIES.length;_i++){
@@ -110,6 +46,7 @@ const _IS_ENEMIES_SHOT_COLLISION=()=>{
 const _DRAW=()=>{
 	_KEYEVENT_MASTER.addKeydownGame();
 	_KEYEVENT_MASTER.addKeyupGame();
+	_GAME_AUDIO._setPlayOnBG(_GAME_AUDIO._audio_now_obj_bg);
 
 	const _loop=()=>{
 		_DRAW_SETINTERVAL=window.requestAnimationFrame(_loop);		
@@ -123,9 +60,9 @@ const _DRAW=()=>{
 		//・表示
 
 		//BACKGROUNDを表示
-		for(let _i=0;_i<_BACKGROUND_STAR_MAX;_i++){
-			_BACKGROUND[_i].move();
-		}
+		_PARTS_OTHERS._move_background();
+		_PARTS_OTHERS._draw_background();
+
 		// console.log('2:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 		//敵の弾を表示
 		for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
@@ -149,10 +86,13 @@ const _DRAW=()=>{
  
 //		console.log('t')
 		//パワーカプセルを表示
-		for(let _i=0;_i<_POWERCAPSELLS.length;_i++){
-			if(_PARTS_PLAYERMAIN._players_obj.isalive()){_POWERCAPSELLS[_i].move();}
-			_POWERCAPSELLS[_i].setDrawImage();
+		_PARTS_OTHERS._optimized_powercapsell();
+		_PARTS_OTHERS._set_powercapsell();
+		if(_PARTS_PLAYERMAIN._players_obj.isalive()){
+			_PARTS_OTHERS._move_powercapsell();
 		}
+		_PARTS_OTHERS._draw_powercapsell();
+
 
 		//敵衝突表示の移動・表示調整
 		for(let _i=0;_i<_ENEMIES_COLLISIONS.length;_i++){
@@ -161,8 +101,6 @@ const _DRAW=()=>{
 		}
 
 		if(_PARTS_PLAYERMAIN._players_obj.isalive()){
-			_IS_GET_POWERCAPSELL();
-			// console.log('6:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 			//敵、衝突判定
 			_IS_ENEMIES_SHOT_COLLISION();
 			// console.log('7:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
@@ -199,7 +137,7 @@ const _DRAW=()=>{
 		_POWERMETER.show();
 		//SCOREを表示
 //		console.log('score show');
-		_SCORE.show();
+		_PARTS_OTHERS._draw_score();
 
 		//自機のステータスが0になった時
 		if(!_PARTS_PLAYERMAIN._players_obj.isalive()){
@@ -240,7 +178,7 @@ const _DRAW_MATCH_BOSS=()=>{
 			_MAP_ENEMIES_BOSS[_MAP.map_boss]._f()
 		);
 		_DRAW_IS_MATCH_BOSS=true;
-		_GAME._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
+		_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
 		
 		return;
 	}
@@ -267,7 +205,7 @@ const _DRAW_PLAYER_COLLAPES=()=>{
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
 
-	_GAME._setStopOnBG();
+	_GAME_AUDIO._setStopOnBG();
 	_DRAW_STOP_PLAYERS_SHOTS();
 	_DRAW_SCROLL_STOP();
 
@@ -330,6 +268,7 @@ const _DRAW_STOP_PLAYERS_SHOTS=()=>{
 }
 
 const _DRAW_STOP=()=>{
+	_GAME_AUDIO._setStopOnBG();
 	window.cancelAnimationFrame(_DRAW_SETINTERVAL);
 	_DRAW_SETINTERVAL=null;
 }
@@ -368,12 +307,9 @@ const _DRAW_GAMESTART=()=>{
 	_KEYEVENT_MASTER.removeKeyupGame();
 
 	//BACKGROUND
-	for (let _i = 0; _i < _BACKGROUND_STAR_MAX; _i++) {
-		_BACKGROUND[_i] = new GameObject_BACKGROUND();
-	}
+	_PARTS_OTHERS._init_background();
 	//MAP
 	_MAP.set_gamestart();
-
 
 	if(_ISDEBUG){_DRAW();return;}
 	let _c=0;
@@ -382,7 +318,7 @@ const _DRAW_GAMESTART=()=>{
 		//	_DRAW_GAMESTART_SETINTERVAL=setInterval(function(){
 		if(_c>250){
 			_DRAW_STOP_GAMESTART();
-			_GAME._setPlayOnBG(_CANVAS_AUDIOS['bg_'+_MAP.map_bgmusic]);			
+			_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_'+_MAP.map_bgmusic]);			
 			_DRAW();
 			return;
 		}
@@ -391,14 +327,13 @@ const _DRAW_GAMESTART=()=>{
 					_CANVAS.height);
 
 		//BACKGROUND
-		for(let _i=0;_i<_BACKGROUND_STAR_MAX;_i++){
-			_BACKGROUND[_i].move();
-		}
+		_PARTS_OTHERS._move_background();
+		_PARTS_OTHERS._draw_background();
 
 		//DRAW POWER METER
 		_POWERMETER.show();
 		//SCORE
-		_SCORE.show();
+		_PARTS_OTHERS._draw_score();
 
 		if(parseInt(_c/50)%2!==0){
 
@@ -413,7 +348,7 @@ const _DRAW_GAMESTART=()=>{
 		_c++;
 	};
 	_DRAW_GAMESTART_SETINTERVAL=window.requestAnimationFrame(_loop);
-	_GAME._setStopOnBG();
+	_GAME_AUDIO._setStopOnBG();
 }
 
 const _DRAW_GAMECLEAR=()=>{
@@ -458,14 +393,12 @@ const _DRAW_GAMEOVER=()=>{
 				_CANVAS.height);
 
 	//BACKGROUNDを表示
-	for(let _i=0;_i<_BACKGROUND_STAR_MAX;_i++){
-		_BACKGROUND[_i].move();
-	}
+	_PARTS_OTHERS._draw_background();
+
 	//DRAW POWER METERを表示
 	_POWERMETER.show();
 	//SCOREを表示
-//		console.log('score show');
-	_SCORE.show();
+	_PARTS_OTHERS._draw_score();
 
 //	console.log('gameover');
 	let _s='gameover';
@@ -532,7 +465,7 @@ const _DRAW_RESET_OBJECT=()=>{
 	_ENEMIES_COLLISIONS=[];
 	_POWERMETER='';
 
-	_POWERCAPSELLS=[];
+	_PARTS_OTHERS._reset();
 
 	_MAP_SCROLL_POSITION_X=0;
 	_MAP_SCROLL_POSITION_Y=0;
@@ -557,7 +490,7 @@ const _DRAW_INIT_OBJECT=()=>{
 	//SCORE
 	if(!_DRAW_IS_GAMECLEAR){
 		//クリアしていなければスコアをリセット
-		_SCORE.init();
+		_PARTS_OTHERS._reset_score();
 	}
 	_DRAW_IS_GAMECLEAR=false;
 
@@ -602,76 +535,30 @@ const _DRAW_STAGE_SELECT=()=>{
 	_STAGESELECT=new GameObject_STAGESELECT();
 	_STAGESELECT.init();
 	_KEYEVENT_MASTER.addKeydownSelectStage();
-	_GAME._setPlayOnBG(_CANVAS_AUDIOS['bg_powermeterselect']);
+	_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_powermeterselect']);
 }
 
 const _DRAW_AUDIO_INIT=(_obj)=>{
-	return new Promise((_res, _rej)=>{
-	let _audioLoadedCount=0;
-	let _gsl_r=document.querySelector('#game_start_loading .rate');
-	
-	for(let _i in _obj){
-		let _r=new XMLHttpRequest();
-		_r.open('GET',_obj[_i].src,true);
-		_r.responseType='arraybuffer'; //ArrayBufferとしてロード
-		_r.onload=function(){
-			// contextにArrayBufferを渡し、decodeさせる
-			_AUDIO_CONTEXT.decodeAudioData(
-				_r.response,
-				function(_buf){
-					_obj[_i].buf=_buf;
-					_audioLoadedCount++;
-					if(_audioLoadedCount>=Object.keys(_obj).length){
-						_res();
-						return;
-					}
-					//ローディングに進捗率を表示させる
-					_gsl_r.innerHTML=parseInt(_audioLoadedCount/Object.keys(_obj).length*100)+'%';
-				},
-				function(_error){
-					alert('一部音声読み込みに失敗しました。再度立ち上げなおしてください:'+_error);
-					_rej();
-					return;
-				});
-		};
-		_r.send();
-	}
-	});//promise
+	return new Promise((_res, _rej)=>{	
+	_GAME_AUDIO._init_audios(
+		_obj,(_n)=>{
+			//進捗中処理
+			document.querySelector('#game_start_loading .rate').innerHTML = parseInt(_n) + '%';
+		})
+		.then(()=>{_res();},()=>{_rej();});
+	});
 }
-const _DRAW_INIT=(_obj)=>{
+const _DRAW_IMG_INIT=(_obj)=>{
 	return new Promise((_res,_rej)=>{
-	let _imgLoadedCount=0;
-	let _alertFlag=false;
-	for(let _i in _obj){
-		let _o=_obj[_i];
-		_o.obj.src=_obj[_i].src;
-		_o.obj.onload=function(){
-			_o.obj.width*=_o.rate;
-			_o.obj.height*=_o.rate;
-			_imgLoadedCount++;
-			if(_imgLoadedCount>=Object.keys(_obj).length){
-				_res();
-				return;
-			}
-			let _s=parseInt(_imgLoadedCount/Object.keys(_obj).length*100);
-			//ローディングに進捗率を表示させる
+	_GAME_IMG._init_imgs(
+		_obj,(_n)=>{
+			//進捗中処理
 			_GAME._setTextToFont(
 				document.querySelector('#game_start>.text_loading'),
-				 'now loading '+_s+' per',30);
-		}
-		_o.obj.onabort=function(){
-			_rej();
-			return;
-		}
-		_o.obj.onerror=function(){
-			if(_alertFlag){return;}
-			_alertFlag=true;
-			alert('一部画像読み込みに失敗しました。再度立ち上げなおしてください');
-			_rej();
-			return;
-		}
-	}
-	});//promise
+				'now loading ' + _n + ' per', 30);
+		})
+		.then(()=>{_res();},()=>{_rej();});
+	});
 }
 
 
@@ -681,7 +568,7 @@ const _DRAW_INIT=(_obj)=>{
 window.addEventListener('load',()=>{
 	_CANVAS=document.getElementById('game');
 	_CONTEXT=_CANVAS.getContext('2d');
-	_AUDIO_CONTEXT=new(window.AudioContext||window.webkitAudioContext)();
+	_GAME_AUDIO._init();
 
 	//URLからパラメータを取得
 	_GAME.setUrlParams();
@@ -695,10 +582,10 @@ window.addEventListener('load',()=>{
 	}
 	_DRAW_AUDIO_INIT(_CANVAS_AUDIOS)
 	.then(()=>{
-		_DRAW_INIT(_CANVAS_IMGS_INIT);
+		_DRAW_IMG_INIT(_CANVAS_IMGS_INIT);
 	}).then(()=>{
 		_PARTS_PLAYERMAIN._set_shot_type('_SHOTTYPE_NORMAL');
-		_SCORE = new GameObject_SCORE();
+		_PARTS_OTHERS._init_score();
 		_MAP = new GameObject_MAP();
 		_MAP.init();
 	}).then(()=>{
@@ -721,7 +608,7 @@ window.addEventListener('load',()=>{
 
 			_MAP.set_stage_map_pattern(_MAP_PETTERN);
 
-			_DRAW_INIT(_CANVAS_IMGS).then(() => {
+			_DRAW_IMG_INIT(_CANVAS_IMGS).then(() => {
 				_DRAW_POWER_METER_SELECT();
 			});
 

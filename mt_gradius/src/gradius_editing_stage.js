@@ -45,9 +45,7 @@ _init:function(_d){
 			return;
 		}
 
-		_GAME_STAGEEDIT._init_images(
-			_CANVAS_IMGS,
-			_GAME_STAGEEDIT._init);
+		_GAME_STAGEEDIT._init();
 	});
 },//_init
 _set_entryupdate:function(_ed){
@@ -230,60 +228,6 @@ _setInitMap:function(_m){
 
 },//_setInitMap
 
-_setAudioInit:function(_obj,_func){
-	let _this=this;
-	let _audioLoadedCount=0;
-	let _alertFlag=false;
-	for(let _i in _obj){
-		let _r=new XMLHttpRequest();
-		_r.open('GET',_obj[_i].src,true);
-		_r.responseType='arraybuffer'; //ArrayBufferとしてロード
-		_r.onload=function(){
-			// contextにArrayBufferを渡し、decodeさせる
-			_this._ac.decodeAudioData(
-				_r.response,
-				(_buf)=>{
-					_obj[_i].buf=_buf;
-					_audioLoadedCount++;
-					if(_audioLoadedCount>=
-						Object.keys(_obj).length){
-						_func();
-					}
-					//ローディングに進捗率を表示させる
-//					_gsl_r.innerHTML=parseInt(_audioLoadedCount/Object.keys(_obj).length*100)+'%';
-				},
-				(_error)=>{
-					alert('一部音声読み込みに失敗しました。再度立ち上げなおしてください:'+_error);
-					return;
-				});
-		};
-		_r.send();
-	}
-
-},// _setAudioInit
-
-_setAudioStop(_obj){
-	let _this=this;
-	if(_this._as===null){return;}
-	_this._as.stop();
-	_this._as=null;
-
-},//_setAudioPlay
-
-_setAudioPlay(_obj){
-	let _this=this;
-	if(_obj===null||_obj===undefined){return;}
-	if(_this._as!==null){return;}
-
-	const _s=_this._ac.createBufferSource();
-	_s.buffer=_obj.buf;
-	_s.loop=false;
-    _s.connect(_this._ac.destination);
-	_s.start(0);
-	_this._as=_s;
-	
-},//_setAudioPlay
-
 _setInitPartsBlocksWrapper:function(_m){
 	//パーツ一覧に表示する
 	let _mo=_m._map;
@@ -410,7 +354,7 @@ _setData:function(_pt){
 		}
 	}
 	$_bgmusic.addEventListener('click',function(){
-		_GAME_STAGEEDIT._setAudioStop();
+		_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop();
 	})
 	//BOSSを表示
 	const $_boss=document.querySelector('#boss select');
@@ -505,22 +449,6 @@ _setPartsBlockEvent:function(){
 		$_ap_pb[_i].addEventListener('dragend',_GAME_STAGEEDIT_EVENTS._f_ap_dragend,false);
 	}
 },//_setPartsBlockEvent
-_init_images:function(_obj,_func){
-	let _imgLoadedCount=0;
-	for(let _i in _obj){
-		let _o=_obj[_i];
-		_o.obj.src=_obj[_i].src;
-		_o.obj.onload=function(){
-			_o.obj.width*=_o.rate;
-			_o.obj.height*=_o.rate;
-			_imgLoadedCount++;
-			if(_imgLoadedCount>=
-				Object.keys(_obj).length){
-				_func();
-			}
-		}
-	}
-},
 _init:()=>{
 	//DataAPI読み込み完了後に実行
     const _this=_GAME_STAGEEDIT;
@@ -545,7 +473,7 @@ _init:()=>{
 	});
 
     //入力値をセット
-    _MAP.init(()=>{
+    _MAP.init().then(()=>{
         console.log('success');
 		_this._setData(_MAP_PETTERN);
 
@@ -598,11 +526,13 @@ _init:()=>{
 
 //イベント処理
 const _GAME_STAGEEDIT_EVENTS={
-$_do_area_parts_obj:null,//area_parts内ドラッグ中のオブジェクト
-$_start_area_parts_obj:null,//area_parts内ドラッグ開始のオブジェクト
-$_mouseover_area_parts_obj:null,//area_parts内マウスオーバー時のオブジェクト
+_edits: false, //1ステージでの編集フラグ
+$_do_area_parts_obj: null, //area_parts内ドラッグ中のオブジェクト
+$_start_area_parts_obj: null, //area_parts内ドラッグ開始のオブジェクト
+$_mouseover_area_parts_obj: null, //area_parts内マウスオーバー時のオブジェクト
 //前のエントリ
 _e_entrylink_prev:function(e){
+	if(this._edits&&!window.confirm('編集ずみがあります。続けますか?')){return;}
 	if(_MAP_PETTERN===0){return;}
 	_MAP_PETTERN--;
 	_GAME_STAGEEDIT._clearMap();
@@ -619,11 +549,14 @@ _e_entrylink_prev:function(e){
 	for(let _i=0;_i<$_qsa.length;_i++){
 		_GAME_STAGEEDIT._setTextToFont($_qsa[_i],$_qsa[_i].innerText,14);
 	}
+	this._f_bgmusic_stop();
+	this._edits = false;
 	return false;
 },//_e_entrylink_prev
 
 //次のエントリ
 _e_entrylink_next:function(e){
+	if(this._edits&&!window.confirm('編集ずみがあります。続けますか?')){return;}
 	if(_MAP_PETTERN>=_MAPDEFS.length-1){return;}
 	_MAP_PETTERN++;
 	_GAME_STAGEEDIT._clearMap();
@@ -640,12 +573,14 @@ _e_entrylink_next:function(e){
 	for(let _i=0;_i<$_qsa.length;_i++){
 		_GAME_STAGEEDIT._setTextToFont($_qsa[_i],$_qsa[_i].innerText,14);
 	}
+	this._f_bgmusic_stop();
+	this._edits = false;
 	return false;
 },//_e_entrylink_next
 
 //UPDATEボタン押下時
 _e_update:function(){
-	(confirm('更新しますか?'))
+	(window.confirm('更新しますか?'))
 		?_GAME_STAGEEDIT.setDataForDataApi()
 		:console.log('false');
 	return false;
@@ -812,6 +747,7 @@ _f_as_drop:function(e){
 		$_ect.children[0].addEventListener('dragstart',this._f_pb_dragstart,false);
 	}
 
+	this._edits=true;
 	//area_blockの設定
 	$_ect.setAttribute('data-val',_o);
 
@@ -877,10 +813,10 @@ _f_pb_dragstart:function(e){
 //====================
 _f_bgmusic_play:function(e){
 	let _b=document.querySelector('#bgmusic select').value;
-	_GAME_STAGEEDIT._setAudioPlay(_CANVAS_AUDIOS['bg_'+_b]);
+	_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_' + _b]);
 },//_f_bgmusic_play
 _f_bgmusic_stop:function(e){
-	_GAME_STAGEEDIT._setAudioStop();
+	_GAME_AUDIO._setStopOnBG();
 }//_f_bgmusic_stop
 
 };//_GAME_STAGEEDIT_EVENTS
@@ -898,11 +834,18 @@ window.addEventListener('load',()=>{
 	$_mn=document.querySelector('#menu .next'); 
 	$_bm=document.querySelector('#bgmusic');
 
-	_AUDIO_CONTEXT=new(window.AudioContext||window.webkitAudioContext)();
-	_GAME_STAGEEDIT._setAudioInit(
+	_GAME_AUDIO._audio_context = new(window.AudioContext || window.webkitAudioContext)();
+	_GAME_AUDIO._init_audios(
 		_CANVAS_AUDIOS,
-		_DATAAPI._init_config
-	);	
+		()=>{}
+	).then(()=>{
+		_GAME_IMG._init_imgs(
+			_CANVAS_IMGS,
+			()=>{}
+		);
+	}).then(()=>{
+		_DATAAPI._init_config();
+	});
 });
 //_GAME_STAGEEDIT._init();
 

@@ -435,7 +435,9 @@ body.sp section#game_start_wrapper #game_start .text_loading {
 	padding-bottom:0px;
 	transform: scale(0.8);
 }
-
+body.sp section#sp_controller.on{
+	height:100px;
+}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main {
 	height: 100px;
 	width: 100px;

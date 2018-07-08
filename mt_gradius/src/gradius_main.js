@@ -9,6 +9,21 @@
 //=====================================================
 'use strict';
 
+let _DRAW_SETINTERVAL = null;
+
+let _DRAW_OPENING_SETINTERVAL = null;
+let _DRAW_GAMESTART_SETINTERVAL = null;
+
+let _DRAW_IS_MATCH_BOSS = false;
+let _DRAW_IS_MATCH_BOSS_COUNT = 0;
+
+let _DRAW_IS_GAMECLEAR = false; //GameClearフラグ
+
+
+const _IS_DRAW_STOP=()=>{
+	return (_DRAW_SETINTERVAL === null);
+}
+
 //自機ショット、また自機と敵による衝突判定
 const _IS_ENEMIES_COLLISION=()=>{
 	for(let _i=0;_i<_ENEMIES.length;_i++){
@@ -101,6 +116,7 @@ const _DRAW=()=>{
 		}
 
 		if(_PARTS_PLAYERMAIN._players_obj.isalive()){
+			_GET_DIFFICULT_LEVEL();
 			//敵、衝突判定
 			_IS_ENEMIES_SHOT_COLLISION();
 			// console.log('7:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
@@ -260,21 +276,25 @@ const _DRAW_PLAYERS_SHOTS=()=>{
 
 //自機ショットのコントロール
 //ボタンを離して、ショット処理をクリアさせる。
-const _DRAW_STOP_PLAYERS_SHOTS=()=>{
+const _DRAW_STOP_PLAYERS_SHOTS = () => {
 	window.cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
 	_PLAYERS_SHOTS_SETINTERVAL=null;
 	_PARTS_PLAYERMAIN._stop_shots();
 	_PARTS_PLAYERMAIN._stop_missile_shots();
 }
 
-const _DRAW_STOP=()=>{
+const _DRAW_STOP = () => {
 	_GAME_AUDIO._setStopOnBG();
 	window.cancelAnimationFrame(_DRAW_SETINTERVAL);
 	_DRAW_SETINTERVAL=null;
 }
-const _DRAW_STOP_GAMESTART=()=>{
+const _DRAW_STOP_GAMESTART = () => {
 	window.cancelAnimationFrame(_DRAW_GAMESTART_SETINTERVAL);
 	_DRAW_GAMESTART_SETINTERVAL=null;
+}
+const _DRAW_STOP_OPENING = () => {
+	window.cancelAnimationFrame(_DRAW_OPENING_SETINTERVAL);
+	_DRAW_OPENING_SETINTERVAL = null;
 }
 
 const _DRAW_SELECT_POWERMETER=()=>{
@@ -338,12 +358,11 @@ const _DRAW_GAMESTART=()=>{
 		if(parseInt(_c/50)%2!==0){
 
 		}else{
-			let _txt='start';
-			_GAME._setDrawText(
-				_txt,
-				(_CANVAS.width/2)-(60*_txt.length/2),
-				(_CANVAS.height/2)-(60/2)-20,
-				1.0);
+			_GAME._setDrawToText({
+				s:'start',
+				x:'center',
+				y:(_CANVAS.height / 2) - (60 / 2) - 20
+			});
 		}
 		_c++;
 	};
@@ -352,31 +371,24 @@ const _DRAW_GAMESTART=()=>{
 }
 
 const _DRAW_GAMECLEAR=()=>{
-	var _img=_CANVAS_IMGS_INIT['font'].obj;
 	//クリアしたら敵を全て消す
-	let _s='gameclear';
-	_GAME._setDrawText(
-		_s,
-		(_CANVAS.width/2)-(60*_s.length/2),
-		(_CANVAS.height/2)-(60/2)-40,
-		1.0);
-
-	_s='press r to restart';
-	_GAME._setDrawText(
-			_s,
-			(_CANVAS.width/2)
-	 			-(18*_s.length/2),
-			(_CANVAS.height/2)+30,
-			0.3
-		);
-	_s='press s to change to another stage';
-	_GAME._setDrawText(
-			_s,
-			(_CANVAS.width/2)
-	 			-(18*_s.length/2),
-			(_CANVAS.height/2)+60,
-			0.3
-		);
+	_GAME._setDrawToText({
+		s:'gameclear',
+		x:'center',
+		y:(_CANVAS.height / 2) - (60 / 2) - 40
+	});
+	_GAME._setDrawToText({
+		s: 'press r to restart',
+		x: 'center',
+		y: (_CANVAS.height / 2) + 30,
+		r: 0.3
+	});
+	_GAME._setDrawToText({
+		s: 'press s to change to another stage',
+		x: 'center',
+		y: (_CANVAS.height / 2) + 60,
+		r: 0.3
+	});
 	_DRAW_IS_GAMECLEAR=true;
 
 }
@@ -388,9 +400,7 @@ const _DRAW_GAMEOVER=()=>{
 	_DRAW_STOP();
 
 	_KEYEVENT_MASTER.addKeydownGameover();
-	_CONTEXT.clearRect(0,0,
-				_CANVAS.width,
-				_CANVAS.height);
+	_CONTEXT.clearRect(0,0,_CANVAS.width,_CANVAS.height);
 
 	//BACKGROUNDを表示
 	_PARTS_OTHERS._draw_background();
@@ -401,29 +411,23 @@ const _DRAW_GAMEOVER=()=>{
 	_PARTS_OTHERS._draw_score();
 
 //	console.log('gameover');
-	let _s='gameover';
-	_GAME._setDrawText(
-		_s,
-		(_CANVAS.width/2)-(60*_s.length/2),
-		(_CANVAS.height/2)-(60/2)-40,
-		1.0);
-
-	_s='press r to restart';
-	_GAME._setDrawText(
-			_s,
-			(_CANVAS.width/2)
-				-(18*_s.length/2),
-			(_CANVAS.height/2)+30,
-			0.3
-		);
-	_s='press s to change to another stage';
-	_GAME._setDrawText(
-			_s,
-			(_CANVAS.width/2)
-				-(18*_s.length/2),
-			(_CANVAS.height/2)+60,
-			0.3
-		);
+	_GAME._setDrawToText({
+		s: 'gameover',
+		x: 'center',
+		y: (_CANVAS.height / 2) - (60 / 2) - 40
+	});
+	_GAME._setDrawToText({
+		s: 'press r to restart',
+		x: 'center',
+		y: (_CANVAS.height / 2) + 30,
+		r: 0.3
+	});
+	_GAME._setDrawToText({
+		s: 'press s to change to another stage',
+		x: 'center',
+		y: (_CANVAS.height / 2) + 60,
+		r: 0.3
+	});
 
 }// _DRAW_GAMEOVER
 
@@ -450,13 +454,10 @@ const _DRAW_RESET_OBJECT=()=>{
 	_KEYEVENT_MASTER.removeKeyupGame();
 	_KEYEVENT_MASTER.removeKeydownGameover();
 
-	window.cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
-	_PLAYERS_SHOTS_SETINTERVAL=null;
+	_DRAW_STOP_PLAYERS_SHOTS();
 	_DRAW_STOP();
 
-	_CONTEXT.clearRect(0,0,
-				_CANVAS.width,
-				_CANVAS.height);
+	_CONTEXT.clearRect(0,0,_CANVAS.width,_CANVAS.height);
 
 	_PARTS_PLAYERMAIN._reset();
 
@@ -464,6 +465,8 @@ const _DRAW_RESET_OBJECT=()=>{
 	_ENEMIES_SHOTS=[];
 	_ENEMIES_COLLISIONS=[];
 	_POWERMETER='';
+
+	_DIFFICULT_LEVEL = 0;
 
 	_PARTS_OTHERS._reset();
 
@@ -498,12 +501,8 @@ const _DRAW_INIT_OBJECT=()=>{
 }
 
 const _DRAW_POWER_METER_SELECT=()=>{
-	cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
-	_PLAYERS_SHOTS_SETINTERVAL=null;
-
-	_CONTEXT.clearRect(0,0,
-				_CANVAS.width,
-				_CANVAS.height);
+	_DRAW_STOP_PLAYERS_SHOTS();
+	_CONTEXT.clearRect(0,0,_CANVAS.width,_CANVAS.height);
 
 	_KEYEVENT_MASTER.removeKeydownSelectStage();
 	_KEYEVENT_MASTER.addKeydownSelectPowermeter();
@@ -514,19 +513,10 @@ const _DRAW_POWER_METER_SELECT=()=>{
 }
 
 const _DRAW_STAGE_SELECT=()=>{
-	cancelAnimationFrame(_PLAYERS_SHOTS_SETINTERVAL);
-	_PLAYERS_SHOTS_SETINTERVAL=null;
+	_DRAW_STOP_PLAYERS_SHOTS();
+	_DRAW_STOP_OPENING();
+	_CONTEXT.clearRect(0,0,_CANVAS.width,_CANVAS.height);
 
-	_CONTEXT.clearRect(0,0,
-				_CANVAS.width,
-				_CANVAS.height);
-
-	let _gsw=document
-	  		.querySelector('#game_start_wrapper');
- 	let _gw=document
-			.querySelector('#game_wrapper');
-	_gsw.classList.remove('on');
-	_gw.classList.add('on');
 	_KEYEVENT_MASTER.removeKeydownStart();
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
@@ -538,28 +528,70 @@ const _DRAW_STAGE_SELECT=()=>{
 	_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_powermeterselect']);
 }
 
-const _DRAW_AUDIO_INIT=(_obj)=>{
-	return new Promise((_res, _rej)=>{	
-	_GAME_AUDIO._init_audios(
-		_obj,(_n)=>{
+
+let _DRAW_OPENING_IMGLOAD_RATE=0;
+const _DRAW_OPENING_START=()=>{
+	_GAME_IMG._init_imgs(_CANVAS_IMGS, (_n) => {
 			//進捗中処理
-			document.querySelector('#game_start_loading .rate').innerHTML = parseInt(_n) + '%';
-		})
-		.then(()=>{_res();},()=>{_rej();});
-	});
+			_DRAW_OPENING_IMGLOAD_RATE=_n;
+		}).then(()=>{_DRAW_STAGE_SELECT();});
+	_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['playerset']);		
 }
-const _DRAW_IMG_INIT=(_obj)=>{
-	return new Promise((_res,_rej)=>{
-	_GAME_IMG._init_imgs(
-		_obj,(_n)=>{
-			//進捗中処理
-			_GAME._setTextToFont(
-				document.querySelector('#game_start>.text_loading'),
-				'now loading ' + _n + ' per', 30);
-		})
-		.then(()=>{_res();},()=>{_rej();});
-	});
-}
+const _DRAW_OPENING=()=>{
+	let _c = 0;
+	const _loop = () => {
+		_DRAW_OPENING_SETINTERVAL = window.requestAnimationFrame(_loop);
+		_CONTEXT.clearRect(0, 0, _CANVAS.width, _CANVAS.height);
+
+		//背景
+		_CONTEXT.save();
+		_CONTEXT.globalAlpha = 0.5;
+		_CONTEXT.drawImage(
+			_CANVAS_IMGS_INIT.gradius_background.obj,0,0,1000,500);
+		_CONTEXT.restore();
+
+		//ロゴ
+		_GAME._setDrawImage({
+			img: _CANVAS_IMGS_INIT.gradius_logo.obj,
+			x:150,
+			y:80,
+			width:700,
+			height:130,
+			basePoint:1
+		});
+
+		let _s = 'no pakuri';
+		_GAME._setDrawToText({
+			s:_s,
+			x:(_CANVAS.width / 2) - (42 * _s.length / 2),
+			y:(_CANVAS.height / 2) - 20,
+			r:0.7
+		});
+
+		_s = 'press s to start';
+		_GAME._setDrawToText({
+			s:_s,
+			x: 'center',
+			y:(_CANVAS.height / 2) + 60,
+			r:0.5,
+			alpha:parseFloat(_c/100)
+		});
+
+		_c = (_c >= 100) ? 0 : _c + 1;
+		if(_DRAW_OPENING_IMGLOAD_RATE===0){return;}
+		_s = 'now loading ' + _DRAW_OPENING_IMGLOAD_RATE;
+		_GAME._setDrawToText({
+			s:_s,
+			x: 'center',
+			y:(_CANVAS.height / 2) + 130,
+			r:0.4,
+			alpha:(_c%2===0)?1:0
+		});
+
+	};
+	_DRAW_OPENING_SETINTERVAL = window.requestAnimationFrame(_loop);
+
+} //_DRAW_OPENING
 
 
 //===================================================
@@ -580,17 +612,33 @@ window.addEventListener('load',()=>{
 	if(_ISSP){
 		document.querySelector('body').classList.add('sp');
 	}
-	_DRAW_AUDIO_INIT(_CANVAS_AUDIOS)
-	.then(()=>{
-		_DRAW_IMG_INIT(_CANVAS_IMGS_INIT);
-	}).then(()=>{
-		_PARTS_PLAYERMAIN._set_shot_type('_SHOTTYPE_NORMAL');
-		_PARTS_OTHERS._init_score();
+	_AJAX({url:'./gradius_config.json'})
+	.then((_d)=>{
+		//設定情報取得した値を各オブジェクトにセット
+		_DEF_DIFFICULT = _d.common.difficult;
+		_SP_CONTROLLER._set_main_dist_within({num:parseInt(_d.controller_event.sp_controller_main_dist_within)});
+
 		_MAP = new GameObject_MAP();
 		_MAP.init();
-	}).then(()=>{
+	})
+	.then(() => {	
+		//オーディオ読み込み	
+		return _GAME_AUDIO._init_audios(
+			_CANVAS_AUDIOS, (_n) => {
+				//進捗中処理
+				document.querySelector('#game_start_loading .rate').innerHTML = parseInt(_n) + '%';
+			});
+	})
+	.then(() => {
+		return _GAME_IMG._init_imgs(_CANVAS_IMGS_INIT);
+	})
+	.then(() => {
+		_PARTS_PLAYERMAIN._set_shot_type('_SHOTTYPE_NORMAL');
+		_PARTS_OTHERS._init_score();
 		let _gsl = document.querySelector('#game_start_loading');
 		_gsl.classList.remove('on');
+		let _gw = document.querySelector('#game_wrapper');
+		_gw.classList.add('on');
 
 		//SPのみコントローラーのオブジェクトを取得
 		if (_ISSP) {
@@ -600,15 +648,12 @@ window.addEventListener('load',()=>{
 		}
 
 		if (_ISDEBUG) {
-			let _gw = document.querySelector('#game_wrapper');
-			_gw.classList.add('on');
-
 			_STAGESELECT = new GameObject_STAGESELECT();
 			_STAGESELECT.init();
 
 			_MAP.set_stage_map_pattern(_MAP_PETTERN);
 
-			_DRAW_IMG_INIT(_CANVAS_IMGS).then(() => {
+			_GAME_IMG._init_imgs(_CANVAS_IMGS).then(() => {
 				_DRAW_POWER_METER_SELECT();
 			});
 
@@ -617,21 +662,8 @@ window.addEventListener('load',()=>{
 
 		//スタート画面表示
 		_KEYEVENT_MASTER.addKeydownStart();
-		let _gsw = document.querySelector('#game_start_wrapper');
-		_gsw.classList.add('on');
-
-		_GAME._setTextToFont(
-			document.querySelector('#game_start>.title'),
-			'no pakuri', 50);
-		_GAME._setTextToFont(
-			document.querySelector('#game_start>.text'),
-			'press s to start', 30);
-		_GAME._setTextToFont(
-			document.querySelector('#game_start>.text_loading'),
-			'now loading', 30);
-
+		_DRAW_OPENING();
 	});
-//	_DRAW_AUDIO_INIT(_CANVAS_AUDIOS);
 
 });
 

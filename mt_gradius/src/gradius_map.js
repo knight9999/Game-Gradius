@@ -8,7 +8,6 @@
 let _MAPDEFS='';
 let _MAPDEF='';
 let _MAP_PETTERN=3;
-let _BACKGROUND_SPEED=0;
 
 let _MAP_SCROLL_POSITION_X=0;
 //_MAP_SCROLL_POSITION_Y
@@ -639,10 +638,13 @@ class GameObject_MAP{
 		_this.isboss=false;
 	}
 	init(){
-		return new Promise((_res,_rej)=>{
-			_AJAX({
-				url:'./gradius_map.json',
-				f:(_d)=>{_MAPDEFS=_d;_res(_d);}
+		return new Promise((_res, _rej) => {
+		_AJAX({url:'./gradius_map.json'})
+			.then((_d) => {
+				_MAPDEFS = _d;
+				_res();
+			}, () => {
+				_rej();
 			});
 		});
 	}
@@ -666,7 +668,6 @@ class GameObject_MAP{
 				?_ENEMY_DIFFICULT
 				:parseInt(_MAPDEFS[_this.map_pettern]._difficult)-1;
 		_this.map_background_speed=parseInt(_MAPDEFS[_this.map_pettern]._speed);
-		_BACKGROUND_SPEED=parseInt(_MAPDEFS[_this.map_pettern]._speed);
 		_MAP_PETTERN=_this.map_pettern;
 		_this.map_theme=_MAPDEFS[_this.map_pettern]._theme;
 		_this.map_infinite=(_MAPDEFS[_this.map_pettern]._map_infinite==='true')?true:false;
@@ -773,7 +774,7 @@ class GameObject_MAP{
 		}//_l
 	}
 	getX(_x){
-		return _x+(_BACKGROUND_SPEED*-1);
+		return _x + (this.map_background_speed * -1);
 	}
 	getY(_y){
 		//y軸スクロール時、y位置を転回する
@@ -1062,11 +1063,11 @@ class GameObject_MAP{
 	}
 	set_scroll_on_x(){
 		let _this=this;
-		_BACKGROUND_SPEED=_this.map_background_speed;
+		_this.map_background_speed = parseInt(_MAPDEFS[_this.map_pettern]._speed);
 	}
 	set_scroll_off_x(){
 		let _this=this;
-		_BACKGROUND_SPEED=0;
+		_this.map_background_speed=0;
 	}
 	move(){
 		let _this=this;
@@ -1078,10 +1079,10 @@ class GameObject_MAP{
 		}
 
 		//X軸のMAPを超えたらマップ自体はこれ以上進めない
-		if(_MAP_SCROLL_POSITION_X-100>(_this.mapdef[0].length*_this.t)+_this.initx){_BACKGROUND_SPEED=0;}
+		if(_MAP_SCROLL_POSITION_X-100>(_this.mapdef[0].length*_this.t)+_this.initx){_this.map_background_speed=0;}
 
- 		_this.x+=_BACKGROUND_SPEED*-1;
-		_MAP_SCROLL_POSITION_X+=_BACKGROUND_SPEED;
+ 		_this.x+=_this.map_background_speed*-1;
+		_MAP_SCROLL_POSITION_X+=_this.map_background_speed;
 
 		_this.y=_this.getY(_this.y);
 //		_this.y-=_this.map_backgroundY_speed;//0<：上にスクロール

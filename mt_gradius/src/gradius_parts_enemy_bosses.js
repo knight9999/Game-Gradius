@@ -1507,7 +1507,7 @@ class ENEMY_BOSS_CUBE
 				_this.rad*180/Math.PI;
 			_this.sx=Math.cos(_this.rad);//単位x
 			_this.sy=Math.sin(_this.rad);//単位y
-			_this.speed=20;
+			_this.speed=_GET_DIF_SHOT_SPEED()*6;
 		}
 		//自機に向けて一気に加速
 		if(_this._c>_this.change_speed_c){
@@ -3037,7 +3037,8 @@ class ENEMY_BOSS_MOAI
 			let _o=_ENEMIES[_i];
 			if(ENEMY_BOSS_MOAI_MINI.prototype.isPrototypeOf(_o)){
 				_num++;
-				if(_num>20){return;}
+				//一定数を超えたらプチモアイを出さない。
+				if(_num>_GET_DIF_ENEMY_SPEED()*5){return;}
 			}
 		}
 		if(_this._c%50>=30&&_this._c%50<50){
@@ -3172,7 +3173,7 @@ class ENEMY_BOSS_MOAI_MINI
 		_this.y=_MAP.getY(_this.y);
 		if(!_this.isMove()){return;}
 		_this.shot();
-		_this._c=(_this._c>50)?0:_this._c+1;
+		_this._c=(_this._c>_GET_DIF_MOAI_RING_INT()*3)?0:_this._c+1;//リング発射間隔
 	}	
 }
 
@@ -3191,11 +3192,20 @@ class ENEMY_moai_boss_ring
 		});
         let _this=this;
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision2'];
-		_this.speed=8.0;
 		_this._collision_type='t2';
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=1;
 		_this.getscore=100;//倒した時のスコア
 
 	}
 	setPos(){}//これは必要。
+	moveSet() {
+		let _this = this;
+		_this.map_collition();
+		_this.speed = _GET_DIF_SHOT_SPEED() * 3;
+
+		_this.x += _this.sx * _this.speed;
+		_this.y += _this.sy * _this.speed;
+
+		_this.set_imgPos();
+	}
 }

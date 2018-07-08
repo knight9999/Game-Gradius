@@ -198,6 +198,20 @@ class GameObject_PM{
 		_this.pms_img_shield_selected=_CANVAS_IMGS_INIT['gradius_powermeterselect_shield_selected'].obj;
 		_this.pmss_selected=[0,100];
 	}
+	_set_hide(){
+		let _this=this;
+		_PARTS_PLAYERMAIN._shot_type = _PARTS_PLAYERMAIN._shot_type_def.NORMAL;
+		_PARTS_PLAYERMAIN._shot_missle_isalive = true;
+		for (let _i = 0; _i < _PARTS_PLAYERMAIN._option_max; _i++) {
+			_PARTS_PLAYERMAIN._option_obj[_i].settruealive();
+		}
+		_PARTS_PLAYERMAIN._option_count = 4;
+		_PARTS_PLAYERMAIN._players_force_obj.init();
+		_KEYSAFTERPAUSE = [];
+
+		_this._set_current_reset();
+		_this.meterdef_status = '101100';
+	}
 	_set_current_reset(){
 		this.meterdef_current='000000';
 	}
@@ -250,7 +264,7 @@ class GameObject_PM{
 	}
 	playerset(){
 		//停止中は無視
-		if(_DRAW_SETINTERVAL===null){return;}
+		if (_IS_DRAW_STOP()) {return;}
 
 		let _mc=parseInt(this.meterdef_current,2);
 		let _ms=parseInt(this.meterdef_status,2);
@@ -327,24 +341,21 @@ class GameObject_PM{
 	}
 
 	pms_disp(){
-		_CONTEXT.clearRect(0,0,
-			_CANVAS.width,
-			_CANVAS.height);
+		_CONTEXT.clearRect(0,0,_CANVAS.width,_CANVAS.height);
 
-		_GAME._setDrawText(
-				'power meter select',
-				(_CANVAS.width/2)
-					-(36*('power meter select').length/2),
-				20,
-				0.6
-			);
+		_GAME._setDrawToText({
+			s: 'power meter select',
+			x: 'center',
+			y: 20,
+			r: 0.6
+		});
 
-		_GAME._setDrawText(
-				'shield select',
-				200,
-				400,
-				0.3
-			);
+		_GAME._setDrawToText({
+			s: 'shield select',
+			x: 200,
+			y: 400,
+			r: 0.3
+		})
 
 		//センタリングに表示
 		_CONTEXT.drawImage(
@@ -356,9 +367,8 @@ class GameObject_PM{
 		);
 
 		//SHIELD表示
-		let _pmss=_CANVAS_IMGS['meter'].obj;
 		_CONTEXT.drawImage(
-			_pmss,
+			_CANVAS_IMGS['meter'].obj,
 			360,
 			0,
 			72,
@@ -455,17 +465,14 @@ class GameObject_STAGESELECT{
 		let _this=this;
 //		let _map=new GameObject_MAP(0);
 		//描画は横は50〜950px
-		_CONTEXT.clearRect(0,0,
-					_CANVAS.width,
-					_CANVAS.height);
+		_CONTEXT.clearRect(0,0,_CANVAS.width,_CANVAS.height);
 		//テキスト表示
-		_GAME._setDrawText(
-				'stage select',
-				(_CANVAS.width/2)
-					-(70*0.5*('stage select').length/2),
-				20,
-				0.6
-			);
+		_GAME._setDrawToText({
+				s:'stage select',
+				x:'center',
+				y:20,
+				r:0.6
+		});
 
 		//ページングを表示
 		let _pl=500-(20*(_MAPDEFS.length/2)+10);//センタリング
@@ -489,7 +496,7 @@ class GameObject_STAGESELECT{
 		_MAP.showMapForStageselect(_this.mapdef);
 
 		//テキスト表示
-		_GAME._setDrawText('stage title',400,130,0.3);
+		_GAME._setDrawToText({s:'stage title',x:400,y:130,r:0.3});
 		_CONTEXT.moveTo(400,160);
 		_CONTEXT.lineTo(950,160);
 		_CONTEXT.stroke();
@@ -499,12 +506,12 @@ class GameObject_STAGESELECT{
 			_CONTEXT.fillText(_ar[_i],400,190+(_i*26));
 		}
 
-		_GAME._setDrawText(('difficult:'+this.mapdef._difficult),400,230,0.3);
+		_GAME._setDrawToText({s:('difficult:'+this.mapdef._difficult),x:400,y:230,r:0.3});
 		_CONTEXT.moveTo(400,260);
 		_CONTEXT.lineTo(950,260);
 		_CONTEXT.stroke();
 
-		_GAME._setDrawText('detail',400,300,0.3);
+		_GAME._setDrawToText({s:'detail',x:400,y:300,r:0.3});
 		_CONTEXT.moveTo(400,330);
 		_CONTEXT.lineTo(950,330);
 		_CONTEXT.stroke();
@@ -536,13 +543,13 @@ class GameObject_SCORE{
 	setDrawImage(){
 		let _img=_CANVAS_IMGS_INIT['font'].obj;
 		let _s='1p'+('        '+this.score1p).slice(-8);
-		_GAME._setDrawText(_s,180,10,0.3);
+		_GAME._setDrawToText({s:_s,x:180,y:10,r:0.3});
 
 		_s='hi'+('        '+this.scorehi).slice(-8);
-		_GAME._setDrawText(_s,400,10,0.3);
+		_GAME._setDrawToText({s:_s,x:400,y:10,r:0.3});
 
 		_s='2p'+('        '+this.score2p).slice(-8);
-		_GAME._setDrawText(_s,620,10,0.3);
+		_GAME._setDrawToText({s:_s,x:620,y:10,r:0.3});
 	}
 }
 
@@ -621,7 +628,7 @@ class GameObject_BACKGROUND{
 		_this.x=(_this.x<0)
 					?_CANVAS.width
 					:_this.x;
-		_this.x-=(_BACKGROUND_SPEED===0)
+		_this.x -= (_MAP.getBackGroundSpeed() === 0)
 					?0
 					:_this.speed;
 

@@ -16,9 +16,9 @@ const _CANVAS_IMGS={
  
 	'gradius_missile':{src:'images/gradius_missile.png',rate:1.00,obj:new Image()},
 
-	'shot1':{src:'images/gradius_shot1.png',rate:0.4,obj:new Image()},
-	'shot2':{src:'images/gradius_shot2.png',rate:0.4,obj:new Image()},
-	'shot3':{src:'images/gradius_shot3.png',rate:0.4,obj:new Image()},
+	'shot1':{src:'images/gradius_shot1.png',rate:1.0,obj:new Image()},
+	'shot2':{src:'images/gradius_shot2.png',rate:1.0,obj:new Image()},
+	'shot3':{src:'images/gradius_shot3.png',rate:1.0,obj:new Image()},
 	'shot_laser_col':{src:'images/gradius_shot_laser_col.png',rate:1.00,obj:new Image()},
 
 	//パワーカプセル
@@ -195,6 +195,12 @@ const _CANVAS_IMGS={
 };
 
 const _CANVAS_IMGS_INIT={
+	//BACKGROUND
+	'gradius_background':{src:'images/gradius_background.jpg',rate:1.00,obj:new Image()},
+
+	//LOGO
+	'gradius_logo':{src:'images/gradius_logo.png',rate:1.00,obj:new Image()},
+
 	//FONT
 	'font':{src:'images/gradius_font.png',rate:1.00,obj:new Image()},
 

@@ -14,12 +14,11 @@ _data_api:'',
 _blog_id:0,
 _url:'',
 _init_config:()=>{
-	_AJAX({
-		'url':'./gradius_editing_stage_config.json',
-		'f':_DATAAPI._init
+	return _AJAX({
+		'url':'./gradius_editing_stage_config.json'
 	});
 },
-_init:function(_d){
+_init(_d){
 	let _this=_DATAAPI;
 	_this._blog_id=parseInt(_d.blog_id);
 	_this._url=_d.url;
@@ -48,7 +47,7 @@ _init:function(_d){
 		_GAME_STAGEEDIT._init();
 	});
 },//_init
-_set_entryupdate:function(_ed){
+_set_entryupdate(_ed){
 	//	_d.title
 	//	_d.status
 	let _this=this;
@@ -66,6 +65,7 @@ _set_entryupdate:function(_ed){
 			return;
 		}
 		alert('エントリ更新しました。');
+		_GAME_STAGEEDIT_EVENTS._edits = false;
 
 		//jsonファイルを取得して再表示させる
 		_MAP.init(function(){
@@ -120,10 +120,7 @@ _set_entryupdate:function(_ed){
 }//_DATAAPI
 
 const _GAME_STAGEEDIT={
-_ac:new(
-	window.AudioContext
-	||window.webkitAudioContext
-)(),
+_ac:new(window.AudioContext||window.webkitAudioContext)(),
 _as:null,
 _theme:0,
 _txt:{//スプライトされたフォントのマッピング
@@ -835,16 +832,17 @@ window.addEventListener('load',()=>{
 	$_bm=document.querySelector('#bgmusic');
 
 	_GAME_AUDIO._audio_context = new(window.AudioContext || window.webkitAudioContext)();
-	_GAME_AUDIO._init_audios(
-		_CANVAS_AUDIOS,
-		()=>{}
-	).then(()=>{
-		_GAME_IMG._init_imgs(
-			_CANVAS_IMGS,
-			()=>{}
-		);
+	_AJAX({url:'./gradius_config.json'})
+	.then((_d)=>{
+		//設定情報取得した値を各オブジェクトにセット
+		_DEF_DIFFICULT = _d.common.difficult;
+		return _GAME_AUDIO._init_audios(_CANVAS_AUDIOS,()=>{})
 	}).then(()=>{
-		_DATAAPI._init_config();
+		return _GAME_IMG._init_imgs(_CANVAS_IMGS);
+	}).then(()=>{
+		return _DATAAPI._init_config();
+	}).then((_d)=>{
+		_DATAAPI._init(_d);
 	});
 });
 //_GAME_STAGEEDIT._init();

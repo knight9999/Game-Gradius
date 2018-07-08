@@ -1,15 +1,15 @@
 {
     "controller_event":{
-        "sp_controller_main":{
-            "l":[{"from":"-40","to":"40"}],
-            "lu":[{"from":"40","to":"50"}],
-            "u":[{"from":"50","to":"130"}],
-            "ru":[{"from":"130","to":"140"}],
-            "r":[{"from":"140","to":"180"},{"from":"-140","to":"-180"}],
-            "rd":[{"from":"-130","to":"-140"}],
-            "d":[{"from":"-50","to":"-130"}],
-            "ld":[{"from":"-50","to":"-40"}]
-        },
-        "sp_controller_main_dist_within": "0"
+        "sp_controller_main_dist_within": "8"
+    },
+    "common":{
+        "difficult":[
+            {"_shot_rate":"0.0001","_shot_speed":"2","_enemy_speed":"2","_MOAI_RING_INT":"50","_hache_rate":"30","_volcano_rate":"0.02"},
+            {"_shot_rate":"0.0005","_shot_speed":"2","_enemy_speed":"2","_MOAI_RING_INT":"30","_hache_rate":"25","_volcano_rate":"0.1"},
+            {"_shot_rate":"0.002","_shot_speed":"3","_enemy_speed":"2","_MOAI_RING_INT":"15","_hache_rate":"15","_volcano_rate":"0.1"},
+            {"_shot_rate":"0.005","_shot_speed":"3","_enemy_speed":"2","_MOAI_RING_INT":"8","_hache_rate":"15","_volcano_rate":"0.15"},
+            {"_shot_rate":"0.01","_shot_speed":"4","_enemy_speed":"2","_MOAI_RING_INT":"8","_hache_rate":"15","_volcano_rate":"0.15"},
+            {"_shot_rate":"0.01","_shot_speed":"4","_enemy_speed":"3","_MOAI_RING_INT":"8","_hache_rate":"15","_volcano_rate":"0.15"}
+        ]
     }
 }

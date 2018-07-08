@@ -7,13 +7,7 @@
 let _ISDEBUG=false;
 let _PLAYERS_POWER_METER=0;
 let _PLAYERS_POWER_METER_SHIELD=0;
-
-let _DRAW_SETINTERVAL=null;
-let _DRAW_GAMESTART_SETINTERVAL=null;
-let _PLAYERS_SHOTS_SETINTERVAL=null;
-
-let _DRAW_IS_MATCH_BOSS=false;
-let _DRAW_IS_MATCH_BOSS_COUNT=0;
+let _PLAYERS_SHOTS_SETINTERVAL = null;
 
 const _ISSP=(window.ontouchstart===null)?true:false;
 
@@ -21,8 +15,6 @@ const _FPS=60;
 
 let _CANVAS;	//キャンバス
 let _CONTEXT;
-
-let _DRAW_IS_GAMECLEAR=false;//GameClearフラグ
 
 let _ENEMIES=new Array();
 let _ENEMIES_SHOTS=new Array();
@@ -37,14 +29,6 @@ let _MAP='';
 let _KEYSAFTERPAUSE=new Array();
 let _DEF_KEYSAFTERPAUSE	//for full equipment
 		='38,38,40,40,37,39,37,39,66,65';
-
-const _DEF_DIFFICULT=[//難易度
-	{_ENEMY_SHOT_RATE:0.0001,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
-	{_ENEMY_SHOT_RATE:0.0005,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
-	{_ENEMY_SHOT_RATE:0.002,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
-	{_ENEMY_SHOT_RATE:0.005,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:1},
-	{_ENEMY_SHOT_RATE:0.01,_ENEMY_SHOT_SPEED:3,_ENEMY_SPEED:2}
-];
 		
 const _IS_SQ_COL=0;
 const _IS_SQ_COL_NONE=1;
@@ -61,34 +45,66 @@ const _DEF_DIR={//向き
 	_RD:7//右下
 };
 
+let _DIFFICULT_LEVEL = 0;//難易度
+
+let _DEF_DIFFICULT=[];//難易度
+const _GET_DIFFICULT_LEVEL=()=>{
+	//自機のショット装備、オプションの数、シールド装備に合わせて
+	//敵のショット・スピードを調整させる
+	_DIFFICULT_LEVEL = (_PARTS_PLAYERMAIN._option_count > 2) ? 1 : 0;
+	_DIFFICULT_LEVEL += (_PARTS_PLAYERMAIN._shot_type === _PARTS_PLAYERMAIN._shot_type_def.LASER) ? 1 : 0;
+	_DIFFICULT_LEVEL += (_PARTS_PLAYERMAIN._players_force_obj.isalive()) ? 1 : 0;
+	_DIFFICULT_LEVEL += parseInt(_ENEMY_DIFFICULT);
+};
+const _GET_DIF_MOAI_RING_INT = () => {
+	return parseInt(_DEF_DIFFICULT[_DIFFICULT_LEVEL]._MOAI_RING_INT);
+}
+const _GET_DIF_SHOT_RATE = () => {
+	return parseFloat(_DEF_DIFFICULT[_DIFFICULT_LEVEL]._shot_rate);
+}
+const _GET_DIF_SHOT_SPEED = () => {
+	return parseInt(_DEF_DIFFICULT[_DIFFICULT_LEVEL]._shot_speed);
+}
+const _GET_DIF_ENEMY_SPEED = () => {
+	return parseInt(_DEF_DIFFICULT[_DIFFICULT_LEVEL]._enemy_speed);
+}
+const _GET_DIF_HATCH_RATE = () => {
+	return parseInt(_DEF_DIFFICULT[_DIFFICULT_LEVEL]._hache_rate);
+}
+const _GET_DIF_VOLCANO_RATE = () => {
+	return parseFloat(_DEF_DIFFICULT[_DIFFICULT_LEVEL]._volcano_rate);
+}
+
+
 //JSONファイル取得関数
 //url:対象ファイル
 //type:レスポンスのデータタイプ（json）
-//f:コールバック関数
 const _AJAX=function(_p){
-	if(_p===undefined){return;}
+	return new Promise((_res, _rej) => {
 	let _r=new XMLHttpRequest();
 	_r.onreadystatechange=function(){
 		if(_r.readyState===4){//通信の完了時
 			if(_r.status===200) {//通信の成功時
-				console.log('OK');
-				_p.f(_r.response,_p.t);
+				console.log(_p.url+':OK');
+				_res(_r.response);
 			}else{
 				//connecting
 				console.log('NG');
+				_rej(new Error(_r.statusText));
 			}
 		}
 	}
 	_r.open('GET',_p.url+'?date='+(new Date().getTime()));
 	_r.responseType=_p.type||'json';
+	_r.onerror=()=>{_rej(new Error(_r.statusText))};
 	_r.send(null);
+	});
 }// _AJAX
 
 const _GAME_IMG={//画像系スクリプト
 	_img_loaded_count:0,
 	_init_imgs(_obj, _progressfunc){
 		return new Promise((_res, _rej) => {
-
 		let _this = this;
 		let _alertFlag = false;
 		for (let _i in _obj) {
@@ -102,8 +118,10 @@ const _GAME_IMG={//画像系スクリプト
 					_res();
 					return;
 				}
-				let _s = parseInt(_this._img_loaded_count / Object.keys(_obj).length * 100);
-				_progressfunc(_s);
+				if (_progressfunc!==undefined){
+					let _s = parseInt(_this._img_loaded_count / Object.keys(_obj).length * 100);
+					_progressfunc(_s);
+				}
 			}
 			_o.obj.onabort = function () {
 				_rej();
@@ -115,11 +133,11 @@ const _GAME_IMG={//画像系スクリプト
 				}
 				_alertFlag = true;
 				alert('一部画像読み込みに失敗しました。再度立ち上げなおしてください');
-				_rej();
+				Promise.reject();
 				return;
 			}
 		}
-		});
+	});
 	}//_init_imgs
 };
 
@@ -154,7 +172,9 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 							return;
 						}
 						//ローディングに進捗率を表示させる
-						_progressfunc(_this._audio_loaded_count/Object.keys(_obj).length*100);
+						if (_progressfunc!==undefined){
+							_progressfunc(_this._audio_loaded_count / Object.keys(_obj).length * 100);
+						}
 					},
 					function (_error) {
 						alert('一部音声読み込みに失敗しました。再度立ち上げなおしてください:' + _error);
@@ -163,7 +183,7 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 					});
 			};
 			_r.send();
-			}
+		}
 		});
 	},
 	_reset(){
@@ -421,31 +441,62 @@ const _GAME={//ゲーム用スクリプト
 		}//_i
 		return {ret:_IS_SQ_NOTCOL,val:_CANVAS.width};
 	},
-	_setDrawText(_s,_x,_y,_r){
+	_setDrawToText(_p){
+		if(_p===undefined){return;}
 		//キャンバス用にテキストからフォントに置換させる。
-		//_s:テキスト
+		//s:テキスト
 		//_x:テキスト開始x座標位置
+		//		数字:x座標位置
+		//		left:左寄せ
+		//		center:中央寄せ
+		//		right:右寄せ
 		//_y:テキスト開始y座標位置
-		//_r:文字表示比率(0.0〜1.0)
+		//		数字:x座標位置
+		//		top:上寄せ
+		//		center:中央寄せ
+		//		bottom:下寄せ
+		//r:文字表示比率(0.0〜1.0)
+		//alpha:文字表示比率(0.0〜1.0)
 		let _this=this;
-		const img=_CANVAS_IMGS_INIT['font'].obj;
+		const img=_CANVAS_IMGS_INIT.font.obj;
 		const imgsize=img.height;
-		_r=_r||1;
-		for(let _i=0;_i<_s.length;_i++){
-			if(_s[_i]===' '){continue;}
-			//センタリングに表示
+
+		_p.r = _p.r || 1;
+		_p.alpha = (_p.alpha === undefined || _p.alpha === null) ? 1 : _p.alpha;
+
+ 		let _x=(()=>{//x位置の調整
+			if(_p.x === 'left'){return 0;}
+			if(_p.x === 'center') {
+				return parseInt(_CANVAS.width / 2) - parseInt(_p.s.length * (imgsize * _p.r) / 2)
+			}
+			if(_p.x === 'right'){
+				return _CANVAS.width - parseInt(_p.s.length * imgsize * _p.r);}
+			return _p.x;
+		})();
+		let _y=(()=>{//y位置の調整
+			if(_p.y === 'top'){return 0;}
+			if(_p.y === 'center'){
+				return parseInt(_CANVAS.height / 2) - parseInt((imgsize * _p.r) / 2)
+			}
+			if(_p.y === 'bottom'){
+				return _CANVAS.height - parseInt(imgsize * _p.r);}
+			return _p.y;
+		})();
+		for(let _i=0;_i<_p.s.length;_i++){
+			if(_p.s[_i]===' '){continue;}
 			_GAME._setDrawImage({
 				img:img,
-				x:_x+(imgsize*_r*_i),
-				y:_y,
-				imgPosx:parseInt(_this._txt[_s[_i]]),
+				x: _x + (imgsize * _p.r * _i),
+				y: _y,
+				imgPosx:parseInt(_this._txt[_p.s[_i]]),
 				width:imgsize,
 				height:imgsize,
-				scale:_r,
-				basePoint:1
+				scale:_p.r,
+				basePoint:1,
+				alpha:_p.alpha
 			});
 		}
-	},//_setDrawText
+	},//_setDrawToText
 	_setTextToFont(_o,_str,_w){
 		//ブラウザ用にテキストからフォントに置換させる。
 		if(_o===undefined||_o===null){return;}
@@ -473,6 +524,7 @@ const _GAME={//ゲーム用スクリプト
 		//scale:画像中心を基点とした比率維持の拡大縮小。
 		//		0の場合は表示しない。
 		//basePoint:拡縮・回転時の基準点
+		//alpha:透明度
 	
 		//以下は描画処理させない
 		//引数未定義は終了

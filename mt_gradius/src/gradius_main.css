@@ -19,7 +19,7 @@ html,body{
     user-select:none;
 }
 body::before {
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.7);
     left: 0;
     content: '';
 	height: 100%;
@@ -68,53 +68,6 @@ body *{box-sizing:border-box;}
 	display:block;
 	width:100%;
 }
-
-#game_start_wrapper{
-	align-items:center;
-	display:flex;
-	height:100%;
-	justify-content:center;
-	opacity:0;
-	width:100%;
-	z-index:1;
-}
-#game_start_wrapper.on{
-	animation:_fadein 1.0s;
-	opacity:1;
-}
-#game_start{
-	position:relative;
-	text-align: center;
-	width:90%;
-}
-#game_start img.gradius_logo{
-	padding-bottom: 20px;
-	width: 100%;
-}
-
-#game_start .title{
-	opacity:1;
-	padding-bottom: 20px;
-	position:relative;
-	text-align: center;
-	white-space:nowrap;
-}
-
-#game_start .text{
-	padding-bottom: 20px;
-	position:relative;
-	opacity:1;
-	text-align: center;
-	white-space:nowrap;
-}
-#game_start .text.on{animation:_flashing 0.1s infinite linear;}
-
-#game_start .text_loading{
-	position:relative;
-	opacity:0;
-	white-space:nowrap;
-}
-#game_start .text_loading.on{opacity:1;animation:_flashing 0.1s infinite linear;}
 
 body #sp_controller{display:none;}
 body:not(.sp) #sp_landscapemode{display:none;}
@@ -201,7 +154,6 @@ body.sp section#sp_landscapemode{display:none !important;}
 
 body.sp section#game_wrapper.on{display:block;}
 body.sp section#game_wrapper #game{border:2px solid rgba(190,190,190,1.0);}
-body.sp section#game_start_wrapper #game_start{}
 
 body.sp section#sp_controller.on{
     bottom:0px;
@@ -288,16 +240,6 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a::before{
 iPad
 ********/
 @media screen and (min-width: 1024px) and (orientation: landscape){
-body.sp section#game_start_wrapper{display:block;}
-body.sp section#game_start_wrapper #game_start{
-	max-width:80%;
-	margin:0px auto;
-	transform: scale(1.0) translateY(20%);
-	width:80%;
-}
-
-body.sp section#game_start_wrapper #game_start .text {}
-body.sp section#game_start_wrapper #game_start .text_loading {}
 body.sp section#sp_controller.on{height:250px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main{
 	height:200px;
@@ -337,25 +279,6 @@ body.sp section#game_wrapper {
 	transform: scale(0.60);
 	transform-origin: top;
 }
-
-body.sp section#game_start_wrapper #game_start {
-	transform: scale(0.75);
-	transform-origin: top center;
-}
-
-body.sp section#game_start_wrapper #game_start .title {
-	padding-bottom:0px;
-	transform: scale(0.75);
-}
-body.sp section#game_start_wrapper #game_start .text {
-	padding-bottom:0px;
-	transform: scale(0.75);
-}
-body.sp section#game_start_wrapper #game_start .text_loading {
-	padding-bottom:0px;
-	transform: scale(0.75);
-}
-
 body.sp section#sp_controller #sp_controller_inner {
 	width: 80%;
 }
@@ -415,26 +338,6 @@ body.sp section#game_wrapper {
 	transform: scale(0.80);
 	transform-origin: top;
 }
-
-body.sp section#game_start_wrapper #game_start {
-	transform: scale(0.8);
-	transform-origin: top center;
-}
-
-body.sp section#game_start_wrapper #game_start .title {
-	padding-bottom:0px;
-	transform: scale(0.8);
-}
-
-body.sp section#game_start_wrapper #game_start .text {
-	padding-bottom:0px;
-	transform: scale(0.8);
-}
-
-body.sp section#game_start_wrapper #game_start .text_loading {
-	padding-bottom:0px;
-	transform: scale(0.8);
-}
 body.sp section#sp_controller.on{
 	height:100px;
 }
@@ -493,26 +396,6 @@ body.sp section#game_wrapper {
 	transform: scale(0.80);
 	transform-origin: top;
 }
-body.sp section#game_start_wrapper #game_start {
-	transform: scale(0.75);
-	transform-origin: top center;
-}
-
-body.sp section#game_start_wrapper #game_start .title {
-	padding-bottom:0px;
-	transform: scale(0.75);
-}
-
-body.sp section#game_start_wrapper #game_start .text {
-	padding-bottom:0px;
-	transform: scale(0.75);
-}
-
-body.sp section#game_start_wrapper #game_start .text_loading {
-	padding-bottom:0px;
-	transform: scale(0.75);
-}
-
 body.sp section#sp_controller #sp_controller_inner {
 	width: 95%;
 }

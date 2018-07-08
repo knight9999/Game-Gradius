@@ -32,7 +32,7 @@ class GameObject_ENEMY_SHOT{
 
 		_this.width=_p.width||18;
 		_this.height=_p.height||_this.img.height;
-		_this.speed=_p.speed||_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SHOT_SPEED;//定義：発射スピード
+		_this.speed = _p.speed || _GET_DIF_SHOT_SPEED(); //定義：発射スピード
 		//角度指定。
 		//自身と相手までのラジアン
 		_this.rad=(function(){
@@ -208,9 +208,9 @@ class ENEMY_SHOT_FRAME
 			img:_p.img
 		});
 		let _this=this;
-		_this.speed=1;
 		_this.ani_c=0;
 		_this.shotColMap = ["-10,-10,10,10"];
+		_this.speed = _GET_DIF_SHOT_SPEED()-1;
 	}
 	shot(){
 		let _this=this;
@@ -259,7 +259,7 @@ class ENEMY_SHOT_FRAME_SMALL
 			width:_p.width
 		});
 		let _this=this;
-		_this.speed=5;
+		_this.speed = _GET_DIF_SHOT_SPEED()*2;
 		_this.shotColMap=["-7,-7,7,7"];
 	}
 	shot(){}

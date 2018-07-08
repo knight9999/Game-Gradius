@@ -33,7 +33,6 @@ class GameObject_ENEMY{
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision1'];
 		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision3'];
 		
-		_this.isshot=false;
 		_this._DEF_SHOTSTATUS={
 			//main.jsよりショットによる衝突判定を設定
 			_SHOTTYPE_NORMAL:1,
@@ -46,7 +45,7 @@ class GameObject_ENEMY{
 		_this.alpha=1;//表示透明度（1〜0。1:表示、0:非表示）
 		_this._c=0;//アニメーションカウント
 
-		_this.speed=1;//敵のスピード
+		_this.speed = _GET_DIF_ENEMY_SPEED(); //敵のスピード
 		_this.getscore=200;//倒した時のスコア
 		
 		_this._standby=true;//スタンバイ状態
@@ -142,14 +141,13 @@ class GameObject_ENEMY{
 	}
 	isalive(){return (this._status>0);}
 	isshow(){return this._isshow;}
+	isshot(){
+		return (Math.random() < _GET_DIF_SHOT_RATE());
+	}
 	shot(){
 		//キャンバス内でショットさせる
 		if(_GAME.isEnemyCanvasOut(this)){return;}
-
-		if(Math.random()>=
-		_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SHOT_RATE){
-			return;
-		}
+		if(!this.isshot()){return;}
 
 //		console.log(this.getEnemyCenterPosition()._x);
 		//敵の中心から弾を発射させるための位置調整
@@ -312,6 +310,7 @@ class GameObject_ENEMY{
 		let _this=this;
 		_this.x=_MAP.getX(_this.x);
 		_this.y=_MAP.getY(_this.y);
+		_this.speed = _GET_DIF_ENEMY_SPEED();
 		if(!_this.isMove()){return;}
 //		_this.moveDraw();
 		_this.moveSet();
@@ -527,8 +526,6 @@ class ENEMY_c extends GameObject_ENEMY{
 
 		_this._collision_type='t1';
 
-		_this.speed=
-			_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SPEED;
 		_this.y=(_p.direct===_DEF_DIR._D)
 			?_p.y-_this.height-_MAP.t
 			:_p.y;
@@ -647,15 +644,16 @@ class ENEMY_c extends GameObject_ENEMY{
 				:Math.abs(this.speed);
 		}
 	}
+	isshot() {
+		//ショット確率を少し高めにする。
+		return (Math.random() < _GET_DIF_SHOT_RATE() * 5);
+	}
 	shot(){
 		let _this=this;
 		if(_this._st==='_st1'){return;}
 		//キャンバス内でショットさせる
 		if(_GAME.isEnemyCanvasOut(_this)){return;}
-		if(Math.random()>=
-		_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SHOT_RATE){
-			return;
-		}
+		if(!_this.isshot()){return;}
 
 		let _p=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 		let _e=_this.getEnemyCenterPosition();
@@ -671,9 +669,7 @@ class ENEMY_c extends GameObject_ENEMY{
 		_this.set_speed();
 
 		//_st1->walk, _st2->shot
-		_this._st=(
-			Math.random()<_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SHOT_RATE||
-			_this._shot)
+		_this._st=(_this.isshot() || _this._shot)
 			?'_st2'
 			:'_st1';
 		_this._ene_status[_this._st]._f();
@@ -691,8 +687,6 @@ class ENEMY_d extends GameObject_ENEMY{
 			width:25,
 			imgPos:[0,25,50,75,100,125]
 		});
-        let _this=this;
-		_this.speed=2;
 	}
 	moveSet(){
 		let _this=this;
@@ -744,10 +738,15 @@ class ENEMY_f extends GameObject_ENEMY{
 			this,{up:true,down:true,left:false,right:false}
 		);
 	}
+	isshot() {
+		//ショット確率を少し高めにする。
+		return (Math.random() < _GET_DIF_SHOT_RATE()*100);
+	}
 	shot(){
 		//弾は敵周囲に発射させる
 		let _this=this;
 		if(_this._v>0&&_this._v<0.05){}else{return;}
+		if(!_this.isshot()){return;}
 
 		let _e=_this.getEnemyCenterPosition();
 		for(let _i=30;_i<=360;_i+=30){
@@ -764,8 +763,8 @@ class ENEMY_f extends GameObject_ENEMY{
 	}
 	moveSet(){
 		let _this=this;
-//		console.log(_this.x)
-		_this.x+=3*_this.getDir();		
+		_this.speed = (_this.direct === _DEF_DIR._U) ? -0.05 : 0.05;
+		_this.x+=2*_this.getDir();		
 		_this.y+=_this._v;
 		_this._v+=_this.speed;
 
@@ -862,7 +861,7 @@ class ENEMY_m extends GameObject_ENEMY{
 		}
 		//ザコを吐き出す
 		if(!_this._isopen){return;}
-		if(_this._open_count%15!==0){return;}
+		if(_this._open_count%_GET_DIF_HATCH_RATE()!==0){return;}
 		let _cls=new ENEMY_m_group({
 			x:_this.x+12.5,
 			y:_this.y+((_this.direct===_DEF_DIR._U)?15:-10),
@@ -887,7 +886,6 @@ class ENEMY_m_group extends GameObject_ENEMY{
 			direct:_p.direct
 		});
 		let _this=this;
-		_this.speed=2;
 		_this.getscore=100;
 		_this._change=false;
 		_this._moveX=0;
@@ -962,12 +960,15 @@ class ENEMY_n extends GameObject_ENEMY{
 		//永続性にする。自身が破壊されない。
 		return true;
 	}
+	isshot(){
+		return (Math.random() < _GET_DIF_VOLCANO_RATE());
+	}
 	shot(){}
 	setDrawImage(){}
 	moveSet(){
 		let _this=this;
 		//オブジェクト追加
-		if(Math.random()>0.2){return;}
+		if(!_this.isshot()){return;}
 		let _cls=new ENEMY_n_small({
 					x:_this.x,
 					y:_this.y
@@ -989,7 +990,7 @@ class ENEMY_o extends ENEMY_n{
 	moveSet(){
 		let _this=this;
 		//オブジェクト追加
-		if(Math.random()>0.1){return;}
+		if(!_this.isshot()){return;}
 		let _cls=new ENEMY_o_small({
 					x:_this.x,
 					y:_this.y
@@ -1076,7 +1077,7 @@ class ENEMY_p extends GameObject_ENEMY{
 		let _this=this;
 		_this._status=4;
 		_this.getscore=100;
-		_this.speedx = _BACKGROUND_SPEED;
+		_this.speedx = _MAP.getBackGroundSpeed();
 		_this.speedy = _this.get_move_bound_val();
 		//レーザーのみ当たり判定を通常の半分にする。
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
@@ -1318,7 +1319,7 @@ class ENEMY_q extends GameObject_ENEMY{
 		if(!_this.isCollision()){return;}
 		_this.setStatus(_s_type,_num);
 	}
-	isShot(){
+	isRingShot(){
 		//モアイリングをショットさせる条件
 		//true:発射可能
 		//false:発射不可
@@ -1368,7 +1369,7 @@ class ENEMY_q extends GameObject_ENEMY{
 		if(!_this.isalive()){return;}
 
 		if(!_this._open_count>0
-				&&!_this.isShot()){
+				&&!_this.isRingShot()){
 		}else{
 			_this._open_count++;			
 		}
@@ -1384,7 +1385,8 @@ class ENEMY_q extends GameObject_ENEMY{
 
 		if(_this._open_count<=0){return;}
 		//イオンリングを発射させる間隔調整
-		if(_this._open_count%10!==0){return;}		
+		let _i = _GET_DIF_MOAI_RING_INT();
+		if(_this._open_count%_i!==0){return;}
 		_ENEMIES.push(
 			new ENEMY_moai_ring({
 				x:_this.x+parseInt(_this.shotColMap[0].split(',')[0]),
@@ -1470,7 +1472,7 @@ class ENEMY_moai_ring extends GameObject_ENEMY{
 		_this.rad=_GAME.getRad(_PARTS_PLAYERMAIN._players_obj,{x:_p.x,y:_p.y});
 		_this.sx=Math.cos(_this.rad);
 		_this.sy=Math.sin(_this.rad);
-		_this.speed=_MAPDEFS[_MAP_PETTERN]._speed*1.5;
+		_this.speed=2;
 
 		//レーザーのみ当たり判定を通常の半分にする。
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
@@ -1502,6 +1504,7 @@ class ENEMY_moai_ring extends GameObject_ENEMY{
 	shot(){}
 	moveSet(){
 		let _this=this;
+		_this.speed -= 1;
 		_this.map_collition();
 		_this.x+=_this.sx*_this.speed;
 		_this.y+=_this.sy*_this.speed;
@@ -1518,15 +1521,15 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 			img:_p.img||_CANVAS_IMGS['enemy_frame_large'].obj,
 			x:_p.x,
 			y:_p.y,
-			width:53,
-			imgPos:[0,53],
+			width:_p.width||53,
+			imgPos:_p.imgPos||[0,53],
 			direct:_p.direct
 		});
 		
 		let _this=this;
 		_this.getscore=100;
 
-		_this.speed=(Math.random()*(6-3)+3)*-1;
+		_this.speed = _GET_DIF_SHOT_SPEED() * -1;
 		_this.rad=0;
 		_this.speedx=0;
 		_this.speedy=0;
@@ -1535,7 +1538,6 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 		_this.shotColMap=[
 			"5,5,"+(_this.width-5)+","+(_this.height-5)
 		];
-		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 
 	}
 	setAlive(){
@@ -1555,11 +1557,22 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 			_this.init();
 		}
 	}
+	is_nearby(){
+		let _this=this;
+		let _cp = _this.getEnemyCenterPosition();
+		let _p = _PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
+
+		return (Math.sqrt(Math.pow(_p._x - _cp._x, 2), Math.pow(_p._y - _cp._y, 2)) < 200);
+	}
 	showCollapes(){
 		let _this=this;
-		let _cp=_this.getEnemyCenterPosition();
 		if(_this._status>0){return;}
 		if(_this._isbroken){return;}
+
+		let _cp = _this.getEnemyCenterPosition();
+//		console.log(Math.sqrt(Math.pow(_p._x - _cp._x, 2), Math.pow(_p._y - _cp._y, 2)))
+		//自機との至近距離であれば分裂させない
+		if (_this.is_nearby()) {return;}
 
 		let _eb_l=0;
 		let _eb=_ENEMIES;
@@ -1571,11 +1584,11 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 		let _c=(_eb_l>20)?1:2;
 		for(let _i=0;_i<_c;_i++){
 			//オブジェクト追加
-			_ENEMIES.push(
-				new ENEMY_frame_2({
+			_ENEMIES.push(new ENEMY_frame_2({
 					x:_cp._x,
 					y:_cp._y,
-					direct:_this.direct
+					direct:_this.direct,
+					rad:_this.rad
 				})
 			);
 		}
@@ -1592,20 +1605,22 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 				(Math.random()*700-100-_this.y),
 				0-_this.x);
 		_this.deg=_this.rad/Math.PI*180;
-		_this.speedx=Math.cos(_this.rad);//単位x
-		_this.speedy=Math.sin(_this.rad);//単位y
 		_this._standby=false;
 	}
 	moveSet(){
-		let _this=this;		
+		let _this=this;
+		_this.speed = _GET_DIF_SHOT_SPEED()+1.5;
+		_this.speedx = Math.cos(_this.rad); //単位x
+		_this.speedy = Math.sin(_this.rad); //単位y
 		_this.map_collition();
 		_this.set_imgPos();
-		_this.x-=_this.speedx*_this.speed;
-		_this.y-=_this.speedy*_this.speed;
+//		console.log(_this.rad)
+		_this.x+=_this.speedx*_this.speed;
+		_this.y+=_this.speedy*_this.speed;
 	}
 }
-//炎（中）
-class ENEMY_frame_2 extends GameObject_ENEMY{
+//炎（中）※親のrad値を継承
+class ENEMY_frame_2 extends ENEMY_frame_1 {
 	constructor(_p){
 		super({
 			img:_p.img||_CANVAS_IMGS['enemy_frame_small'].obj,
@@ -1616,10 +1631,8 @@ class ENEMY_frame_2 extends GameObject_ENEMY{
 			imgPos:_p.imgPos||[0,35]
 		});
 		let _this=this;
-		_this.speed=(Math.random()*(6-4)+4)*-1;
-		_this.deg=Math.random()*(235-125)+125;
-		_this.speedx=Math.cos(_this.deg*Math.PI/180);//単位x
-		_this.speedy=Math.sin(_this.deg*Math.PI/180);//単位y
+		_this.rad = (_p.rad || 0) + (Math.random() - 0.5);
+		_this.deg = _this.rad / Math.PI * 180;
 		
 		_this._isbroken=false;
 		_this.shotColMap=[
@@ -1642,9 +1655,11 @@ class ENEMY_frame_2 extends GameObject_ENEMY{
 	}
 	showCollapes(){
 		let _this=this;
-		let _cp=_this.getEnemyCenterPosition();
 		if(_this._status>0){return;}
 		if(_this._isbroken){return;}
+
+		let _cp = _this.getEnemyCenterPosition();
+		if (_this.is_nearby()) {return;}
 
 		let _eb_l=0;
 		let _eb=_ENEMIES;
@@ -1656,11 +1671,11 @@ class ENEMY_frame_2 extends GameObject_ENEMY{
 		let _c=(_eb_l>30)?0:2;
 		for(let _i=0;_i<_c;_i++){
 			//オブジェクト追加
-			_ENEMIES.push(
-				new ENEMY_frame_3({
+			_ENEMIES.push(new ENEMY_frame_3({
 					x:_cp._x,
 					y:_cp._y,
-					direct:_this.direct
+					direct:_this.direct,
+					rad:_this.rad
 				})
 			);
 		}
@@ -1668,14 +1683,8 @@ class ENEMY_frame_2 extends GameObject_ENEMY{
 		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_collision1']);
 		_this.init();
 	}
-	moveSet(){
-		let _this=this;
-		_this.set_imgPos();
-		_this.x-=_this.speedx*_this.speed;
-		_this.y-=_this.speedy*_this.speed;
-	}
 }
-//炎（小）
+//炎（小）※親のrad値を継承
 class ENEMY_frame_3 extends ENEMY_frame_2{
 	constructor(_p){
 		super({
@@ -1688,13 +1697,15 @@ class ENEMY_frame_3 extends ENEMY_frame_2{
 		});
 		let _this=this;
 		_this._isbroken=false;
+		_this.rad = (_p.rad || 0) + (Math.random() - 0.5);
+		_this.deg = _this.rad / Math.PI * 180;
+
 		_this.shotColMap=[
 			"5,5,"+(_this.width-5)+","+(_this.height-5)
 		];
 		//無敵だが衝突を無視し、"ある程度"ショットは通過できる
 		_this.is_able_collision=false;
 		_this.is_ignore_collision=(Math.random()>0.05);
-//		_this.is_ignore_collision=false;
 		_this._standby=false;
 	}
 }
@@ -1720,8 +1731,6 @@ class ENEMY_cell_core
 		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision7'];
 		_this._collision_type='t9';
 		_this.rad=0;
-		//レーザーのみ当たり判定を通常の半分にする。
-		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 
 		_this.ani=[//アニメーション定義
 			{scale:1},{scale:0.95},{scale:0.90},{scale:0.85},{scale:0.90},{scale:0.95}
@@ -2157,11 +2166,7 @@ class ENEMY_cell_hand_3
 	shot(){
 		//キャンバス内でショットさせる
 		if(_GAME.isEnemyCanvasOut(this)){return;}
-
-		if(Math.random()>=
-		_DEF_DIFFICULT[_ENEMY_DIFFICULT]._ENEMY_SHOT_RATE){
-			return;
-		}
+		if(!this.isshot()){return;}
 		
 		let _e=this.getEnemyCenterPosition();
 		//敵の中心から弾を発射させるための位置調整

@@ -162,29 +162,27 @@ const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME1':{//クリスタル
 	'_map':{
 		'A':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CRISTAL();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},//_MAP.moveDraw()で処理させる
-						//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_getObj':()=>{return new MAP_CRISTAL();}
+			'_gamestart'(_x,_y,_k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CRISTAL({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_CRISTAL({});}
 		},
 		'B': {
-			'_gamestart': function (_key) {
-				this.objs[_key] = new MAP_CRISTAL_UP();
-			}, //初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs': {}, //_MAP.moveDraw()で処理させる
+			'_gamestart'(_x,_y,_k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CRISTAL_UP({x:_x,y:_y}))
+			},
 			//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_getObj': () => {
-				return new MAP_CRISTAL_UP();
+				return new MAP_CRISTAL_UP({});
 			}
 		},
 		'C': {
-			'_gamestart': function (_key) {
-				this.objs[_key] = new MAP_CRISTAL_DOWN();
-			}, //初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs': {}, //_MAP.moveDraw()で処理させる
+			'_gamestart'(_x,_y,_k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CRISTAL_DOWN({x:_x,y:_y}))
+			},
 			//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
 			'_getObj': () => {
-				return new MAP_CRISTAL_DOWN();
+				return new MAP_CRISTAL_DOWN({});
 			}
 		},
 	},
@@ -193,79 +191,94 @@ const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME2':{//火山
 	'_map':{
 		'A':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_A();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_A({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_A({});}
 		},
 		'B':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_B();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_B({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_B({});}
 		},
 		'C':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_C();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_C();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_C({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_C({});}
 		},
 		'D':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_D();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_D();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_D({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_D({});}
 		},
 		'F':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_F();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_F();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_F({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_F({});}
 		},
 		'G':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_G();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_G();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_G({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_G({});}
 		},
 		'H':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_H();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_H();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_H({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_H({});}
 		},
 		'I':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_I();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_I();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_I({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_I({});}
 		},
 		'J':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_J();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_J();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_J({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_J({});}
 		},
 		'K':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_K();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_K();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_K({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_K({});}
 		},
 		'L':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_L();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_L();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_L({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_L({});}
 		},
 		'M':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_M();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_M();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_M({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_M({});}
 		},
 		'N':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_N();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_N();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_N({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_N({});}
 		},
 		'O':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_O();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_O();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_O({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_O({});}
 		},
 		'P':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_VOLCANO_P();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return new MAP_VOLCANO_P();}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_VOLCANO_P({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return new MAP_VOLCANO_P({});}
 		}
 
 	},
@@ -274,9 +287,11 @@ const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME3':{//キューブ
 	'_map':{
 		'A':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CUBE_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'_gamestart'(_x,_y,_k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CUBE_A({x:_x,y:_y}))
+			},
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_getObj':()=>{return (new MAP_CUBE_A());}
+			'_getObj':()=>{return (new MAP_CUBE_A({}));}
 		}
 	},
 	'_enemies':_MAP_ENEMIES._ENEMIES
@@ -284,14 +299,16 @@ const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME5':{//モアイ
 	'_map':{
 		'B':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_MOAI_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return (new MAP_MOAI_A());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_MOAI_A({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_MOAI_A({}));}
 		},
 		'C':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_MOAI_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},
-			'_getObj':()=>{return (new MAP_MOAI_B());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_MOAI_B({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_MOAI_B({}));}
 		}
 	},
 	'_enemies':{
@@ -402,34 +419,41 @@ const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME6':{//炎
 	'_map':{
 		'A':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_FRAME_A({x:_x,y:_y}));
+			},
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_getObj':()=>{return (new MAP_FRAME_A());}
+			'_getObj':()=>{return (new MAP_FRAME_A({}));}
 		},
 		'B':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_B();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_FRAME_B());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_FRAME_B({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_FRAME_B({}));}
 		},
 		'C':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_C();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_FRAME_C());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_FRAME_C({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_FRAME_C({}));}
 		},
 		'D':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_D();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_FRAME_D());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_FRAME_D({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_FRAME_D({}));}
 		},
 		'E':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_E();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_FRAME_E());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_FRAME_E({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_FRAME_E({}));}
 		},
 		'F':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_FRAME_F();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_FRAME_F());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_FRAME_F({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_FRAME_F({}));}
 		}
 
 	},
@@ -468,89 +492,110 @@ const _MAP_THEME={//_parts要素番号0は空文字
 '_THEME7':{//細胞
 	'_map':{
 		'A':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_A();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_A({x:_x,y:_y}));
+			},
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_getObj':()=>{return (new MAP_CELL_A());}
+			'_getObj':()=>{return (new MAP_CELL_A({}));}
 		},
 		'B':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_B();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_B({x:_x,y:_y}));
+			},
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_getObj':()=>{return (new MAP_CELL_B());}
+			'_getObj':()=>{return (new MAP_CELL_B({}));}
 		},
 		'C':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_C();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_C({x:_x,y:_y}));
+			},
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_getObj':()=>{return (new MAP_CELL_C());}
+			'_getObj':()=>{return (new MAP_CELL_C({}));}
 		},
 		'D':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_D();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_D({x:_x,y:_y}));
+			},
 			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_getObj':()=>{return (new MAP_CELL_D());}
+			'_getObj':()=>{return (new MAP_CELL_D({}));}
 		},
 		'G':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_G();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_CELL_G());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_G({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_G({}));}
 		},
 		'H':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_H();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_CELL_H());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_H({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_H({}));}
 		},
 		'I':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_I();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_CELL_I());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_I({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_I({}));}
 		},
 		'J':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_J();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_CELL_J());}
+			'_gamestart'(_x,_y,_k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_J({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_J({}));}
 		},
 		'K':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_K();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_CELL_K());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_K({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_K({}));}
 		},
 		'L':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_L();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_CELL_L());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_L({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_L({}));}
 		},
 		'M':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_M();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_CELL_M());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_M({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_M({}));}
 		},
 		'N':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_N();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_CELL_N());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_N({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_N({}));}
 		},
 		'O':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_O();},
-			'objs':{},
-			'_getObj':()=>{return (new MAP_CELL_O());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_O({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_O({}));}
 		},
 		'V':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_V();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_getObj':()=>{return (new MAP_CELL_V());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_V({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_V({}));}
 		},
 		'W':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_W();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_getObj':()=>{return (new MAP_CELL_W());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_W({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_W({}));}
 		},
 		'Y':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_Y();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_getObj':()=>{return (new MAP_CELL_Y());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_Y({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_Y({}));}
 		},
 		'Z':{
-			'_gamestart':function(_key){this.objs[_key]=new MAP_CELL_Z();},//初期設定時、マップ座標をキーにobjsにクラスを格納させる
-			'objs':{},//'A'からオブジェクト群を、x、y座標をキーに個別に保持させる
-			'_getObj':()=>{return (new MAP_CELL_Z());}
+			'_gamestart' (_x, _y, _k) {
+				_PARTS_MAP._init_maps(_k,new MAP_CELL_Z({x:_x,y:_y}));
+			},
+			'_getObj':()=>{return (new MAP_CELL_Z({}));}
 		},
 	},
 	'_enemies':{
@@ -686,7 +731,7 @@ class GameObject_MAP{
 		for(let _i=0;_i<_this.mapdef.length;_i++){
 		let _m=_this.mapdef[_i];
 		for(let _j=0;_j<_m.length;_j++){
-			//MAP衝突用1行分ループ
+			//MAP1行分ループ
 			if(_this.isEnemiesBit(_m[_j])){
 				//敵のゲーム開始前初期化
 				let _d=_MAP_ENEMIES._setDir(_j,_i);//向きを取得する
@@ -697,7 +742,7 @@ class GameObject_MAP{
 			if(_this.isCollisionBit(_m[_j])){
 				//MAPのゲーム開始前初期化
 				_MAP_THEME[_this.map_theme]._map[_m[_j]]
-					._gamestart(_j+','+_i);
+					._gamestart(_this.x + (_j * _this.t), _i * _this.t, _j + ',' + _i);
 				continue;
 			}
 
@@ -898,14 +943,8 @@ class GameObject_MAP{
 		return false;
 	}
 	setPlayersShotAbleCollision(_mx,_my,_shot){
-		let _this=this;
-		let _mp=_MAP_THEME[_this.map_theme]._map;
-		if(_mp===undefined){return;}
-		let _md=_this.mapdef[_my][_mx];
-		//_MAP_THEMEで定義したMAPにない場合は終了
-		if(_mp[_md]===undefined){return;}
-		let _obj=_mp[_md].objs[_mx+','+_my];
-		if(_obj===undefined){return;}
+		let _obj = _PARTS_MAP._obj[_mx + ',' + _my];
+ 		if(_obj===undefined){return;}
 		if(_obj.is_able_collision){
 			_obj.collision(_shot);
 		}
@@ -1026,34 +1065,6 @@ class GameObject_MAP{
 		_CONTEXT.strokeRect(50,130,300,200);
 
 	}//showMapForStageselect
-	map_draw(){
-		//MAPの表示
-		let _this=this;
-		for(let _i=0;_i<_this.mapdef.length;_i++){
-		for(let _j=0;_j<_this.mapdef[_i].length;_j++){
-			let _k=_this.mapdef[_i][_j];
-			if(!_this.isCollisionBit(_k)){continue;}
-			if(_this.x+(_j*_this.t)<-500
-				||_this.x+(_j*_this.t)>_CANVAS.width+100){
-				//キャンバスからある程度の距離は描画しない
-				continue;
-			}
-			let _p=_MAP_THEME[_this.map_theme]._map[_k];
-			_p.objs[_j+','+_i].moveDraw(
-				_this.x+(_j*_this.t),
-				_this.y+(_i*_this.t));
-
-			if(!_this.map_infinite){continue;}
-
-			//縦スクロールする場合は、スクロールをスムーズに表示させる為、
-			//マップを2倍に表示させる。
-			_p.objs[_j+','+_i].moveDraw(
-				_this.x+(_j*_this.t),
-				_this.y+(_i*_this.t)+((_this.y>0)?-1000:1000));
-
-		}//_j
-		}//_i
-	}
 	set_mapdef_col_clear(){
 		let _this=this;
 		for(let _i=0;_i<_this.mapdef_col.length;_i++){

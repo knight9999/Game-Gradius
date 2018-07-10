@@ -1967,7 +1967,7 @@ class ENEMY_cell_core
 			{x:_p._x,y:_p._y},
 			{x:_e._x,y:_e._y}
 		);
-		_this.y+=Math.sin(_rad)*_this.speed;
+		_this.y+=Math.sin(_rad)*(_this.speed-1);
 
 		if(!_this.is_hands_up_status()
 			&&_this.hands_up.length!==0){

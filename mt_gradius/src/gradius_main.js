@@ -86,6 +86,10 @@ const _DRAW=()=>{
 		}
 		// console.log('3:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 
+		//MAPオブジェクトの最適化、移動
+		_PARTS_MAP._optimized_maps();
+		_PARTS_MAP._move_maps();
+
 		//MAP位置と敵の表示はこのシーケンス
 		//※モアイ破壊後のMAP衝突がうまく調整できなくなる
 		//MAP位置設定
@@ -114,6 +118,7 @@ const _DRAW=()=>{
 			if(_PARTS_PLAYERMAIN._players_obj.isalive()){_ENEMIES_COLLISIONS[_i].move();}
 			_ENEMIES_COLLISIONS[_i].setDrawImage();
 		}
+
 
 		if(_PARTS_PLAYERMAIN._players_obj.isalive()){
 			_GET_DIFFICULT_LEVEL();
@@ -147,7 +152,7 @@ const _DRAW=()=>{
 		_PARTS_PLAYERMAIN._draw_players();
 		// console.log('13:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 		//MAP表示設定
-		_MAP.map_draw();
+		_PARTS_MAP._draw_maps();
 
 		//DRAW POWER METERを表示
 		_POWERMETER.show();
@@ -458,6 +463,8 @@ const _DRAW_RESET_OBJECT=()=>{
 	_DRAW_STOP();
 
 	_CONTEXT.clearRect(0,0,_CANVAS.width,_CANVAS.height);
+
+	_PARTS_MAP._init();
 
 	_PARTS_PLAYERMAIN._reset();
 

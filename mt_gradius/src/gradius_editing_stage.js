@@ -12,6 +12,7 @@ _MAP_PETTERN=0;
 const _DATAAPI={
 _data_api:'',
 _blog_id:0,
+_contentdata_id:0,
 _url:'',
 _init_config:()=>{
 	return _AJAX({
@@ -22,6 +23,7 @@ _init(_d){
 	let _this=_DATAAPI;
 	_this._blog_id=parseInt(_d.blog_id);
 	_this._url=_d.url;
+	_this._contentdata_id = parseInt(_d.contentdata_id);
 
 	_this._data_api=new MT.DataAPI({
 		baseUrl:_this._url,
@@ -51,8 +53,9 @@ _set_entryupdate(_ed){
 	//	_d.title
 	//	_d.status
 	let _this=this;
-	_this._data_api.updateEntry(
+	_this._data_api.updateContentData(
 		_this._blog_id,
+		_this._contentdata_id,
 		_ed._eid,
 		_ed,
 		function(_r) {
@@ -420,7 +423,7 @@ setDataForDataApi:function(){
 		'title':document.querySelector('#title input[name="title"]').value,
 		'status':'Publish',
 		'_eid':_MAPDEFS[_MAP_PETTERN]._eid,
-		'body':_d
+		'data':[{data:_d,id:18}]
 	};
 	_DATAAPI._set_entryupdate(_ed);
 },

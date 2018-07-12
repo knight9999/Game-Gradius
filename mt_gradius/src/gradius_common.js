@@ -146,9 +146,9 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 	_audio_buffer_loader:null,
 	_audio_now_obj_bg:null,//バックグラウンド現在再生用
 	_audio_context_source_bg:null,//バックグラウンド再生用
-	_is_audio_context_source_bg:false,//バックグラウンド再生中判別フラグ
-
+	_audio_settimeout: null,
 	_audio_loaded_count:0,
+	_is_audio_context_source_bg: false, //バックグラウンド再生中判別フラグ
 	_init(){
 		let _this = this;
 		_this._audio_context = new(window.AudioContext || window.webkitAudioContext)();
@@ -193,24 +193,37 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 		_this._audio_now_obj_bg=null;
 		_this._audio_context_source_bg = null;
 		_this._is_audio_context_source_bg = false;
+		_this._audio_settimeout = null;
 
 		_this._audio_loaded_count = 0;
 	},
-	_setPlay(_obj){
+	_setPlay(_obj, _time) {
 		if(_obj===null||_obj===undefined){return;}
 		let _this = this;
 	
+		return new Promise((_res, _rej) => {
+
 		var _s=_this._audio_context.createBufferSource();
 		_s.buffer=_obj.buf;
 		_s.loop=false;
 		_s.connect(_this._audio_context.destination);
 		_s.start(0);
-		
+		if(_time===undefined){return;}
+		_this._audio_settimeout=setTimeout(()=>{_res();},_time);
+
+		}); //promise
+
 	},
-	_setPlayOnBG(_obj){
+	_setPlayOnBG(_obj, _loop, _time) {
 		//バックグラウンド用再生
+		//_obj:再生させたい音声オブジェクト
+		//_loop:ループ可否
+		//_time:再生完了時間（ms）
 		if(_obj===null||_obj===undefined){return;}
 		let _this = this;
+		_loop=(_loop===undefined)?true:false;
+
+		return new Promise((_res, _rej) => {
 		
 		if(_this._is_audio_context_source_bg===true){
 			_this._audio_context_source_bg.stop();
@@ -219,19 +232,26 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 		let _t=_this._audio_context.createBufferSource();
 		_t.buffer=_obj.buf;
 		_this._audio_now_obj_bg=_obj;//バッファの一時保存用
-		_t.loop=true;
+		_t.loop=_loop;
 		_t.loopStart=0;
 		_t.connect(_this._audio_context.destination);
 		_t.start(0);
 		
 		_this._audio_context_source_bg=_t;
 		_this._is_audio_context_source_bg=true;
+
+		if(_time===undefined){return;}
+		_this._audio_settimeout=setTimeout(()=>{_res();},_time);
+
+		});//promise
 	},
 	_setStopOnBG(){
 		//バックグラウンド用停止
-		if(!this._is_audio_context_source_bg){return;}
-		this._audio_context_source_bg.stop();
-		this._is_audio_context_source_bg=false;
+		let _this = this;
+		if(!_this._is_audio_context_source_bg){return;}
+		_this._audio_context_source_bg.stop();
+		_this._is_audio_context_source_bg=false;
+		clearTimeout(_this._audio_settimeout);
 	},
 };
 

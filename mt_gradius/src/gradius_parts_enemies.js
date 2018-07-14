@@ -45,7 +45,7 @@ class GameObject_ENEMY{
 		_this.alpha=1;//表示透明度（1〜0。1:表示、0:非表示）
 		_this._c=0;//アニメーションカウント
 
-		_this.speed = _GET_DIF_ENEMY_SPEED(); //敵のスピード
+		_this.speed = 0; //敵のスピード
 		_this.getscore=200;//倒した時のスコア
 		
 		_this._standby=true;//スタンバイ状態
@@ -123,6 +123,7 @@ class GameObject_ENEMY{
 		let _this=this;
 		if(!_this.isalive()){
 			_PARTS_OTHERS._set_score(_this.getscore);
+			_this.showCollapes();
 			_GAME_AUDIO._setPlay(_this.audio_collision);
 		}else{
 			_GAME_AUDIO._setPlay(_this.audio_alive);			
@@ -168,7 +169,7 @@ class GameObject_ENEMY{
 	}
 	get_imgPos(){
 		let _this=this;
-		return _this.imgPos[parseInt(_this._c/_this.aniItv)]
+		return _this.imgPos[parseInt(_this._c/_this.aniItv)]||0;
 	}
 	setDrawImageDirect(){
 		let _this=this;
@@ -188,6 +189,7 @@ class GameObject_ENEMY{
 		if(!_this.isMove()){return;}
 		_CONTEXT.save();
 		_this.setDrawImageDirect();
+		_CONTEXT.globalAlpha = _this.alpha;
 		_CONTEXT.drawImage(
 			_this.img,
 			_this.get_imgPos(),
@@ -288,18 +290,15 @@ class GameObject_ENEMY{
 			return false;
 		}
 		if(!_this.isalive()){
-			_this.showCollapes();
 			return false;
 		}
 		return true;
 	}
-	moveDraw(){
-		//敵の描画メイン
-		//弾の発射
-	}
+	moveDraw(){}
 	moveSet(){}
 	move_standby(){
 		let _this=this;
+		_this.speed = _GET_DIF_ENEMY_SPEED(); //敵のスピード
 		if(_this.x<_CANVAS.width-20){
 			_this._standby=false;
 		}
@@ -1081,6 +1080,7 @@ class ENEMY_p extends GameObject_ENEMY{
 		_this.speedy = _this.get_move_bound_val();
 		//レーザーのみ当たり判定を通常の半分にする。
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
+		_this.audio_collision = _CANVAS_AUDIOS['enemy_collision4'];
 
 		_this._s='0000,0000,0000,0000';
 	}
@@ -1088,6 +1088,7 @@ class ENEMY_p extends GameObject_ENEMY{
 		let _this=this;
 		if(_this.isalive()){return;}
 		_PARTS_OTHERS._set_score(_this.getscore);
+		_this.showCollapes();
 	}
 	map_collition(){
 		let _this=this;
@@ -1157,7 +1158,7 @@ class ENEMY_p extends GameObject_ENEMY{
 	}
 	showCollapes(){
 		let _this=this;
-		if(_this._status>0){return;}
+		_this._isshow = false;
 		let _cp = _this.getEnemyCenterPosition();
 		const set_enemies_p_parts=[
 			{
@@ -1199,8 +1200,6 @@ class ENEMY_p extends GameObject_ENEMY{
 				y: _cp._y+_obj.y
 			}));
 		}
-		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_collision4']);
-		_this.init();
 	}
 	shot(){}
 	moveSet(){
@@ -1249,6 +1248,7 @@ class ENEMY_p_small extends ENEMY_p {
 		let _this=this;
 		if(_this.isalive()){return;}
 		_PARTS_OTHERS._set_score(_this.getscore);
+		_this.showCollapes();
 		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_collision5']);
 	}
 	showCollapes(_x, _y) {
@@ -1356,7 +1356,6 @@ class ENEMY_q extends GameObject_ENEMY{
 			return false;
 		}
 		if(!_this.isalive()){
-			_this.showCollapes();
 			return true;
 		}
 		return true;
@@ -1544,6 +1543,7 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 		let _this=this;
 		if(_this.isalive()){return;}
 		_PARTS_OTHERS._set_score(_this.getscore);
+		_this.showCollapes();
 	}
 	map_collition(){
 		let _this=this;

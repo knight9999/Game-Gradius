@@ -247,14 +247,14 @@ class MAP_MOAI_A extends MAP_OBJECT{
 	constructor(_p){
 		super({img:_CANVAS_IMGS['map_moai_A'].obj,width:250,height:100,x:_p.x,y:_p.y});
 		let _this=this;
-		_this._s='0000000000,1111111111,1111111111,0000000000';
+		_this._s='0000000000,0111111111,0111111111,0000000000';
 	}
 }
 class MAP_MOAI_B extends MAP_OBJECT{
 	constructor(_p){
 		super({img:_CANVAS_IMGS['map_moai_B'].obj,width:250,height:100,x:_p.x,y:_p.y});
 		let _this=this;
- 		_this._s='0000000000,1111111111,1111111111,0000000000';
+ 		_this._s='0000000000,1111111110,1111111110,0000000000';
 	}
 }
 //=====================
@@ -515,8 +515,8 @@ class MAP_CELL_A extends MAP_OBJECT{
 		});
 		let _this=this;
 		_this._s='0000000000000000000,'
+				+'0001111111111111000,'
 				+'0011111111111111100,'
-				+'0111111111111111110,'
 				+'1111111111111111111';
 	}
 }
@@ -533,8 +533,8 @@ class MAP_CELL_B extends MAP_OBJECT{
 		});
 		let _this=this;
 		_this._s='1111111111111111111,'
-				+'0111111111111111110,'
 				+'0011111111111111100,'
+				+'0001111111111111000,'
 				+'0000000000000000000';
 	}
 }

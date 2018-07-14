@@ -130,30 +130,83 @@ _ENEMIES:{
 
 //マップ用ボス定義
 const _MAP_ENEMIES_BOSS={
-	'enemy_cristalcore':{
-		_f:function(){return new ENEMY_BOSS_CRYSTALCORE({x:700,y:800});}
-	},
-	'enemy_bigcore':{
-		_f:function(){return new ENEMY_BOSS_BIGCORE({x:_CANVAS.width+200,y:200});}
-	},
-	'enemy_cristalcore_pt2':{
-		_f:function(){return new ENEMY_BOSS_CRYSTALCORE_PT2({x:700,y:800});}
-	},
-	'enemy_bigcore2':{
-		_f:function(){return new ENEMY_BOSS_BIGCORE2({x:_CANVAS.width+200,y:200});}
-	},
-	'enemy_frame':{
-		_f:function(){return new ENEMY_BOSS_FRAME({x:1000,y:200});}
-	},
-	'enemy_cell':{
-		_f:function(){return new ENEMY_BOSS_CELL({x:_CANVAS.width+200,y:200});}
-	},
-	'enemy_moai':{
-		_f:function(){return new ENEMY_BOSS_MOAI({x:_CANVAS.width+200,y:200});}
-	},
-	'enemy_death':{
-		_f:function(){return new ENEMY_BOSS_DEATH({x:_CANVAS.width+200,y:200});}
-	}
+	'enemy_cristalcore':[
+		{
+			_obj:function(){return new ENEMY_BOSS_CRYSTALCORE({x:700,y:800});},
+			_movex: 0,
+			_bgmusic: function () {
+				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
+			}
+		}
+	],
+	'enemy_bigcore':[
+		{
+			_obj:function(){return new ENEMY_BOSS_BIGCORE({x:_CANVAS.width+200,y:200});},
+			_movex: 0,
+			_bgmusic: function () {
+				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
+			}
+		}
+	],
+	'enemy_bigcore2':[
+		{
+			_obj:function(){return new ENEMY_BOSS_BIGCORE2({x:_CANVAS.width+200,y:200});},
+			_movex: 0,
+			_bgmusic: function () {
+				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
+			}
+		}
+	],
+	'enemy_frame':[
+		{
+			_obj:function(){return new ENEMY_BOSS_FRAME({x:1000,y:200});},
+			_movex: 0,
+			_bgmusic: function () {
+				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
+			}
+		}
+	],
+	'enemy_cell':[
+		{
+			_obj:function(){return new ENEMY_BOSS_CELL({x:_CANVAS.width+200,y:200});},
+			_movex: 0,
+			_bgmusic: function () {
+				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
+			}
+		}
+	],
+	'enemy_moai':[
+		{
+			_obj:function(){return new ENEMY_BOSS_MOAI({x:_CANVAS.width+200,y:200});},
+			_movex: 0,
+			_bgmusic: function () {
+				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
+			}
+		}
+	],
+	'enemy_death':[
+		{
+			_obj:function(){return new ENEMY_BOSS_DEATH({x:_CANVAS.width+200,y:200});},
+			_movex:0,
+			_bgmusic: function () {
+				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
+			}
+		}
+	],
+	'enemy_cuberush':[
+		{
+			_obj:function(){return new ENEMY_BOSS_CUBERUSH({x:_CANVAS.width+200,y:200})},
+			_movex:50,
+			_bgmusic: function () {}
+		},
+		{
+			_obj:function(){return new ENEMY_BOSS_CRYSTALCORE({x:700,y:800});},
+			_movex:0,
+			_bgmusic: function () {
+				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
+			}
+		}
+	]
 };
 
 
@@ -680,6 +733,7 @@ class GameObject_MAP{
 		_this.map_infinite=false;
 		_this.map_bgmusic='';
 		_this.map_boss='';
+		_this.map_enemies_boss = new Object();
 		_this.isboss=false;
 	}
 	init(){
@@ -718,12 +772,17 @@ class GameObject_MAP{
 		_this.map_infinite=(_MAPDEFS[_this.map_pettern]._map_infinite==='true')?true:false;
 		_this.map_bgmusic=_MAPDEFS[_this.map_pettern]._bgmusic;
 		_this.map_boss=_MAPDEFS[_this.map_pettern]._boss;
+
+		_this.map_enemies_boss = _MAP_ENEMIES_BOSS[_this.map_boss];
 		_this.isboss=false;
 
 		//衝突マップの設定
 		_this.set_gamestart_mapdef_col();
 		//マップテーマ定義より、敵・マップオブジェクトのセット
 		_this.set_gamestart_map_theme_objs();
+	}
+	get_ememies_boss(){
+		return this.map_enemies_boss;
 	}
 	set_gamestart_map_theme_objs(){
 		//敵・マップの
@@ -941,6 +1000,16 @@ class GameObject_MAP{
 		if(_this.mapdef_col[_my][_mx]===undefined){return false;}
 		if(_this.isCollisionBit(_this.mapdef_col[_my][_mx])){return true;}
 		return false;
+	}
+	isMapGameClear(){
+		//ゲームクリアの判定
+		let _this = this;
+		if(_this.map_boss===''||
+			_this.map_boss === undefined ||
+			_MAP_ENEMIES_BOSS[_this.map_boss] === undefined) {
+				return true;
+		}
+
 	}
 	setPlayersShotAbleCollision(_mx,_my,_shot){
 		let _obj = _PARTS_MAP._obj[_mx + ',' + _my];

@@ -767,11 +767,13 @@ _f_i_dragover:function(e){
 },//_f_i_dragover
 _f_i_drop:function(e){
 	console.log('form_inner drop');
+	this._edits = true;
 	for (let _i = 0; _i < $_ab.length; _i++) {
 		$_ab[_i].classList.remove('over');
 	}
 	if(e.dataTransfer.effectAllowed!=='move'){return false;}
 	this.$_start_area_parts_obj.parentNode.textContent=null;
+
 	return false;
 },//_f_i_drop
 

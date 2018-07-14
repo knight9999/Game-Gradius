@@ -14,9 +14,6 @@ let _DRAW_SETINTERVAL = null;
 let _DRAW_OPENING_SETINTERVAL = null;
 let _DRAW_GAMESTART_SETINTERVAL = null;
 
-let _DRAW_IS_MATCH_BOSS = false;
-let _DRAW_IS_MATCH_BOSS_COUNT = 0;
-
 let _DRAW_IS_GAMECLEAR = false; //GameClearフラグ
 
 
@@ -87,8 +84,10 @@ const _DRAW=()=>{
 		// console.log('3:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 
 		//MAPオブジェクトの最適化、移動
-		_PARTS_MAP._optimized_maps();
-		_PARTS_MAP._move_maps();
+		if (_PARTS_PLAYERMAIN._players_obj.isalive()) {
+			_PARTS_MAP._optimized_maps();
+			_PARTS_MAP._move_maps();
+		}
 
 		//MAP位置と敵の表示はこのシーケンス
 		//※モアイ破壊後のMAP衝突がうまく調整できなくなる
@@ -168,58 +167,85 @@ const _DRAW=()=>{
 			return;			
 		}
 		
-		// if(_MAP_SCROLL_POSITION_X-100<=
-		// 	(_MAP.mapdef[0].length*_MAP.t)+_MAP.initx){return;}
-		//一定距離を達するまでボスを登場させない
-		if(!_MAP.isboss){return;}
-		//MATCH_BOSS
+		//所定条件に達したらボス戦を表示させる
 		_DRAW_MATCH_BOSS();
-
 	};
 
 	_DRAW_SETINTERVAL=window.requestAnimationFrame(_loop);
 }
 
+let _DRAW_IS_MATCH_BOSS = false;
+let _DRAW_IS_MATCH_BOSS_COUNT = 0;
+let _DRAW_IS_MATCH_BOSS_MOVEX = false;
+let _DRAW_MATCH_BOSS_CLEAR_COUNT = 0;
+let _DRAW_MATCH_BOSS_COUNT = 0;
+let _DRAW_MATCH_BOSS_MOVEX_COUNT = 0;//移動カウント
 const _DRAW_MATCH_BOSS=()=>{
-	//ボスの登場→表示→終了処理
-	if(!_DRAW_IS_MATCH_BOSS){
-		if(_MAP.map_boss===''
-			||_MAP.map_boss===undefined
-			||_MAP_ENEMIES_BOSS[_MAP.map_boss]===undefined){
-			_DRAW_GAMECLEAR();
-		}
-		//ここでY軸の動作を無効にさせる
-		_MAP.setBackGroundSpeedY(0);
-		_MAP.setInifinite(false);
-		//ボス登場後の1回処理
-		_DRAW_SCROLL_STOP();
+	//一定距離を達するまでボスを登場させない
+	if (!_MAP.isboss) {return;}
+
+	if (!_DRAW_IS_MATCH_BOSS){
+		//初期処理
 		_ENEMIES=[];
 		_ENEMIES_SHOTS=[];
-		_ENEMIES.push(
-			_MAP_ENEMIES_BOSS[_MAP.map_boss]._f()
-		);
 		_DRAW_IS_MATCH_BOSS=true;
-		_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
-		
+	}
+
+	//全てのボスを倒したらゲームクリア
+	if (_MAP.isMapGameClear()) {
+		_DRAW_GAMECLEAR();
 		return;
 	}
 
-	//================================
-	//ボスがもつ_statusが全て0だった場合に
-	//ゲームクリアとなる。
-	//================================
-	let _bit='';
-	for(let _i=0;_i<_ENEMIES.length;_i++){
-		_bit+=((_ENEMIES[_i].isalive())?'0':'1');
-	}
-	if(_bit.indexOf('0')!==-1){return;}
-	if(_DRAW_IS_MATCH_BOSS_COUNT>100){
-		//GAMECLEAR
+	if (_DRAW_MATCH_BOSS_CLEAR_COUNT >= _MAP.get_ememies_boss().length) {
 		_DRAW_GAMECLEAR();
-		_DRAW_SCROLL_RESUME();
-	}else{
-		_DRAW_IS_MATCH_BOSS_COUNT++;
+		return;
 	}
+	_MAP.setBackGroundSpeedY(0);
+	_MAP.setInifinite(false);
+
+	//ボス倒した後のスクロール
+	if (_DRAW_IS_MATCH_BOSS_MOVEX) {
+		//スクロールを止める（1回目だけ）
+		if ( _DRAW_MATCH_BOSS_MOVEX_COUNT === 0 ){
+			_DRAW_SCROLL_RESUME();
+		}
+		
+		_DRAW_MATCH_BOSS_MOVEX_COUNT++;
+
+		//所定のスクロール量に達した場合
+		//スクロールを止める
+		let _o = _MAP.get_ememies_boss()[_DRAW_MATCH_BOSS_CLEAR_COUNT - 1];
+		if (_o._movex <= _DRAW_MATCH_BOSS_MOVEX_COUNT) {
+			_DRAW_MATCH_BOSS_MOVEX_COUNT = 0;
+			_DRAW_IS_MATCH_BOSS_MOVEX = false;
+		}
+		return;
+	}
+
+	//以下はボス戦描画処理
+	//ボス登場時の初期設定
+	if (_DRAW_MATCH_BOSS_COUNT === 0) {
+		_ENEMIES = [];
+		let _o = _MAP.get_ememies_boss()[_DRAW_MATCH_BOSS_CLEAR_COUNT];
+		_DRAW_SCROLL_STOP();
+		_ENEMIES.push(_o._obj());
+		_o._bgmusic();
+	}
+
+	//ボスを倒した場合
+	if (_ENEMIES.every((_v)=>{return !_v.isalive();})) {
+		_ENEMIES = [];
+//		_ENEMIES_SHOTS = [];
+		_DRAW_IS_MATCH_BOSS_MOVEX=true;
+		_DRAW_MATCH_BOSS_CLEAR_COUNT++;
+		_DRAW_MATCH_BOSS_COUNT=0;
+		return;
+	}
+
+	_DRAW_MATCH_BOSS_COUNT++;
+
+	return;
 }
 const _DRAW_PLAYER_COLLAPES=()=>{
 	//クラッシュした瞬間にキーを無効にする
@@ -376,6 +402,12 @@ const _DRAW_GAMESTART=()=>{
 }
 
 const _DRAW_GAMECLEAR=()=>{
+	if (_DRAW_IS_MATCH_BOSS_COUNT > 100) {
+		_DRAW_SCROLL_RESUME();
+	} else {
+		_DRAW_IS_MATCH_BOSS_COUNT++;
+		return;
+	}
 	//クリアしたら敵を全て消す
 	_GAME._setDrawToText({
 		s:'gameclear',
@@ -480,8 +512,13 @@ const _DRAW_RESET_OBJECT=()=>{
 	_MAP_SCROLL_POSITION_X=0;
 	_MAP_SCROLL_POSITION_Y=0;
 
-	_DRAW_IS_MATCH_BOSS=false;
+	_DRAW_IS_MATCH_BOSS = false;
 	_DRAW_IS_MATCH_BOSS_COUNT=0;
+	_DRAW_IS_MATCH_BOSS_MOVEX = false;
+	_DRAW_MATCH_BOSS_CLEAR_COUNT = 0;
+	_DRAW_MATCH_BOSS_COUNT = 0;
+	_DRAW_MATCH_BOSS_MOVEX_COUNT = 0;
+
 }
 
 const _DRAW_INIT_OBJECT=()=>{

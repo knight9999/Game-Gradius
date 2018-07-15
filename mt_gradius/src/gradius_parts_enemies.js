@@ -523,7 +523,10 @@ class ENEMY_c extends GameObject_ENEMY{
 		_this._shot=false;
 		_this._status=1;//ライフステータス
 
-		_this._collision_type='t1';
+		_this._docker_speed = 0;
+
+		_this._collision_type='t3';
+		_this._count=0;//移動切り替えようのカウント
 
 		_this.y=(_p.direct===_DEF_DIR._D)
 			?_p.y-_this.height-_MAP.t
@@ -542,7 +545,7 @@ class ENEMY_c extends GameObject_ENEMY{
 				_this.set_imgPos();
 			},
 			_setX:function(){
-				return _this.x+(_this.speed*2);
+				return _this.x + (_this._docker_speed * 2);
 			}
         },//_st1
 		'_st2':{
@@ -575,15 +578,15 @@ class ENEMY_c extends GameObject_ENEMY{
 
 		//MAP左端では向きを右にきりかえる
 		if(_MAP.isMapBefore(_map_x,_map_y)){
-			_this.speed=Math.abs(_this.speed);
+			_this._docker_speed = Math.abs(_this._docker_speed);
 		}
 		if(_MAP.isMapLastSide(_map_x,_map_y)){
-			_this.speed=_this.speed*-1;
+			_this._docker_speed = _this._docker_speed * -1;
 		}
 		let _s=_MAP.t;
 		//段差処理
 		//左右にどちらかブロックがある
-		_s=(Math.abs(_this.speed)*2);
+		_s = (Math.abs(_this._docker_speed) * 2);
 		let _f=(_MAP.isMapCollision(_map_x+1,_map_y)
 			||_MAP.isMapCollision(_map_x-1,_map_y));
 		_this.y=(function(_t){
@@ -633,19 +636,22 @@ class ENEMY_c extends GameObject_ENEMY{
 		return;
 	}
 	set_speed(){
+		let _this = this;
 		let _p=
 			_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 
-		if(this._c>5000*Math.random()){
-			this._c=0;
-			this.speed=(_p._x<this.x)
-				?this.speed*-1
-				:Math.abs(this.speed);
-		}
+		//向きの切り替タイミング
+		if(_this._count>3000*Math.random()){_this._count=0;}
+		if(_this._count!==0){return;}
+		let _s = (_this._docker_speed > 0) ? (_this.speed-1) * -1 : (_this.speed-1);
+		_this._docker_speed = _s;
+		_this._docker_speed = (_p._x < _this.x)
+			? _this._docker_speed * -1
+			: Math.abs(_this._docker_speed);
 	}
 	isshot() {
 		//ショット確率を少し高めにする。
-		return (Math.random() < _GET_DIF_SHOT_RATE() * 5);
+		return (Math.random() < _GET_DIF_SHOT_RATE() * 4);
 	}
 	shot(){
 		let _this=this;
@@ -663,7 +669,7 @@ class ENEMY_c extends GameObject_ENEMY{
 			new GameObject_ENEMY_SHOT({x:_e._x,y:_e._y,deg:_deg+10}));
 	}
 	moveSet(){
-		let _this=this;		
+		let _this=this;
 		_this.map_collition();
 		_this.set_speed();
 
@@ -673,6 +679,8 @@ class ENEMY_c extends GameObject_ENEMY{
 			:'_st1';
 		_this._ene_status[_this._st]._f();
 		_this.x=_this._ene_status[_this._st]._setX();
+
+		_this._count++;
 	}
 }
 
@@ -808,11 +816,9 @@ class ENEMY_m extends GameObject_ENEMY{
 
 		let _this=this;
 		_this._status=4;
-		_this._collision_type='t1';
+		_this._collision_type='t3';
 		_this.getscore=200;
-		_this._isopen=false;
-		_this._col_c=0;
-		_this._open_count=0;
+		_this._count=0;
 	}
 	shot(){}
 	moveSet(){
@@ -825,42 +831,35 @@ class ENEMY_m extends GameObject_ENEMY{
 			return;
 		}
 
+		_this._count=(_this._count>=300)?0:_this._count+1;
+
+		if(_this.x<300&&_this._count<=100){_this._count=99;return;}
+
 		//残り1つのステータスになった場合、画像を切り替える
 		_this.img=(_this._status<=1)
 			?_CANVAS_IMGS['enemy_m2'].obj
 			:_CANVAS_IMGS['enemy_m1'].obj;
 
-		//閉じてる状態
-		if(!_this._isopen){
-			//開くタイミングを設定
-			if(_this.x>=690&&_this.x<700){_this._isopen=true;}
-			if(_this.x>=380&&_this.x<400){_this._isopen=true;}
+		//ハッチが閉じてる状態
+		if (_this._count < 100||_this>=300) {
 			_this.imgPos[0];
+			_this._c=0;
 			return;
 		}
-
-		//以下は開いてる状態
-		_this._open_count++;
-
 		//ハッチが開く、または閉じるアニメーションのみ
 		//アニメーションカウントを増やす
-		if(_this._open_count>0&&_this._open_count<20
-			||_this._open_count>200&&_this._open_count<220){
-			//ハッチのアニメーションカウントを増やす			
+		if(_this._count%300>100&&_this._count%300<120){
+			_this.imgPos[0,50,100,150];
 			_this.set_imgPos();
 		}
-		//クローズ開始処理
-		if(_this._open_count>200){
-			if(_this._c>=(_this.imgPos.length*_this.aniItv)-1){
-				//アニメーションのポジションが末端に達したらリセット
-				_this._open_count=0;
-				_this._isopen=false;
-				return;
-			}	
+		if(_this._count%300>280&&_this._count%300<300){
+			_this.imgPos[150,100,50,0];
+			_this.set_imgPos();
 		}
+
 		//ザコを吐き出す
-		if(!_this._isopen){return;}
-		if(_this._open_count%_GET_DIF_HATCH_RATE()!==0){return;}
+		if(_this._count%300<120||_this._count%300>=300){return;}
+		if(_this._count%_GET_DIF_HATCH_RATE()!==0){return;}
 		let _cls=new ENEMY_m_group({
 			x:_this.x+12.5,
 			y:_this.y+((_this.direct===_DEF_DIR._U)?15:-10),
@@ -1026,8 +1025,9 @@ class ENEMY_o_small extends GameObject_ENEMY{
 		//MAPの位置を取得
 		let _map_x=_MAP.getMapX(_e._x);
 		let _map_y=_MAP.getMapY(_e._y);
-		if(_MAP.isMapCollision(_map_x,_map_y-1)){
-			_this._status=0;
+		if(_MAP.isMapCollision(_map_x,_map_y)){
+			_this.showCollapes();
+			_this.init();
 		}
 	}
 	shot(){}
@@ -1051,16 +1051,6 @@ class ENEMY_n_small extends ENEMY_o_small{
 		let _this=this;
 		_this.speedY=-0.2;//火山スピード(Y軸)		
 		_this._v=10;//火山の高さ調整
-	}
-	map_collition(){
-		let _this=this;
-		let _e=_this.getEnemyCenterPosition();
-		//MAPの位置を取得
-		let _map_x=_MAP.getMapX(_e._x);
-		let _map_y=_MAP.getMapY(_e._y);
-		if(_MAP.isMapCollision(_map_x,_map_y+1)){
-			_this._status=0;
-		}
 	}
 }
 

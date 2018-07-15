@@ -134,6 +134,7 @@ const _MAP_ENEMIES_BOSS={
 		{
 			_obj:function(){return new ENEMY_BOSS_CRYSTALCORE({x:700,y:800});},
 			_movex: 0,
+			_left: false,
 			_bgmusic: function () {
 				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
 			}
@@ -143,6 +144,7 @@ const _MAP_ENEMIES_BOSS={
 		{
 			_obj:function(){return new ENEMY_BOSS_BIGCORE({x:_CANVAS.width+200,y:200});},
 			_movex: 0,
+			_left: false,
 			_bgmusic: function () {
 				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
 			}
@@ -152,6 +154,7 @@ const _MAP_ENEMIES_BOSS={
 		{
 			_obj:function(){return new ENEMY_BOSS_BIGCORE2({x:_CANVAS.width+200,y:200});},
 			_movex: 0,
+			_left: false,
 			_bgmusic: function () {
 				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
 			}
@@ -170,6 +173,7 @@ const _MAP_ENEMIES_BOSS={
 		{
 			_obj:function(){return new ENEMY_BOSS_CELL({x:_CANVAS.width+200,y:200});},
 			_movex: 0,
+			_left: false,
 			_bgmusic: function () {
 				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
 			}
@@ -179,6 +183,7 @@ const _MAP_ENEMIES_BOSS={
 		{
 			_obj:function(){return new ENEMY_BOSS_MOAI({x:_CANVAS.width+200,y:200});},
 			_movex: 0,
+			_left: false,
 			_bgmusic: function () {
 				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
 			}
@@ -188,6 +193,7 @@ const _MAP_ENEMIES_BOSS={
 		{
 			_obj:function(){return new ENEMY_BOSS_DEATH({x:_CANVAS.width+200,y:200});},
 			_movex:0,
+			_left: false,
 			_bgmusic: function () {
 				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
 			}
@@ -196,17 +202,37 @@ const _MAP_ENEMIES_BOSS={
 	'enemy_cuberush':[
 		{
 			_obj:function(){return new ENEMY_BOSS_CUBERUSH({x:_CANVAS.width+200,y:200})},
-			_movex:50,
+			_movex:300,
+			_left: false,
 			_bgmusic: function () {}
 		},
 		{
 			_obj:function(){return new ENEMY_BOSS_CRYSTALCORE({x:700,y:800});},
 			_movex:0,
+			_left: false,
 			_bgmusic: function () {
 				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
 			}
 		}
-	]
+	],
+	'enemy_aian_death':[
+		{
+			_obj:function(){return new ENEMY_BOSS_AIAN_CONTROL({x:_CANVAS.width,y:200});},
+			_movex:800,
+			_left: true,
+			_bgmusic: function () {
+			}
+		},
+		{
+			_obj:function(){return new ENEMY_BOSS_DEATH({x:_CANVAS.width+200,y:200});},
+			_movex:0,
+			_left: false,
+			_bgmusic: function () {
+				_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_boss']);
+			}
+		}
+	],
+
 };
 
 

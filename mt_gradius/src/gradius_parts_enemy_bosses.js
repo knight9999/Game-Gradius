@@ -28,7 +28,9 @@ class GameObject_ENEMY_BOSS
 			x:_p.x,
 			y:_p.y,
 			width:_p.width,
-			height:_p.height
+			height:_p.height,
+			imgPos:_p.imgPos,
+			aniItv: _p.aniItv,
 		});
 		let _this=this;
 		_this.speed=0;
@@ -43,16 +45,6 @@ class GameObject_ENEMY_BOSS
 
 		//スタンバイ完了後ショット自機を攻撃する準備完了フラグ
 		_this.is_all_set=false;
-	}
-	setAlive() {
-		let _this = this;
-		if (!_this.isalive()) {
-			_PARTS_OTHERS._set_score(_this.getscore);
-			_GAME_AUDIO._setPlay(_this.audio_collision);
-			_this.showCollapes();
-		} else {
-			_GAME_AUDIO._setPlay(_this.audio_alive);
-		}
 	}
 	shot(){}
 	setSelfCollision(){
@@ -917,6 +909,8 @@ class ENEMY_BOSS_CRYSTALCORE
 			];
 			//壁の初期化
 			_this.wall.map((_o)=>{_ENEMIES.push(_o);});
+//		_this.hands_down.map((_o)=>{_ENEMIES.push(_o)});
+
 		}
 		
 		_this._standby = false
@@ -1131,11 +1125,11 @@ class ENEMY_BOSS_CUBERUSH
 		});
 		let _this=this;
 		_this._standby = false;
-		_this._showout_cube=0;
 		_this._standby_count=0;
 		_this._complete_cube_count=0;
 		_this._map_col_reset=false;
 		_this._cube_shot_max=100;
+		_this.parts=[];//キューブクラスのパーツを格納
 
 		_this.is_all_set = true;
 	}
@@ -1145,44 +1139,38 @@ class ENEMY_BOSS_CUBERUSH
 		//スタンバイ状態。
 		//クリスタルを放つ
 		let _this=this;
-		let _as='';
-		let _f=function(){
-			//透明つき画像表示と
-			//全クリスタルのステータスを取得する。
-			let _e=_ENEMIES;
-			for(let _i=0;_i<_e.length;_i++){
-				if(!ENEMY_BOSS_CUBE.prototype.isPrototypeOf(_e[_i])){continue;}
-				_e[_i].alpha=_this.alpha;
-				_as+=(_e[_i]._stop===true)?'1':'0';
-			}
-		}
 
-		_f(_this.alpha);
-//		console.log(_as)
-		if(_as.indexOf('0')!==-1){
-			//0が一つもない（全て停止状態時）
+		if (_this.parts.every((_o)=>{return _o._stop;})) {
+			//0が一つもない（全キューブが停止状態時）
 			//透明をコントロールさせる
-			_this._complete_cube_count=_this._standby_count;
+			_this._complete_cube_count++;
 		}
-		//クリスタルを放つ
+		//最大値になるまで一定間隔でクリスタルを放つ
 		if(_this._standby_count%40===0){
-			if(_this._showout_cube<_this._cube_shot_max){
+			if (_this.parts.length < _this._cube_shot_max) {
 				let _c=new ENEMY_BOSS_CUBE({
 					x:1000,
 					y:(Math.random()*(500-100))+50
 				});
 				_ENEMIES.push(_c);
-				_this._showout_cube++;	
+				_this.parts.push(_c);
 			}
 		}
-		let _c=_this._standby_count
-				-_this._complete_cube_count;
-		if(_c===50){_this.alpha=0.7;}
-		if(_c===100){_this.alpha=0.3;}
-		if(_c===150){_this.alpha=0;}
-		if(_this.alpha===0){
+		//全てのキューブがストップした後の、
+		//全キューブのフェードアウト
+		if(_this._complete_cube_count===0){return;}
+
+		//キューブフェードアウトに透明度を設定する。
+		_this.parts.map((_o)=>{_o.alpha = _this.alpha;})
+
+		if(_this._complete_cube_count===50){_this.alpha=0.7;}
+		if(_this._complete_cube_count===100){_this.alpha=0.3;}
+		if(_this._complete_cube_count===150){
 			_MAP.set_mapdef_col_clear();
-			_this._status=0;
+			_this.alpha=0;
+		}
+		if(_this._complete_cube_count===200){
+			_this._status = 0;
 			return false;
 		}
 		_this._standby_count++;
@@ -2784,7 +2772,8 @@ class ENEMY_BOSS_MOAI
 		for(let _i=0;_i<_ENEMIES.length;_i++){
 			let _o=_ENEMIES[_i];
 			if(ENEMY_BOSS_MOAI.prototype.isPrototypeOf(_o)){continue;}
-			_o._status=0;
+			_o.init();
+			_o.showCollapes();
 		}
 	}
 	set_direct(_dir){
@@ -2907,7 +2896,7 @@ class ENEMY_BOSS_MOAI_MINI
 			height:30
 		});
 		let _this=this;
-		_this._status=5;
+		_this._status=3;
 		_this._radian=0;
 		_this._radius=0;
 		_this._standby=false;
@@ -2980,4 +2969,153 @@ class ENEMY_moai_boss_ring
 
 		_this.set_imgPos();
 	}
+}
+
+
+//====================
+//　ボス アイアンメイデン コア
+//	_x:ボスの初期x位置
+//	_y:ボスの初期y位置
+//====================
+class ENEMY_BOSS_AIAN_CONTROL
+	extends GameObject_ENEMY_BOSS {
+	constructor(_p) {
+		super({
+			img: _CANVAS_IMGS['enemy_boss_aian'].obj,
+			x: _p.x,
+			y: _p.y,
+			width: 100,
+			height: 87,
+			imgPos:[0,100],
+			aniItv: 5
+		});
+		let _this = this;
+		_this._standby = true;
+		_this._status = 1;
+		_this.audio_collision = _CANVAS_AUDIOS['enemy_collision2'];
+		_this._collision_type = 't2';
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER = 0.5;
+		_this.getscore = 100; //倒した時のスコア
+
+		_this.aians_max = 50;//アイアンの最大登場数
+		_this.aians_count = 0;//アイアンの登場カウント
+		_this.aians_clear_count = 0;//アイアン全破壊後のカウント
+
+		_this.parts=[];
+		_this.is_all_set = true;
+
+	}
+	//このパーツは自爆設定はしない
+	setSelfCollision() {}
+	shot() {}
+	move_standby(){
+		let _this = this;
+		if (_this.parts.length === 0){
+			for(let _i=0; _i<_this.aians_max; _i++){
+				let _o = new ENEMY_BOSS_AIAN({
+					x: _CANVAS.width,
+					y: 100
+				});
+				_this.parts.push(_o);
+				_ENEMIES.push(_o);
+			}
+		}
+		_this._standby = false;
+	}
+	moveSet() {
+		let _this = this;
+		//アイアンが全て消えた場合は、自身も自爆する。
+		if(_this.parts.every((_o)=>{return !_o.isalive()})){
+			_this.aians_clear_count++;
+			if (_this.aians_clear_count>200){_this.init();}
+			return;
+		}
+
+		//アイアンの動作をコントロールさせる
+		_this.parts.map((_o)=>{_o.moveSet();});
+
+		//アイアンのスタンバイを段階的に解除させる
+		if (_this._count % 30 !== 0) {return;}
+		if (_this.aians_count >= _this.aians_max) {return;}
+
+		//アイアンに対してスタンバイを解除させる
+		_this.parts[_this.aians_count]._standby = false;
+		_this.aians_count++;
+
+	}
+}
+
+class ENEMY_BOSS_AIAN
+extends GameObject_ENEMY {
+	constructor(_p) {
+		super({
+			img: _CANVAS_IMGS['enemy_boss_aian'].obj,
+			x: _p.x,
+			y: _p.y,
+			width: 75,
+			height: 65,
+			imgPos: [0, 75],
+			aniItv: 5
+		});
+		let _this = this;
+		_this.is_all_set = true;
+		_this._status = 5;
+		_this._collision_type = 't3';
+		_this.getscore = 500; //倒した時のスコア
+
+		_this._move_status = 0;
+		_this._rad=0;
+
+	}
+	shot() {}
+	move_standby(){}
+	isCanvasOut(){
+		//右以外は全て画面から外れる扱いにする。
+		return _GAME.isEnemyCanvasOut(
+			this,{up:true,down:true,left:true,right:false}
+		);
+	}
+	moveSet() {
+		let _this = this;
+
+		_this.x = _MAP.getX(_this.x);
+		_this.y = _MAP.getY(_this.y);
+		if (!_this.isMove()) {
+			return;
+		}
+
+		if(_this.x+_this.width<0){_this.init();}
+		_this.speed = _GET_DIF_ENEMY_SPEED() * 2;
+
+		if (_this._move_status === 0) {
+			if(_this.x<200){_this._move_status=1; return;}
+			_this.x -= _this.speed;
+			_this.y+=(Math.sin(_this._rad)*4);
+			_this._rad+=0.1;
+		}
+
+		if (_this._move_status === 1) {
+			if(_this.y>350){_this._move_status=2; return;}
+			_this.y+=_this.speed;
+		}
+
+		if (_this._move_status === 2) {
+			if(_this.x>750){_this._move_status=3; return;}
+			_this.x+=_this.speed;
+		}
+
+		if (_this._move_status === 3) {
+			let _pc = _PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
+			if(_this.y>_pc._y-100&&_this.y<_pc._y+0){_this._move_status=4; return;}
+			_this.y-=_this.speed;
+		}
+
+		if (_this._move_status === 4) {
+			_this.x-=_this.speed;
+		}
+
+		_this.set_imgPos();
+//		_this._count++;
+	}
+	move(){}//moveは親が管理する
 }

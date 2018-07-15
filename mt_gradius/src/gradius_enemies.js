@@ -21,6 +21,11 @@ const _ENEMY_DEF_ANI_COL={//衝突アニメーション定義
 	'imgPos':[0,30,60,90,120,150,180],
 	'img':_CANVAS_IMGS['enemy_collapes2'].obj
 },//t2
+'t3': {
+	'intv': 5,
+	'imgPos': [0, 50, 100, 150, 200],
+	'img': _CANVAS_IMGS['enemy_collapes3'].obj
+}, //t2
 't8':{
 	'intv':5,
 	'imgPos':[0,90,180,270,360,450,540],	

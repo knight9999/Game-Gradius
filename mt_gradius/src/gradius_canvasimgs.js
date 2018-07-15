@@ -116,12 +116,15 @@ const _CANVAS_IMGS={
 	'enemy_death_shot':{src:'images/gradius_enemy_death_shot.png',rate:1.0,obj:new Image()},
 	'enemy_death_shot2':{src:'images/gradius_enemy_death_shot2.png',rate:1.0,obj:new Image()},
 
+	'enemy_boss_aian':{src:'images/gradius_enemy_boss_aian.png',rate:1.0,obj:new Image()},
+
 	//===================================
 	//以下は敵の衝突用画像
 	//===================================
 	'enemy_collapes0':{src:'images/gradius_enemy_collapes0.png',rate:1.0,obj:new Image()},
 	'enemy_collapes1':{src:'images/gradius_enemy_collapes1.png',rate:1.0,obj:new Image()},
 	'enemy_collapes2':{src:'images/gradius_enemy_collapes2.png',rate:1.0,obj:new Image()},
+	'enemy_collapes3':{src:'images/gradius_enemy_collapes3.png',rate:1.0,obj:new Image()},
 	'enemy_collapes8':{src:'images/gradius_enemy_collapes8.png',rate:1.0,obj:new Image()},
 	'enemy_collapes9':{src:'images/gradius_enemy_collapes9.png',rate:1.0,obj:new Image()},
 

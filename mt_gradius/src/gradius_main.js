@@ -174,22 +174,16 @@ const _DRAW=()=>{
 	_DRAW_SETINTERVAL=window.requestAnimationFrame(_loop);
 }
 
-let _DRAW_IS_MATCH_BOSS = false;
+let _DRAW_IS_MATCH_BOSS_SET = false;
 let _DRAW_IS_MATCH_BOSS_COUNT = 0;
 let _DRAW_IS_MATCH_BOSS_MOVEX = false;
-let _DRAW_MATCH_BOSS_CLEAR_COUNT = 0;
-let _DRAW_MATCH_BOSS_COUNT = 0;
+let _DRAW_MATCH_BOSS_CLEAR_COUNT = 0;//クリアしたカウント
+let _DRAW_MATCH_BOSS_COUNT = 0;//対戦中のカウント
 let _DRAW_MATCH_BOSS_MOVEX_COUNT = 0;//移動カウント
+let _DRAW_MATCH_BOSS_OBJ = new Object();//オブジェクト
 const _DRAW_MATCH_BOSS=()=>{
 	//一定距離を達するまでボスを登場させない
 	if (!_MAP.isboss) {return;}
-
-	if (!_DRAW_IS_MATCH_BOSS){
-		//初期処理
-		_ENEMIES=[];
-		_ENEMIES_SHOTS=[];
-		_DRAW_IS_MATCH_BOSS=true;
-	}
 
 	//全てのボスを倒したらゲームクリア
 	if (_MAP.isMapGameClear()) {
@@ -201,6 +195,25 @@ const _DRAW_MATCH_BOSS=()=>{
 		_DRAW_GAMECLEAR();
 		return;
 	}
+
+	//ボス登場時のセット
+	if (!_DRAW_IS_MATCH_BOSS_SET){
+		_DRAW_IS_MATCH_BOSS_SET = true;
+		//初期処理
+		let _o = _MAP.get_ememies_boss()[_DRAW_MATCH_BOSS_CLEAR_COUNT];
+		if(!_o._left){
+			//既存の敵を残さない場合は、
+			//敵・敵ショットのオブジェクトを全てリセットする。
+			_ENEMIES = [];
+			_ENEMIES_SHOTS = [];
+		}
+		//スクロールを止める
+		_DRAW_SCROLL_STOP();
+		_DRAW_MATCH_BOSS_OBJ = _MAP.get_ememies_boss()[_DRAW_MATCH_BOSS_CLEAR_COUNT]._obj();
+		_ENEMIES.push(_DRAW_MATCH_BOSS_OBJ);
+		_o._bgmusic();
+	}
+
 	_MAP.setBackGroundSpeedY(0);
 	_MAP.setInifinite(false);
 
@@ -211,32 +224,22 @@ const _DRAW_MATCH_BOSS=()=>{
 			_DRAW_SCROLL_RESUME();
 		}
 		
-		_DRAW_MATCH_BOSS_MOVEX_COUNT++;
-
 		//所定のスクロール量に達した場合
 		//スクロールを止める
 		let _o = _MAP.get_ememies_boss()[_DRAW_MATCH_BOSS_CLEAR_COUNT - 1];
 		if (_o._movex <= _DRAW_MATCH_BOSS_MOVEX_COUNT) {
 			_DRAW_MATCH_BOSS_MOVEX_COUNT = 0;
 			_DRAW_IS_MATCH_BOSS_MOVEX = false;
+			_DRAW_IS_MATCH_BOSS_SET = false;
+			return;
 		}
+		_DRAW_MATCH_BOSS_MOVEX_COUNT++;
 		return;
 	}
 
-	//以下はボス戦描画処理
-	//ボス登場時の初期設定
-	if (_DRAW_MATCH_BOSS_COUNT === 0) {
-		_ENEMIES = [];
-		let _o = _MAP.get_ememies_boss()[_DRAW_MATCH_BOSS_CLEAR_COUNT];
-		_DRAW_SCROLL_STOP();
-		_ENEMIES.push(_o._obj());
-		_o._bgmusic();
-	}
-
 	//ボスを倒した場合
-	if (_ENEMIES.every((_v)=>{return !_v.isalive();})) {
-		_ENEMIES = [];
-//		_ENEMIES_SHOTS = [];
+	if (!_DRAW_MATCH_BOSS_OBJ.isalive()) {
+//		_ENEMIES = [];
 		_DRAW_IS_MATCH_BOSS_MOVEX=true;
 		_DRAW_MATCH_BOSS_CLEAR_COUNT++;
 		_DRAW_MATCH_BOSS_COUNT=0;
@@ -512,12 +515,13 @@ const _DRAW_RESET_OBJECT=()=>{
 	_MAP_SCROLL_POSITION_X=0;
 	_MAP_SCROLL_POSITION_Y=0;
 
-	_DRAW_IS_MATCH_BOSS = false;
+	_DRAW_IS_MATCH_BOSS_SET = false;
 	_DRAW_IS_MATCH_BOSS_COUNT=0;
 	_DRAW_IS_MATCH_BOSS_MOVEX = false;
 	_DRAW_MATCH_BOSS_CLEAR_COUNT = 0;
 	_DRAW_MATCH_BOSS_COUNT = 0;
 	_DRAW_MATCH_BOSS_MOVEX_COUNT = 0;
+	_DRAW_MATCH_BOSS_OBJ = new Object();
 
 }
 

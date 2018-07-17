@@ -951,7 +951,7 @@ class ENEMY_n extends GameObject_ENEMY{
 	isCanvasOut(){
 		//特定位置で火山を止める
 		let _this=this;
-		if(_this.x<200){return true;}
+		if(_this.x<400){return true;}
 		return false;
 	}		
 	isalive(){

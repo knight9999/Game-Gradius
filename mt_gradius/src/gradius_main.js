@@ -209,7 +209,7 @@ const _DRAW_MATCH_BOSS=()=>{
 		}
 		//スクロールを止める
 		_DRAW_SCROLL_STOP();
-		_DRAW_MATCH_BOSS_OBJ = _MAP.get_ememies_boss()[_DRAW_MATCH_BOSS_CLEAR_COUNT]._obj();
+		_DRAW_MATCH_BOSS_OBJ = _o._obj();
 		_ENEMIES.push(_DRAW_MATCH_BOSS_OBJ);
 		_o._bgmusic();
 	}
@@ -646,7 +646,6 @@ const _DRAW_OPENING=()=>{
 //	JAVASCRIPT START
 //===================================================
 window.addEventListener('load',()=>{
-	_CANVAS=document.getElementById('game');
 	_CONTEXT=_CANVAS.getContext('2d');
 	_GAME_AUDIO._init();
 
@@ -668,6 +667,10 @@ window.addEventListener('load',()=>{
 
 		_MAP = new GameObject_MAP();
 		_MAP.init();
+		//マップ用テーマ設定
+		_MAP.init_map_theme(_d.map.theme);
+		//マップ用ボス定義設定
+		_MAP.init_map_enemies_boss(_d.map.enemies_boss);
 	})
 	.then(() => {	
 		//オーディオ読み込み	
@@ -711,6 +714,9 @@ window.addEventListener('load',()=>{
 		//スタート画面表示
 		_KEYEVENT_MASTER.addKeydownStart();
 		_DRAW_OPENING();
+	}).catch(()=>{
+		console.log('json:error');
+		alert('エラーが発生しました。もう一度このアプリ再起動をお願いします。\nブラウザでキャッシュクリアの必要性があります');
 	});
 
 });

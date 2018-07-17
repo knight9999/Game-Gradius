@@ -1190,6 +1190,7 @@ class ENEMY_p extends GameObject_ENEMY{
 				y: _cp._y+_obj.y
 			}));
 		}
+		_GAME_AUDIO._setPlay(_this.audio_collision);
 	}
 	shot(){}
 	moveSet(){
@@ -1239,7 +1240,7 @@ class ENEMY_p_small extends ENEMY_p {
 		if(_this.isalive()){return;}
 		_PARTS_OTHERS._set_score(_this.getscore);
 		_this.showCollapes();
-		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_collision5']);
+		_GAME_AUDIO._setPlay(_this.audio_collision);
 	}
 	showCollapes(_x, _y) {
 		let _this = this;

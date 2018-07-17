@@ -260,7 +260,7 @@ const _DEF_MAP_ENEMIES = {
 		'_st': ''
 	},
 	'ENEMY_p': {
-		_obj:function(_x,_y,_d){return new ENEMY_p({x:_x,y:_y,direct:_d});},
+		_obj:function(_x,_y,_d){return new ENEMY_p({x:_x,y:_y,direct:_DEF_DIR._D});},
 		'_st': ''
 	},
 	'ENEMY_FAN': {

@@ -1478,7 +1478,7 @@ class ENEMY_BOSS_FRAME
 				//直前の位置と現在の位置が一致する場合は、処理をしない。
 				if(_p===this._pos){
 					this._pos_same_count++;
-					if(this._pos_same_count<100){return;}
+					if(this._pos_same_count<70){return;}
 					
 					let _mpt=(function(_t){
 						if(_t._pos===5){return (Math.random()>0.4)?2:1;}
@@ -1785,10 +1785,10 @@ class ENEMY_BOSS_FRAME
 			if(_this.isAllPartsCanvasOut()){
 				//出現位置の定義
 				const _pos=[
-					{x:_CANVAS.width/2,y:-100,deg:90},//上から
-					{x:_CANVAS.width/2,y:_CANVAS.height+100,deg:270},//下から
-					{x:-150,y:_CANVAS.height/2,deg:0},//左から
-					{x:_CANVAS.width+150,y:_CANVAS.height/2,deg:180}//右から
+					{x:_CANVAS.width/2,y:-30,deg:90},//上から
+					{x:_CANVAS.width/2,y:_CANVAS.height-30,deg:270},//下から
+					{x:-30,y:_CANVAS.height/2,deg:0},//左から
+					{x:_CANVAS.width-30,y:_CANVAS.height/2,deg:180}//右から
 				];
 				const _elem=parseInt(Math.random()*4);
 				_this.x=_pos[_elem].x;
@@ -1824,6 +1824,8 @@ class ENEMY_BOSS_FRAME
 			//180度加算による転回をさせる
 			_this.parts=_this.parts.map((_a)=>{_a._deg=(_a._deg+180)%360;return _a;});
 			_this.moves=_this.moves.map((_a)=>{_a.deg=(_a.deg+180)%360;return _a;});
+
+			_this.parts.pop();//末尾の要素（先頭の頭要素）を削除する
 
 			//自身の座標、角度を調整。
 			_this.x=_this.moves[0].x;

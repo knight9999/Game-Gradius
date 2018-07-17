@@ -201,7 +201,7 @@ _setInitMap:function(_m){
 				_s+='</div>';
 			}else if(_k.match(_MAP.collision_map)!==null){
 				//マップの表示
-				let _o=_MAP_THEME[_m._theme]._map[_k]._getObj();
+				let _o=_MAP_THEME[_m._theme]._map[_k]._getObj({});
 				_s='<div class="parts_block" '
 						+'data-width="' + parseInt(_o.width * 0.8) + '" '
 						+'data-height="' + parseInt(_o.height * 0.8) + '" '
@@ -262,7 +262,7 @@ _setInitPartsBlocksWrapper:function(_m){
 	//MAP
 	_str='';
 	for(let [_k,_v] of Object.entries(_MAP_THEME[_m._theme]._map)){
-		let _o=_v._getObj();
+		let _o=_v._getObj({});
 //		475:100=100:x
 //		x=100*h/w
 		let _w = (_o.width > _o.height) ? 100 : parseInt(100 * _o.width / _o.height);
@@ -729,7 +729,7 @@ _f_as_drop:function(e){
 		}
 		if(_o.match(_MAP.collision_map)!==null){
 			//MAPの表示
-			let _obj=_MAP_THEME[_GAME_STAGEEDIT._theme]._map[_o]._getObj();
+			let _obj=_MAP_THEME[_GAME_STAGEEDIT._theme]._map[_o]._getObj({});
 			$_cn.setAttribute('style',
 				'width:'+parseInt(_obj.width*0.8)+'px;'+
 				'height:'+parseInt(_obj.height*0.8)+'px;'+
@@ -841,6 +841,11 @@ window.addEventListener('load',()=>{
 	.then((_d)=>{
 		//設定情報取得した値を各オブジェクトにセット
 		_DEF_DIFFICULT = _d.common.difficult;
+		//マップ用テーマ設定
+		_MAP.init_map_theme(_d.map.theme);
+		//マップ用ボス定義設定
+		_MAP.init_map_enemies_boss(_d.map.enemies_boss);
+
 		return _GAME_AUDIO._init_audios(_CANVAS_AUDIOS,()=>{})
 	}).then(()=>{
 		return _GAME_IMG._init_imgs(_CANVAS_IMGS);

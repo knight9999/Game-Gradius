@@ -13,7 +13,7 @@ const _ISSP=(window.ontouchstart===null)?true:false;
 
 const _FPS=60;
 
-let _CANVAS;	//キャンバス
+const _CANVAS = document.getElementById('game')||{width:1000,height:500}; //キャンバス
 let _CONTEXT;
 
 let _ENEMIES=new Array();

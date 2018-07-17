@@ -1,15 +1,206 @@
 {
+    "map":{
+        "theme":{
+            "_THEME1":{
+                "map":{
+                    "A": "MAP_CRISTAL",
+                    "B": "MAP_CRISTAL_UP",
+                    "C": "MAP_CRISTAL_DOWN"
+                },
+                "enemies":{
+                    "a": "ENEMY_a","b": "ENEMY_b","c": "ENEMY_c",
+                    "d": "ENEMY_d","e": "ENEMY_e","f": "ENEMY_f",
+                    "g": "ENEMY_g","m": "ENEMY_m","n": "ENEMY_n",
+                    "o": "ENEMY_o","p": "ENEMY_p","z": "ENEMY_FAN"
+                }
+            },
+            "_THEME2":{
+                "map":{
+                    "A": "MAP_VOLCANO_A",
+                    "B": "MAP_VOLCANO_B",
+                    "C": "MAP_VOLCANO_C",
+                    "D": "MAP_VOLCANO_D",
+                    "F": "MAP_VOLCANO_F",
+                    "G": "MAP_VOLCANO_G",
+                    "H": "MAP_VOLCANO_H",
+                    "I": "MAP_VOLCANO_I",
+                    "J": "MAP_VOLCANO_J",
+                    "K": "MAP_VOLCANO_K",
+                    "L": "MAP_VOLCANO_L",
+                    "M": "MAP_VOLCANO_M",
+                    "N": "MAP_VOLCANO_N",
+                    "O": "MAP_VOLCANO_O",
+                    "P": "MAP_VOLCANO_P"
+               },
+                "enemies":{
+                    "a": "ENEMY_a","b": "ENEMY_b","c": "ENEMY_c",
+                    "d": "ENEMY_d","e": "ENEMY_e","f": "ENEMY_f",
+                    "g": "ENEMY_g","m": "ENEMY_m","n": "ENEMY_n",
+                    "o": "ENEMY_o","p": "ENEMY_p","z": "ENEMY_FAN"
+                }
+            },
+            "_THEME3":{
+                "map":{
+                    "A": "MAP_CUBE_A"
+                },
+                "enemies":{
+                    "a": "ENEMY_a","b": "ENEMY_b","c": "ENEMY_c",
+                    "d": "ENEMY_d","e": "ENEMY_e","f": "ENEMY_f",
+                    "g": "ENEMY_g","m": "ENEMY_m","n": "ENEMY_n",
+                    "o": "ENEMY_o","p": "ENEMY_p","z": "ENEMY_FAN"
+                }
+            },
+            "_THEME5":{
+                "map":{
+                    "B": "MAP_MOAI_A",
+                    "C": "MAP_MOAI_B"
+                },
+                "enemies":{
+                    "a": "ENEMY_a","b": "ENEMY_b","c": "ENEMY_c",
+                    "d": "ENEMY_d","e": "ENEMY_e","f": "ENEMY_f",
+                    "g": "ENEMY_g","m": "ENEMY_m","l": "ENEMY_MOAI_Q_U",
+                    "n": "ENEMY_MOAI_Q_D","o": "ENEMY_MOAI_R_U","p": "ENEMY_MOAI_R_D",
+                    "q": "ENEMY_MOAI_Q_LD","r": "ENEMY_MOAI_Q_LU","z": "ENEMY_FAN"
+                }
+            },
+            "_THEME6":{
+                "map":{
+                    "A": "MAP_FRAME_A",
+                    "B": "MAP_FRAME_B",
+                    "C": "MAP_FRAME_C",
+                    "D": "MAP_FRAME_D",
+                    "E": "MAP_FRAME_E",
+                    "F": "MAP_FRAME_F"
+                },
+                "enemies":{
+                    "a": "ENEMY_FRAME_1","d": "ENEMY_d","e": "ENEMY_e",
+                    "z": "ENEMY_FAN"
+                }
+            },
+            "_THEME7":{
+                "map":{
+                    "A": "MAP_CELL_A",
+                    "B": "MAP_CELL_B",
+                    "C": "MAP_CELL_C",
+                    "D": "MAP_CELL_D",
+                    "G": "MAP_CELL_G",
+                    "H": "MAP_CELL_H",
+                    "I": "MAP_CELL_I",
+                    "J": "MAP_CELL_J",
+                    "K": "MAP_CELL_K",
+                    "L": "MAP_CELL_L",
+                    "M": "MAP_CELL_M",
+                    "N": "MAP_CELL_N",
+                    "O": "MAP_CELL_O",
+                    "V": "MAP_CELL_V",
+                    "W": "MAP_CELL_W",
+                    "Y": "MAP_CELL_Y",
+                    "Z": "MAP_CELL_Z"
+                },
+                "enemies":{
+                    "a": "ENEMY_CELL_CORE", "b": "ENEMY_CELL_A", "c": "ENEMY_CELL_B",
+                    "d": "ENEMY_d", "e": "ENEMY_e", "z": "ENEMY_FAN"
+                }
+            }
+        },
+        "enemies_boss":{
+            "enemy_cristalcore":[
+                {
+                    "obj": {"img":"enemy_cristalcore","x":700,"y":800},
+                    "movex": 0,
+                    "left":false,
+                    "bgmusic": "bg_boss"
+                }
+            ],
+            "enemy_bigcore": [
+                {
+                    "obj": {"img":"enemy_bigcore"},
+                    "movex": 0,
+                    "left": false,
+                    "bgmusic": "bg_boss"
+                }
+            ],
+            "enemy_bigcore2": [
+                {
+                    "obj": {"img":"enemy_bigcore2"},
+                    "movex": 0,
+                    "left": false,
+                    "bgmusic": "bg_boss"
+                }
+            ],
+            "enemy_frame": [
+                {
+                    "obj": {"img":"enemy_frame"},
+                    "movex": 0,
+                    "left": false,
+                    "bgmusic": "bg_boss"
+                }
+            ],
+            "enemy_cell": [
+                {
+                    "obj": {"img":"enemy_cell"},
+                    "movex": 0,
+                    "left": false,
+                    "bgmusic": "bg_boss"
+                }
+            ],
+            "enemy_moai": [
+                {
+                    "obj": {"img":"enemy_moai","x":1000,"y":200},
+                    "movex": 0,
+                    "left": false,
+                    "bgmusic": "bg_boss"
+                }
+            ],
+            "enemy_death": [
+                {
+                    "obj": {"img":"enemy_death"},
+                    "movex": 0,
+                    "left": false,
+                    "bgmusic": "bg_boss"
+                }
+            ],
+            "enemy_cuberush": [
+                {
+                    "obj": {"img":"enemy_cube"},
+                    "movex":300,
+                    "left": false,
+                    "bgmusic": null
+                },
+                {
+                    "obj": {"img":"enemy_cristalcore","x":700,"y":800},
+                    "movex":0,
+                    "left": false,
+                    "bgmusic": "bg_boss"
+                }
+            ],
+            "enemy_aian_death":[
+                {
+                    "obj": {"img":"enemy_aian"},
+                    "movex":800,
+                    "left": true,
+                    "bgmusic":null
+                },
+                {
+                    "obj": {"img":"enemy_death"},
+                    "movex": 0,
+                    "left": false,
+                    "bgmusic": "bg_boss"
+                }
+            ]
+        }
+    },
     "controller_event":{
-        "sp_controller_main_dist_within": "8"
+        "sp_controller_main_dist_within": 8
     },
     "common":{
         "difficult":[
-            {"_shot_rate":"0.0001","_shot_speed":"2","_enemy_speed":"2","_MOAI_RING_INT":"50","_hache_rate":"30","_volcano_rate":"0.02"},
-            {"_shot_rate":"0.0005","_shot_speed":"2","_enemy_speed":"2","_MOAI_RING_INT":"30","_hache_rate":"25","_volcano_rate":"0.1"},
-            {"_shot_rate":"0.002","_shot_speed":"3","_enemy_speed":"2","_MOAI_RING_INT":"15","_hache_rate":"15","_volcano_rate":"0.1"},
-            {"_shot_rate":"0.005","_shot_speed":"3","_enemy_speed":"2","_MOAI_RING_INT":"8","_hache_rate":"15","_volcano_rate":"0.15"},
-            {"_shot_rate":"0.01","_shot_speed":"4","_enemy_speed":"2","_MOAI_RING_INT":"8","_hache_rate":"15","_volcano_rate":"0.15"},
-            {"_shot_rate":"0.01","_shot_speed":"4","_enemy_speed":"3","_MOAI_RING_INT":"8","_hache_rate":"15","_volcano_rate":"0.15"}
+            {"_shot_rate":0.0001,"_shot_speed":2,"_enemy_speed":2,"_MOAI_RING_INT":50,"_hache_rate":30,"_volcano_rate":0.02},
+            {"_shot_rate":0.0005,"_shot_speed":2,"_enemy_speed":2,"_MOAI_RING_INT":30,"_hache_rate":25,"_volcano_rate":0.1},
+            {"_shot_rate":0.002,"_shot_speed":3,"_enemy_speed":2,"_MOAI_RING_INT":15,"_hache_rate":15,"_volcano_rate":0.1},
+            {"_shot_rate":0.005,"_shot_speed":3,"_enemy_speed":2,"_MOAI_RING_INT":8,"_hache_rate":15,"_volcano_rate":0.15},
+            {"_shot_rate":0.01,"_shot_speed":4,"_enemy_speed":2,"_MOAI_RING_INT":8,"_hache_rate":15,"_volcano_rate":0.15},
+            {"_shot_rate":0.01,"_shot_speed":4,"_enemy_speed":3,"_MOAI_RING_INT":8,"_hache_rate":15,"_volcano_rate":0.15}
         ]
     }
 }

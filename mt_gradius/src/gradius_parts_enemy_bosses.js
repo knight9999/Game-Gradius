@@ -27,8 +27,8 @@ class GameObject_ENEMY_BOSS
 			img:_p.img,
 			x:_p.x,
 			y:_p.y,
-			width:_p.width,
-			height:_p.height,
+			width:_p.width||_p.img.width,
+			height:_p.height||_p.img.height,
 			imgPos:_p.imgPos,
 			aniItv: _p.aniItv,
 		});
@@ -909,7 +909,7 @@ class ENEMY_BOSS_CRYSTALCORE
 			];
 			//壁の初期化
 			_this.wall.map((_o)=>{_ENEMIES.push(_o);});
-//		_this.hands_down.map((_o)=>{_ENEMIES.push(_o)});
+		_this.hands_down.map((_o)=>{_ENEMIES.push(_o)});
 
 		}
 		
@@ -1115,7 +1115,7 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 //	_x:ボスの初期x位置
 //	_y:ボスの初期y位置
 //====================
-class ENEMY_BOSS_CUBERUSH
+class ENEMY_BOSS_CUBE_CONTROL
 			extends GameObject_ENEMY_BOSS {
 		constructor(_p){
 		super({

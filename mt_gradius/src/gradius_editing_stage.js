@@ -420,7 +420,7 @@ setDataForDataApi:function(){
 	})(_MAPDEFS[_MAP_PETTERN]);
 
 	let _ed={
-		'title':document.querySelector('#title input[name="title"]').value,
+		'label':document.querySelector('#title input[name="title"]').value,
 		'status':'Publish',
 		'_eid':_MAPDEFS[_MAP_PETTERN]._eid,
 		'data':[{data:_d,id:18}]

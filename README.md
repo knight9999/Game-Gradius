@@ -109,9 +109,16 @@ https://ja.wikipedia.org/wiki/%E3%82%B0%E3%83%A9%E3%83%87%E3%82%A3%E3%82%A6%E3%8
 </ol>
   
 ## Getting Started
-ソースダウンロード後、/dist/gradius.htmlでゲームできます。  
-Access URL (e.x below)  
-http://hosts/dist/gradius.html  
+<p>
+<s>ソースダウンロード後、/dist/gradius.htmlでゲームできます。<br/>
+Access URL (e.x below)<br/>
+http://hosts/dist/gradius.html</s></p>
+
+<p>
+プロジェクトフォルダより、以下のコマンドでゲームできます。<br/>
+npm run watch<br/>
+※BrowserSync（<a href="https://www.browsersync.io" target="_blank">https://www.browsersync.io</a>）を使ってます。
+</p>
   
 <img src="https://user-images.githubusercontent.com/12569855/40169493-144017ea-5a01-11e8-9b75-7b00ca869b53.png">
 

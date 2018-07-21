@@ -1,24 +1,18 @@
 {
   "name": "mt_gradius",
   "version": "1.0.0",
-  "description": "Gradius. You have to need packages, uglifyjs, uglifyes, uglifycss, html-dist",
+  "description": "Gradius no pakuri",
   "scripts": {
-    "build": "node ./conf/imagemin.js && npm run build:js && npm run build:css && npm run build:css && npm run build:html && cp ./src/audios/* ./dist/audios && cp ./src/gradius_map.json ./dist && cp ./src/gradius_config.json ./dist",
-    "build:edit": "npm run build:js_edit && npm run build:css_edit && npm run build:html_edit",
-    "build:all": "npm run build && npm run build:edit",
-    "build:js": "uglifyjs ./src/gradius_canvasimgs.js ./src/gradius_common.js ./src/gradius_parts_enemies.js ./src/gradius_parts_enemy_bosses.js ./src/gradius_parts_enemy_shot.js ./src/gradius_parts_map.js ./src/gradius_parts_others.js ./src/gradius_parts_playermain.js ./src/gradius_enemies.js ./src/gradius_map.js ./src/gradius_controller_event.js ./src/gradius_main.js -c -m toplevel -o ./dist/gradius_main.min.js",
-    "build:css": "uglifycss ./src/gradius_main.css > ./dist/gradius_main.min.css",
-    "build:html": "html-dist --config ./conf/html-dist.js --input ./src/gradius.html > ./dist/gradius.html --jsFile gradius_main.min.js --cssFile gradius_main.min.css",
-    "build:js_edit": "uglifyjs ./src/gradius_canvasimgs.js ./src/gradius_common.js ./src/gradius_parts_enemies.js ./src/gradius_parts_map.js ./src/gradius_map.js ./src/gradius_editing_stage.js -o ./dist/gradius_editing_stage.min.js -c -m",
-    "build:css_edit": "uglifycss ./src/gradius_editing_stage.css > ./dist/gradius_editing_stage.min.css",
-    "build:html_edit": "html-dist --config ./conf/html-dist.js --input ./src/gradius_editing_stage.html > ./dist/gradius_editing_stage.html --jsFile gradius_editing_stage.min.js --cssFile gradius_editing_stage.min.css",
-    "clean": "rm -rf ./dist/*.js ./dist/*.css ./dist/images/* ./dist/audios/* ./dist/*.html"
+    "watch": "node ./conf/browser-sync.js",
+    "watch:src": "node ./conf/browser-sync-src.js"
   },
   "author": "Takahashi Masaya",
   "license": "ISC",
   "devDependencies": {},
   "dependencies": {
-    "html-dist": "^0.3.2",
+    "browser-sync": "^2.24.5",
+    "cheerio": "^1.0.0-rc.2",
+    "fs-extra": "^7.0.0",
     "imagemin": "^5.3.1",
     "imagemin-pngquant": "^5.1.0",
     "uglify-es": "^3.3.9",

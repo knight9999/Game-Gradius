@@ -141,7 +141,9 @@ const _CANVAS_IMGS={
 	//===================================
  	//cubeステージ用
 	'map_cube_A':{src:'images/gradius_map_cube_A.png',rate:1,obj:new Image()},
+	'map_cube_B':{src:'images/gradius_map_cube_B.png',rate:1,obj:new Image()},
 	//クリスタルステージ用
+	'map_cube_A':{src:'images/gradius_map_cube_A.png',rate:1,obj:new Image()},
 	'map_cristal_up': {
 		src: 'images/gradius_map_cristal_up.png',
 		rate: 1.00,

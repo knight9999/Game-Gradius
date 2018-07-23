@@ -101,9 +101,8 @@ const _PARTS_OTHERS = {
 			}
 			if(_pwc.type==='blue'){
 				//CANVAS内の敵を外す
-				var _ar=_ENEMIES.concat();
-				for(let _i=0;_i<_ar.length;_i++){
-					let _e=_ar[_i];
+				for (let _i = 0; _i < _ENEMIES.length; _i++) {
+					let _e = _ENEMIES[_i];
 					if(_GAME.isEnemyCanvasOut(_e)){continue;}
 					if(_e.isStandBy()){continue;}
 					if(!_e.isAbleCollision()){continue;}
@@ -115,14 +114,12 @@ const _PARTS_OTHERS = {
 					}
 				}
 				//CANVAS内の敵のショットを全て外す
-				_ar=_ENEMIES_SHOTS.concat();
-				for(let _i=0;_i<_ar.length;_i++){
-					let _es=_ar[_i];
+				for (let _i = 0; _i < _ENEMIES_SHOTS.length; _i++) {
+					let _es = _ENEMIES_SHOTS[_i];
 					if(_GAME.isEnemyCanvasOut(_es)){continue;}
 					_es.init();
 				}
 				_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_all_out']);
-				continue;
 			}
 		}
 	}

@@ -93,6 +93,11 @@ const _DRAW=()=>{
 		//※モアイ破壊後のMAP衝突がうまく調整できなくなる
 		//MAP位置設定
 		if(_PARTS_PLAYERMAIN._players_obj.isalive()){_MAP.move();}
+
+		//パワーカプセル設定
+		_PARTS_OTHERS._optimized_powercapsell();
+		_PARTS_OTHERS._set_powercapsell();
+
 		//敵を表示
 		for(let _i=0;_i<_ENEMIES.length;_i++){
 			if(_ENEMIES[_i]===undefined){continue;}
@@ -104,11 +109,7 @@ const _DRAW=()=>{
  
 //		console.log('t')
 		//パワーカプセルを表示
-		_PARTS_OTHERS._optimized_powercapsell();
-		_PARTS_OTHERS._set_powercapsell();
-		if(_PARTS_PLAYERMAIN._players_obj.isalive()){
-			_PARTS_OTHERS._move_powercapsell();
-		}
+		if (_PARTS_PLAYERMAIN._players_obj.isalive()) {_PARTS_OTHERS._move_powercapsell();}
 		_PARTS_OTHERS._draw_powercapsell();
 
 

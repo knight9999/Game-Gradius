@@ -909,8 +909,6 @@ class ENEMY_BOSS_CRYSTALCORE
 			];
 			//壁の初期化
 			_this.wall.map((_o)=>{_ENEMIES.push(_o);});
-		_this.hands_down.map((_o)=>{_ENEMIES.push(_o)});
-
 		}
 		
 		_this._standby = false
@@ -1129,6 +1127,7 @@ class ENEMY_BOSS_CUBE_CONTROL
 		_this._complete_cube_count=0;
 		_this._map_col_reset=false;
 		_this._cube_shot_max=100;
+		_this._cube_count=0;
 		_this.parts=[];//キューブクラスのパーツを格納
 
 		_this.is_all_set = true;
@@ -1140,22 +1139,26 @@ class ENEMY_BOSS_CUBE_CONTROL
 		//クリスタルを放つ
 		let _this=this;
 
-		if (_this.parts.every((_o)=>{return _o._stop;})) {
+		if (_this._cube_count >= _this._cube_shot_max
+			&& _this.parts.every((_o)=>{return _o._stop;})) {
 			//0が一つもない（全キューブが停止状態時）
 			//透明をコントロールさせる
 			_this._complete_cube_count++;
 		}
 		//最大値になるまで一定間隔でクリスタルを放つ
 		if(_this._standby_count%40===0){
-			if (_this.parts.length < _this._cube_shot_max) {
+			if (_this._cube_count < _this._cube_shot_max) {
 				let _c=new ENEMY_BOSS_CUBE({
-					x:1000,
-					y:(Math.random()*(500-100))+50
+					x:_CANVAS.width-10,
+					y:(Math.random()*(430-50))+50
 				});
 				_ENEMIES.push(_c);
 				_this.parts.push(_c);
+				_this._cube_count++;
 			}
 		}
+		_this._standby_count++;
+
 		//全てのキューブがストップした後の、
 		//全キューブのフェードアウト
 		if(_this._complete_cube_count===0){return;}
@@ -1173,8 +1176,6 @@ class ENEMY_BOSS_CUBE_CONTROL
 			_this._status = 0;
 			return false;
 		}
-		_this._standby_count++;
-		return true;
 	}
 }
 
@@ -1210,7 +1211,7 @@ class ENEMY_BOSS_CUBE
 		_this.sx=0;//単位x
 		_this.sy=0;//単位y
 
-		_this.shotColMap = ["10,10,"+parseInt(_this.width-10)+","+parseInt(_this.height-10)];
+		_this.shotColMap = ["15,15,"+parseInt(_this.width-15)+","+parseInt(_this.height-15)];
 	}
 	isCanvasOut(){
 		return _GAME.isEnemyCanvasOut(
@@ -1251,9 +1252,9 @@ class ENEMY_BOSS_CUBE
 
 			//キューブ同士の衝突判定
 			let _r=_GAME.isSqCollision(
-				'12,12,38,38',
+				'10,10,40,40',
 				_this.x+','+_this.y,
-				['12,12,38,38'],
+				['10,10,40,40'],
 				_eb[_i].x+','+_eb[_i].y
 			);
 			if(_r!==_IS_SQ_NOTCOL){return true;}
@@ -1267,13 +1268,13 @@ class ENEMY_BOSS_CUBE
 		//衝突判定
 		if(_this.x<0
 			||_this.y<0
-			||_this.y+50>_CANVAS.height
+			||_this.y+_this.height>_CANVAS.height
 			||_this.move_bounds()){
 			let _ec=_this.getEnemyCenterPosition();
 			//衝突マップに反映させる
 			_MAP.set_mapdef_col(
-				_MAP.getMapX(_ec._x),
-				_MAP.getMapY(_ec._y),
+				_MAP.getMapX(_this.x+20),
+				_MAP.getMapY(_this.y+20),
 				'11,11'
 			);	
 			_this._status=0;
@@ -1289,17 +1290,16 @@ class ENEMY_BOSS_CUBE
 		//切り替えて自機へ
 		if (_this._count === _this.change_speed_c) {
 			//ここは自機へ向かわせる切替の準備
-			_this.tx=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition()._x;
-			_this.ty=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition()._y;
+			let _p = _PARTS_PLAYERMAIN._players_obj;
+			_this.tx = _p.x+(_p.width);
+			_this.ty = _p.getPlayerCenterPosition()._y;
 			_this.rad=//自身と相手までのラジアン
 				Math.atan2(
-					(_this.ty-_this.y),
-					(_this.tx-_this.x));
-			_this.deg=//自身と相手までの角度
-				_this.rad*180/Math.PI;
+					(_this.ty-_this.getEnemyCenterPosition()._y),
+					(_this.tx-_this.getEnemyCenterPosition()._x));
 			_this.sx=Math.cos(_this.rad);//単位x
 			_this.sy=Math.sin(_this.rad);//単位y
-			_this.speed=_GET_DIF_SHOT_SPEED()*6;
+			_this.speed=_GET_DIF_SHOT_SPEED()*5;
 		}
 		//自機に向けて一気に加速
 		if (_this._count > _this.change_speed_c) {
@@ -2580,7 +2580,7 @@ class ENEMY_BOSS_DEATH
 		let _this=this;
 		if(_this._is_laser_status===false
 			&& (_this._count >= (_this._c_self_collision/2)
-			||_this._status<=75)){
+			||_this._status<=50)){
 			//レーザーに切り替えるための爆発
 			_this._is_laser_status=true;
 			//爆発して終了
@@ -3015,7 +3015,7 @@ class ENEMY_BOSS_AIAN_CONTROL
 		if (_this.parts.length === 0){
 			for(let _i=0; _i<_this.aians_max; _i++){
 				let _o = new ENEMY_BOSS_AIAN({
-					x: _CANVAS.width,
+					x: _CANVAS.width+10,
 					y: 100
 				});
 				_this.parts.push(_o);
@@ -3027,7 +3027,8 @@ class ENEMY_BOSS_AIAN_CONTROL
 	moveSet() {
 		let _this = this;
 		//アイアンが全て消えた場合は、自身も自爆する。
-		if(_this.parts.every((_o)=>{return !_o.isalive()})){
+		if (_this.aians_count === _this.aians_max
+			&&_this.parts.every((_o)=>{return !_o.isalive()})){
 			_this.aians_clear_count++;
 			if (_this.aians_clear_count>200){_this.init();}
 			return;
@@ -3086,7 +3087,6 @@ extends GameObject_ENEMY {
 			return;
 		}
 
-		if(_this.x+_this.width<0){_this.init();}
 		_this.speed = _GET_DIF_ENEMY_SPEED() * 2;
 
 		if (_this._move_status === 0) {

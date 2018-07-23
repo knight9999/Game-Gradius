@@ -2065,7 +2065,6 @@ class GameObject_SHOTS_DOUBLE
 		super(_p);
 		let _this=this;
 		_this.shots=new Array();
-		_this.speed = 30;
 
 		//ショット1とショット2の画像と、ショット時のx,yの挙動を定義
 		//それらをshotsメンバーに定義させる
@@ -2073,29 +2072,60 @@ class GameObject_SHOTS_DOUBLE
 		//_pl._x→ショット開始時は自機から発射
 		//_x→ショット中で、その時点のx,yから移動させる
 		_this.set = _p.set || {
+			speedx: [30, 30],
+			speedy: [0, 23],
 			imgs: [_CANVAS_IMGS['shot1'].obj,_CANVAS_IMGS['shot2'].obj],
 			setX: [
-				(function(_sa, _pl, _x){return (!_sa) ? _pl._x + (this.img.width/2) : _x + 30;}),
-				(function(_sa, _pl, _x){return (!_sa) ? _pl._x + (this.img.width/2) : _x + 30;})
+				(function(_sa, _pl, _x){return (!_sa) ? _pl._x + (this.img.width/2) : _x + this._set_speedX;}),
+				(function(_sa, _pl, _x){return (!_sa) ? _pl._x + (this.img.width/2) : _x + this._set_speedX;})
 			],
 			setY: [
 				(function (_sa, _pl, _y) {return (!_sa) ? _pl._y - (this.img.height/2) : _y;}),
-				(function (_sa, _pl, _y) {return (!_sa) ? _pl._y - 23 - (this.img.height/2): _y - 23;})
+				(function (_sa, _pl, _y) {return (!_sa) ? _pl._y - this._set_speedY - (this.img.height/2): _y - this._set_speedY;})
+			],
+			mapCol:[
+				(function (_x,_y) {
+					for (let _i = _x; _i < _x + 30; _i = _i + 5) {
+						//MAPの位置を取得
+						if (_MAP.isMapCollision(_MAP.getMapX(_i), _MAP.getMapY(_y))) {
+							//ショットを初期化
+							this._init();
+							//MAPの衝突処理
+							_MAP.setPlayersShotAbleCollision(_MAP.getMapX(_i), _MAP.getMapY(_y));
+						}
+					}//_i
+				}),
+				(function (_x,_y) {
+					for (let _i = _x; _i < _x + 30; _i = _i + 5) {
+					for (let _j = _y - 23; _j < _y; _j = _j + 5) {
+						//MAPの位置を取得
+						if (_MAP.isMapCollision(_MAP.getMapX(_i), _MAP.getMapY(_j))) {
+							//ショットを初期化
+							this._init();
+							//MAPの衝突処理
+							_MAP.setPlayersShotAbleCollision(_MAP.getMapX(_i), _MAP.getMapY(_j));
+						}
+					}//_j
+					}//_i
+				})
 			]
 		};
 
 		for(let _i=0;_i<_PARTS_PLAYERMAIN._shot_max;_i++){
-			this.shots.push({
+			_this.shots.push({
 				sid:_PARTS_PLAYERMAIN._shot_type_def.DOUBLE,
 				x:0,//処理変数：照射x軸
 				y:0,
-				img:this.set.imgs[_i],//this.imgsからの画像
+				img:_this.set.imgs[_i],//this.imgsからの画像
+				_setX:(_this.set.setX)[_i],
+				_setY:(_this.set.setY)[_i],
+				_set_speedX: (_this.set.speedx)[_i],
+				_set_speedY: (_this.set.speedy)[_i],
+				_mapCol:(_this.set.mapCol)[_i],
 				_audio:_CANVAS_AUDIOS['shot_normal'],				
 				_enemyid:null,//敵ID
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
-				_setX:(this.set.setX)[_i],				
-				_setY:(this.set.setY)[_i],
 				_init:function(){//初期化
 					this.x=0,
 					this.y=0,
@@ -2132,6 +2162,12 @@ class GameObject_SHOTS_DOUBLE
 				_t._init();
 			}
 		}
+	}
+	map_collition(_t) {
+		let _this = this;
+		let _x = parseInt(_t.x + (_t.img.width / 2));
+		let _y = parseInt(_t.y + (_t.img.height / 2));
+		_t._mapCol(_x,_y);
 	}
 	setDrawImage(){
 		for(let _j=0;_j<this.shots.length;_j++){
@@ -2192,37 +2228,43 @@ class GameObject_SHOTS_TAILGUN
 	constructor(_p){
 		//親クラスに渡す前に画像、ショット挙動を上書きさせる
 		_p.set = {
+			speedx: [30, 30],
+			speedy: [0, 0],
 			imgs: [_CANVAS_IMGS['shot1'].obj, _CANVAS_IMGS['shot3'].obj],
 			setX: [
-				(function (_sa, _pl, _x) {return (!_sa) ? _pl._x : _x + 30;}),
-				(function (_sa, _pl, _x) {return (!_sa) ? _pl._x : _x - 30;})
+				(function (_sa, _pl, _x) {return (!_sa) ? _pl._x : _x + this._set_speedX;}),
+				(function (_sa, _pl, _x) {return (!_sa) ? _pl._x : _x - this._set_speedX;})
 			],
 			setY: [
 				(function (_sa, _pl, _y) {return (!_sa) ? _pl._y - (this.img.height/2): _y;}),
 				(function (_sa, _pl, _y) {return (!_sa) ? _pl._y - (this.img.height/2): _y;})
+			],
+			mapCol:[
+				(function (_x,_y) {
+					for (let _i = _x; _i < _x + this._set_speedX; _i = _i + 5) {
+						//MAPの位置を取得
+						if (_MAP.isMapCollision(_MAP.getMapX(_i), _MAP.getMapY(_y))) {
+							//ショットを初期化
+							this._init();
+							//MAPの衝突処理
+							_MAP.setPlayersShotAbleCollision(_MAP.getMapX(_i), _MAP.getMapY(_y));
+						}
+					}//_i
+				}),
+				(function (_x,_y) {
+					for (let _i = _x; _i < _x + this._set_speedX; _i = _i + 5) {
+						//MAPの位置を取得
+						if (_MAP.isMapCollision(_MAP.getMapX(_i), _MAP.getMapY(_y))) {
+							//ショットを初期化
+							this._init();
+							//MAPの衝突処理
+							_MAP.setPlayersShotAbleCollision(_MAP.getMapX(_i), _MAP.getMapY(_y));
+						}
+					} //_i
+				})
 			]
 		};
 		super(_p);
-	}
-	map_collition(_t){
-		//MAPの位置を取得
-		let _map_x = _MAP.getMapX(_t.x + (_t.img.width / 2));
-		let _map_y = _MAP.getMapY(_t.y + (_t.img.height / 2));
-
-		if(_MAP.isMapCollision(_map_x,_map_y)){
-			//ショットを初期化
-			_t._init();
-			//MAPの衝突処理
-			_MAP.setPlayersShotAbleCollision(_map_x,_map_y);
-			return;
-		}
-		if(_MAP.isMapCollision(_map_x-1,_map_y)){
-			//ショットを初期化
-			_t._init();
-			//MAPの衝突処理
-			_MAP.setPlayersShotAbleCollision(_map_x-1,_map_y);
-		}
-
 	}
 }
 
@@ -2285,6 +2327,8 @@ class GameObject_SHOTS_RIPPLE_LASER
 					let _ens=_ENEMIES;
 					for(let _i=0;_i<_ens.length;_i++){
 					let _en=_ens[_i];
+					//スタンバイは無視
+					if(_en.isStandBy()){continue;}
 					//敵自体無視
 					if(_en.isIgnore()){continue;}
 					//既に倒した敵は無視する
@@ -2508,7 +2552,7 @@ class GameObject_SHOTS_LASER
 
 		//当たり判定
 		_s=_GAME.isSqCollision_laser(
-			"0,-6,"+parseInt(_t.x-_t.sx)+",6",
+			"0,-10,"+parseInt(_t.x-_t.sx)+",10",
 			_t.sx+","+_t.y,
 			_e.shotColMap,
 			_e.x+","+_e.y
@@ -2531,7 +2575,7 @@ class GameObject_SHOTS_LASER
 		//移動分内、細かく当たり判定を処理させる
 		for(let _i=_t.x-_sl;_i<=_t.x;_i=_i+5){
 			_s=_GAME.isSqCollision_laser(
-				"0,-6,"+parseInt(_i-_t.sx)+",6",
+				"0,-10,"+parseInt(_i-_t.sx)+",10",
 				_t.sx+","+_t.y,
 				_e.shotColMap,
 				_e.x+","+_e.y

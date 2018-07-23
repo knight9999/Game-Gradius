@@ -35,15 +35,11 @@ const _PARTS_MAP = {
 	},
 	_move_maps() {
 		let _this = this;
-		for(let _k in _this._obj){
-			_this._obj[_k].move();
-		}
+		Object.keys(_this._obj).map(_k => _this._obj[_k].move());
 	},
 	_draw_maps() {
 		let _this = this;
-		for (let _k in _this._obj) {
-			_this._obj[_k].setDrawImage();
-		}
+		Object.keys(_this._obj).map(_k => _this._obj[_k].setDrawImage());
 	}
 };
 
@@ -145,9 +141,9 @@ class MAP_OBJECT{
 	}
 	moveSet(){}
 	move_standby(){
-		let _this=this;
-		if(_this.x>=_CANVAS.width-20){return;}
-		_this._standby=false;
+		let _this = this;
+		if(_this.x > _CANVAS.width){return;}
+		this._standby=false;
 	}
 	setDrawImage(){
 		let _this = this;
@@ -194,6 +190,19 @@ class MAP_CUBE_A extends MAP_OBJECT{
 		});
 		let _this=this;
 		_this._s='1';
+	}
+}
+class MAP_CUBE_B extends MAP_OBJECT {
+	constructor(_p) {
+		super({
+			img: _CANVAS_IMGS['map_cube_B'].obj,
+			width: 500,
+			height: 50,
+			x: _p.x,
+			y: _p.y
+		});
+		let _this = this;
+		_this._s = '11111111111111111111,11111111111111111111';
 	}
 }
 //=====================

@@ -41,7 +41,7 @@
             },
             "_THEME3":{
                 "map":{
-                    "A": "MAP_CUBE_A"
+                    "A": "MAP_CUBE_A", "B": "MAP_CUBE_B"
                 },
                 "enemies":{
                     "a": "ENEMY_a","b": "ENEMY_b","c": "ENEMY_c",

@@ -114,6 +114,9 @@ const _DEF_MAP_MAPS = {
 	'MAP_CUBE_A': {
 		_obj:function(_p){return new MAP_CUBE_A((_p===undefined)?{}:{x:_p.x,y:_p.y});},
 	},
+	'MAP_CUBE_B': {
+		_obj:function(_p){return new MAP_CUBE_B((_p===undefined)?{}:{x:_p.x,y:_p.y});},
+	},
 
 
 	'MAP_MOAI_A': {

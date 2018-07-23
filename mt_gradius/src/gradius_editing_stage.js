@@ -841,6 +841,11 @@ window.addEventListener('load',()=>{
 	.then((_d)=>{
 		//設定情報取得した値を各オブジェクトにセット
 		_DEF_DIFFICULT = _d.common.difficult;
+
+		_CANVAS_IMGS_CONTROL._init_canvas_imgs(_d.canvasimgs.imgs);
+		_CANVAS_IMGS_CONTROL._init_canvas_imgs_init(_d.canvasimgs.imgs_init);
+		_CANVAS_IMGS_CONTROL._init_canvas_audios(_d.canvasimgs.audios);
+
 		//マップ用テーマ設定
 		_MAP.init_map_theme(_d.map.theme);
 		//マップ用ボス定義設定

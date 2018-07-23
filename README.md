@@ -116,7 +116,10 @@ http://hosts/dist/gradius.html</s></p>
 
 <p>
 プロジェクトフォルダより、以下のコマンドでゲームできます。<br/>
-npm run watch<br/>
+
+#npm init ← 初めてインストールする場合<br/>
+#npm run watch<br/>
+
 ※BrowserSync（<a href="https://www.browsersync.io" target="_blank">https://www.browsersync.io</a>）を使ってます。
 </p>
   

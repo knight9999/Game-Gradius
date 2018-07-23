@@ -666,6 +666,10 @@ window.addEventListener('load',()=>{
 		_DEF_DIFFICULT = _d.common.difficult;
 		_SP_CONTROLLER._set_main_dist_within({num:parseInt(_d.controller_event.sp_controller_main_dist_within)});
 
+		_CANVAS_IMGS_CONTROL._init_canvas_imgs(_d.canvasimgs.imgs);
+		_CANVAS_IMGS_CONTROL._init_canvas_imgs_init(_d.canvasimgs.imgs_init);
+		_CANVAS_IMGS_CONTROL._init_canvas_audios(_d.canvasimgs.audios);
+
 		_MAP = new GameObject_MAP();
 		_MAP.init();
 		//マップ用テーマ設定

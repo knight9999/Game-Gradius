@@ -21,34 +21,6 @@ const _IS_DRAW_STOP=()=>{
 	return (_DRAW_SETINTERVAL === null);
 }
 
-//自機ショット、また自機と敵による衝突判定
-const _IS_ENEMIES_COLLISION=()=>{
-	for(let _i=0;_i<_ENEMIES.length;_i++){
-		//非表示・かつ生存してない場合は、要素から外す
-		if(!_ENEMIES[_i].isshow()
-			&&!_ENEMIES[_i].isalive()){
-			_ENEMIES.splice(_i,1);
-		}
-	}
-
-	//レーザーで自機、オプションにて、
-	//最大の衝突位置を取得させる
-//	let _shottype_lasers_col_max=[];
-	_PARTS_PLAYERMAIN._enemy_collision(_ENEMIES);
-}
-
-//敵ショットによる衝突判定
-const _IS_ENEMIES_SHOT_COLLISION=()=>{
-	for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
-		//非表示・かつ生存してない場合は、要素から外す
-		if(!_ENEMIES_SHOTS[_i].isshow()){
-			_ENEMIES_SHOTS.splice(_i,1);
-		}
-	}
-
-	_PARTS_PLAYERMAIN._enemy_shot_collision(_ENEMIES_SHOTS);
-}
-
 //===========================================
 //	_DRAW系の処理
 //	以下の処理に統一させる
@@ -85,7 +57,6 @@ const _DRAW=()=>{
 
 		//MAPオブジェクトの最適化、移動
 		if (_PARTS_PLAYERMAIN._players_obj.isalive()) {
-			_PARTS_MAP._optimized_maps();
 			_PARTS_MAP._move_maps();
 		}
 
@@ -95,7 +66,6 @@ const _DRAW=()=>{
 		if(_PARTS_PLAYERMAIN._players_obj.isalive()){_MAP.move();}
 
 		//パワーカプセル設定
-		_PARTS_OTHERS._optimized_powercapsell();
 		_PARTS_OTHERS._set_powercapsell();
 
 		//敵を表示
@@ -108,35 +78,29 @@ const _DRAW=()=>{
 		// console.log('5:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
  
 //		console.log('t')
-		//パワーカプセルを表示
-		if (_PARTS_PLAYERMAIN._players_obj.isalive()) {_PARTS_OTHERS._move_powercapsell();}
-		_PARTS_OTHERS._draw_powercapsell();
-
-
-		//敵衝突表示の移動・表示調整
-		for(let _i=0;_i<_ENEMIES_COLLISIONS.length;_i++){
-			if(_PARTS_PLAYERMAIN._players_obj.isalive()){_ENEMIES_COLLISIONS[_i].move();}
-			_ENEMIES_COLLISIONS[_i].setDrawImage();
-		}
-
 
 		if(_PARTS_PLAYERMAIN._players_obj.isalive()){
 			_GET_DIFFICULT_LEVEL();
+			//パワーカプセルの移動
+			_PARTS_OTHERS._move_powercapsell();
 			//敵、衝突判定
-			_IS_ENEMIES_SHOT_COLLISION();
+			_PARTS_PLAYERMAIN._enemy_shot_collision(_ENEMIES_SHOTS);
+			_PARTS_PLAYERMAIN._enemy_collision(_ENEMIES);
 			// console.log('7:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
-			_IS_ENEMIES_COLLISION();
 			// console.log('8:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 			//MAP（自機ショット衝突判定）
 			_MAP.isPlayersShotCollision();
 			// console.log('9:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
-			//敵、衝突表示
-			_DRAW_ENEMIES_COLLISIONS();
+			//敵、衝突移動
+			_ENEMIES_CONTROL._move_collisions();
 			// console.log('10:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 		}
-
 		//ショットの移動調整
 		_PARTS_PLAYERMAIN._move_shots();
+		//パワーカプセルを表示
+		_PARTS_OTHERS._draw_powercapsell();
+		//敵衝突表示の表示調整
+		_ENEMIES_CONTROL._draw_collisions();
 		//ショットを表示
 		_PARTS_PLAYERMAIN._draw_shots();
 		// console.log('11:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
@@ -472,16 +436,6 @@ const _DRAW_GAMEOVER=()=>{
 
 }// _DRAW_GAMEOVER
 
-//敵衝突表示
-const _DRAW_ENEMIES_COLLISIONS=()=>{
-	for(let _i=0;_i<_ENEMIES_COLLISIONS.length;_i++){
-		if(!_ENEMIES_COLLISIONS[_i].isalive()){
-			_ENEMIES_COLLISIONS.splice(_i,1);
-		}
-	}
-
-}//_DRAW_ENEMIES_COLLISIONS
-
 const _DRAW_SCROLL_STOP=()=>{
 	_MAP.set_scroll_off_x();
 }
@@ -506,8 +460,9 @@ const _DRAW_RESET_OBJECT=()=>{
 
 	_ENEMIES=[];
 	_ENEMIES_SHOTS=[];
-	_ENEMIES_COLLISIONS=[];
 	_POWERMETER='';
+
+	_ENEMIES_CONTROL._reset();
 
 	_DIFFICULT_LEVEL = 0;
 

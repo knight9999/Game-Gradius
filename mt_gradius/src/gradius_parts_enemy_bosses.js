@@ -882,11 +882,11 @@ class ENEMY_BOSS_CRYSTALCORE
 		}
 
 		//爆発して終了
-		_ENEMIES_COLLISIONS.push(
-			new GameObject_ENEMY_COLLISION
-			(_this.x+(_this.img.width/2),
-				_this.y+(_this.img.height/2),
-				_this._collision_type));
+		_ENEMIES_CONTROL._add_collisions({
+			x: _this.x + (_this.img.width / 2),
+			y: _this.y + (_this.img.height / 2),
+			ct: _this._collision_type
+		});
 	}
 	move_Allset(){
 		//準備完了状態
@@ -1880,12 +1880,11 @@ class ENEMY_BOSS_FRAME_HEAD
 		let _e=_this.getEnemyCenterPosition();
 		_this._isshow=false;
 		for(let _i=0;_i<(_this.num_col||1);_i++){
-			_ENEMIES_COLLISIONS.push(
-				new GameObject_ENEMY_COLLISION(
-					_e._x+(Math.random()*((Math.random()>0.5)?100:-100)),
-					_e._y+(Math.random()*((Math.random()>0.5)?100:-100)),
-					_this._collision_type)
-				);	
+			_ENEMIES_CONTROL._add_collisions({
+				x: _e._x + (Math.random() * ((Math.random() > 0.5) ? 100 : -100)),
+				y: _e._y + (Math.random() * ((Math.random() > 0.5) ? 100 : -100)),
+				ct: _this._collision_type
+			});
 		}
 		_GAME_AUDIO._setPlay(_this.audio_collision);
 	}
@@ -2138,12 +2137,11 @@ class ENEMY_BOSS_CELL
 			_this.parts.pop();
 		}else if(_this._col_c%8===0){
 			//爆発表示タイミング
-			_ENEMIES_COLLISIONS.push(
-				new GameObject_ENEMY_COLLISION(
-					_o.x+Math.random()*100,
-					_o.y+Math.random()*100,
-					_this._collision_type)
-			);		
+			_ENEMIES_CONTROL._add_collisions({
+				x: _o.x + Math.random() * 100,
+				y: _o.y + Math.random() * 100,
+				ct: _this._collision_type
+			});	
 			_GAME_AUDIO._setPlay(_this.audio_collision);
 		}
 		//爆発表示のカウント
@@ -2272,12 +2270,11 @@ class ENEMY_BOSS_CELL_MAIN
 	showCollapes(){
 		let _this=this;
 		let _e=_this.getEnemyCenterPosition();
-		_ENEMIES_COLLISIONS.push(
-			new GameObject_ENEMY_COLLISION(
-				_this.x+_this.width/2,
-				_e._y,
-				_this._collision_type)
-			);
+		_ENEMIES_CONTROL._add_collisions({
+			x: _this.x + _this.width / 2,
+			y: _e._y,
+			ct: _this._collision_type
+		});
 		_this.init();
 	}
 	moveSet(_d){
@@ -2584,12 +2581,11 @@ class ENEMY_BOSS_DEATH
 			//レーザーに切り替えるための爆発
 			_this._is_laser_status=true;
 			//爆発して終了
-			_ENEMIES_COLLISIONS.push(
-				new GameObject_ENEMY_COLLISION(
-					_this.x,
-					_this.y+65,
-					't1')
-			);
+			_ENEMIES_CONTROL._add_collisions({
+				x: _this.x,
+				y: _this.y + 65,
+				ct: 't1'
+			});
 			_GAME_AUDIO._setPlay(_this.audio_collision);
 		}
 
@@ -2764,12 +2760,11 @@ class ENEMY_BOSS_MOAI
 		//敵を倒した場合
 		_this._isshow=false;
 		//爆発して終了
-		_ENEMIES_COLLISIONS.push(
-			new GameObject_ENEMY_COLLISION(
-				_e._x,
-				_e._y,
-				_this._collision_type)
-		);
+		_ENEMIES_CONTROL._add_collisions({
+			x: _e._x,
+			y: _e._y,
+			ct: _this._collision_type
+		});
 		//他のボスをすべて爆発
 		for(let _i=0;_i<_ENEMIES.length;_i++){
 			let _o=_ENEMIES[_i];

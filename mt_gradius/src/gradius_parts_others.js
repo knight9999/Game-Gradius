@@ -55,16 +55,15 @@ const _PARTS_OTHERS = {
 		let _this = this;
 		_this._powercapsell_ar.push(new GameObject_POWERCAPSELL(_p.x, _p.y));
 	},
-	_optimized_powercapsell(){
-		let _this = this;
-		//パワーカプセル取得済み、またはCANVASからすぎた場合は配列を外す
-		_this._powercapsell_ar.map((_o,_i,_ar)=>{
-			if(_o.x+_o.width<0||_o.gotpc){_ar.splice(_i,1);}
-		});
-	},
 	_move_powercapsell(){
 		let _this = this;
-		_this._powercapsell_ar.map((_o)=>{_o.move();});
+ 		for (let _i = _this._powercapsell_ar.length-1; _i >= 0; _i--) {
+			let _o = _this._powercapsell_ar[_i];
+			if (_o.x + _o.width < 0 || _o.gotpc) {
+				_this._powercapsell_ar.splice(_i, 1);
+			}
+			_o.move();
+		}
 	},
 	_draw_powercapsell() {
 		let _this = this;

@@ -17,14 +17,6 @@ const _PARTS_MAP = {
 		let _this = this;
 		_this._obj = new Object();
 	},
-	_optimized_maps() {
-		let _this = this;
-		for (let _k in _this._obj) {
-			if (!_this._obj[_k].isshow() && !_this._obj[_k].isalive()) {
-				delete _this._obj[_k];
-			}
-		}
-	},
 	_init_maps(_k,_o) {
 		//マップオブジェクトの初期設定
 		//_k：マップ座標値
@@ -35,7 +27,13 @@ const _PARTS_MAP = {
 	},
 	_move_maps() {
 		let _this = this;
-		Object.keys(_this._obj).map(_k => _this._obj[_k].move());
+		for (let _k in _this._obj) {
+			if (!_this._obj[_k].isshow() && !_this._obj[_k].isalive()) {
+				delete _this._obj[_k];
+				continue;
+			}
+			_this._obj[_k].move();
+		}
 	},
 	_draw_maps() {
 		let _this = this;

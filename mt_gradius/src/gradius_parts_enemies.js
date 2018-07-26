@@ -263,12 +263,11 @@ class GameObject_ENEMY{
 			return;
 		}
 		//爆発して終了
-		_ENEMIES_COLLISIONS.push(
-			new GameObject_ENEMY_COLLISION(
-				_x||_this.x+(_this.width/2),
-				_y||_this.y+(_this.height/2),
-				_this._collision_type)
-		);
+		_ENEMIES_CONTROL._add_collisions({
+				x:_x||_this.x+(_this.width/2),
+				y:_y||_this.y+(_this.height/2),
+				ct:_this._collision_type
+		});
 	}
 	isMove(){
 		let _this=this;
@@ -1247,12 +1246,11 @@ class ENEMY_p_small extends ENEMY_p {
 		//敵を倒した場合
 		_this._isshow = false;
 		//爆発して終了
-		_ENEMIES_COLLISIONS.push(
-			new GameObject_ENEMY_COLLISION(
-				_x || _this.x + (_this.width / 2),
-				_y || _this.y + (_this.height / 2),
-				_this._collision_type)
-		);
+		_ENEMIES_CONTROL._add_collisions({
+			x: _x || _this.x + (_this.width / 2),
+			y: _y || _this.y + (_this.height / 2),
+			ct: _this._collision_type
+		});
 	}
 }
 
@@ -1401,12 +1399,14 @@ class ENEMY_q extends GameObject_ENEMY{
 				if(_this.direct===_DEF_DIR._LU){return "1111,0000,0000,0000";}
 				})()
 		);
-		_ENEMIES_COLLISIONS.push(
-			new GameObject_ENEMY_COLLISION
-			(_this.x+(_this.img.width/2),
-				_this.y+(_this.img.height/2)+_this._collision_posy,
-				_this._collision_type));
-	
+
+		//爆発して終了
+		_ENEMIES_CONTROL._add_collisions({
+			x: _this.x + (_this.img.width / 2),
+			y: _this.y + (_this.img.height / 2) + _this._collision_posy,
+			ct: _this._collision_type
+		});
+
 		_this._isSetMapDefCol=true;
 	}
 }
@@ -1485,9 +1485,12 @@ class ENEMY_moai_ring extends GameObject_ENEMY{
  		let _map_x=_MAP.getMapX(_e._x);
  		let _map_y=_MAP.getMapY(_e._y);
 		if(_MAP.isMapCollision(_map_x,_map_y)){
-			_ENEMIES_COLLISIONS.push(
-				new GameObject_ENEMY_COLLISION
-				(_e._x,_e._y,_this._collision_type));	
+			//爆発して終了
+			_ENEMIES_CONTROL._add_collisions({
+				x: _e._x,
+				y: _e._y,
+				ct: _this._collision_type
+			});
 			_this.init();
 		}
 	}
@@ -1837,12 +1840,12 @@ class ENEMY_cell_core
 		for(let _i=0;_i<_this.hands_down.length;_i++){
 			_this.hands_down[_i].showCollapes();		
 		}
-		_ENEMIES_COLLISIONS.push(
-			new GameObject_ENEMY_COLLISION(
-				_e._x,
-				_e._y,
-				_this._collision_type)
-			);
+		_ENEMIES_CONTROL._add_collisions({
+			x: _e._x,
+			y: _e._y,
+			ct: _this._collision_type
+		});
+
 		_GAME_AUDIO._setPlay(_this.audio_collision);
 	}
 	move_standby(){
@@ -2101,12 +2104,11 @@ class ENEMY_cell_hand_1
 	showCollapes(){
 		let _this=this;
 		let _e=_this.getEnemyCenterPosition();
-		_ENEMIES_COLLISIONS.push(
-			new GameObject_ENEMY_COLLISION(
-				_e._x,
-				_e._y,
-				_this._collision_type)
-			);
+		_ENEMIES_CONTROL._add_collisions({
+			x: _e._x,
+			y: _e._y,
+			ct: _this._collision_type
+		});
 		_this.init();
 	}
 	shot(){}

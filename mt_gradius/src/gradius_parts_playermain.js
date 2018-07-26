@@ -270,11 +270,13 @@ const _PARTS_PLAYERMAIN={
 
 	//敵衝突判定処理
 	_enemy_collision(_e){
-		let _this=this;
+		let _this = this;
+
 		_this._init_laser_col_max();
 		//敵分をループさせる
-		for (let _i = 0; _i < _e.length; _i++) {
+		for (let _i = _e.length-1; _i>=0; _i--) {
 			let _oe = _e[_i];
+			if (!_oe.isshow() && !_oe.isalive()) {_e.splice(_i, 1);}
 			//スタンバイ状態は無視する
 			if (_oe.isIgnore()) {continue;}
 			if (_oe.isStandBy()) {continue;}
@@ -324,8 +326,11 @@ const _PARTS_PLAYERMAIN={
 	_enemy_shot_collision(_es){
 		let _this=this;
 		if(_es===undefined){return;}
-		for(let _i=0;_i<_es.length;_i++){
+
+		for (let _i = _es.length-1; _i>=0 ; _i--) {
 			let _e=_es[_i];
+			if (!_e.isshow()) {_es.splice(_i, 1);}
+
 			//自機衝突判定
 			_this._players_obj.enemy_shot_collision(_e);
 			_this._players_force_obj.enemy_shot_collision(_e);

@@ -18,7 +18,6 @@ let _CONTEXT;
 
 let _ENEMIES=new Array();
 let _ENEMIES_SHOTS=new Array();
-let _ENEMIES_COLLISIONS=new Array();//敵衝突の表示
 let _ENEMY_DIFFICULT=4;//主にデバッグ用。
 
 let _POWERMETER='';

@@ -5,6 +5,33 @@
 //=====================================================
 'use strict';
 
+const _ENEMIES_CONTROL = {
+	_collisions_obj:new Array(),
+	_reset(){
+		let _this = this;
+		_this._collisions_obj= new Array();
+	},
+	_add_collisions(_p) {
+		if(_p===undefined){return;}
+		let _this = this;
+		_this._collisions_obj.push(new GameObject_ENEMY_COLLISION(_p.x, _p.y, _p.ct));
+	},
+	_move_collisions() {
+		let _this = this;
+		for (let _i = _this._collisions_obj.length - 1; _i >= 0 ; _i--) {
+			let _o = _this._collisions_obj[_i];
+			if (!_o.isalive()) {
+				_this._collisions_obj.splice(_i, 1);
+			}
+			_o.move();
+		}
+	},
+	_draw_collisions() {
+		let _this = this;
+		_this._collisions_obj.map((_o) => {_o.setDrawImage();});
+	}
+};
+
 const _ENEMY_DEF_ANI_COL={//衝突アニメーション定義
 't0':{
 	'intv':5,

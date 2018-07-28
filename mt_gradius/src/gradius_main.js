@@ -370,6 +370,10 @@ const _DRAW_GAMESTART=()=>{
 }
 
 const _DRAW_GAMECLEAR=()=>{
+	if (_DRAW_IS_MATCH_BOSS_COUNT === 0) {
+		_MAP.set_mapdefs_difficult();
+	}
+
 	if (_DRAW_IS_MATCH_BOSS_COUNT > 100) {
 		_DRAW_SCROLL_RESUME();
 	} else {
@@ -609,8 +613,6 @@ window.addEventListener('load',()=>{
 	_GAME.setUrlParams();
 	//以下パラメータからデバッグモードを設定
 	_ISDEBUG=(_GAME._url_params['debug']==='true')?true:false;
-	_MAP_PETTERN=_GAME._url_params['mp']||0;
-	_ENEMY_DIFFICULT=_GAME._url_params['ed']||0;
 
 	if(_ISSP){
 		document.querySelector('body').classList.add('sp');
@@ -660,9 +662,7 @@ window.addEventListener('load',()=>{
 
 		if (_ISDEBUG) {
 			_STAGESELECT = new GameObject_STAGESELECT();
-			_STAGESELECT.init();
-
-			_MAP.set_stage_map_pattern(_MAP_PETTERN);
+			_MAP.set_stage_map_pattern(_GAME._url_params['mp'] || 0);
 
 			_GAME_IMG._init_imgs(_CANVAS_IMGS).then(() => {
 				_DRAW_POWER_METER_SELECT();

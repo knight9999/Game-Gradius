@@ -18,8 +18,6 @@ let _CONTEXT;
 
 let _ENEMIES=new Array();
 let _ENEMIES_SHOTS=new Array();
-let _ENEMY_DIFFICULT=4;//主にデバッグ用。
-
 let _POWERMETER='';
 let _STAGESELECT='';
 
@@ -44,16 +42,16 @@ const _DEF_DIR={//向き
 	_RD:7//右下
 };
 
-let _DIFFICULT_LEVEL = 0;//難易度
-
-let _DEF_DIFFICULT=[];//難易度
+let _DEF_DIFFICULT = []; //難易度
+let _DIFFICULT_LEVEL = 0; //難易度
 const _GET_DIFFICULT_LEVEL=()=>{
 	//自機のショット装備、オプションの数、シールド装備に合わせて
 	//敵のショット・スピードを調整させる
 	_DIFFICULT_LEVEL = (_PARTS_PLAYERMAIN._option_count > 2) ? 1 : 0;
 	_DIFFICULT_LEVEL += (_PARTS_PLAYERMAIN._shot_type === _PARTS_PLAYERMAIN._shot_type_def.LASER) ? 1 : 0;
 	_DIFFICULT_LEVEL += (_PARTS_PLAYERMAIN._players_force_obj.isalive()) ? 1 : 0;
-	_DIFFICULT_LEVEL += parseInt(_ENEMY_DIFFICULT);
+	_DIFFICULT_LEVEL += parseInt(_MAP.get_mapdefs_difficult());
+	_DIFFICULT_LEVEL = (_DIFFICULT_LEVEL >= _DEF_DIFFICULT.length - 1) ? _DEF_DIFFICULT.length - 1 : _DIFFICULT_LEVEL;
 };
 const _GET_DIF_MOAI_RING_INT = () => {
 	return parseInt(_DEF_DIFFICULT[_DIFFICULT_LEVEL]._MOAI_RING_INT);

@@ -7,7 +7,7 @@ let $_mp=null;
 let $_mn=null;
 let $_bm=null;
 
-_MAP_PETTERN=0;
+let _MAP_PETTERN=0;
 
 const _DATAAPI={
 _data_api:'',

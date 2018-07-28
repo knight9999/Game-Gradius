@@ -320,6 +320,9 @@ const _PARTS_PLAYERMAIN={
 		//ここでレーザーに対して、
 		//自機・オプション共に、衝突位置を決定させる
 		_this._set_shot_laser_MaxX();
+		//ショット系の当たり判定処理
+		//当たった場合は、ショットを初期化させる
+		_this._set_shot_collision_control();
 
 	}, //_enemy_collision
 	//敵弾衝突判定処理
@@ -340,7 +343,6 @@ const _PARTS_PLAYERMAIN={
 
 	_init_laser_col_max(){
 		let _this = this;
-		if (_this._shot_type !== _this._shot_type_def.LASER) {return;}
 		if (!_this._is_shottype_laser()){return;}
 		for (let _j = 0; _j < _this._shots.shot[_this._shot_type].length; _j++) {
 			let _os = _this._shots.shot[_this._shot_type][_j];
@@ -354,7 +356,6 @@ const _PARTS_PLAYERMAIN={
 	},
 	_set_shot_laser_MaxX(){
 		let _this=this;
-		if(_this._shot_type!==_this._shot_type_def.LASER){return;}
 		if (!_this._is_shottype_laser()){return;}
 
 		for(let _j=0;
@@ -389,6 +390,21 @@ const _PARTS_PLAYERMAIN={
 
 		}//_j
 	},
+	_set_shot_collision_control(){
+		//レーザー以外にて、衝突判定したショットを初期化させる
+		let _this=this;
+		if (_this._is_shottype_laser()){return;}
+//		if(_this._shot_type===_this._shot_type_def.LASER){return;}
+		for (let _i = 0; _i < _this._shots.shot[_this._shot_type].length; _i++) {
+			let _os = _this._shots.shot[_this._shot_type][_i];
+			if (!_os.player._isalive) {continue;}
+			for (let _j = 0; _j < _os.shots.length; _j++) {
+				let _oss = _os.shots[_j];
+				if(_oss.isCollision){_oss._init();}
+			}//_j
+		}//_i
+	},
+
 	_get_move_drawX(_elem){
 		return this._move_drawX[_elem];
 	}, //_get_move_drawX
@@ -1306,47 +1322,30 @@ class GameObject_SHOTS{
 		this.shots=new Array();
 		this.player=_p;//プレーヤー
 		this._sq=0;//ショット順
-	}
-	enemy_collision(_e){//敵への当たり処理
-		if(!this.player.isalive()){return;}
-		for(let _k=0;_k<this.shots.length;_k++){
-			let _t=this.shots[_k];
-			if(!_t._shot_alive){continue;}
-			//自機より後ろは無視する。
-			if(_e.x<this.player.x){continue;}
-			let _s=_GAME.isSqCollision(
-				"-10,-10,"+(_t.img.width+10)+","+(_t.img.height+10),
-				_t.x+","+_t.y,
-				_e.shotColMap,
-				_e.x+","+_e.y
-			);
-			if(_s===_IS_SQ_NOTCOL){continue;}
-			if(_s===_IS_SQ_COL){
-				_e.collision(_PARTS_PLAYERMAIN._shot_type_def.NORMAL);					
-			}
-			_t._init();
-		}//for
-	}
-	map_collition(_t) {
-		//MAPの位置を取得
-		let _map_x = _MAP.getMapX(_t.x+(_t.img.width/2));
-		let _map_y = _MAP.getMapY(_t.y+(_t.img.height/2));
 
-		if (_MAP.isMapCollision(_map_x, _map_y)) {
-			//ショットを初期化
-			_t._init();
-			//MAPの衝突処理
-			_MAP.setPlayersShotAbleCollision(_map_x, _map_y);
-			return;
-		}
-		if (_MAP.isMapCollision(_map_x + 1, _map_y)) {
-			//ショットを初期化
-			_t._init();
-			//MAPの衝突処理
-			_MAP.setPlayersShotAbleCollision(_map_x + 1, _map_y);
-		}
+		// for (let _i = 0; _i < _PARTS_PLAYERMAIN._shot_max; _i++) {
+		// 	this.shots.push({
+		// 		sid: _PARTS_PLAYERMAIN._shot_type_def.NORMAL,
+		// 		x: 0, //処理変数：照射x軸
+		// 		y: 0,
+		// 		isCollision: false,
+		// 		img: _CANVAS_IMGS['shot1'].obj,
+		// 		_audio: _CANVAS_AUDIOS['shot_normal'],
+		// 		_shot: false, //処理変数：照射フラグ
+		// 		_shot_alive: false, //処理変数：照射中フラグ
+		// 		_init: function () { //初期化
+		// 			this.x = 0,
+		// 				this.y = 0,
+		// 				this.isCollision = false,
+		// 				this._shot = false,
+		// 				this._shot_alive = false
+		// 		}
+		// 	});
+		// }
 
 	}
+	enemy_collision(_e){}
+	map_collition(_t) {}
 	getshottype(){}
 	setDrawImage(){}
 	move(){}
@@ -2012,6 +2011,7 @@ class GameObject_SHOTS_NORMAL
 				sid:_PARTS_PLAYERMAIN._shot_type_def.NORMAL,
 				x:0,//処理変数：照射x軸
 				y:0,
+				isCollision:false,
 				img:_CANVAS_IMGS['shot1'].obj,
 				_audio:_CANVAS_AUDIOS['shot_normal'],				
 				_shot:false,//処理変数：照射フラグ
@@ -2019,11 +2019,55 @@ class GameObject_SHOTS_NORMAL
 				_init:function(){//初期化
 					this.x=0,
 					this.y=0,
+					this.isCollision=false,
 					this._shot=false,
 					this._shot_alive=false
 				}
 			});
 		}
+	}
+	enemy_collision(_e) { //敵への当たり処理
+		let _this = this;
+		if (!_this.player.isalive()) {
+			return;
+		}
+		for (let _k = 0; _k < _this.shots.length; _k++) {
+			let _t = _this.shots[_k];
+			if (!_t._shot_alive) {continue;}
+			//自機より後ろは無視する。
+			if (_e.x < _this.player.x) {continue;}
+			let _s = _GAME.isSqCollision(
+				"-10,-10," + (_t.img.width + 10) + "," + (_t.img.height + 10),
+				_t.x + "," + _t.y,
+				_e.shotColMap,
+				_e.x + "," + _e.y
+			);
+			if (_s === _IS_SQ_NOTCOL) {continue;}
+			if (_s === _IS_SQ_COL) {
+				_e.collision(_PARTS_PLAYERMAIN._shot_type_def.NORMAL);
+				_t.isCollision = true;
+			}
+		} //for
+	}
+	map_collition(_t) {
+		//MAPの位置を取得
+		let _map_x = _MAP.getMapX(_t.x + (_t.img.width / 2));
+		let _map_y = _MAP.getMapY(_t.y + (_t.img.height / 2));
+
+		if (_MAP.isMapCollision(_map_x, _map_y)) {
+			//ショットを初期化
+			_t._init();
+			//MAPの衝突処理
+			_MAP.setPlayersShotAbleCollision(_map_x, _map_y);
+			return;
+		}
+		if (_MAP.isMapCollision(_map_x + 1, _map_y)) {
+			//ショットを初期化
+			_t._init();
+			//MAPの衝突処理
+			_MAP.setPlayersShotAbleCollision(_map_x + 1, _map_y);
+		}
+
 	}
 	setDrawImage(){
 		for(let _j=0;_j<this.shots.length;_j++){
@@ -2122,6 +2166,7 @@ class GameObject_SHOTS_DOUBLE
 				x:0,//処理変数：照射x軸
 				y:0,
 				img:_this.set.imgs[_i],//this.imgsからの画像
+				isCollision: false,
 				_setX:(_this.set.setX)[_i],
 				_setY:(_this.set.setY)[_i],
 				_set_speedX: (_this.set.speedx)[_i],
@@ -2134,6 +2179,7 @@ class GameObject_SHOTS_DOUBLE
 				_init:function(){//初期化
 					this.x=0,
 					this.y=0,
+					this.isCollision=false,
 					this._enemyid=null,
 					this._shot=false,
 					this._shot_alive=false
@@ -2144,10 +2190,10 @@ class GameObject_SHOTS_DOUBLE
 	enemy_collision(_e){//敵への当たり処理
 		let _this=this;
 		if(!_this.player.isalive()){return;}
-		let _str='';
 
 		for(let _k=0;_k<_this.shots.length;_k++){
 			let _t=_this.shots[_k];
+			if (!_t._shot_alive) {continue;}
 			let _s=_GAME.isSqCollision(
 				"-10,-10,"+(_t.img.width+10)+","+(_t.img.height+10),
 				_t.x+","+_t.y,
@@ -2157,14 +2203,14 @@ class GameObject_SHOTS_DOUBLE
 			
 			if(_s===_IS_SQ_NOTCOL){continue;}
 			if(_s===_IS_SQ_COL_NONE){
-				_t._init();
+				_t.isCollision = true;
 				continue;
 			}
 			if(_e.isalive()){
 				//硬い敵に対して、
 				//同時ショット判定を避ける
 				_e.collision(_PARTS_PLAYERMAIN._shot_type_def.DOUBLE);
-				_t._init();
+				_t.isCollision = true;
 			}
 		}
 	}
@@ -2289,6 +2335,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 				sid:_PARTS_PLAYERMAIN._shot_type_def.LASER,
 				x:0,//処理変数：X位置の中心点
 				y:0,//処理変数：Y位置の中心点
+				isCollision:false,
 				_t:0,//アニメーション時間ripple
 				_shot:false,//処理変数：照射フラグ
 				_shot_alive:false,//処理変数：照射中フラグ
@@ -2298,6 +2345,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 				_init:function(){//初期化
 					this.x=0,
 					this.y=0,
+					this.isCollision = false,
 					this._t=0,
 					this._shot=false,
 					this._shot_alive=false,
@@ -2356,7 +2404,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 					}//for
 				})();
 			}
-			_t._init();
+			_t.isCollision = true;
 		}
 	}
 	map_collition(_t){

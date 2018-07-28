@@ -467,7 +467,7 @@ class GameObject_MAP{
 		return this.map_pettern;
 	}
 	get_mapdefs_difficult() {
-		return _MAPDEFS[this.map_pettern]._difficult;
+		return _MAPDEFS[this.map_pettern]._difficult - 1;
 	}
 	set_mapdefs_difficult(){
 		//ステージに対して、難易度を一つあげる

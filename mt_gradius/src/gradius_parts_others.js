@@ -437,15 +437,9 @@ class GameObject_STAGESELECT{
 	constructor(){
 		let _this=this;
 		_this.mapdef_status=0;
-		_this.mapdef=_MAPDEFS[_this.mapdef_status];
+		_this.mapdef = (_ISDEBUG) ? (_MAPDEFS[_GAME._url_params['mp'] || _this.mapdef_status]) : _MAPDEFS[_this.mapdef_status];
 	}
 	init(){
-		this.mapdef=_MAPDEFS[0];
-		if(_ISDEBUG){
-			//デバッグでは_MAP_PETTERNで終了
-			this.mapdef=_MAPDEFS[_MAP_PETTERN];
-			return;
-		}
 		this.disp_thumb_map();
 	}
 	set_map_status(_p){

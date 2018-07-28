@@ -6,8 +6,6 @@
 'use strict';
 
 let _MAPDEFS='';
-let _MAPDEF='';
-let _MAP_PETTERN=3;
 
 let _MAP_SCROLL_POSITION_X=0;
 //_MAP_SCROLL_POSITION_Y
@@ -465,6 +463,18 @@ class GameObject_MAP{
 	set_stage_map_pattern(_n){
 		this.map_pettern=_n;
 	}
+	get_stage_map_pattern() {
+		return this.map_pettern;
+	}
+	get_mapdefs_difficult() {
+		return _MAPDEFS[this.map_pettern]._difficult;
+	}
+	set_mapdefs_difficult(){
+		//ステージに対して、難易度を一つあげる
+		let _this = this;
+		_MAPDEFS[_this.map_pettern]._difficult =
+			parseInt(_MAPDEFS[_this.map_pettern]._difficult) + 1;
+	}
 	set_gamestart(){
 		//ゲーム開始処理
 		let _this=this;
@@ -473,13 +483,9 @@ class GameObject_MAP{
 		_this.y=_this.inity;
 		_this.initx=parseInt(_MAPDEFS[_this.map_pettern]._initx);
 		_this.mapdef=_MAPDEFS[_this.map_pettern]._map;
-		_this.map_difficult=parseInt(_MAPDEFS[_this.map_pettern]._difficult)-1;
-		_ENEMY_DIFFICULT=
-			(_ISDEBUG)
-				?_ENEMY_DIFFICULT
-				:parseInt(_MAPDEFS[_this.map_pettern]._difficult)-1;
+		_this.map_difficult = _GAME._url_params['ed'] || parseInt(_MAPDEFS[_this.map_pettern]._difficult) - 1;
+		_this.map_pettern = parseInt(_GAME._url_params['mp'] || _this.map_pettern);
 		_this.map_background_speed=parseInt(_MAPDEFS[_this.map_pettern]._speed);
-		_MAP_PETTERN=_this.map_pettern;
 		_this.map_theme=_MAPDEFS[_this.map_pettern]._theme;
 		_this.map_infinite=(_MAPDEFS[_this.map_pettern]._map_infinite==='true')?true:false;
 		_this.map_bgmusic=_MAPDEFS[_this.map_pettern]._bgmusic;

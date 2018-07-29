@@ -130,7 +130,7 @@ class ENEMY_BOSS_WALL
 		_this._boss=_p.boss;
 		_this.x=_this._boss.x+_this._initx;//初期位置x
 		_this.y=_this._boss.y+_this._inity;//初期位置y
-		_this._status = 5;
+		_this._status = 7;
 		_this._standby = false;
 		_this.getscore=500;//倒した時のスコア
 		_this.is_able_collision=false;
@@ -1211,7 +1211,7 @@ class ENEMY_BOSS_CUBE
 		_this.sx=0;//単位x
 		_this.sy=0;//単位y
 
-		_this.shotColMap = ["15,15,"+parseInt(_this.width-15)+","+parseInt(_this.height-15)];
+		_this.shotColMap = ["15,15,"+parseInt(_this.width-30)+","+parseInt(_this.height-30)];
 	}
 	isCanvasOut(){
 		return _GAME.isEnemyCanvasOut(
@@ -1252,9 +1252,9 @@ class ENEMY_BOSS_CUBE
 
 			//キューブ同士の衝突判定
 			let _r=_GAME.isSqCollision(
-				'10,10,40,40',
+				'20,20,50,50',
 				_this.x+','+_this.y,
-				['10,10,40,40'],
+				['20,20,50,50'],
 				_eb[_i].x+','+_eb[_i].y
 			);
 			if(_r!==_IS_SQ_NOTCOL){return true;}

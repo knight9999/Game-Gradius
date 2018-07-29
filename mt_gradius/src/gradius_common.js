@@ -44,7 +44,7 @@ const _DEF_DIR={//向き
 
 let _DEF_DIFFICULT = []; //難易度
 let _DIFFICULT_LEVEL = 0; //難易度
-const _GET_DIFFICULT_LEVEL=()=>{
+const _SET_DIFFICULT_LEVEL=()=>{
 	//自機のショット装備、オプションの数、シールド装備に合わせて
 	//敵のショット・スピードを調整させる
 	_DIFFICULT_LEVEL = (_PARTS_PLAYERMAIN._option_count > 2) ? 1 : 0;

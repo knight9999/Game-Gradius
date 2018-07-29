@@ -80,7 +80,7 @@ const _DRAW=()=>{
 //		console.log('t')
 
 		if(_PARTS_PLAYERMAIN._players_obj.isalive()){
-			_GET_DIFFICULT_LEVEL();
+			_SET_DIFFICULT_LEVEL();
 			//パワーカプセルの移動
 			_PARTS_OTHERS._move_powercapsell();
 			//敵、衝突判定

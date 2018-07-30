@@ -568,17 +568,15 @@ const _DRAW_OPENING=()=>{
 			basePoint:1
 		});
 
-		let _s = 'no pakuri';
 		_GAME._setDrawToText({
-			s:_s,
-			x:(_CANVAS.width / 2) - (42 * _s.length / 2),
+			s: 'no pakuri',
+			x:'center',
 			y:(_CANVAS.height / 2) - 20,
 			r:0.7
 		});
 
-		_s = 'press s to start';
 		_GAME._setDrawToText({
-			s:_s,
+			s: 'press s to start',
 			x: 'center',
 			y:(_CANVAS.height / 2) + 60,
 			r:0.5,
@@ -587,9 +585,8 @@ const _DRAW_OPENING=()=>{
 
 		_c = (_c >= 100) ? 0 : _c + 1;
 		if(_DRAW_OPENING_IMGLOAD_RATE===0){return;}
-		_s = 'now loading ' + _DRAW_OPENING_IMGLOAD_RATE;
 		_GAME._setDrawToText({
-			s:_s,
+			s: 'now loading ' + _DRAW_OPENING_IMGLOAD_RATE,
 			x: 'center',
 			y:(_CANVAS.height / 2) + 130,
 			r:0.4,

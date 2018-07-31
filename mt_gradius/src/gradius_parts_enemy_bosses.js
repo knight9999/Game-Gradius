@@ -130,7 +130,7 @@ class ENEMY_BOSS_WALL
 		_this._boss=_p.boss;
 		_this.x=_this._boss.x+_this._initx;//初期位置x
 		_this.y=_this._boss.y+_this._inity;//初期位置y
-		_this._status = 7;
+		_this._status = 8;
 		_this._standby = false;
 		_this.getscore=500;//倒した時のスコア
 		_this.is_able_collision=false;

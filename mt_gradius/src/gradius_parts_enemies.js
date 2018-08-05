@@ -14,7 +14,6 @@
 // collision()
 //===========================================
 class GameObject_ENEMY{
-//	constructor(_o,_x,_y,_imgPos,_aniItv,_w,_h){
 	constructor(_p){
 		let _this=this;
 		_this.id=_ENEMIES.length;
@@ -26,6 +25,8 @@ class GameObject_ENEMY{
 		_this.height=_p.height||_this.img.height;
 		_this.x=_p.x||0;//X位置
 		_this.y=_p.y||0;//Y位置
+		_this.mapx = _MAP.getMapX(_this.x);//MAPのx座標
+		_this.mapy = _MAP.getMapY(_this.y);//MAPのy座標
 		//向きの設定 nullもあり。（ステージセレクトにて使用）
 		_this.direct=(_p.direct===undefined)?_DEF_DIR._D:_p.direct;
 		_this._s=_p.s||'0';//MAP衝突ビット
@@ -259,7 +260,10 @@ class GameObject_ENEMY{
 		if(_this.haspc){
 			//パワーカプセルを持ってる場合は、
 			//パワーカプセルを表示
-			_PARTS_OTHERS._add_powercapsell({x:_this.x,y:_this.y});
+			_PARTS_OTHERS._add_powercapsell({
+				x:_MAP.getX(_this.x),
+				y:_MAP.getY(_this.y)
+			});
 			return;
 		}
 		//爆発して終了
@@ -1390,8 +1394,8 @@ class ENEMY_q extends GameObject_ENEMY{
 		//爆発後にMAP衝突用の内容を変更する
 		if(_this._isSetMapDefCol){return;}
 		_MAP.set_mapdef_col(
-			_MAP.getMapX(_this.x),
-			_MAP.getMapY(_this.y),
+			_this.mapx,
+			_this.mapy,
 			(function(){
 				if(_this.direct===_DEF_DIR._D){return "0000,0000,0000,1111";}
 				if(_this.direct===_DEF_DIR._U){return "1111,0000,0000,0000";}
@@ -2147,6 +2151,14 @@ class ENEMY_cell_hand_2
 		_this.shotColMap=[
 			"-10,-10,"+(_this.img.width+10)+","+(_this.img.height+10)
 		];
+	}
+	setAlive(){
+		let _this=this;
+		if(!_this.isalive()){
+			_PARTS_OTHERS._set_score(_this.getscore);
+			_this.showCollapes();
+			_GAME_AUDIO._setPlay(_this.audio_collision);
+		}
 	}
 	shot(){}
 }

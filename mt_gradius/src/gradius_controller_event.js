@@ -490,16 +490,16 @@ const _KEYEVENT={
 	}
 
 	if(e.key==='ArrowLeft'||e.key==='Left'){
-		_PARTS_PLAYERMAIN._set_move_players({x:-1*Math.sqrt(2),y:0});
+		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:0});
 	}
 	if(e.key==='ArrowRight'||e.key==='Right'){
-		_PARTS_PLAYERMAIN._set_move_players({x:Math.sqrt(2),y:0});
+		_PARTS_PLAYERMAIN._set_move_players({x:1,y:0});
 	}
 	if(e.key==='ArrowUp'||e.key==='Up'){
-		_PARTS_PLAYERMAIN._set_move_players({x:0,y:-1*Math.sqrt(2)});
+		_PARTS_PLAYERMAIN._set_move_players({x:0,y:-1});
 	}
 	if(e.key==='ArrowDown'||e.key==='Down'){
-		_PARTS_PLAYERMAIN._set_move_players({x:0,y:Math.sqrt(2)});
+		_PARTS_PLAYERMAIN._set_move_players({x:0,y:1});
 	}
 	//装備
 	if(e.key==='B'||e.key==='b'){
@@ -683,28 +683,28 @@ const _KEYEVENT_SP={
 	if(_r===false){return;}
 
 	if(_r===_SP_CONTROLLER._DEF_DIR._L){
-		_PARTS_PLAYERMAIN._set_move_players({x:-1*Math.sqrt(2),y:0});
+		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:0});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._LU){
-		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:-1});
+		_PARTS_PLAYERMAIN._set_move_players({x:-1*(1/Math.sqrt(2)),y:-1*(1/Math.sqrt(2))});
 	 }
 	if(_r===_SP_CONTROLLER._DEF_DIR._U){
-		_PARTS_PLAYERMAIN._set_move_players({x:0,y:-1*Math.sqrt(2)});
+		_PARTS_PLAYERMAIN._set_move_players({x:0,y:-1});
 	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._RU){
-		_PARTS_PLAYERMAIN._set_move_players({x:1,y:-1});
+		_PARTS_PLAYERMAIN._set_move_players({x:1*(1/Math.sqrt(2)),y:-1*(1/Math.sqrt(2))});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._R){
-		_PARTS_PLAYERMAIN._set_move_players({x:1*Math.sqrt(2),y:0});
+		_PARTS_PLAYERMAIN._set_move_players({x:1,y:0});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._RD){
-		_PARTS_PLAYERMAIN._set_move_players({x:1,y:1});
+		_PARTS_PLAYERMAIN._set_move_players({x:1*(1/Math.sqrt(2)),y:1*(1/Math.sqrt(2))});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._D){
-		_PARTS_PLAYERMAIN._set_move_players({x:0,y:1*Math.sqrt(2)});
+		_PARTS_PLAYERMAIN._set_move_players({x:0,y:1});
 	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._LD){
-		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:1});
+		_PARTS_PLAYERMAIN._set_move_players({x:-1*(1/Math.sqrt(2)),y:1*(1/Math.sqrt(2))});
  	}
 
 	return false;

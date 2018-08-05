@@ -50,6 +50,7 @@ const _PARTS_PLAYERMAIN={
 
 	_move_drawX:new Array(),
 	_move_drawY:new Array(),
+	_move_drawY_moves:new Array(),
 	_move_draw_max:100,
 
 	_reset(){
@@ -449,7 +450,10 @@ const _PARTS_PLAYERMAIN={
 		}
 	
 		//Y軸の処理（縦スクロール発生時）
-		let _mgs = _MAP.getBackGroundSpeedY() * -1;
+		//ここで自機のY移動量を記憶させておく
+		_this._move_drawY_moves.unshift(_this._players_obj._y * -1);
+
+		let _mgs = _MAP.getBackGroundSpeedY()*-1;
 		if (_mgs === 0) {
 			//縦スクロールが発生しない場合は、
 			//要素0から追加
@@ -457,33 +461,14 @@ const _PARTS_PLAYERMAIN={
 			return;
 		}
 	
-		//この時点での、自機移動分配列を要素0から
+		//この時点で自機は止まった状態。
 		//Y座標の値を参照し、必要に応じて上書きする。
 		//オプション1つ目：要素10
 		//オプション2つ目：要素20
 		//オプション3つ目：要素30
 		//オプション4つ目：要素40
-		for(let _i=0;_i<_this._move_draw_max;_i++){
-			if(_pmdy[_i]===undefined){
-				//要素内未定義の場合は、
-				//自機座標Yと移動分を加算させる
-				_pmdy.push(_y+(_mgs*_i));
-				continue;
-			}
-			if(_mgs>0){
-				//下スクロール時
-				_pmdy[_i]=(_pmdy[_i]>=_y+(_mgs*_i))
-							?_y+(_mgs*_i)
-							:_pmdy[_i]+_mgs;
-				continue;
-			}
-			if(_mgs<0){
-				//上スクロール時
-				_pmdy[_i]=(_pmdy[_i]<=_y+(_mgs*_i))
-							?_y+(_mgs*_i)
-							:_pmdy[_i]+_mgs;
-				continue;				
-			}
+		for (let _i = 1; _i < _this._move_draw_max; _i++) {
+			_pmdy[_i] = _pmdy[_i - 1] + _this._move_drawY_moves[_i];
 		}
 	}, //_set_move_draw
 

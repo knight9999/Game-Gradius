@@ -686,25 +686,25 @@ const _KEYEVENT_SP={
 		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:0});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._LU){
-		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:-1});
+		_PARTS_PLAYERMAIN._set_move_players({x:-1*(1/Math.sqrt(2)),y:-1*(1/Math.sqrt(2))});
 	 }
 	if(_r===_SP_CONTROLLER._DEF_DIR._U){
 		_PARTS_PLAYERMAIN._set_move_players({x:0,y:-1});
 	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._RU){
-		_PARTS_PLAYERMAIN._set_move_players({x:1,y:-1});
+		_PARTS_PLAYERMAIN._set_move_players({x:1*(1/Math.sqrt(2)),y:-1*(1/Math.sqrt(2))});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._R){
 		_PARTS_PLAYERMAIN._set_move_players({x:1,y:0});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._RD){
-		_PARTS_PLAYERMAIN._set_move_players({x:1,y:1});
+		_PARTS_PLAYERMAIN._set_move_players({x:1*(1/Math.sqrt(2)),y:1*(1/Math.sqrt(2))});
  	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._D){
 		_PARTS_PLAYERMAIN._set_move_players({x:0,y:1});
 	}
 	if(_r===_SP_CONTROLLER._DEF_DIR._LD){
-		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:1});
+		_PARTS_PLAYERMAIN._set_move_players({x:-1*(1/Math.sqrt(2)),y:1*(1/Math.sqrt(2))});
  	}
 
 	return false;

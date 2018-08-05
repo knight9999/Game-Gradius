@@ -380,7 +380,7 @@ class GameObject_MAP{
 		_this.map_pettern=0;
 		_this.map_difficult=0;
 		_this.map_background_speed=0;
-		_this.map_backgroundY_speed=0;
+		_this.map_backgroundY_speed=0;//移動単位
 		_this.map_infinite=false;
 		_this.map_bgmusic='';
 		_this.map_boss='';
@@ -617,20 +617,20 @@ class GameObject_MAP{
 		//CANVAS表示エリアから上下250px
 		//-250〜750
 //		console.log('_y'+_y)
-		if(_y-_MAP.map_backgroundY_speed<-250){
-			var _d=(250+_y)-_MAP.map_backgroundY_speed;
+		if(_y-_this.map_backgroundY_speed<-250){
+			var _d=(250+_y)-_this.map_backgroundY_speed;
 //			console.log('_d'+_d)
 			return 750+_d;
 		}
-		if(_y-_MAP.map_backgroundY_speed>750){
-			var _d=(750-_y)+_MAP.map_backgroundY_speed;
+		if(_y-_this.map_backgroundY_speed>750){
+			var _d=(750-_y)+_this.map_backgroundY_speed;
 //			console.log('_d'+_d)
 			return -250-_d;
 		}
-		return (_y-_MAP.map_backgroundY_speed)%1000;
+		return (_y-_this.map_backgroundY_speed)%1000;
 	}
 	getShotY(_y){
-		return _y-_MAP.map_backgroundY_speed;
+		return _y-this.map_backgroundY_speed;
 	}
 	setCollisionBit(_pb,_mcb){
 		let _this=this;
@@ -669,8 +669,8 @@ class GameObject_MAP{
 	}
 	getMapX(_x){
 		return Math.floor(
-					(_x+_MAP_SCROLL_POSITION_X-this.initx)
-					/this.t);
+				(_x+_MAP_SCROLL_POSITION_X-this.initx)
+				/this.t);
 	}
 	getMapY(_y,_debug){
 		if(_debug===true){
@@ -893,7 +893,7 @@ class GameObject_MAP{
  		_this.x+=_this.map_background_speed*-1;
 		_MAP_SCROLL_POSITION_X+=_this.map_background_speed;
 
-		_this.y=_this.getY(_this.y);
+//		_this.y=_this.getY(_this.y);
 //		_this.y-=_this.map_backgroundY_speed;//0<：上にスクロール
 //		_this.y%=1000;
 //		console.log('MAP.y++++++'+_this.y)

@@ -53,33 +53,15 @@ const _DRAW=()=>{
 			if(_PARTS_PLAYERMAIN._players_obj.isalive()){_ENEMIES_SHOTS[_i].move();}
 			_ENEMIES_SHOTS[_i].setDrawImage();
 		}
-		// console.log('3:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
-
-		//MAPオブジェクトの最適化、移動
-		if (_PARTS_PLAYERMAIN._players_obj.isalive()) {
-			_PARTS_MAP._move_maps();
-		}
-
-		//MAP位置と敵の表示はこのシーケンス
-		//※モアイ破壊後のMAP衝突がうまく調整できなくなる
-		//MAP位置設定
-		if(_PARTS_PLAYERMAIN._players_obj.isalive()){_MAP.move();}
-
-		//パワーカプセル設定
-		_PARTS_OTHERS._set_powercapsell();
-
-		//敵を表示
-		for(let _i=0;_i<_ENEMIES.length;_i++){
-			if(_ENEMIES[_i]===undefined){continue;}
-			if(_PARTS_PLAYERMAIN._players_obj.isalive()){_ENEMIES[_i].move();}
-			_ENEMIES[_i].setDrawImage();
-		}
-		// console.log('4:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
-		// console.log('5:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
- 
-//		console.log('t')
 
 		if(_PARTS_PLAYERMAIN._players_obj.isalive()){
+			//MAPオブジェクトの最適化、移動
+			_PARTS_MAP._move_maps();
+			//MAP位置と敵の表示はこのシーケンス
+			//※モアイ破壊後のMAP衝突がうまく調整できなくなる
+			//MAP位置設定
+			_MAP.move();
+	
 			_SET_DIFFICULT_LEVEL();
 			//パワーカプセルの移動
 			_PARTS_OTHERS._move_powercapsell();
@@ -94,6 +76,15 @@ const _DRAW=()=>{
 			//敵、衝突移動
 			_ENEMIES_CONTROL._move_collisions();
 			// console.log('10:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
+		}
+
+		//パワーカプセル設定
+		_PARTS_OTHERS._set_powercapsell();
+
+		//敵を表示
+		for(let _i=0;_i<_ENEMIES.length;_i++){
+			if(_PARTS_PLAYERMAIN._players_obj.isalive()){_ENEMIES[_i].move();}
+			_ENEMIES[_i].setDrawImage();
 		}
 		//ショットの移動調整
 		_PARTS_PLAYERMAIN._move_shots();

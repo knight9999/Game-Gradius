@@ -51,10 +51,11 @@ class GameObject_ENEMY_BOSS
 		//アニメーションカウントを用いて自爆処理
 		let _this=this;
 		if(_this._count<_this._c_self_collision){return;}
-		//アニメーションカウントを用いて自爆処理
+		//アニ_ignore_collisionトを用いて自爆処理
 		//_ENEMIESの全てのステータスを0にする。
-		for(let _i=0;_i<_ENEMIES.length;_i++){
-			_ENEMIES[_i]._status=0;
+		let _e = _PARTS_ENEMIES._get_enemies();
+		for(let _i=0;_i<_e.length;_i++){
+			_e[_i]._status=0;
 		}
 		_this.showCollapes();
 		_GAME_AUDIO._setPlay(_this.audio_collision);
@@ -199,7 +200,7 @@ class ENEMY_BOSS_BIGCORE
 		if(Math.random()>0.02){return;}
 		_this._moveYStop=true;
 		for(let _i=0;_i<=105;_i=_i+35){
-		_ENEMIES_SHOTS.push(
+		_PARTS_ENEMY_SHOT._add_shot(
 			new ENEMY_SHOT_LASER({
 				x: _this.x,
 				y: _this.y+_i,
@@ -234,7 +235,7 @@ class ENEMY_BOSS_BIGCORE
 				new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore_core'].obj,boss:_this,x:70,y:43,width:30,height:30})
 			];
 			//壁の初期化
-			_this.wall.map((_o)=>{_ENEMIES.push(_o);})
+			_this.wall.map((_o)=>{_PARTS_ENEMIES._add_enemies(_o);})
 		}
 
 	 	_this._standby=false;
@@ -456,7 +457,7 @@ class ENEMY_BOSS_BIGCORE2
 			}
 
 			for (let _i = 0; _i < _ar.length; _i++) {
-				_ENEMIES_SHOTS.push(new ENEMY_SHOT_LASER({
+				_PARTS_ENEMY_SHOT._add_shot(new ENEMY_SHOT_LASER({
 					x: _this.x + _ar[_i].x,
 					y: _this.y + _ar[_i].y
 				}));
@@ -499,7 +500,7 @@ class ENEMY_BOSS_BIGCORE2
 				new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_wall'].obj,boss:_this,x:105,y:38}),
 				new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_core'].obj,boss:_this,x:110,y:36})
 			];
-			_this.wall_up.map((_o)=>{_ENEMIES.push(_o);})
+			_this.wall_up.map((_o)=>{_PARTS_ENEMIES._add_enemies(_o);})
 		}
 		if (_this.wall_down.length === 0) {
 			_this.wall_down=[
@@ -509,7 +510,7 @@ class ENEMY_BOSS_BIGCORE2
 				new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_wall'].obj,boss:_this,x:105,y:95}),
 				new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore2_core'].obj,boss:_this,x:110,y:93})
 			];
-			_this.wall_down.map((_o)=>{_ENEMIES.push(_o);})
+			_this.wall_down.map((_o)=>{_PARTS_ENEMIES._add_enemies(_o);})
 		}
 
 		//上の手初期化
@@ -517,14 +518,14 @@ class ENEMY_BOSS_BIGCORE2
 			_this.hands_up=[
 				new ENEMY_BOSS_BIGCORE2_HANDS({"_initx":-52,"_inity":-30,"_dir":_DEF_DIR._U,"_boss":_this})
 			];
-			_ENEMIES.push(_this.hands_up[0]);
+			_PARTS_ENEMIES._add_enemies(_this.hands_up[0]);
 		}	
 		//下の手初期化
 		if (_this.hands_down.length === 0) {
 			_this.hands_down=[
 				new ENEMY_BOSS_BIGCORE2_HANDS({"_initx":-52,"_inity":75,"_dir":_DEF_DIR._D,"_boss":_this})
 			];
-			_ENEMIES.push(_this.hands_down[0]);
+			_PARTS_ENEMIES._add_enemies(_this.hands_down[0]);
 		}
 		_this._standby=false;
 		// }
@@ -817,7 +818,7 @@ class ENEMY_BOSS_CRYSTALCORE
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_img":_CANVAS_IMGS['enemy_cristalcore_hand2'].obj,
 												"_initx":50,"_inity":80,"_cmr":115,"_cmsr":170,"_initRad":215,"_data":"0,0,160,-70","_change":true})
 		];
-		_this.hands_up.map((_o)=>{_ENEMIES.push(_o)});
+		_this.hands_up.map((_o)=>{_PARTS_ENEMIES._add_enemies(_o)});
 		_this.hands_down=[
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":50,"_inity":155,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,-10","_change":false}),
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":50,"_inity":155,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,175,-5","_change":false}),
@@ -828,7 +829,7 @@ class ENEMY_BOSS_CRYSTALCORE
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_img":_CANVAS_IMGS['enemy_cristalcore_hand2'].obj,
 												"_initx":50,"_inity":155,"_cmr":115,"_cmsr":170,"_initRad":215,"_data":"0,0,200,70","_change":false})
 		];
-		_this.hands_down.map((_o)=>{_ENEMIES.push(_o)});
+		_this.hands_down.map((_o)=>{_PARTS_ENEMIES._add_enemies(_o)});
 
 	}
 	show_walls(){
@@ -854,9 +855,9 @@ class ENEMY_BOSS_CRYSTALCORE
 			if(_this._shot_count<50){return;}
 		}
 		_this._shot_count=0;
-		_ENEMIES_SHOTS.push(
+		_PARTS_ENEMY_SHOT._add_shot(
 			new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+111}));
-		_ENEMIES_SHOTS.push(
+		_PARTS_ENEMY_SHOT._add_shot(
 			new ENEMY_SHOT_LASER({x:_this.x,y:_this.y+140}));
 		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);
 	}
@@ -908,7 +909,7 @@ class ENEMY_BOSS_CRYSTALCORE
 				new ENEMY_BOSS_WALL({img:_CANVAS_IMGS['enemy_bigcore_core'].obj,boss:_this,x:102,y:115,width:30,height:30})
 			];
 			//壁の初期化
-			_this.wall.map((_o)=>{_ENEMIES.push(_o);});
+			_this.wall.map((_o)=>{_PARTS_ENEMIES._add_enemies(_o);});
 		}
 		
 		_this._standby = false
@@ -1013,7 +1014,7 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		if(_this._shot_count<20){return;}
 		_this._shot_count=0;
 		let _d=_this._data.split(',');
-		_ENEMIES_SHOTS.push(
+		_PARTS_ENEMY_SHOT._add_shot(
 			new ENEMY_SHOT_CRYSTALCORE({
 				x:_this.x+10,
 				y:_this.y+10,
@@ -1152,7 +1153,7 @@ class ENEMY_BOSS_CUBE_CONTROL
 					x:_CANVAS.width-10,
 					y:(Math.random()*(430-50))+50
 				});
-				_ENEMIES.push(_c);
+				_PARTS_ENEMIES._add_enemies(_c);
 				_this.parts.push(_c);
 				_this._cube_count++;
 			}
@@ -1244,7 +1245,7 @@ class ENEMY_BOSS_CUBE
 	move_bounds(){
 		//キューブ同士の衝突判定
 		let _this=this;
-		let _eb=_ENEMIES;
+		let _eb=_PARTS_ENEMIES._get_enemies();
 		for(let _i=0;_i<_eb.length;_i++){
 			if(!ENEMY_BOSS_CUBE.prototype.isPrototypeOf(_eb[_i])){continue;}
 			if(_this.id===_eb[_i].id){continue;}//自身の判定はしない
@@ -1585,7 +1586,7 @@ class ENEMY_BOSS_FRAME
 
 		//敵クラスに追加
 		for(let _i=0;_i<_this.parts.length;_i++){
-			_ENEMIES.push(_this.parts[_i]);
+			_PARTS_ENEMIES._add_enemies(_this.parts[_i]);
 		}
 
 		//フレームの動き定義
@@ -1912,7 +1913,7 @@ class ENEMY_BOSS_FRAME_HEAD
 		})();
 		//炎をはく
 		if(_this._c%200===150){
-			_ENEMIES_SHOTS.push(
+			_PARTS_ENEMY_SHOT._add_shot(
 				new ENEMY_SHOT_FRAME({
 					x:_this.x,
 					y:_this.y,
@@ -2167,10 +2168,10 @@ class ENEMY_BOSS_CELL
 
 		//敵クラスに追加
 		for(let _i=0;_i<_this.parts.length;_i++){
-			_ENEMIES.push(_this.parts[_i]);
+			_PARTS_ENEMIES._add_enemies(_this.parts[_i]);
 		}
 		//細胞の目を敵クラスに追加
-		_ENEMIES.push(_this.parts_eye);
+		_PARTS_ENEMIES._add_enemies(_this.parts_eye);
 	}
 	showCollapes(){}//ここでの爆発表示しない
 	move_standby(){}
@@ -2338,7 +2339,7 @@ class ENEMY_BOSS_CELL_EYE
 		//敵の中心から弾を発射させるための位置調整
 		let _deg=_GAME.getDeg(_PARTS_PLAYERMAIN._players_obj,_this);
 		for(let _i=-30;_i<=30;_i=_i+30){
-			_ENEMIES_SHOTS.push(
+			_PARTS_ENEMY_SHOT._add_shot(
 				new GameObject_ENEMY_SHOT({
 					x:_this.x+20,
 					y:this.getEnemyCenterPosition()._y,
@@ -2497,7 +2498,7 @@ class ENEMY_BOSS_DEATH
 			if ( _this.isShot() ) {
 				//ここではデスを最後にdrawImageするため、
 				//_ENEMIES配列の先頭にレーザーを挿入させる。
-				_ENEMIES.unshift(
+				_PARTS_ENEMIES._get_enemies().unshift(
 					new ENEMY_DEATH_LASER({
 						x:_this.x+50,
 						y:_this.y+35
@@ -2526,7 +2527,7 @@ class ENEMY_BOSS_DEATH
 		if (_this.isShot()) {
 //			console.log('shot!');
 			for(let _i=0;_i<5;_i++){
-				_ENEMIES_SHOTS.push(
+				_PARTS_ENEMY_SHOT._add_shot(
 					new ENEMY_SHOT_DEATH({
 						x:_this.x+50,
 						y:_this.y+45+(10*_i),
@@ -2766,8 +2767,9 @@ class ENEMY_BOSS_MOAI
 			ct: _this._collision_type
 		});
 		//他のボスをすべて爆発
-		for(let _i=0;_i<_ENEMIES.length;_i++){
-			let _o=_ENEMIES[_i];
+		let _en = _PARTS_ENEMIES._get_enemies();
+		for(let _i=0;_i<_en.length;_i++){
+			let _o=_en[_i];
 			if(ENEMY_BOSS_MOAI.prototype.isPrototypeOf(_o)){continue;}
 			_o.init();
 			_o.showCollapes();
@@ -2802,8 +2804,9 @@ class ENEMY_BOSS_MOAI
 		}
 		//プチモアイを吐き出す
 		let _num=0;
-		for(let _i=0;_i<_ENEMIES.length;_i++){
-			let _o=_ENEMIES[_i];
+		let _e = _PARTS_ENEMIES._get_enemies();
+		for(let _i=0;_i<_e.length;_i++){
+			let _o=_e[_i];
 			if(ENEMY_BOSS_MOAI_MINI.prototype.isPrototypeOf(_o)){
 				_num++;
 				//一定数を超えたらプチモアイを出さない。
@@ -2821,7 +2824,7 @@ class ENEMY_BOSS_MOAI
 			let _e=_this.getEnemyCenterPosition();
 			let _o=new ENEMY_BOSS_MOAI_MINI({x:_e._x,y:_e._y});
 			_this.moai_mini.push(_o);
-			_ENEMIES.push(_o);	
+			_PARTS_ENEMIES._add_enemies(_o);	
 		}
 	}
 	isAllset(){
@@ -2873,8 +2876,9 @@ class ENEMY_BOSS_MOAI
 		//向きを切り替える
 		_this.set_direct();
 		//プチモアイの操作
-		for(let _i=0;_i<_ENEMIES.length;_i++){
-			let _o=_ENEMIES[_i];
+		let _en = _PARTS_ENEMIES._get_enemies();
+		for(let _i=0;_i<_en.length;_i++){
+			let _o=_en[_i];
 			if(ENEMY_BOSS_MOAI.prototype.isPrototypeOf(_o)){continue;}
 			_o.setPos({x:_e._x,y:_e._y});
 		}
@@ -2908,7 +2912,7 @@ class ENEMY_BOSS_MOAI_MINI
 		//イオンリングを吐き出す
 //		console.log(_this._count)
 		if(_this._count!==0){return;}
-		_ENEMIES.push(new ENEMY_moai_boss_ring({x:_this.x,y:_this.y}))
+		_PARTS_ENEMIES._add_enemies(new ENEMY_moai_boss_ring({x:_this.x,y:_this.y}))
 	}
 	setPos(_d){
 		let _this=this;
@@ -3014,7 +3018,7 @@ class ENEMY_BOSS_AIAN_CONTROL
 					y: 100
 				});
 				_this.parts.push(_o);
-				_ENEMIES.push(_o);
+				_PARTS_ENEMIES._add_enemies(_o);
 			}
 		}
 		_this._standby = false;

@@ -2362,7 +2362,7 @@ class GameObject_SHOTS_RIPPLE_LASER
 					//RIPPLELASERでは、当たり判定後、
 					//画面内の全ての敵を参照し、
 					//RIPPLE範囲内の敵も当たり判定とみなす。
-					let _ens=_ENEMIES;
+					let _ens=_PARTS_ENEMIES._get_enemies();
 					for(let _i=0;_i<_ens.length;_i++){
 					let _en=_ens[_i];
 					//スタンバイは無視

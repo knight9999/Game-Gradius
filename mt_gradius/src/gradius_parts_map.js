@@ -27,7 +27,7 @@ const _PARTS_MAP = {
 	},
 	_move_maps() {
 		let _this = this;
-		for (let _k in _this._obj) {
+		for (let _k of Object.keys(_this._obj)) {
 			if (!_this._obj[_k].isshow() && !_this._obj[_k].isalive()) {
 				delete _this._obj[_k];
 				continue;
@@ -37,7 +37,7 @@ const _PARTS_MAP = {
 	},
 	_draw_maps() {
 		let _this = this;
-		Object.keys(_this._obj).map(_k => _this._obj[_k].setDrawImage());
+		Object.keys(_this._obj).forEach(_k => _this._obj[_k].setDrawImage());
 	}
 };
 
@@ -145,8 +145,7 @@ class MAP_OBJECT{
 	}
 	setDrawImage(){
 		let _this = this;
-		if(_this.x>_CANVAS.width){return;}
-		if(_this._status===0){return;}
+		if (!_this.isMove()) {return;}
 //		console.log(_this._status)
 		_GAME._setDrawImage({
 			img: _this.img,
@@ -165,9 +164,7 @@ class MAP_OBJECT{
 		_this.x = _MAP.getX(_this.x);
 		_this.y = _MAP.getY(_this.y);
 		_this.speed = _GET_DIF_ENEMY_SPEED();
-		if (!_this.isMove()) {
-			return;
-		}
+		if (!_this.isMove()) {return;}
 		_this.set_imgPos();
 		_this.moveSet();
 		_this.moveDraw();
@@ -666,6 +663,20 @@ class MAP_CELL_WALL extends MAP_OBJECT{
 		_this._status-=
 			_this._DEF_SHOTSTATUS[_s_type]||1;
 	}
+	setDrawImage() {
+		let _this = this;
+		if(_this.x>_CANVAS.width){return;}
+		if(!_this.isalive()){return;}
+		_GAME._setDrawImage({
+			img: _this.img,
+			imgPosx: _this.get_imgPos(),
+			x: _this.x,
+			y: _this.y,
+			width: _this.width,
+			height: _this.height,
+			basePoint: 1
+		});
+	}
 	isMove() {
 		let _this = this;
 		//move()判定処理
@@ -685,10 +696,6 @@ class MAP_CELL_WALL extends MAP_OBJECT{
 		if (!_this.isshow()) {
 			return false;
 		}
-		if (!_this.isalive()) {
-			_this.showCollapes();
-			return true;
-		}
 		return true;
 	}
 	moveDraw(){
@@ -698,7 +705,7 @@ class MAP_CELL_WALL extends MAP_OBJECT{
 			_this._status_count=0;
 			_this._status=1;
 			_MAP.set_mapdef_col(
-				_MAP.getMapX(_this.x)+1,
+				_MAP.getMapX(_this.x) + 1,
 				_MAP.getMapY(_this.y),
 				'1');
 		}
@@ -714,14 +721,6 @@ class MAP_CELL_WALL extends MAP_OBJECT{
 //			console.log('collision:::'+_MAP.getMapX(_this.x))
 			_this._status_count++;
 		}
-		// _GAME._setDrawImage({
-		// 	img:_this.img,
-		// 	x:_x,
-		// 	y:_y,
-		// 	width:_this.width,
-		// 	imgPosx:_this.imgPos[0],
-		// 	basePoint:1
-		// })
 	}
 }
 class MAP_CELL_G extends MAP_CELL_WALL{

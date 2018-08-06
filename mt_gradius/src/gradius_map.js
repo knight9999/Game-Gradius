@@ -421,7 +421,9 @@ class GameObject_MAP{
 			for (let _e in _d[_v].enemies){
 				_MAP_THEME[_v]['_enemies'][_e] = {
 					_gamestart(_x, _y, _md) {
-						_ENEMIES.push(_DEF_MAP_ENEMIES[_d[_v].enemies[_e]]._obj(_x,_y,_md))
+						_PARTS_ENEMIES._add_enemies(
+							_DEF_MAP_ENEMIES[_d[_v].enemies[_e]]._obj(_x, _y, _md)
+						);
 					},
 					_st: _DEF_MAP_ENEMIES[_d[_v].enemies[_e]]._st,
 					_getObj: _DEF_MAP_ENEMIES[_d[_v].enemies[_e]]._obj

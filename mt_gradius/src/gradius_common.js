@@ -16,8 +16,6 @@ const _FPS=60;
 const _CANVAS = document.getElementById('game')||{width:1000,height:500}; //キャンバス
 let _CONTEXT;
 
-let _ENEMIES=new Array();
-let _ENEMIES_SHOTS=new Array();
 let _POWERMETER='';
 let _STAGESELECT='';
 

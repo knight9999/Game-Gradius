@@ -4,6 +4,35 @@
 //	2017.08.12 : 新規作成
 //=====================================================
 'use strict';
+
+const _PARTS_ENEMIES={
+	_obj:new Array(),
+	_init() {
+		let _this = this;
+		_this._obj = new Array();
+	},
+	_reset() {
+		let _this = this;
+		_this._obj = new Array();
+	},
+	_get_enemies(){
+		return this._obj;
+	},
+	_add_enemies(_o){
+		if(_o===undefined){return;}
+		this._obj.push(_o);
+	},
+	_move_enemies() {
+		let _this = this;
+		_this._obj.map((_o)=>{_o.move();});
+	},
+	_draw_enemies() {
+		let _this = this;
+		_this._obj.map((_o)=>{_o.setDrawImage();});
+	}
+};
+
+
 //===========================================
 //敵クラス
 //（1）main.jsよりインスタンス＋初期化
@@ -16,8 +45,7 @@
 class GameObject_ENEMY{
 	constructor(_p){
 		let _this=this;
-		_this.id=_ENEMIES.length;
-		_this.gid=0;//敵のグループID
+		_this.id=_PARTS_ENEMIES._get_enemies().length;
 		_this.img=_p.img;//画像オブジェクト
 		_this.imgPos=_p.imgPos||[0];//スプライト時の画像
 		_this.aniItv=_p.aniItv||10;//スプライトアニメによる間隔(ms)
@@ -153,7 +181,7 @@ class GameObject_ENEMY{
 
 //		console.log(this.getEnemyCenterPosition()._x);
 		//敵の中心から弾を発射させるための位置調整
-		_ENEMIES_SHOTS.push(
+		_PARTS_ENEMY_SHOT._add_shot(
 			new GameObject_ENEMY_SHOT({
 				x:this.getEnemyCenterPosition()._x,
 				y:this.getEnemyCenterPosition()._y
@@ -360,7 +388,7 @@ class ENEMY_FAN extends GameObject_ENEMY{
 		];
 		//敵クラスに追加
 		for(let _i=0;_i<_this.parts.length;_i++){
-			_ENEMIES.push(_this.parts[_i]);
+			_PARTS_ENEMIES._add_enemies(_this.parts[_i]);
 		}
 	}
 	setDrawImage(){}
@@ -666,9 +694,9 @@ class ENEMY_c extends GameObject_ENEMY{
 		let _p=_PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
 		let _e=_this.getEnemyCenterPosition();
 		let _deg=_GAME.getDeg({x:_p._x,y:_p._y},{x:_e._x,y:_e._y});
-		_ENEMIES_SHOTS.push(
+		_PARTS_ENEMY_SHOT._add_shot(
 			new GameObject_ENEMY_SHOT({x:_e._x,y:_e._y,deg:_deg-10}));
-		_ENEMIES_SHOTS.push(
+		_PARTS_ENEMY_SHOT._add_shot(
 			new GameObject_ENEMY_SHOT({x:_e._x,y:_e._y,deg:_deg+10}));
 	}
 	moveSet(){
@@ -760,7 +788,7 @@ class ENEMY_f extends GameObject_ENEMY{
 
 		let _e=_this.getEnemyCenterPosition();
 		for(let _i=30;_i<=360;_i+=30){
-			_ENEMIES_SHOTS.push(
+			_PARTS_ENEMY_SHOT._add_shot(
 				new GameObject_ENEMY_SHOT({x:_e._x,y:_e._y,deg:_i})
 			);
 		}
@@ -868,7 +896,7 @@ class ENEMY_m extends GameObject_ENEMY{
 			y:_this.y+((_this.direct===_DEF_DIR._U)?15:-10),
 			direct:_this.direct
 		});
-		_ENEMIES.push(_cls);
+		_PARTS_ENEMIES._add_enemies(_cls);
 		
 	}
 }
@@ -974,7 +1002,7 @@ class ENEMY_n extends GameObject_ENEMY{
 					x:_this.x,
 					y:_this.y
 			});
-		_ENEMIES.push(_cls);
+		_PARTS_ENEMIES._add_enemies(_cls);
 	}
 }
 
@@ -996,7 +1024,7 @@ class ENEMY_o extends ENEMY_n{
 					x:_this.x,
 					y:_this.y
 				});
-		_ENEMIES.push(_cls);
+		_PARTS_ENEMIES._add_enemies(_cls);
 	}
 }
 
@@ -1122,7 +1150,7 @@ class ENEMY_p extends GameObject_ENEMY{
 		//バウンド定義
 		//敵同士ぶつかったときに跳ね返り動作をする
 		let _this=this;
-		let _eb=_ENEMIES;
+		let _eb=_PARTS_ENEMIES._get_enemies();
 		if(!_this.isalive()){return;}
 
 		for(let _i=0;_i<_eb.length;_i++){
@@ -1187,7 +1215,7 @@ class ENEMY_p extends GameObject_ENEMY{
 		];
 		for (let _i = 0; _i < set_enemies_p_parts.length; _i++) {
 			let _obj = set_enemies_p_parts[_i];
-			_ENEMIES.push(new ENEMY_p_small({
+			_PARTS_ENEMIES._add_enemies(new ENEMY_p_small({
 				img: _obj.img,
 				x: _cp._x+_obj.x,
 				y: _cp._y+_obj.y
@@ -1379,7 +1407,7 @@ class ENEMY_q extends GameObject_ENEMY{
 		//イオンリングを発射させる間隔調整
 		let _i = _GET_DIF_MOAI_RING_INT();
 		if(_this._open_count%_i!==0){return;}
-		_ENEMIES.push(
+		_PARTS_ENEMIES._add_enemies(
 			new ENEMY_moai_ring({
 				x:_this.x+parseInt(_this.shotColMap[0].split(',')[0]),
 				y:_this.y+parseInt(_this.shotColMap[0].split(',')[1]),
@@ -1573,7 +1601,7 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 		if (_this.is_nearby()) {return;}
 
 		let _eb_l=0;
-		let _eb=_ENEMIES;
+		let _eb=_PARTS_ENEMIES._get_enemies();
 		for(let _i=0;_i<_eb.length;_i++){
 			if(!ENEMY_frame_2.prototype.isPrototypeOf(_eb[_i])){continue;}
 			_eb_l++;
@@ -1582,7 +1610,7 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 		let _c=(_eb_l>20)?1:2;
 		for(let _i=0;_i<_c;_i++){
 			//オブジェクト追加
-			_ENEMIES.push(new ENEMY_frame_2({
+			_PARTS_ENEMIES._add_enemies(new ENEMY_frame_2({
 					x:_cp._x,
 					y:_cp._y,
 					direct:_this.direct,
@@ -1660,7 +1688,7 @@ class ENEMY_frame_2 extends ENEMY_frame_1 {
 		if (_this.is_nearby()) {return;}
 
 		let _eb_l=0;
-		let _eb=_ENEMIES;
+		let _eb=_PARTS_ENEMIES._get_enemies();
 		for(let _i=0;_i<_eb.length;_i++){
 			if(!ENEMY_frame_3.prototype.isPrototypeOf(_eb[_i])){continue;}
 			_eb_l++;
@@ -1669,7 +1697,7 @@ class ENEMY_frame_2 extends ENEMY_frame_1 {
 		let _c=(_eb_l>30)?0:2;
 		for(let _i=0;_i<_c;_i++){
 			//オブジェクト追加
-			_ENEMIES.push(new ENEMY_frame_3({
+			_PARTS_ENEMIES._add_enemies(new ENEMY_frame_3({
 					x:_cp._x,
 					y:_cp._y,
 					direct:_this.direct,
@@ -1871,7 +1899,7 @@ class ENEMY_cell_core
 				new ENEMY_cell_hand_3({x:_this.x,y:_this.y,rad:Math.PI*3/2-1.4,rad_min:Math.PI+0.3,rad_max:Math.PI+2.6,flag:true})
 			];
 			for(let _i=0;_i<_this.hands_up.length;_i++){
-				_ENEMIES.push(_this.hands_up[_i]);		
+				_PARTS_ENEMIES._add_enemies(_this.hands_up[_i]);		
 			}
 			//触手の下定義
 			_this.hands_down=[
@@ -1886,7 +1914,7 @@ class ENEMY_cell_core
 				new ENEMY_cell_hand_3({x:_this.x,y:_this.y,rad:Math.PI-0.7,rad_min:Math.PI-2.8,rad_max:Math.PI-0.1,flag:false})
 			];
 			for(let _i=0;_i<_this.hands_down.length;_i++){
-				_ENEMIES.push(_this.hands_down[_i]);		
+				_PARTS_ENEMIES._add_enemies(_this.hands_down[_i]);		
 			}
 		}
 	}
@@ -2175,7 +2203,7 @@ class ENEMY_cell_hand_3
 		
 		let _e=this.getEnemyCenterPosition();
 		//敵の中心から弾を発射させるための位置調整
-		_ENEMIES_SHOTS.push(
+		_PARTS_ENEMY_SHOT._add_shot(
 			new GameObject_ENEMY_SHOT({
 				x:_e._x,
 				y:_e._y,

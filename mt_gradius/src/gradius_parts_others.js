@@ -100,8 +100,8 @@ const _PARTS_OTHERS = {
 			}
 			if(_pwc.type==='blue'){
 				//CANVAS内の敵を外す
-				for (let _i = 0; _i < _ENEMIES.length; _i++) {
-					let _e = _ENEMIES[_i];
+				for (let _i = 0; _i < _PARTS_ENEMIES._get_enemies().length; _i++) {
+					let _e = _PARTS_ENEMIES._get_enemies()[_i];
 					if(_GAME.isEnemyCanvasOut(_e)){continue;}
 					if(_e.isStandBy()){continue;}
 					if(!_e.isAbleCollision()){continue;}
@@ -113,8 +113,9 @@ const _PARTS_OTHERS = {
 					}
 				}
 				//CANVAS内の敵のショットを全て外す
-				for (let _i = 0; _i < _ENEMIES_SHOTS.length; _i++) {
-					let _es = _ENEMIES_SHOTS[_i];
+				let _eshot= _PARTS_ENEMY_SHOT._get_shot();
+				for (let _i = 0; _i < _eshot.length; _i++) {
+					let _es = _eshot[_i];
 					if(_GAME.isEnemyCanvasOut(_es)){continue;}
 					_es.init();
 				}

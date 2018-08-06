@@ -4,6 +4,35 @@
 //	2018.04.13 : 新規作成
 //=====================================================
 'use strict';
+
+const _PARTS_ENEMY_SHOT={
+	_obj:new Array(),
+	_init() {
+		let _this = this;
+		_this._obj = new Array();
+	},
+	_reset() {
+		let _this = this;
+		_this._obj = new Array();
+	},
+	_get_shot(){
+		return this._obj;
+	},
+	_add_shot(_o){
+		if(_o===undefined){return;}
+		this._obj.push(_o);
+	},
+	_move_shot() {
+		let _this = this;
+		_this._obj.map((_o)=>{_o.move();});
+	},
+	_draw_shot() {
+		let _this = this;
+		_this._obj.map((_o)=>{_o.setDrawImage();});
+	}
+};
+
+
 //====================
 //　弾クラス
 //	_p.x:敵の弾発射開始x位置
@@ -217,7 +246,7 @@ class ENEMY_SHOT_FRAME
 		if(_this.ani_c===100){
 			let _e=_this.getEnemyCenterPosition();
 			for(let _i=30;_i<=360;_i+=30){
-				_ENEMIES_SHOTS.push(
+				_PARTS_ENEMY_SHOT._add_shot(
 					new ENEMY_SHOT_FRAME_SMALL({
 						x:_e._x,
 						y:_e._y,

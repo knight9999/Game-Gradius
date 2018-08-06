@@ -48,11 +48,6 @@ const _DRAW=()=>{
 		_PARTS_OTHERS._draw_background();
 
 		// console.log('2:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
-		//敵の弾を表示
-		for(let _i=0;_i<_ENEMIES_SHOTS.length;_i++){
-			if(_PARTS_PLAYERMAIN._players_obj.isalive()){_ENEMIES_SHOTS[_i].move();}
-			_ENEMIES_SHOTS[_i].setDrawImage();
-		}
 
 		if(_PARTS_PLAYERMAIN._players_obj.isalive()){
 			//MAPオブジェクトの最適化、移動
@@ -66,8 +61,8 @@ const _DRAW=()=>{
 			//パワーカプセルの移動
 			_PARTS_OTHERS._move_powercapsell();
 			//敵、衝突判定
-			_PARTS_PLAYERMAIN._enemy_shot_collision(_ENEMIES_SHOTS);
-			_PARTS_PLAYERMAIN._enemy_collision(_ENEMIES);
+			_PARTS_PLAYERMAIN._enemy_shot_collision(_PARTS_ENEMY_SHOT._get_shot());
+			_PARTS_PLAYERMAIN._enemy_collision(_PARTS_ENEMIES._get_enemies());
 			// console.log('7:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 			// console.log('8:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 			//MAP（自機ショット衝突判定）
@@ -76,16 +71,15 @@ const _DRAW=()=>{
 			//敵、衝突移動
 			_ENEMIES_CONTROL._move_collisions();
 			// console.log('10:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
+			_PARTS_ENEMY_SHOT._move_shot();
+			_PARTS_ENEMIES._move_enemies();
 		}
-
+		//敵の弾を表示
+		_PARTS_ENEMY_SHOT._draw_shot();
 		//パワーカプセル設定
 		_PARTS_OTHERS._set_powercapsell();
-
 		//敵を表示
-		for(let _i=0;_i<_ENEMIES.length;_i++){
-			if(_PARTS_PLAYERMAIN._players_obj.isalive()){_ENEMIES[_i].move();}
-			_ENEMIES[_i].setDrawImage();
-		}
+		_PARTS_ENEMIES._draw_enemies();
 		//ショットの移動調整
 		_PARTS_PLAYERMAIN._move_shots();
 		//パワーカプセルを表示
@@ -160,13 +154,13 @@ const _DRAW_MATCH_BOSS=()=>{
 		if(!_o._left){
 			//既存の敵を残さない場合は、
 			//敵・敵ショットのオブジェクトを全てリセットする。
-			_ENEMIES = [];
-			_ENEMIES_SHOTS = [];
+			_PARTS_ENEMIES._reset();
+			_PARTS_ENEMY_SHOT._reset();
 		}
 		//スクロールを止める
 		_DRAW_SCROLL_STOP();
 		_DRAW_MATCH_BOSS_OBJ = _o._obj();
-		_ENEMIES.push(_DRAW_MATCH_BOSS_OBJ);
+		_PARTS_ENEMIES._add_enemies(_DRAW_MATCH_BOSS_OBJ);
 		_o._bgmusic();
 	}
 
@@ -195,7 +189,6 @@ const _DRAW_MATCH_BOSS=()=>{
 
 	//ボスを倒した場合
 	if (!_DRAW_MATCH_BOSS_OBJ.isalive()) {
-//		_ENEMIES = [];
 		_DRAW_IS_MATCH_BOSS_MOVEX=true;
 		_DRAW_MATCH_BOSS_CLEAR_COUNT++;
 		_DRAW_MATCH_BOSS_COUNT=0;
@@ -452,9 +445,8 @@ const _DRAW_RESET_OBJECT=()=>{
 	_PARTS_MAP._init();
 
 	_PARTS_PLAYERMAIN._reset();
-
-	_ENEMIES=[];
-	_ENEMIES_SHOTS=[];
+	_PARTS_ENEMIES._reset();
+	_PARTS_ENEMY_SHOT._reset();
 	_POWERMETER='';
 
 	_ENEMIES_CONTROL._reset();

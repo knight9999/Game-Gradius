@@ -16,23 +16,30 @@
 <li>デバッグ用ステージ</li>
 </ol>
  
-対応端末
+<h2>対応端末</h2>
 <ul>
  <li>PC（Chrome、Safari最新版）</li>
  <li>iPhone,iPad（Safari：iOS11以上、CPU：A9以降推奨）</li>
 </ul>
+<p>
 iOSでは、Safariから「ホーム画面に書き出し」でホーム画面にアイコンを作り、そこからゲームします。  
 直接Safariでゲームをすると、アドレスバー等で表示が隠れてしまいます。
+ </p>
 
-操作説明 
-- [A]→ショット＋ミサイル（連射付き）
-- [B]→装備
-- [P]→一時停止
-- [S]→ステージ選択に戻る
-- [R]→再度やり直し  
- 
+<h2>操作説明</h2>
+<dl>
+ <dt>[A]→ショット＋ミサイル（連射付き）</dt>
+ <dt>[B]→装備</dt>
+ <dt>[P]→一時停止</dt>
+ <dt>[S]→ステージ選択に戻る</dt>
+ <dt>[R]→再度やり直し</dt>
+</dl>
+<p><img src="https://user-images.githubusercontent.com/12569855/43749020-630a5b26-9a2d-11e8-83bc-d13a3f485571.png"></p>
+<p><img src="https://user-images.githubusercontent.com/12569855/43749019-62c1d180-9a2d-11e8-9c56-d2fc6f76a98d.png"></p>
+<p><img src="https://user-images.githubusercontent.com/12569855/43749018-627f5cc4-9a2d-11e8-937d-07d0fa8d48a2.png"></p>
+  
 
-パワーアップ  
+<h2>パワーアップ  </h2>
 <table border="1" class="wikitable" style="text-align: center">
 <tbody><tr>
 <th>自機</th>
@@ -79,7 +86,7 @@ iOSでは、Safariから「ホーム画面に書き出し」でホーム画面�
 https://ja.wikipedia.org/wiki/%E3%82%B0%E3%83%A9%E3%83%87%E3%82%A3%E3%82%A6%E3%82%B9II_-GOFER%E3%81%AE%E9%87%8E%E6%9C%9B-#パワーアップ
   
   
-## Demo
+<h2>Demo</h2>
 <p>実際にプレイしたのを、YouTubeのプレイリストとして集めております。→<a href="https://youtu.be/MxeTU1rs_-0" target="_blank"><img src="https://user-images.githubusercontent.com/12569855/40031586-543899bc-582b-11e8-8992-9092bbfd0d72.png" width="50"></a></p>
 <ol>
 <li>モアイステージ(パワーアップ：タイプ1 iPhone 8Plus iOS11)

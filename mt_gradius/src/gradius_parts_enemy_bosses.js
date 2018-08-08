@@ -174,7 +174,6 @@ class ENEMY_BOSS_BIGCORE
 		_this.wall=[];
 		_this._wall_statuses='';
 
-		_this.tid=null;
 		_this._moveYStop=false;
 
 		_this.shotColMap=[
@@ -197,23 +196,28 @@ class ENEMY_BOSS_BIGCORE
 	}
 	shot(){
 		let _this=this;
-		if(Math.random()>0.02){return;}
-		_this._moveYStop=true;
-		for(let _i=0;_i<=105;_i=_i+35){
-		_PARTS_ENEMY_SHOT._add_shot(
-			new ENEMY_SHOT_LASER({
-				x: _this.x,
-				y: _this.y+_i,
-				img: _CANVAS_IMGS['enemy_bullet_z'].obj,
-				width: 45,
-				imgPos:[0]
-			}));
+		//ショット
+		//カウント150で1周
+		if (_this._count % 100 === 0) { //自機動かす
+			_this._moveYStop = false;
 		}
-		_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);		
-		_this.tid=setTimeout(function(){
-			_this._moveYStop=false;
-			clearTimeout(_this.tid);
-		},100);
+		if (_this._count % 100 > 80 && _this._count % 100 < 99) { //自機止める
+			_this._moveYStop = true;
+		}
+		if (_this._count % 100 === 80) {
+			for(let _i=0;_i<=105;_i=_i+35){
+			_PARTS_ENEMY_SHOT._add_shot(
+				new ENEMY_SHOT_LASER({
+					x: _this.x,
+					y: _this.y+_i,
+					img: _CANVAS_IMGS['enemy_bullet_z'].obj,
+					width: 45,
+					imgPos:[0]
+				}));
+			}
+			_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_bullet_laser']);		
+		}
+
 	}
 	move_Allset(){
 		let _this=this;
@@ -335,22 +339,21 @@ class ENEMY_BOSS_BIGCORE2
 				let _s=img.height;//サイズ
 				let _w=85;//幅
 				let _h=img.height;//高さ
-				_CONTEXT.drawImage(
-					img,
-					parseInt(this.st/3)*_w,
-					0,
-					_w,
-					_h,
-					_this.x+this.x,
-					_this.y+this.y,
-					_w,
-					_h
-				);
+
+				_GAME._setDrawImage({
+					img: img,
+					x: _this.x + this.x,
+					y: _this.y + this.y,
+					imgPosx: parseInt(this.st / 3) * _w,
+					width: _w,
+					height: _h,
+					basePoint: 1
+				});
 			}
 		};
 		//噴射画像の表示定義（下）
 		_this.back_img_down={
-			x:200,y:-120,st:0,flag:true,
+			x:200,y:30,st:0,flag:true,
 			s1:function(){
 				if(this.st>=5*3){this.flag=false;}
 				if(this.st<=2*3){this.flag=true;}
@@ -367,20 +370,16 @@ class ENEMY_BOSS_BIGCORE2
 				let _s=img.height;//サイズ
 				let _w=85;//幅
 				let _h=img.height;//高さ
-				_CONTEXT.save();
-				_CONTEXT.setTransform(1,0,0,-1,0,_this.y*2+img.height);
-				_CONTEXT.drawImage(
-					img,
-					parseInt(this.st/3)*_w,
-					0,
-					_w,
-					_h,
-					_this.x+this.x,
-					_this.y+this.y,
-					_w,
-					_h
-				);
-				_CONTEXT.restore();
+				_GAME._setDrawImage({
+					img: img,
+					x: _this.x + this.x,
+					y: _this.y + this.y + img.height,
+					imgPosx: parseInt(this.st / 3) * _w,
+					width: _w,
+					height: _h,
+					direct: _DEF_DIR._U,
+					basePoint: 1
+				});
 			}
 		};
 
@@ -1084,13 +1083,14 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 							-Math.sin(rad),Math.cos(rad),
 							cx-cx*Math.cos(rad)+cy*Math.sin(rad),
 							cy-cx*Math.sin(rad)-cy*Math.cos(rad));
-		_CONTEXT.drawImage(
-			_this.img,
-			_this._boss.x+parseInt(_d[0])+_ix,
-			_this._boss.y+parseInt(_d[1])+_iy,
-			_this.img.width,
-			_this.img.height
-		);
+		_GAME._setDrawImage({
+			img: _this.img,
+			x: _this._boss.x + parseInt(_d[0]) + _ix,
+			y: _this._boss.y + parseInt(_d[1]) + _iy,
+			width: _this.img.width,
+			height: _this.img.height,
+			basePoint: 1
+		});
 		_CONTEXT.restore();
 	}
 	moveDraw(_o){

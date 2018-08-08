@@ -633,14 +633,14 @@ const _GAME={//ゲーム用スクリプト
 		_CONTEXT.translate(_x,_y);
 		((_direct)=>{
 			if (_direct === undefined) return;
-			if (_direct === _DEF_DIR._U) {
-				_CONTEXT.setTransform(-1, 0, 0, -1, _x * 2 + _width, _y * 2 + _height);
+			if (_direct === _DEF_DIR._U) {//上
+				_CONTEXT.setTransform(1, 0, 0, -1, _x, _y + _height);
 			}
-			if (_direct === _DEF_DIR._LU) {
-				_CONTEXT.setTransform(-1, 0, 0, 1, _DEF_BASEPOINT[_basePoint].x * 2 + _width, 0);
+			if (_direct === _DEF_DIR._LU) {//上の左向
+				_CONTEXT.setTransform(-1, 0, 0, -1, _x + _width, _y + _height);
 			}
-			if (_direct === _DEF_DIR._LD) {
-				_CONTEXT.setTransform(1, 0, 0, -1, 0, _y * 2 + _height);
+			if (_direct === _DEF_DIR._LD) {//下の左向
+				_CONTEXT.setTransform(-1, 0, 0, 1, _x + _width, _y);
 			}
 		})(_d.direct);
 		if (_d.alpha !== undefined) _CONTEXT.globalAlpha = _alpha;

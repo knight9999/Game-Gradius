@@ -201,75 +201,22 @@ class GameObject_ENEMY{
 		let _this=this;
 		return _this.imgPos[parseInt(_this._c/_this.aniItv)]||0;
 	}
-	setDrawImageDirect(){
-		let _this=this;
-		if(_this.direct===_DEF_DIR._U){
-			_CONTEXT.setTransform(1,0,0,-1,0,_this.y*2+_this.height);
-		}
-		if(_this.direct===_DEF_DIR._LU){
-			_CONTEXT.setTransform(-1,0,0,-1,_this.x*2+_this.width,_this.y*2+_this.height);
-		}
-		if(_this.direct===_DEF_DIR._LD){
-			_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.width,0);
-		}
-		return;
-	}
 	setDrawImage(){
 		let _this=this;
 		if(!_this.isMove()){return;}
-		_CONTEXT.save();
-		_this.setDrawImageDirect();
-		_CONTEXT.globalAlpha = _this.alpha;
-		_CONTEXT.drawImage(
-			_this.img,
-			_this.get_imgPos(),
-			0,
-			_this.width,
-			_this.height,
-			_this.x,
-			_this.y,
-			_this.width,
-			_this.height
-		);
-
-		if(_ISDEBUG){
-			_CONTEXT.strokeStyle='rgba(200,200,255,0.5)';
-			_CONTEXT.beginPath();
-			_CONTEXT.rect(
-					_this.x,
-					_this.y,
-					_this.width,
-					_this.height
-			);
-			_CONTEXT.stroke();	
-		}
-		_CONTEXT.restore();
+		_GAME._setDrawImage({
+			img: _this.img,
+			x: _this.x,
+			y: _this.y,
+			imgPosx: _this.get_imgPos(),
+			width: _this.width,
+			height: _this.height,
+			direct: _this.direct,
+			basePoint: 1
+		});
 	}
 	//===原則以下のメソッドのみ継承クラスが
 	//===カスタマイズできる関数
-	setDrawImageDirect(){
-		//_CONTEXTを使った向きの調整
-		// let rad = -180 * Math.PI/180; 
-		// var cx = _this.x + _this.img.width/2;
-        // var cy = _this.y + _this.img.height/2;
-        // // 画像を中心にして回転
-		// _CONTEXT.setTransform(Math.cos(rad), Math.sin(rad),
-		// 					-Math.sin(rad), Math.cos(rad),
-		// 					cx-cx*Math.cos(rad)+cy*Math.sin(rad),
-		// 					cy-cx*Math.sin(rad)-cy*Math.cos(rad));
-//		_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.img.width,0);
-		let _this=this;
-		if(_this.direct===_DEF_DIR._U){
-			_CONTEXT.setTransform(1,0,0,-1,0,_this.y*2+_this.img.height);
-		}
-		if(_this.direct===_DEF_DIR._LU){
-			_CONTEXT.setTransform(-1,0,0,-1,_this.x*2+_this.img.width,_this.y*2+_this.img.height);
-		}
-		if(_this.direct===_DEF_DIR._LD){
-			_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.img.width,0);
-		}
-		return;
-	}
 	isStandBy(){return this._standby;}
 	isCanvasOut(){
 		//敵位置がキャンバス以外に位置されてるか。
@@ -494,25 +441,26 @@ class ENEMY_a extends GameObject_ENEMY{
 	}
 	setDrawImageDirect(){
 		let _this=this;
-		//向き・表示の設定
-		if(_this.direct===_DEF_DIR._U){
-			if(_PARTS_PLAYERMAIN._players_obj.x<_this.x){
-				_CONTEXT.setTransform(1,0,0,-1,0,_this.y*2+_this.height);
-			}else{
-				_CONTEXT.setTransform(-1,0,0,-1,_this.x*2+_this.width,_this.y*2+_this.height);			
-			}
+		//向き・位置の設定
+		//上
+		if (_this.direct === _DEF_DIR._U || _this.direct === _DEF_DIR._LU) {
+			_this.direct=
+				(_PARTS_PLAYERMAIN._players_obj.x < _this.x)
+				?_this.direct = _DEF_DIR._U//左向
+				:_this.direct = _DEF_DIR._LU;//右向
 		}
-		if(_this.direct===_DEF_DIR._D){
-			if(_PARTS_PLAYERMAIN._players_obj.x<_this.x){
-				_CONTEXT.setTransform(1,0,0,1,0,0);
-			}else{
-				_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.width,0);
-			}
+		//下
+		if (_this.direct === _DEF_DIR._D || _this.direct === _DEF_DIR._LD) {
+			_this.direct = 
+				(_PARTS_PLAYERMAIN._players_obj.x < _this.x)
+				? _this.direct = _DEF_DIR._D //左向
+				: _this.direct = _DEF_DIR._LD; //右向
 		}
 	}
 	moveSet(){
 		let _this=this;
 		//砲台の向き設定
+		_this.setDrawImageDirect();
 		_this.imgPos=((_y)=>{
 			if(_y>150){
 				return [0];
@@ -1104,6 +1052,7 @@ class ENEMY_p extends GameObject_ENEMY{
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 		_this.audio_collision = _CANVAS_AUDIOS['enemy_collision4'];
 
+		_this.shotColMap = ['10,10,' + (_this.width - 20) + ',' + (_this.height - 20)];
 		_this._s='0000,0000,0000,0000';
 	}
 	setAlive(){
@@ -1265,6 +1214,7 @@ class ENEMY_p_small extends ENEMY_p {
 		_this.col_date=new Date();
 		_this._collision_type='t1';
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER = 1;
+		_this.shotColMap = ['0,0,' + (_this.width) + ',' + (_this.height)];
 		
 	}
 	setAlive(){

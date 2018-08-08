@@ -149,8 +149,8 @@ class GameObject_ENEMY_SHOT{
 			_this.init();
 			return;
 		}
-		_this.x+=_this.sx*_this.speed;
-		_this.y+=_this.sy*_this.speed;
+		_this.x+=(parseInt(_this.sx*5)/5)*_this.speed;
+		_this.y+=(parseInt(_this.sy*5)/5)*_this.speed;
 
 		_this.set_imgPos();
 	}
@@ -165,16 +165,8 @@ class ENEMY_SHOT_LASER
 			img:_p.img||_CANVAS_IMGS['enemy_bullet_laser'].obj,
 			width:_p.width||30
 		});
-		this.speed=10;
+		this.speed = _GET_DIF_SHOT_SPEED() * 4;
 	}
-	// setDrawImage(){
-	// 	let _this=this;
-	// 	_GAME._setDrawImage({
-	// 		img:_this.img,
-	// 		x:_this.x,
-	// 		y:_this.y
-	// 	});
-	// }
 	move(){
 		let _this=this;
 		if(_GAME.isEnemyCanvasOut(_this)){
@@ -200,15 +192,6 @@ class ENEMY_SHOT_CRYSTALCORE
 		let _this=this;
 		_this.speed=10;
 	}
-	// setDrawImage(){
-	// 	let _this=this;
-	// 	_GAME._setDrawImage({
-	// 		img:_this.img,
-	// 		x:_this.x,
-	// 		y:_this.y,
-	// 		deg:_this.deg
-	// 	});
-	// }
 	move(){
 		let _this=this;
 		if(_GAME.isEnemyCanvasOut(_this)){
@@ -310,15 +293,6 @@ class ENEMY_SHOT_DEATH
 		_this.img=_CANVAS_IMGS['enemy_death_shot'].obj;
 		_this.speed=1;
 	}
-	// setDrawImage(){
-	// 	let _this=this;
-	// 	_GAME._setDrawImage({
-	// 		img:_this.img,
-	// 		x:_this.x,
-	// 		y:_this.y,
-	// 		deg:_this.deg
-	// 	});
-	// }
 	move(){
 		let _this=this;
 		if(_GAME.isEnemyCanvasOut(_this)){

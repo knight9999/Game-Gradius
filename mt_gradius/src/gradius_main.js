@@ -535,12 +535,16 @@ const _DRAW_OPENING=()=>{
 		_CONTEXT.clearRect(0, 0, _CANVAS.width, _CANVAS.height);
 
 		//背景
-		_CONTEXT.save();
-		_CONTEXT.globalAlpha = 0.5;
-		_CONTEXT.drawImage(
-			_CANVAS_IMGS_INIT.gradius_background.obj,0,0,1000,500);
-		_CONTEXT.restore();
-
+		_GAME._setDrawImage({
+			img: _CANVAS_IMGS_INIT.gradius_background.obj,
+			width: 1000,
+			height: 500,
+			t_width: 640,
+			t_height: 418,
+			alpha: 0.5,
+			basePoint: 1
+		});
+	
 		//ロゴ
 		_GAME._setDrawImage({
 			img: _CANVAS_IMGS_INIT.gradius_logo.obj,

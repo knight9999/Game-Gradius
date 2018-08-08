@@ -339,6 +339,27 @@ const _GAME={//ゲーム用スクリプト
 				this._url_params[_p[0]]=_p[1];
 		}
 	},
+	isObjsLessDistance(_p){
+		if(_p===undefined){return false;}
+		//プレーヤーと敵オブジェクトの距離
+		//_p.p:プレーヤーオブジェクト
+		//_p.e:敵オブジェクト
+		//_p.d:距離
+		//return:
+		//true:距離以内
+		//false:距離以上
+		if(_p.p===undefined||_p.e===undefined){return false;}
+		let _op=_p.p.getPlayerCenterPosition();
+		let _oe=_p.e.getEnemyCenterPosition();
+		let _d=_p.d||100;
+		let _d_x = Math.abs(_op._x - _oe._x);
+		let _d_y = Math.abs(_op._y - _oe._y);
+		let _d_l = Math.sqrt(
+			Math.pow(_d_x, 2) + Math.pow(_d_y, 2)
+		); //斜辺
+		if(_d_l<_d){return true;}
+		return false;
+	},
 	isShotCanvasOut(_t){
 		if(_t.x<-_MAP.t
 			||_t.x>_CANVAS.width+_MAP.t
@@ -540,6 +561,10 @@ const _GAME={//ゲーム用スクリプト
 		//		0の場合は表示しない。
 		//basePoint:拡縮・回転時の基準点
 		//alpha:透明度
+		//direct:CANVASによるオブジェクト配置
+		//		_DEF_DIR._D:下向き
+		//		_DEF_DIR._LD:左下向き
+		//		_DEF_DIR._LU:左上向き
 	
 		//以下は描画処理させない
 		//引数未定義は終了
@@ -559,8 +584,11 @@ const _GAME={//ゲーム用スクリプト
 		let _y=_d.y||0;
 		let _basePoint=_d.basePoint||5;//拡縮による基準点
 		let _alpha=(_d.alpha===undefined)?1:_d.alpha;//透明度
+		let _direct=(_d.direct===undefined)?_DEF_DIR._D:_d.direct;//向き
 	
 		if(_d.basePoint===1
+			&&_d.t_width===undefined
+			&&_d.t_height===undefined
 			&&_d.imgPosx===undefined
 			&&_d.alpha===undefined
 			&&_d.scale===undefined
@@ -574,6 +602,17 @@ const _GAME={//ゲーム用スクリプト
 				_width,
 				_height		
 			);
+
+			if (_ISDEBUG) {
+				_CONTEXT.strokeStyle = 'rgba(200,200,255,0.5)';
+				_CONTEXT.beginPath();
+				_CONTEXT.rect(
+					_x,_y,
+					_width,
+					_height
+				);
+				_CONTEXT.stroke();
+			}
 			return;
 		}
 	
@@ -591,11 +630,22 @@ const _GAME={//ゲーム用スクリプト
 		]
 	
 		_CONTEXT.save();
-		_CONTEXT.globalAlpha=_alpha;
 		_CONTEXT.translate(_x,_y);
-		_CONTEXT.rotate(_deg*Math.PI/180);
-	//	console.log(_scale)
-		_CONTEXT.scale(_scale,_scale);
+		((_direct)=>{
+			if (_direct === undefined) return;
+			if (_direct === _DEF_DIR._U) {//上
+				_CONTEXT.setTransform(1, 0, 0, -1, _x, _y + _height);
+			}
+			if (_direct === _DEF_DIR._LU) {//上の左向
+				_CONTEXT.setTransform(-1, 0, 0, -1, _x + _width, _y + _height);
+			}
+			if (_direct === _DEF_DIR._LD) {//下の左向
+				_CONTEXT.setTransform(-1, 0, 0, 1, _x + _width, _y);
+			}
+		})(_d.direct);
+		if (_d.alpha !== undefined) _CONTEXT.globalAlpha = _alpha;
+		if (_d.deg !== undefined) _CONTEXT.rotate(_deg * Math.PI / 180);
+		if (_d.scale !== undefined) _CONTEXT.scale(_scale, _scale);
 		_CONTEXT.drawImage(
 			_d.img,
 			_imgPosx,
@@ -608,7 +658,19 @@ const _GAME={//ゲーム用スクリプト
 			_height		
 		);
 		_CONTEXT.restore();
-		
+
+		if (_ISDEBUG) {
+			_CONTEXT.strokeStyle = 'rgba(200,200,255,0.5)';
+			_CONTEXT.beginPath();
+			_CONTEXT.rect(
+				_x,
+				_y,
+				_width*_scale,
+				_height*_scale
+			);
+			_CONTEXT.stroke();
+		}
+
 	},
 	_multilineText(context, text, width) {
 		let len=text.length,

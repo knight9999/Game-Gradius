@@ -287,31 +287,30 @@ class GameObject_PM{
 		//メーターを表示
 		//もともと7列の画像なので、
 		//表示配置xは36ピクセル右に位置させる。
-		_CONTEXT.drawImage(
-			_this.img,
-			0,0,_this.img.width-71,_this.img.height,
-			_this.x+36,
-			_this.y,
-			_this.img.width-71,
-			_this.img.height
-		);
+		_GAME._setDrawImage({
+			img: _this.img,
+			x: _this.x + 36,
+			y: _this.y,
+			t_width: _this.img.width - 71,
+			width: _this.img.width - 71,
+			height: _this.img.height,
+			basePoint: 1
+		});
 
 		//各ステータスでメーターを上書
 		//※装備ずみ
 		for(let _i=0;
 			_i<this.meterdef_status.length;_i++){
 			if(this.meterdef_status[_i]!=='0'){continue;}
-			_CONTEXT.drawImage(
-				_this.img,
-				_this.img.width-72,
-				0,
-				72,
-				_this.img.height,
-				_this.x+36+(72*_i),
-				_this.y,
-				72,
-				_this.img.height
-			);
+			_GAME._setDrawImage({
+				img: _this.img,
+				x: _this.x + 36 + (72 * _i),
+				y: _this.y,
+				imgPosx: _this.img.width - 72,
+				width: 72,
+				height: _this.img.height,
+				basePoint: 1
+			});
 		}
 
 		//パワーカプセル取得時のステータス
@@ -324,17 +323,15 @@ class GameObject_PM{
 			((_mc&_ms)!==0)//装備ステータスで判定
 			?72*_this.meterdef_current.indexOf('1')
 			:_img_e.width-72;
-		_CONTEXT.drawImage(
-			_img_e,
-			_e_pos,
-			0,
-			72,
-			_img_e.height,
-			_this.x+36+(72*_this.meterdef_current.indexOf('1')),
-			_this.y,
-			72,
-			_img_e.height
-		);
+		_GAME._setDrawImage({
+			img: _img_e,
+			x: _this.x + 36 + (72 * _this.meterdef_current.indexOf('1')),
+			y: _this.y,
+			imgPosx: _e_pos,
+			width: 72,
+			height: _img_e.height,
+			basePoint: 1
+		});
 	}
 
 	pms_disp(){
@@ -355,36 +352,37 @@ class GameObject_PM{
 		})
 
 		//センタリングに表示
-		_CONTEXT.drawImage(
-			this.pms_img,
-			(_CANVAS.width/2)-(this.pms_img.width/2),
-			70,
-			this.pms_img.width,
-			this.pms_img.height
-		);
+		_GAME._setDrawImage({
+			img: this.pms_img,
+			x: (_CANVAS.width / 2) - (this.pms_img.width / 2),
+			y: 70,
+			width: this.pms_img.width,
+			height: this.pms_img.height,
+			basePoint: 1
+		});
 
 		//SHIELD表示
-		_CONTEXT.drawImage(
-			_CANVAS_IMGS['meter'].obj,
-			360,
-			0,
-			72,
-			19,
-			290,
-			430,
-			72,
-			19
-		);
+		_GAME._setDrawImage({
+			img: _CANVAS_IMGS['meter'].obj,
+			imgPosx: 360,
+			imgPosy: 0,
+			x: 290,
+			y: 430,
+			width: 72,
+			height: 19,
+			basePoint: 1
+		});
 
 		//SHIELD選択表示
 		let _pms=_CANVAS_IMGS_INIT['gradius_powermeterselect_shield'].obj;
-		_CONTEXT.drawImage(
-			_pms,
-			470,
-			390,
-			_pms.width,
-			_pms.height
-		);
+		_GAME._setDrawImage({
+			img: _pms,
+			x: 470,
+			y: 390,
+			width: _pms.width,
+			height: _pms.height,
+			basePoint: 1
+		});
 
 	}
 	set_pms_status(_p){
@@ -407,29 +405,28 @@ class GameObject_PM{
 		let _this=this;
 		_this.pms_disp();
 		//パワーメータ選択済み
-		_CONTEXT.drawImage(
-			_this.pms_img_selected,
-			0,
-			_this.pms_selected[_this._c_pms],
-			420,
-			74,
-			(_CANVAS.width/2)-(_this.pms_img.width/2),
-			_this.pms_selected[_this._c_pms]+70,
-			420,
-			74
-		);
+		_GAME._setDrawImage({
+			img: _this.pms_img_selected,
+			imgPosx: 0,
+			imgPosy: _this.pms_selected[_this._c_pms],
+			x: (_CANVAS.width / 2) - (_this.pms_img.width / 2),
+			y: _this.pms_selected[_this._c_pms] + 70,
+			width: 420,
+			height: 74,
+			basePoint: 1
+		});
+
 		//SHIELDパワーメータ選択済み
-		_CONTEXT.drawImage(
-			_this.pms_img_shield_selected,
-			_this.pmss_selected[_this._c_pmss],
-			0,
-			85,
-			75,
-			_this.pmss_selected[_this._c_pmss]+470,
-			390,
-			85,
-			75
-		);
+		_GAME._setDrawImage({
+			img: _this.pms_img_shield_selected,
+			imgPosx: _this.pmss_selected[_this._c_pmss],
+			imgPosy: 0,
+			x: _this.pmss_selected[_this._c_pmss] + 470,
+			y: 390,
+			width: 85,
+			height: 75,
+			basePoint: 1
+		});
 	}
 
 }

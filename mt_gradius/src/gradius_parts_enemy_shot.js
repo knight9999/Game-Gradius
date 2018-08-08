@@ -149,8 +149,8 @@ class GameObject_ENEMY_SHOT{
 			_this.init();
 			return;
 		}
-		_this.x+=_this.sx*_this.speed;
-		_this.y+=_this.sy*_this.speed;
+		_this.x+=(parseInt(_this.sx*5)/5)*_this.speed;
+		_this.y+=(parseInt(_this.sy*5)/5)*_this.speed;
 
 		_this.set_imgPos();
 	}

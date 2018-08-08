@@ -172,6 +172,7 @@ class GameObject_ENEMY{
 	isalive(){return (this._status>0);}
 	isshow(){return this._isshow;}
 	isshot(){
+		if(_GAME.isObjsLessDistance({e:this,p:_PARTS_PLAYERMAIN._players_obj})){return false;}
 		return (Math.random() < _GET_DIF_SHOT_RATE());
 	}
 	shot(){
@@ -1045,8 +1046,8 @@ class ENEMY_o_small extends GameObject_ENEMY{
 		_this.getscore=100;
 		_this.speedX=Math.random()*(5-1)+1;//火山スピード（X軸）
 		_this.flagX=Math.random()>0.5?1:-1;//火山X軸向き（>0:右,<0:左）
-		_this.speedY=0.2;//火山スピード(Y軸)
-		_this._v=-10;//火山の高さ調整
+		_this.speedY=parseInt(Math.random()*5)/10;//火山スピード(Y軸)正数
+		_this._v=parseInt(Math.random()*5+5)*-1;//火山の高さ調整
 
 		_this._collision_type='t2';
 	}
@@ -1065,7 +1066,7 @@ class ENEMY_o_small extends GameObject_ENEMY{
 	moveSet(){
 		let _this=this;
 		_this.map_collition();
-		_this.x-=(_this.speedX*_this.flagX);
+		_this.x+=(_this.speedX*_this.flagX);
 		_this.y+=_this._v;
 		_this._v+=_this.speedY;
 	}
@@ -1080,8 +1081,8 @@ class ENEMY_n_small extends ENEMY_o_small{
 			direct:_p.direct
 		});
 		let _this=this;
-		_this.speedY=-0.2;//火山スピード(Y軸)		
-		_this._v=10;//火山の高さ調整
+		_this.speedY = (parseInt(Math.random() * 5) / 10)*-1; //火山スピード(Y軸)
+		_this._v = parseInt(Math.random() * 5 + 5); //火山の高さ調整
 	}
 }
 
@@ -1494,7 +1495,6 @@ class ENEMY_moai_ring extends GameObject_ENEMY{
 		_this.rad=_GAME.getRad(_PARTS_PLAYERMAIN._players_obj,{x:_p.x,y:_p.y});
 		_this.sx=Math.cos(_this.rad);
 		_this.sy=Math.sin(_this.rad);
-		_this.speed=2;
 
 		//レーザーのみ当たり判定を通常の半分にする。
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
@@ -1529,10 +1529,10 @@ class ENEMY_moai_ring extends GameObject_ENEMY{
 	shot(){}
 	moveSet(){
 		let _this=this;
-		_this.speed -= 1;
 		_this.map_collition();
-		_this.x+=_this.sx*_this.speed;
-		_this.y+=_this.sy*_this.speed;
+		_this.speed-=0.5;
+		_this.x+=(parseInt(_this.sx*5)/5)*_this.speed;
+		_this.y+=(parseInt(_this.sy*5)/5)*_this.speed;
 		
 		_this.set_imgPos();
 	}
@@ -1584,11 +1584,11 @@ class ENEMY_frame_1 extends GameObject_ENEMY{
 		}
 	}
 	is_nearby(){
-		let _this=this;
-		let _cp = _this.getEnemyCenterPosition();
-		let _p = _PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition();
-
-		return (Math.sqrt(Math.pow(_p._x - _cp._x, 2), Math.pow(_p._y - _cp._y, 2)) < 200);
+		return (_GAME.isObjsLessDistance({
+				e: this,
+				p: _PARTS_PLAYERMAIN._players_obj,
+				d: 200
+			}));
 	}
 	showCollapes(){
 		let _this=this;
@@ -1662,7 +1662,7 @@ class ENEMY_frame_2 extends ENEMY_frame_1 {
 		
 		_this._isbroken=false;
 		_this.shotColMap=[
-			"5,5,"+(_this.width-5)+","+(_this.height-5)
+			"10,10,"+(_this.width-10)+","+(_this.height-10)
 		];
 		_this._standby=false;
 	}
@@ -1676,8 +1676,21 @@ class ENEMY_frame_2 extends ENEMY_frame_1 {
 			y:_this.y,
 			deg:_this.deg+180,
 			width:_this.width,
-			imgPosx:_this.get_imgPos()
+			imgPosx:_this.get_imgPos(),
+			basePoint:1
 		});
+		if (_ISDEBUG) {
+			_CONTEXT.strokeStyle = 'rgba(200,200,255,0.5)';
+			_CONTEXT.beginPath();
+			_CONTEXT.rect(
+				_this.x,
+				_this.y,
+				_this.width,
+				_this.height
+			);
+			_CONTEXT.stroke();
+		}
+
 	}
 	showCollapes(){
 		let _this=this;
@@ -1719,7 +1732,7 @@ class ENEMY_frame_3 extends ENEMY_frame_2{
 			y:_p.y,
 			direct:_p.direct,
 			width:30,
-			imgPos:[0,30]
+			imgPos:[0,30],
 		});
 		let _this=this;
 		_this._isbroken=false;
@@ -1727,7 +1740,7 @@ class ENEMY_frame_3 extends ENEMY_frame_2{
 		_this.deg = _this.rad / Math.PI * 180;
 
 		_this.shotColMap=[
-			"5,5,"+(_this.width-5)+","+(_this.height-5)
+			"10,10,"+(_this.width-10)+","+(_this.height-10)
 		];
 		//無敵だが衝突を無視し、"ある程度"ショットは通過できる
 		_this.is_able_collision=false;

@@ -333,7 +333,7 @@ const _PARTS_PLAYERMAIN={
 
 		for (let _i = _es.length-1; _i>=0 ; _i--) {
 			let _e=_es[_i];
-			if (!_e.isshow()) {_es.splice(_i, 1);}
+			if (!_e.isshow()) {_es.splice(_i, 1);continue;}
 
 			//自機衝突判定
 			_this._players_obj.enemy_shot_collision(_e);
@@ -853,30 +853,26 @@ class GameObject_PLAYER_MAIN
 	setDrawImage(){
 		let _this=this;
 		//自機
-		_CONTEXT.drawImage(
-			_this.img,
-			_this._img_vv,
-			0,
-			_this.imgsize,
-			_this.imgsize,
-			_this.x,
-			_this.y,
-			_this.imgsize,
-			_this.imgsize
-		);
+		_GAME._setDrawImage({
+			img: _this.img,
+			x: _this.x,
+			y: _this.y,
+			imgPosx: _this._img_vv,
+			width: _this.imgsize,
+			height: _this.imgsize,
+			basePoint: 1
+		});
 
 		//噴射
-		_CONTEXT.drawImage(
-			_this.img_vb,
-			_this._img_vb,
-			0,
-			_this.imgsize_vb,
-			_this.imgsize_vb,
-			_this.x,
-			_this.y+22,
-			_this.imgsize_vb,
-			_this.imgsize_vb
-		);
+		_GAME._setDrawImage({
+			img: _this.img_vb,
+			x: _this.x,
+			y: _this.y+22,
+			imgPosx: _this._img_vb,
+			width: _this.imgsize_vb,
+			height: _this.imgsize_vb,
+			basePoint: 1
+		});
 
 		//デバッグモードでは当たり判定を表示させる
 		if(_ISDEBUG){
@@ -1625,30 +1621,16 @@ class GameObject_SHOTS_MISSILE
 				_this.collapse_missile(_t);
 				continue;
 			}
-//			console.log(_t.y)
-			_CONTEXT.drawImage(
-				_t._img,
-				_this.st[_this.get_missile_status(_t)],
-				0,
-				_this.imgsize,
-				_this.imgsize,
-				_t.x,
-				_t.y,
-				_this.imgsize,
-				_this.imgsize
-			);
 
-			if(_ISDEBUG){
-				_CONTEXT.strokeStyle='rgba(200,200,255,0.5)';
-				_CONTEXT.beginPath();
-				_CONTEXT.rect(
-						_t.x,
-						_t.y,
-						_this.imgsize,
-						_this.imgsize
-				);
-				_CONTEXT.stroke();	
-			}
+			_GAME._setDrawImage({
+				img: _t._img,
+				x: _t.x,
+				y: _t.y,
+				imgPosx: _this.st[_this.get_missile_status(_t)],
+				width: _this.imgsize,
+				height: _this.imgsize,
+				basePoint: 1
+			});
 		}
 	}
 	move(){
@@ -2060,13 +2042,14 @@ class GameObject_SHOTS_NORMAL
 			if(!_t._shot_alive){continue;}
 
 			let _img=_CANVAS_IMGS['shot1'].obj;
-			_CONTEXT.drawImage(
-				_img,
-				_t.x,
-				_t.y,
-				_img.width,
-				_img.height
-			);
+			_GAME._setDrawImage({
+				img: _img,
+				x: _t.x,
+				y: _t.y,
+				width: _img.width,
+				height: _img.height,
+				basePoint: 1
+			});
 		}
 	}
 	move(){
@@ -2209,13 +2192,14 @@ class GameObject_SHOTS_DOUBLE
 		for(let _j=0;_j<this.shots.length;_j++){
 			let _t=this.shots[_j];
 			if(!_t._shot_alive){continue;}
-			_CONTEXT.drawImage(
-				_t.img,
-				_t.x,
-				_t.y,
-				_t.img.width,
-				_t.img.height
-			);
+			_GAME._setDrawImage({
+				img: _t.img,
+				x: _t.x,
+				y: _t.y,
+				width: _t.img.width,
+				height: _t.img.height,
+				basePoint: 1
+			});
 		}
 	}
 	move(){
@@ -2562,17 +2546,15 @@ class GameObject_SHOTS_LASER
 		if(_t._laser_MaxX>=_CANVAS.width){return;}
 		_t._c_col=(_t._c_col>=_this.img_col_ani.length-1)?0:_t._c_col+1;
 
-		_CONTEXT.drawImage(
-			_this.img_col,
-			_this.img_col_ani[_t._c_col],
-			0,
-			_this.imgsize_col,
-			_this.imgsize_col,
-			_t._laser_MaxX-_this.width_col,
-			_t.y-(_this.img_col.height/2),
-			_this.imgsize_col,
-			_this.imgsize_col
-		);
+		_GAME._setDrawImage({
+			img: _this.img_col,
+			imgPosx: _this.img_col_ani[_t._c_col],
+			x: _t._laser_MaxX - _this.width_col,
+			y: _t.y - (_this.img_col.height / 2),
+			width: _this.imgsize_col,
+			height: _this.imgsize_col,
+			basePoint: 1
+		});
 	}
 	enemy_collision(_e){
 		let _this=this;

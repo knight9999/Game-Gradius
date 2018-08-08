@@ -2653,41 +2653,36 @@ class ENEMY_DEATH_LASER
 	setDrawImage(){
 		let _this=this;
 		//先頭(width:40)
-		_CONTEXT.drawImage(
-			_this.img,
-			0,
-			0,
-			40,
-			_this.height,
-			_this.x,
-			_this.y,
-			40,
-			_this.height		
-		);
+		_GAME._setDrawImage({
+			img: _this.img,
+			t_width: 40,
+			x: _this.x,
+			y: _this.y,
+			width: 40,
+			height: _this.height,
+			basePoint: 1
+		});
 		//真ん中
-		_CONTEXT.drawImage(
-			_this.img,
-			40,
-			0,
-			10,
-			_this.height,
-			_this.x+40,
-			_this.y,
-			_this.bossx-_this.x-25,
-			_this.height		
-		);
+		_GAME._setDrawImage({
+			img: _this.img,
+			imgPosx: 40,
+			t_width: 10,
+			x: _this.x+40,
+			y: _this.y,
+			width: _this.bossx - _this.x - 25,
+			height: _this.height,
+			basePoint: 1
+		});
 		//後方(width:70)
-		_CONTEXT.drawImage(
-			_this.img,
-			70,
-			0,
-			70,
-			_this.height,
-			_this.bossx,
-			_this.y,
-			70,
-			_this.height		
-		);
+		_GAME._setDrawImage({
+			img: _this.img,
+			imgPosx: 70,
+			x: _this.bossx,
+			y: _this.y,
+			width: 70,
+			height: _this.height,
+			basePoint: 1
+		});
 	}
 	move(){
 		let _this=this;

@@ -212,6 +212,7 @@ class GameObject_ENEMY{
 			width: _this.width,
 			height: _this.height,
 			direct: _this.direct,
+			alpha: _this.alpha,
 			basePoint: 1
 		});
 	}

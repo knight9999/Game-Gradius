@@ -2010,7 +2010,11 @@ class GameObject_SHOTS_NORMAL
 				_e.x + "," + _e.y
 			);
 			if (_s === _IS_SQ_NOTCOL) {continue;}
-			if (_s === _IS_SQ_COL) {
+			if (_s === _IS_SQ_COL_NONE) {
+				_t.isCollision = true;
+				continue;
+			}
+			if (_e.isalive()) {
 				_e.collision(_PARTS_PLAYERMAIN._shot_type_def.NORMAL);
 				_t.isCollision = true;
 			}

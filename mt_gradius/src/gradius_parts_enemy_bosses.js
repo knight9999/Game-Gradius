@@ -3056,7 +3056,7 @@ extends GameObject_ENEMY {
 		});
 		let _this = this;
 		_this.is_all_set = true;
-		_this._status = 5;
+		_this._status = 3;
 		_this._collision_type = 't3';
 		_this.getscore = 500; //倒した時のスコア
 

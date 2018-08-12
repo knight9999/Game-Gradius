@@ -189,9 +189,6 @@ class GameObject_ENEMY{
 				})
 			);
 	}
-	get_move_bound_val(){
-		return parseInt(Math.random() * (2 - 1) + 1) * ((Math.random() > 0.5) ? 1 : -1);
-	}
 	set_imgPos(){
 		let _this=this;
 		_this._c=
@@ -1047,8 +1044,11 @@ class ENEMY_p extends GameObject_ENEMY{
 		let _this=this;
 		_this._status=4;
 		_this.getscore=100;
+		_this.rad = Math.PI+(Math.random());
 		_this.speedx = _MAP.getBackGroundSpeed();
-		_this.speedy = _this.get_move_bound_val();
+		_this.speedy = 0;
+		_this.speeds = 1;
+		_this.speedv = _this.speeds;
 		//レーザーのみ当たり判定を通常の半分にする。
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
 		_this.audio_collision = _CANVAS_AUDIOS['enemy_collision4'];
@@ -1097,6 +1097,74 @@ class ENEMY_p extends GameObject_ENEMY{
 		_this.col_date = (new Date()).getTime();
 
 	}
+	setSpeedForCanvasBounds(_o){
+		let _this = this;
+		if (_this.x < 0 || _this.x > _CANVAS.width) {
+			let _s = ((_this.speedx * 1) + (_this.speedy * 0)) * 2 * -1;
+			_this.speedx = _s + _this.speedx;
+			_this.speedy = 0 + _this.speedy;
+			return;
+		}
+
+		//ここはy位置とyスピードを元に、
+		//強制的にキャンバス内に戻させる
+		if (_this.y < 30 && _this.speedy < 0) {
+			//yが0以下でかつspeedyが上に移動する場合、
+			_this.y+=2;
+			_this.speedy = 0.5;
+			return;
+		}
+		if (_this.y + _this.height + 30 > _CANVAS.height && _this.speedy > 0) {
+			//yがキャンバスサイズ以上でかつyが下に移動する場合、
+			_this.y-=2;
+			_this.speedy = -0.5;
+			return;
+		}
+
+		if (_this.y < 30 || _this.y + _this.height + 30 > _CANVAS.height) {
+			let _s = ((_this.speedx * 0) + (_this.speedy * 1)) * 2 * -1;
+			_this.speedx = 0 + _this.speedx;
+			_this.speedy = _s + _this.speedy;
+			return;
+		}
+	}
+	setSpeedForBounds(_o1,_o2){
+		let _this = this;
+		//オブジェクト同士衝突時、衝突によるspeedx、speedyを取得する
+		if(_o1===undefined||_o2===undefined){return;}
+		let _c_01 = {
+			x: _o1.getEnemyCenterPosition()._x,
+			y: _o1.getEnemyCenterPosition()._y
+		}
+		let _c_02 = {
+			x: _o2.getEnemyCenterPosition()._x,
+			y: _o2.getEnemyCenterPosition()._y
+		}
+		//2点間距離を算出
+		let _dist = Math.sqrt(Math.pow(_c_02.x - _c_01.x, 2) + Math.pow(_c_02.y - _c_01.y, 2));
+		//x、yの長さを算出
+		let _dist_x = Math.abs(_c_01.x - _c_02.x);
+		let _dist_y = Math.abs(_c_01.y - _c_02.y);
+		//2点間距離が1の時のx、yの長さを算出
+		let _per_dist_x = _dist_x / _dist;
+		let _per_dist_y = _dist_y / _dist;
+
+		//_o1のspeedx、speedyを算出
+		let _c_dist_x = (_c_01.x < _c_02.x) ? _per_dist_x * -1 : _per_dist_x;
+		let _c_dist_y = (_c_01.y < _c_02.y) ? _per_dist_y * -1 : _per_dist_y;
+
+		_c_dist_x *= 2;
+		_c_dist_y *= 2;
+		_o1.speedx = _c_dist_x;
+		_o1.speedy = _c_dist_y;
+
+		//_o2
+		_c_dist_x *= -1;
+		_c_dist_y *= -1;
+		_o2.speedx = _o2.speedx;
+		_o2.speedy = _o2.speedy;
+
+	}
 	move_bounds(){
 		//バウンド定義
 		//敵同士ぶつかったときに跳ね返り動作をする
@@ -1104,9 +1172,12 @@ class ENEMY_p extends GameObject_ENEMY{
 		let _eb=_PARTS_ENEMIES._get_enemies();
 		if(!_this.isalive()){return;}
 
+		_this.setSpeedForCanvasBounds();
+
 		for(let _i=0;_i<_eb.length;_i++){
 			if(!ENEMY_p.prototype.isPrototypeOf(_eb[_i])){continue;}
 			if(!_eb[_i].isalive()){continue;}//生きていない場合は無視
+			if(_eb[_i].isStandBy()){continue;}//スタンバイ中は無視
 			if(_eb[_i].x>_CANVAS.width){continue;}//キャンバスに入る前は無視
 			if(_this.id===_eb[_i].id){continue;}//自身の判定はしない
 
@@ -1117,15 +1188,9 @@ class ENEMY_p extends GameObject_ENEMY{
 				_eb[_i].x+','+_eb[_i].y
 			);
 			if(_r===_IS_SQ_NOTCOL){continue;}
-			if ((new Date()).getTime() - _this.col_date < 200) {
-				continue;
-			}
-			_this.speedx=_this.get_move_bound_val();
-			_this.speedy=_this.get_move_bound_val();
-			_eb[_i].speedx=_this.get_move_bound_val();
-			_eb[_i].speedy=_this.get_move_bound_val();
-
-			_this.col_date=(new Date()).getTime();
+			_this.speedv = _this.speeds;
+			_eb[_i].speedv = _eb[_i].speeds;
+			_this.setSpeedForBounds(_this, _eb[_i]);
 		}
 	}
 	showCollapes(){
@@ -1133,67 +1198,40 @@ class ENEMY_p extends GameObject_ENEMY{
 		_this._isshow = false;
 		let _cp = _this.getEnemyCenterPosition();
 		const set_enemies_p_parts=[
-			{
-				img: _CANVAS_IMGS['enemy_p_2'].obj,
-				x: -30,
-				y: -30
-			},
-			{
-				img: _CANVAS_IMGS['enemy_p_3'].obj,
-				x: 0,
-				y: -30
-			},
-			{
-				img: _CANVAS_IMGS['enemy_p_4'].obj,
-				x: 30,
-				y: -30
-			},
-			{
-				img: _CANVAS_IMGS['enemy_p_5'].obj,
-				x: -30,
-				y: 30
-			},
-			{
-				img: _CANVAS_IMGS['enemy_p_6'].obj,
-				x: 0,
-				y: 30
-			},
-			{
-				img: _CANVAS_IMGS['enemy_p_3'].obj,
-				x: 30,
-				y: 30
-			}
+			_CANVAS_IMGS['enemy_p_2'].obj,
+			_CANVAS_IMGS['enemy_p_3'].obj,
+			_CANVAS_IMGS['enemy_p_4'].obj,
+			_CANVAS_IMGS['enemy_p_5'].obj,
+			_CANVAS_IMGS['enemy_p_6'].obj,
+			_CANVAS_IMGS['enemy_p_3'].obj
 		];
-		for (let _i = 0; _i < set_enemies_p_parts.length; _i++) {
-			let _obj = set_enemies_p_parts[_i];
+		set_enemies_p_parts.map((_o)=>{
 			_PARTS_ENEMIES._add_enemies(new ENEMY_p_small({
-				img: _obj.img,
-				x: _cp._x+_obj.x,
-				y: _cp._y+_obj.y
+				img: _o,
+				x: _cp._x + ((Math.random() * 30 * 2) - 30),
+				y: _cp._y + ((Math.random() * 30 * 2) - 30)
 			}));
-		}
+		});
 		_GAME_AUDIO._setPlay(_this.audio_collision);
 	}
 	shot(){}
+	move_standby() {
+		let _this = this;
+//		_this.speed = _GET_DIF_ENEMY_SPEED(); //敵のスピード
+		if (_this.x < _CANVAS.width) {
+			_this._standby = false;
+			_this.speedx = Math.cos(_this.rad) * _this.speedv;
+			_this.speedy = Math.sin(_this.rad) * _this.speedv;
+		}
+	}
 	moveSet(){
 		let _this=this;
-		
 		_this.map_collition();
 		_this.move_bounds();
-		_this.x -= ((_t)=>{
-			if (_t.x + _t.img.width > _CANVAS.width) {
-				_t.speedx = Math.abs(_t.speedx);
-			}
-			return _t.speedx;
-		})(_this);
-		_this.y += ((_t)=>{
-			if (_t.y < 0) {
-				_t.speedy = Math.abs(_t.speedy);
-			} else if (_t.y + _t.img.height > _CANVAS.height) {
-				_t.speedy = -1;
-			}
-			return _t.speedy;
-		})(_this);
+		_this.speedv = ((_this.speedv >= 0.8) ? _this.speedv - 0.01 : 0.8);
+		_this.x += _this.speedx * _this.speedv;
+		_this.x += _this.speed*-0.3;
+		_this.y += _this.speedy * _this.speedv;
 	}
 }
 //クリスタル（分裂）
@@ -1209,13 +1247,14 @@ class ENEMY_p_small extends ENEMY_p {
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];		
 		_this._status=5;
 		_this.getscore=500;
-		_this.speedx=_this.get_move_bound_val();
-		_this.speedy=_this.get_move_bound_val();
+		_this.rad = (Math.random() * Math.PI * 2) - Math.PI;
+		_this.speedx = Math.cos(_this.rad);
+		_this.speedy = Math.sin(_this.rad);
 
 		_this.col_date=new Date();
 		_this._collision_type='t1';
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER = 1;
-		_this.shotColMap = ['0,0,' + (_this.width) + ',' + (_this.height)];
+		_this.shotColMap = ['3,3,' + (_this.width-6) + ',' + (_this.height-6)];
 		
 	}
 	setAlive(){

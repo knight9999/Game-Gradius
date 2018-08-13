@@ -1069,62 +1069,63 @@ class ENEMY_p extends GameObject_ENEMY{
 		//MAPの位置を取得
 		let _map_x=_MAP.getMapX(_e._x);
 		let _map_y=_MAP.getMapY(_e._y);
-
-		let _flag=false;
-
-		if (_MAP.isMapCollision(_map_x - 1, _map_y)) {
-			_this.speedx = Math.abs(_this.speedy);
-			_flag = true;
-		}
-		if (_MAP.isMapCollision(_map_x + 1, _map_y)) {
-			_this.speedx *= -1;
-			_flag = true;
-		}
-
-		if (_MAP.isMapCollision(_map_x, _map_y - 1)) {
-			_this.speedy = Math.abs(_this.speedy);
-			_flag = true;
-		}
-		if (_MAP.isMapCollision(_map_x, _map_y + 1)) {
-			_this.speedy *= -1;
-			_flag = true;
-		}
-
-		if(!_flag){return;}
-		if ((new Date()).getTime() - _this.col_date < 500) {
+		if (_MAP.isMapCollision(_MAP.getMapX(_this.x), _map_y)) {
+			_this.x += 2;
+			_this.setBoundFlatX();
 			return;
 		}
-		_this.col_date = (new Date()).getTime();
+		if (_MAP.isMapCollision(_MAP.getMapX(_this.x+_this.width), _map_y)) {
+			_this.x -= 2;
+			_this.setBoundFlatX();
+			return;
+		}
 
+		if (_MAP.isMapCollision(_map_x, _MAP.getMapY(_this.y))) {
+			_this.y += 2;
+			_this.setBoundFlatY();
+			return;
+		}
+		if (_MAP.isMapCollision(_map_x, _MAP.getMapY(_this.y+_this.height))) {
+			_this.y -= 2;
+			_this.setBoundFlatY();
+			return;
+		}
 	}
-	setSpeedForCanvasBounds(_o){
+	setBoundFlatX() {
+		let _this = this;
+		let _s = ((_this.speedx * 1) + (_this.speedy * 0)) * 2 * -1;
+		_this.speedx = _s + _this.speedx;
+		_this.speedy = 0 + _this.speedy;
+	}
+	setBoundFlatY() {
+		let _this = this;
+		let _s = ((_this.speedx * 0) + (_this.speedy * 1)) * 2 * -1;
+		_this.speedx = 0 + _this.speedx;
+		_this.speedy = _s + _this.speedy;		
+	}
+	setSpeedForCanvasBounds(){
 		let _this = this;
 		if (_this.x < 0 || _this.x > _CANVAS.width) {
-			let _s = ((_this.speedx * 1) + (_this.speedy * 0)) * 2 * -1;
-			_this.speedx = _s + _this.speedx;
-			_this.speedy = 0 + _this.speedy;
+			_this.setBoundFlatX();
 			return;
 		}
 
 		//ここはy位置とyスピードを元に、
 		//強制的にキャンバス内に戻させる
-		if (_this.y < 30 && _this.speedy < 0) {
+		if (_this.y < _MAP.t && _this.speedy < 0) {
 			//yが0以下でかつspeedyが上に移動する場合、
 			_this.y+=2;
 			_this.speedy = 0.5;
 			return;
 		}
-		if (_this.y + _this.height + 30 > _CANVAS.height && _this.speedy > 0) {
+		if (_this.y + _this.height + _MAP.t > _CANVAS.height && _this.speedy > 0) {
 			//yがキャンバスサイズ以上でかつyが下に移動する場合、
 			_this.y-=2;
 			_this.speedy = -0.5;
 			return;
 		}
-
-		if (_this.y < 30 || _this.y + _this.height + 30 > _CANVAS.height) {
-			let _s = ((_this.speedx * 0) + (_this.speedy * 1)) * 2 * -1;
-			_this.speedx = 0 + _this.speedx;
-			_this.speedy = _s + _this.speedy;
+		if (_this.y < _MAP.t || _this.y + _this.height + _MAP.t > _CANVAS.height) {
+			_this.setBoundFlatY();
 			return;
 		}
 	}

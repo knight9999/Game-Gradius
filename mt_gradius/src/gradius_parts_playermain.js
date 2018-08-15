@@ -1352,7 +1352,7 @@ class GameObject_SHOTS_MISSILE
 		//ミサイルの画像スプライトに対して、
 		//ミサイルのステータスと座標位置定義
 //		this.st={'_st1':0,'_st2':24,'_st3':48,'_st4':72,'_st5':96,'_st6':120,'_st7':144,'_st8':168};
-		this.st={'_st1':0,'_st2':24,'_st3':48,'_st4':72,'_st5':96,'_st6':0,'_st7':96,'_st8':72};
+		this.st={'_st1':0,'_st2':24,'_st3':48,'_st4':72,'_st5':96,'_st6':0,'_st7':96,'_st8':72,'_st9':0};
 		this.imgsize=_CANVAS_IMGS['gradius_missile'].obj.height;
 
 		let _t=this;
@@ -1417,7 +1417,7 @@ class GameObject_SHOTS_MISSILE
 			},
 			'_st5':function(_t){
 				//_st5→_st6
-				_t.x+=2;
+				_t.x+=3;
 				_t.y+=2;
 			},
 			'_st6':function(_t){
@@ -1434,6 +1434,11 @@ class GameObject_SHOTS_MISSILE
 				//_st7→_st8
 				_t.x+=6;
 				_t.y+=3;
+			},
+			'_st9': function (_t) {//_st1の落下版
+				//_st9→_st10
+				_t.x += 2;
+				_t.y += 3;
 			}
 		}
 
@@ -1492,9 +1497,9 @@ class GameObject_SHOTS_MISSILE
 
 		//段差を滑らかに表示させるためのもの
 		//ミサイル落下 _st3→_st4
-		if(_this.get_missile_status(_t)==='_st4'){
-			_this.set_missile_status(_t,'_st5');
-		}
+		// if(_this.get_missile_status(_t)==='_st4'){
+		// 	_this.set_missile_status(_t,'_st5');
+		// }
 
 		//ミサイル着地 _st1→_st6→_st7→_st8→_st3
 		//着座時、_st3が必ず壁より１マス上に
@@ -1512,8 +1517,20 @@ class GameObject_SHOTS_MISSILE
 			_this.set_missile_status(_t,'_st3');
 		}
 
+		if (_this.get_missile_status(_t) === '_st9') {
+			_map_x = _MAP.getMapX(_t.x + _this.imgsize);
+			//真下に衝突がある場合
+			if (_MAP.isMapCollision(_map_x, _map_y + 1)) {
+				//→st6→st7→st3への調整のためのy位置調整
+				_this.set_missile_status(_t, '_st6');
+				return;
+			}
+			_this.set_missile_status(_t, '_st2');
+		}
+
 		//落ちかけ
-		if(_this.get_missile_status(_t)==='_st5'){
+		if (_this.get_missile_status(_t) === '_st4'
+			||_this.get_missile_status(_t) === '_st5') {
 			_map_x=_MAP.getMapX(_t.x+_this.imgsize);
 			//真下に衝突がある場合
 			if(_MAP.isMapCollision(_map_x,_map_y+1)){
@@ -1522,7 +1539,8 @@ class GameObject_SHOTS_MISSILE
 				return;
 			}
 			_t.x+=5;
-			_this.set_missile_status(_t,'_st2');
+			_t.y+=2;
+			_this.set_missile_status(_t,'_st9');
 		}
 
 
@@ -2101,7 +2119,7 @@ class GameObject_SHOTS_DOUBLE
 		//_x→ショット中で、その時点のx,yから移動させる
 		_this.set = _p.set || {
 			speedx: [30, 30],
-			speedy: [0, 23],
+			speedy: [0, 23],	
 			imgPosx: [[0],[60]],
 			setX: [
 				((_sa, _pl, _t)=>{return (!_sa) ? _pl._x + (this._width/2) : _t.x + _t._set_speedX;}),

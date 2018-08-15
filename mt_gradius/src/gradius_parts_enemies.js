@@ -430,7 +430,7 @@ class ENEMY_a extends GameObject_ENEMY{
 			img:_p.img||_CANVAS_IMGS['enemy_a'].obj,
 			x:_p.x,
 			y:_p.y,
-			imgPos:[0],
+			imgPosx:[0],
 			width:25,
 			direct:_p.direct
 		});
@@ -1282,9 +1282,12 @@ class ENEMY_p_small extends ENEMY_p {
 class ENEMY_q extends GameObject_ENEMY{
 	constructor(_p){
 		super({
-			img:_CANVAS_IMGS['enemy_m_a_1'].obj,
+			img:_CANVAS_IMGS['enemy_moai'].obj,
+			imgPos:_p.imgPos||[0],
 			x:_p.x,
 			y:_p.y,
+			width:100,
+			height:100,
 			direct:_p.direct
 		});
 
@@ -1295,10 +1298,6 @@ class ENEMY_q extends GameObject_ENEMY{
 		_this._isSetMapDefCol=false;
 		_this._isopen=false;
 		_this._open_count=0;
-		_this.imgs=[
-			_CANVAS_IMGS['enemy_m_a_1'].obj,
-			_CANVAS_IMGS['enemy_m_a_2'].obj
-		];
 		_this.audio_collision=_CANVAS_AUDIOS['enemy_collision5'];		
 		_this.audio_alive=_CANVAS_AUDIOS['enemy_collision8'];
 		_this._collision_type='t8';
@@ -1324,6 +1323,8 @@ class ENEMY_q extends GameObject_ENEMY{
 			if(_this.direct===_DEF_DIR._LD){return '0000,1100,1110,1111';}//左下
 			if(_this.direct===_DEF_DIR._LU){return '1111,1110,1100,0000';}//左上
 			})()
+		
+		_this.defimgPos=[0,100,400];
 	}
 	collision(_s_type,_num){
 		let _this=this;
@@ -1386,11 +1387,11 @@ class ENEMY_q extends GameObject_ENEMY{
 			_this._open_count++;			
 		}
 		if(_this._open_count>0){
-			_this.img=_this.imgs[1];
+			_this.imgPos = [_this.defimgPos[1]];
 			_this._isopen=true;
 		}
 		if(_this._open_count>200){
-			_this.img=_this.imgs[0];
+			_this.imgPos = [_this.defimgPos[0]];
 			_this._isopen=false;
 			_this._open_count=-100;
 		}
@@ -1410,7 +1411,7 @@ class ENEMY_q extends GameObject_ENEMY{
 	}
 	showCollapes(){
 		let _this=this;
-		_this.img=_CANVAS_IMGS['enemy_m_z'].obj;
+		_this.imgPos = [_this.defimgPos[2]];
 		//爆発後にMAP衝突用の内容を変更する
 		if(_this._isSetMapDefCol){return;}
 		_MAP.set_mapdef_col(
@@ -1426,8 +1427,8 @@ class ENEMY_q extends GameObject_ENEMY{
 
 		//爆発して終了
 		_ENEMIES_CONTROL._add_collisions({
-			x: _this.x + (_this.img.width / 2),
-			y: _this.y + (_this.img.height / 2) + _this._collision_posy,
+			x: _this.x + (_this.width / 2),
+			y: _this.y + (_this.height / 2) + _this._collision_posy,
 			ct: _this._collision_type
 		});
 
@@ -1439,18 +1440,13 @@ class ENEMY_q extends GameObject_ENEMY{
 class ENEMY_r extends ENEMY_q{
 	constructor(_p){
 		super({
-			img:_CANVAS_IMGS['enemy_m_b_1'].obj,
+			imgPos: [200],
 			x:_p.x,
 			y:_p.y,
 			direct:_p.direct
 		});
         let _this=this;
 		_this._status=2;
-		_this.imgs=[
-			_CANVAS_IMGS['enemy_m_b_1'].obj,
-			_CANVAS_IMGS['enemy_m_b_2'].obj
-		];
-		_this.img=_this.imgs[0];
 
 		//衝突時のY座標アニメーション
 		_this._collision_posy=(_this.direct===_DEF_DIR._D)?-10:0;
@@ -1466,6 +1462,8 @@ class ENEMY_r extends ENEMY_q{
 			if(_this.direct===_DEF_DIR._D){return '0000,0000,0010,1111';}
 			if(_this.direct===_DEF_DIR._U){return '1111,0010,0000,0000';}		
 		})();
+
+		_this.defimgPos = [200, 300, 400];
 	}
 }
 

@@ -3,16 +3,12 @@
         "imgs":{
             "vicviper": {"src":"images/gradius_vicviper.png","rate":1.00},	"vicviper_back": {"src":"images/gradius_vicviper_back.png","rate":1.00},
             "vicviper_bomb": {"src":"images/gradius_vicviper_bomb.png","rate":1.0},
-            "vicviper_bomb_red": {"src":"images/gradius_vicviper_bomb_red.png","rate":1.0},
             "option": {"src":"images/option.png","rate":1.0},
             "forcefield": {"src":"images/gradius_forcefield.png","rate":1.00},
             "shield": {"src":"images/gradius_shield.png","rate":1.00},
 
             "gradius_missile": {"src":"images/gradius_missile.png","rate":1.00},
-
-            "shot1": {"src":"images/gradius_shot1.png","rate":1.0},
-            "shot2": {"src":"images/gradius_shot2.png","rate":1.0},
-            "shot3": {"src":"images/gradius_shot3.png","rate":1.0},
+            "shots": {"src":"images/gradius_shots.png","rate":1.0},
             "shot_laser_col": {"src":"images/gradius_shot_laser_col.png","rate":1.00},
 
             "gradius_pc": {"src":"images/gradius_pc.png","rate":1.0},
@@ -48,12 +44,7 @@
             "enemy_moai_mini_boss": {"src":"images/gradius_enemy_moai_mini_boss.png","rate":1.00},
             "enemy_moai_boss_ring": {"src":"images/gradius_enemy_moai_boss_ring.png","rate":1.00},
 
-            "enemy_m_a_1": {"src":"images/gradius_enemy_m_a_1.png","rate":1.00},
-            "enemy_m_a_2": {"src":"images/gradius_enemy_m_a_2.png","rate":1.00},
-            "enemy_m_b_1": {"src":"images/gradius_enemy_m_b_1.png","rate":1.00},
-            "enemy_m_b_2": {"src":"images/gradius_enemy_m_b_2.png","rate":1.00},
-            "enemy_m_z": {"src":"images/gradius_enemy_m_z.png","rate":1.00},
-
+            "enemy_moai": {"src":"images/gradius_enemy_moai.png","rate":1.00},
             "enemy_moai_ring": {"src":"images/gradius_enemy_moai_ring.png","rate":1.00},
 
             "enemy_cell_boss": {"src":"images/gradius_enemy_cell_boss.png","rate":1.00},
@@ -121,7 +112,6 @@
             "map_cube_A": {"src":"images/gradius_map_cube_A.png","rate":1},
             "map_cube_B": {"src":"images/gradius_map_cube_B.png","rate":1},
 
-            "map_cube_A": {"src":"images/gradius_map_cube_A.png","rate":1},
             "map_cristal_up": {"src":"images/gradius_map_cristal_up.png","rate":1.00},
             "map_cristal_down": {"src":"images/gradius_map_cristal_down.png","rate":1.00},
 
@@ -132,7 +122,6 @@
             "map_volcano_B": {"src":"images/gradius_map_volcano_B.png","rate":1},
             "map_volcano_C": {"src":"images/gradius_map_volcano_C.png","rate":1},
             "map_volcano_D": {"src":"images/gradius_map_volcano_D.png","rate":1},
-            "map_volcano_E": {"src":"images/gradius_map_volcano_E.png","rate":1},
             "map_volcano_F": {"src":"images/gradius_map_volcano_F.png","rate":1},
             "map_volcano_G": {"src":"images/gradius_map_volcano_G.png","rate":1},
             "map_volcano_H": {"src":"images/gradius_map_volcano_H.png","rate":1},

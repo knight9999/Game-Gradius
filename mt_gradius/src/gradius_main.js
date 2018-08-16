@@ -47,8 +47,6 @@ const _DRAW=()=>{
 		_PARTS_OTHERS._move_background();
 		_PARTS_OTHERS._draw_background();
 
-		// console.log('2:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
-
 		if(_PARTS_PLAYERMAIN._players_obj.isalive()){
 			//MAPオブジェクトの最適化、移動
 			_PARTS_MAP._move_maps();
@@ -60,43 +58,43 @@ const _DRAW=()=>{
 			_SET_DIFFICULT_LEVEL();
 			//パワーカプセルの移動
 			_PARTS_OTHERS._move_powercapsell();
+
+			//自機ショットの移動調整
+			_PARTS_PLAYERMAIN._move_shots();
+			_PARTS_ENEMY_SHOT._move_shot();
+			_PARTS_ENEMIES._move_enemies();
+
+			//MAP（自機ショット衝突判定）
+			_MAP.isPlayersShotCollision();
 			//敵、衝突判定
 			_PARTS_PLAYERMAIN._enemy_shot_collision(_PARTS_ENEMY_SHOT._get_shot());
 			_PARTS_PLAYERMAIN._enemy_collision(_PARTS_ENEMIES._get_enemies());
-			// console.log('7:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
-			// console.log('8:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
-			//MAP（自機ショット衝突判定）
-			_MAP.isPlayersShotCollision();
+
 			// console.log('9:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 			//敵、衝突移動
 			_ENEMIES_CONTROL._move_collisions();
 			// console.log('10:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
-			_PARTS_ENEMY_SHOT._move_shot();
-			_PARTS_ENEMIES._move_enemies();
+			//パワーカプセル設定
+			_PARTS_OTHERS._set_powercapsell();
+			//自機移動
+			_PARTS_PLAYERMAIN._move_players();
+			//自機移動分配列をセット
+			_PARTS_PLAYERMAIN._set_move_draw();
 		}
 		//敵の弾を表示
 		_PARTS_ENEMY_SHOT._draw_shot();
-		//パワーカプセル設定
-		_PARTS_OTHERS._set_powercapsell();
 		//敵を表示
 		_PARTS_ENEMIES._draw_enemies();
-		//ショットの移動調整
-		_PARTS_PLAYERMAIN._move_shots();
 		//パワーカプセルを表示
 		_PARTS_OTHERS._draw_powercapsell();
 		//敵衝突表示の表示調整
 		_ENEMIES_CONTROL._draw_collisions();
 		//ショットを表示
 		_PARTS_PLAYERMAIN._draw_shots();
-		// console.log('11:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
 
 		//自機からひもづくオプションを移動・表示
 		_PARTS_PLAYERMAIN._draw_option();
 		// console.log('12:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)
-		//自機移動
-		_PARTS_PLAYERMAIN._move_players();
-		//自機移動分配列をセット
-		_PARTS_PLAYERMAIN._set_move_draw();
 		//自機表示
 		_PARTS_PLAYERMAIN._draw_players();
 		// console.log('13:'+_PARTS_PLAYERMAIN._shots.shot._PARTS_PLAYERMAIN._shot_type_def.LASER[0].shots[0]._laser_MaxX)

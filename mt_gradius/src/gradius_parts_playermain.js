@@ -2661,6 +2661,7 @@ class GameObject_SHOTS_LASER
 			if(!_t._shot_alive){continue;}
 			//小粒のレーザーは無視
 			if(_t.x<_t.sx||Math.abs(_t.x-_t.sx)<20){continue;}
+			_t.x = (_this.getLaserMaxX(_t) > _t.x) ? _t.x : _this.getLaserMaxX(_t);
 			
 			_CONTEXT.beginPath();
 			_CONTEXT.strokeStyle=_this.strokeStyle_u;

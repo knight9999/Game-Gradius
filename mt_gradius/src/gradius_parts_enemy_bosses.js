@@ -184,15 +184,13 @@ class ENEMY_BOSS_BIGCORE
 	}
 	show_walls(){
 		let _this=this;		
-		for(let _i=0;_i<_this.wall.length;_i++){
-			if(_this.wall[_i-1]===undefined
-				||_this.wall[_i-1]._status<=0){
+		_this.wall.map((_o, _i, _ar) => {
+			if (_ar[_i - 1] === undefined || _ar[_i - 1]._status <= 0) {
 				//直前の壁が破壊されない間、
 				//自身のダメージは不可。
-				_this.wall[_i].set_able_collision();
+				_o.is_able_collision = true;
 			}
-//			_this.wall[_i].moveDraw();
-		}
+		});
 	}
 	shot(){
 		let _this=this;
@@ -832,16 +830,14 @@ class ENEMY_BOSS_CRYSTALCORE
 
 	}
 	show_walls(){
-		let _this=this;		
-		for(let _i=0;_i<_this.wall.length;_i++){
-			if(_this.wall[_i-1]===undefined
-				||_this.wall[_i-1]._status<=0){
+		let _this=this;
+		_this.wall.map((_o, _i, _ar) => {
+			if (_ar[_i - 1] === undefined || _ar[_i - 1]._status <= 0) {
 				//直前の壁が破壊されない間、
 				//自身のダメージは不可。
-				_this.wall[_i].set_able_collision();
+				_o.is_able_collision = true;
 			}
-//			_walls[_i].moveDraw(_this);
-		}
+		});
 	}
 	shot(){
 		//レーザーを発射する
@@ -865,21 +861,15 @@ class ENEMY_BOSS_CRYSTALCORE
 		//敵を倒した場合
 		_this._isshow=false;
 		//触手の上を表示
-		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
-			_this.hands_up[_i].showCollapes(
-				_this.hands_up[_i].x,
-				_this.hands_up[_i].y
-			);
-			_this.hands_up[_i].init();
-		}
+		_this.hands_up.forEach((_o) => {
+			_o.showCollapes(_o.x, _o.y);
+			_o.init();
+		});
 		//触手の下を表示
-		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
-			_this.hands_down[_i].showCollapes(
-				_this.hands_down[_i].x,
-				_this.hands_down[_i].y
-			);
-			_this.hands_down[_i].init();
-		}
+		_this.hands_down.forEach((_o) => {
+			_o.showCollapes(_o.x, _o.y);
+			_o.init();
+		});
 
 		//爆発して終了
 		_ENEMIES_CONTROL._add_collisions({
@@ -916,18 +906,11 @@ class ENEMY_BOSS_CRYSTALCORE
 	moveSet(){
 		let _this=this;
 
-		// if(!_this.isMove()){return;}
-		// if(!_this.isAllset()){return;}
 		_this.show_walls();
-
 		//触手の上を表示
-		for(let _i=_this.hands_up.length-1;_i>=0;_i--){
-			_this.hands_up[_i].moveDraw(_this);
-		}
+		_this.hands_up.forEach((_o)=>{_o.moveDraw(_this);});
 		//触手の下を表示
-		for(let _i=_this.hands_down.length-1;_i>=0;_i--){
-			_this.hands_down[_i].moveDraw(_this);
-		}
+		_this.hands_down.forEach((_o)=>{_o.moveDraw(_this);});
 
 		_this.y+=_this.speed;
 		if(_this._count%1200>800){
@@ -944,13 +927,8 @@ class ENEMY_BOSS_CRYSTALCORE
 		if(_this.wall.every((_v)=>{return !_v.isalive();})){
 			//全ての壁が壊れたら敵全部のステータスを0にする。
 			//触手の上
-			for(let _i=_this.hands_up.length-1;_i>=0;_i--){
-				_this.hands_up[_i]._status=0;
-			}
-			//触手の下
-			for(let _i=_this.hands_down.length-1;_i>=0;_i--){
-				_this.hands_down[_i]._status=0;
-			}
+			_this.hands_up.forEach((_o)=>{_o._status=0;});
+			_this.hands_down.forEach((_o)=>{_o._status=0;});
 			_this._status=0;
 			_this.setAlive();
 		}

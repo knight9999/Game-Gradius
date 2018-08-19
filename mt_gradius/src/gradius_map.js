@@ -414,7 +414,7 @@ class GameObject_MAP{
 							_DEF_MAP_MAPS[_d[_v].map[_m]]._obj({x:_x,y:_y})
 						);
 					},
-					_getObj: _DEF_MAP_MAPS[_d[_v].map[_m]]._obj
+					_getObj(_p){return _DEF_MAP_MAPS[_d[_v].map[_m]]._obj({x:_p.x,y:_p.y});}
 				}
 			}
 			//敵定義
@@ -426,7 +426,7 @@ class GameObject_MAP{
 						);
 					},
 					_st: _DEF_MAP_ENEMIES[_d[_v].enemies[_e]]._st,
-					_getObj: _DEF_MAP_ENEMIES[_d[_v].enemies[_e]]._obj
+					_getObj(_p) {return _DEF_MAP_ENEMIES[_d[_v].enemies[_e]]._obj(_p.x, _p.y, _p.md);}
 				}
 			}
 
@@ -646,7 +646,6 @@ class GameObject_MAP{
 		}
 		return _s;
 	}
-	getCollisionFlag(){return this.collision;}
 	setBackGroundSpeedY(_v){
 		//Y軸の背景スピードの設定
 		this.map_backgroundY_speed=_v;
@@ -659,15 +658,6 @@ class GameObject_MAP{
 	}
 	get_stage_map_pattern(_n){
 		return this.map_pettern;
-	}
-	getMapXToPx(_mx){
-		return (_mx*this.t)+this.initx-_MAP_SCROLL_POSITION_X;
-	}
-	getMapYToPx(_my){
-		// Math.floor(
-		// 	((_y+_MAP_SCROLL_POSITION_Y)%1000)
-		// 	/this.t);
-		return _my*this.t;
 	}
 	getMapX(_x){
 		return Math.floor(
@@ -690,9 +680,6 @@ class GameObject_MAP{
 	isEnemiesBit(_bit){
 		//衝突ビット判定フラグ
 		return (_bit.match(this.collision_enemies)!==null);
-	}
-	isMapDouble(_s){
-		return (_s.match(this.collision_map_d)!==null);
 	}
 	isMapBefore(_mx,_my){
 		//位置がMAPの手前か判定
@@ -792,9 +779,9 @@ class GameObject_MAP{
 			if(_k==='0'){continue;}
 			if(_k.match(_this.collision_enemies)!==null){
 				//敵
-				let _p=_MAP_THEME[_m._theme]._enemies[_k]._getObj({});
+				let _p=_MAP_THEME[_m._theme]._enemies[_k]._getObj({md:_MAP.get_enemy_dir(_j + 100, _i)});
 				_CONTEXT.save();
-				let _d = (_p.direct === null) ? _MAP.get_enemy_dir(_j + 100, _i) : _p.direct;
+				let _d = _p.direct;
 				let _x=0+(_j*10);
 				let _y=130+(_i*10);
 				let _w=_p.width/2.5;

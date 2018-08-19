@@ -657,19 +657,20 @@ const _GAME={//ゲーム用スクリプト
 			_width,
 			_height		
 		);
-		_CONTEXT.restore();
-
+	
 		if (_ISDEBUG) {
 			_CONTEXT.strokeStyle = 'rgba(200,200,255,0.5)';
 			_CONTEXT.beginPath();
 			_CONTEXT.rect(
-				_x,
-				_y,
-				_width*_scale,
-				_height*_scale
+				_DEF_BASEPOINT[_basePoint].x,
+				_DEF_BASEPOINT[_basePoint].y,
+				_width,
+				_height
 			);
 			_CONTEXT.stroke();
 		}
+
+		_CONTEXT.restore();
 
 	},
 	_multilineText(context, text, width) {

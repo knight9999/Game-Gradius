@@ -316,7 +316,6 @@ const _DRAW_GAMESTART=()=>{
 	let _c=0;
 	const _loop=()=>{
 		_DRAW_GAMESTART_SETINTERVAL=window.requestAnimationFrame(_loop);
-		//	_DRAW_GAMESTART_SETINTERVAL=setInterval(function(){
 		if(_c>250){
 			_DRAW_STOP_GAMESTART();
 			_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_'+_MAP.map_bgmusic]);			
@@ -524,7 +523,7 @@ const _DRAW_OPENING_START=()=>{
 			//進捗中処理
 			_DRAW_OPENING_IMGLOAD_RATE=_n;
 		}).then(()=>{_DRAW_STAGE_SELECT();});
-	_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['playerset']);		
+	_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['opening']);		
 }
 const _DRAW_OPENING=()=>{
 	let _c = 0;

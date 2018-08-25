@@ -127,19 +127,6 @@ class GameObject_ENEMY_SHOT{
 			basePoint:_this.basePoint,
 			imgPosx:_this.get_imgPos()
 		});
-
-		if (_ISDEBUG) {
-			_CONTEXT.strokeStyle = 'rgba(200,200,255,0.5)';
-			_CONTEXT.beginPath();
-			_CONTEXT.rect(
-				_this.x,
-				_this.y,
-				_this.width,
-				_this.height
-			);
-			_CONTEXT.stroke();
-		}
-
 	}
 	move(){
 		let _this=this;

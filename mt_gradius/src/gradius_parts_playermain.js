@@ -2538,9 +2538,12 @@ class GameObject_SHOTS_LASER
 					: _t._laser_col_max
 		}
 	}
+	is_laser_collision(_t){
+		return (_t._laser_MaxX < _CANVAS.width);
+	}
 	laser_collision(_t,_v){
 		let _this=this;
-		if(_t._laser_MaxX>=_CANVAS.width){return;}
+		if (!_this.is_laser_collision(_t)) {return;}
 		_t._c_col=(_t._c_col>=_this.img_col_ani.length-1)?0:_t._c_col+1;
 
 		_GAME._setDrawImage({
@@ -2641,16 +2644,12 @@ class GameObject_SHOTS_LASER
 	setLaserMaxX(_t,_v){
 		//衝突判定が発生した場合、
 		//レーザーの先端位置を設定する。
-		let _this=this;
 		_t._laser_MaxX = (_v>_CANVAS.width)?_CANVAS.width:_v;
 	}
 	setDrawImage(){
 		let _this=this;
 		let _p=_this.player;
 		if(!_p.isalive()){return;}
-		//プレーヤーの中心座標取得
-		let _pl=_p.getPlayerCenterPosition();
-		let _px=_pl._x;
 
 		_CONTEXT.lineWidth=_this.lineWidth;
 		_CONTEXT.strokeStyle=_this.strokeStyle;
@@ -2662,25 +2661,25 @@ class GameObject_SHOTS_LASER
 			//小粒のレーザーは無視
 			if(_t.x<_t.sx||Math.abs(_t.x-_t.sx)<20){continue;}
 			_t.x = (_this.getLaserMaxX(_t) > _t.x) ? _t.x : _this.getLaserMaxX(_t);
-			
-			_CONTEXT.beginPath();
-			_CONTEXT.strokeStyle=_this.strokeStyle_u;
-			_CONTEXT.moveTo(_t.sx,_pl._y+1);
-			_CONTEXT.lineTo(_t.x,_pl._y+1);
-			_CONTEXT.stroke();
-
-			_CONTEXT.beginPath();
-			_CONTEXT.strokeStyle=_this.strokeStyle;
-			_CONTEXT.moveTo(_t.sx,_pl._y);
-			_CONTEXT.lineTo(_t.x,_pl._y);
-			_CONTEXT.stroke();
-
-			_this.moveDrawLaser(_t.x,_t.sx,_t.y);
+			_this.setDrawLaser(_t);
 			_this.laser_collision(_t);
 
 		}
 	}
-	moveDrawLaser(_x,_sx,_y){}//レーザーの描画からさらに追加する場合
+	setDrawLaser(_t){
+		let _this = this;
+		_CONTEXT.beginPath();
+		_CONTEXT.strokeStyle = _this.strokeStyle_u;
+		_CONTEXT.moveTo(_t.sx, _t.y + 1);
+		_CONTEXT.lineTo(_t.x, _t.y + 1);
+		_CONTEXT.stroke();
+
+		_CONTEXT.beginPath();
+		_CONTEXT.strokeStyle = _this.strokeStyle;
+		_CONTEXT.moveTo(_t.sx, _t.y);
+		_CONTEXT.lineTo(_t.x, _t.y);
+		_CONTEXT.stroke();
+	}//レーザーの描画からさらに追加する場合
 	move(){
 		let _this=this;
 		let _p=_this.player;
@@ -2754,21 +2753,32 @@ class GameObject_SHOTS_LASER_CYCLONE
 	constructor(_p){
 		super(_p);
 		let _this=this;
-		_this.lineWidth=5;
-		_this.strokeStyle="rgba(255,80,50,1)";
-		_this.strokeStyle_u="rgba(255,200,150,1)";
+		_this.lineWidth=4;
+		_this.strokeStyle = "rgba(100,20,10,1)";
+		_this.strokeStyle_u="rgba(255,200,150,0)";
 		_this.img_col_ani=[50,75];
 	}
-	moveDrawLaser(_x,_sx,_y){
-		let _this=this;
-		for(let _i=_sx;_i<_x;_i=_i+20){
-			_CONTEXT.beginPath();
-			_CONTEXT.lineCap='round';
-			_CONTEXT.lineWidth=3;
-			_CONTEXT.strokeStyle='rgba(100,20,10,1)';
-			_CONTEXT.moveTo(_i,_y-1);
-			_CONTEXT.lineTo(_i-_this.lineWidth,_y+2);
-			_CONTEXT.stroke();	
+	setDrawLaser(_t){
+		let _this = this;
+
+		_CONTEXT.beginPath();
+		_CONTEXT.strokeStyle = _this.strokeStyle;
+		_CONTEXT.moveTo(_t.sx, _t.y + 1);
+		_CONTEXT.lineTo(_t.x, _t.y + 1);
+		_CONTEXT.stroke();
+
+		for(let _i=_t.sx;_i<=_t.x;_i=_i+20){
+			if(_i+10>=_t.x&&_this.is_laser_collision(_t)){break;}
+			_CONTEXT.fillStyle = 'rgba(240,79,0,1)';
+			_CONTEXT.fillRect(_i,	_t.y, 5, 3);
+			_CONTEXT.fillRect(_i+5, _t.y-3, 5, 3);
+			if(_i+20>=_t.x&&_this.is_laser_collision(_t)){break;}
+			_CONTEXT.fillStyle = 'rgba(208,89,11,1)';
+			_CONTEXT.fillRect(_i+15, _t.y-3, 5, 3);
+			_CONTEXT.fillRect(_i+10, _t.y, 5, 3);
+			_CONTEXT.fillStyle = 'rgba(250,180,82,1)';
+			_CONTEXT.fillRect(_i+10, _t.y-3, 5, 3);
+			_CONTEXT.fillRect(_i+15, _t.y, 5, 3);
 		}
 	}
 }

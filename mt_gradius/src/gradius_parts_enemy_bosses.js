@@ -806,25 +806,25 @@ class ENEMY_BOSS_CRYSTALCORE
 		_this.wall=[];
 
 		_this.hands_up=[
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":50,"_inity":80,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,10","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":50,"_inity":80,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,185,5","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":80,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,-10","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":80,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,175,-25","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":80,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,170,-40","_change":true}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":80,"_cmr":106,"_cmsr":160,"_initRad":190,"_data":"0,0,165,-55","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":70,"_inity":90,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,10","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":70,"_inity":90,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,185,5","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":70,"_inity":90,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,-10","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":70,"_inity":90,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,175,-25","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":70,"_inity":90,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,170,-40","_change":true}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":70,"_inity":90,"_cmr":106,"_cmsr":160,"_initRad":190,"_data":"0,0,165,-55","_change":true}),
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_img":_CANVAS_IMGS['enemy_cristalcore_hand2'].obj,
-												"_initx":50,"_inity":80,"_cmr":115,"_cmsr":170,"_initRad":215,"_data":"0,0,160,-70","_change":true})
+															"_initx":70,"_inity":90,"_cmr":115,"_cmsr":170,"_initRad":215,"_data":"0,0,160,-70","_change":true})
 		];
 		_this.hands_up.map((_o)=>{_PARTS_ENEMIES._add_enemies(_o)});
 		_this.hands_down=[
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":50,"_inity":155,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,-10","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":50,"_inity":155,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,175,-5","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":155,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,10","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":155,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,185,25","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":155,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,190,40","_change":false}),
-			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":50,"_inity":155,"_cmr":106,"_cmsr":160,"_initRad":190,"_data":"0,0,195,55","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":70,"_inity":165,"_cmr":60,"_cmsr":70,"_initRad":40,"_data":"0,0,180,-10","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_ignore_collision":true,"_initx":70,"_inity":165,"_cmr":70,"_cmsr":80,"_initRad":70,"_data":"0,0,175,-5","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":70,"_inity":165,"_cmr":80,"_cmsr":100,"_initRad":100,"_data":"0,0,180,10","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":70,"_inity":165,"_cmr":89,"_cmsr":125,"_initRad":130,"_data":"0,0,185,25","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":70,"_inity":165,"_cmr":97,"_cmsr":145,"_initRad":160,"_data":"0,0,190,40","_change":false}),
+			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_initx":70,"_inity":165,"_cmr":106,"_cmsr":160,"_initRad":190,"_data":"0,0,195,55","_change":false}),
 			new ENEMY_BOSS_CRYSTALCORE_HANDS({"_boss":_this,"_img":_CANVAS_IMGS['enemy_cristalcore_hand2'].obj,
-												"_initx":50,"_inity":155,"_cmr":115,"_cmsr":170,"_initRad":215,"_data":"0,0,200,70","_change":false})
+															"_initx":70,"_inity":165,"_cmr":115,"_cmsr":170,"_initRad":215,"_data":"0,0,200,70","_change":false})
 		];
 		_this.hands_down.map((_o)=>{_PARTS_ENEMIES._add_enemies(_o)});
 
@@ -940,7 +940,7 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 	extends GameObject_ENEMY{
 	constructor(_d){
 		super({
-			img:_CANVAS_IMGS['enemy_cristalcore_hand1'].obj,
+			img: _d._img || _CANVAS_IMGS['enemy_cristalcore_hand1'].obj,
 			x:_d._initx,
 			y:_d._inity
 		});
@@ -957,7 +957,6 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 					//y:移動分
 					//rad:中心からの角度
 					//srad:自身の角度
-		_this.img=_d._img||_CANVAS_IMGS['enemy_cristalcore_hand1'].obj;//手の画像
 
 		_this._count_turn=0;//手をふる回数
 		_this._change=_d._change;//true:上向き,false:下向き
@@ -993,9 +992,7 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 		let _d=_this._data.split(',');
 		_PARTS_ENEMY_SHOT._add_shot(
 			new ENEMY_SHOT_CRYSTALCORE({
-				x:_this.x+10,
-				y:_this.y+10,
-				deg:parseInt(_d[3])
+				x: _this.x, y: _this.y + ((_this._change)?-10:10), deg: parseInt(_d[3])
 				})
 		);
 	}
@@ -1045,31 +1042,17 @@ class ENEMY_BOSS_CRYSTALCORE_HANDS
 	setDrawImage(){
 		let _this=this;
 		// 画像を中心にして回転
-		//	_CONTEXT.beginPath();
 		let _d=_this._data.split(',');
-		let _ix=_this._initx;
-		let _iy=_this._inity;
-		let rad=parseInt(_d[3])*Math.PI/180;
-		let cx=_this._boss.x+parseInt(_d[0])+_ix+_this.img.width;
-		let cy=_this._boss.y+parseInt(_d[1])+_iy+parseInt(_this.img.height/1.5);
-
-		_this.x=_this._boss.x+parseInt(_d[0])+_ix;
-		_this.y=_this._boss.y+parseInt(_d[1])+_iy;
-
-		_CONTEXT.save();
-		_CONTEXT.setTransform(Math.cos(rad),Math.sin(rad),
-							-Math.sin(rad),Math.cos(rad),
-							cx-cx*Math.cos(rad)+cy*Math.sin(rad),
-							cy-cx*Math.sin(rad)-cy*Math.cos(rad));
+		_this.x = _this._boss.x + parseInt(_d[0]) + _this._initx;
+		_this.y = _this._boss.y + parseInt(_d[1]) + _this._inity;
 		_GAME._setDrawImage({
 			img: _this.img,
-			x: _this._boss.x + parseInt(_d[0]) + _ix,
-			y: _this._boss.y + parseInt(_d[1]) + _iy,
-			width: _this.img.width,
-			height: _this.img.height,
-			basePoint: 1
+			x: _this.x,
+			y: _this.y,
+			deg: parseInt(_d[3]),
+			width: _this.width,
+			height: _this.height,
 		});
-		_CONTEXT.restore();
 	}
 	moveDraw(_o){
 		//move()によって調整された状態からCANVASに描画する。

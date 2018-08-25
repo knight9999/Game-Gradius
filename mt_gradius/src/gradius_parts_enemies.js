@@ -438,21 +438,23 @@ class ENEMY_a extends GameObject_ENEMY{
 		_this._status=1;
 	}
 	setDrawImageDirect(){
-		let _this=this;
+		let _this = this;
 		//向き・位置の設定
+		let _ex = _this.getEnemyCenterPosition()._x;
+		let _px = _PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition()._x;
 		//上
 		if (_this.direct === _DEF_DIR._U || _this.direct === _DEF_DIR._LU) {
-			_this.direct=
-				(_PARTS_PLAYERMAIN._players_obj.x < _this.x)
-				?_this.direct = _DEF_DIR._U//左向
-				:_this.direct = _DEF_DIR._LU;//右向
+			_this.direct =
+				(_px < _ex)
+				?_DEF_DIR._U //左向
+				:_DEF_DIR._LU; //右向
 		}
 		//下
 		if (_this.direct === _DEF_DIR._D || _this.direct === _DEF_DIR._LD) {
-			_this.direct = 
-				(_PARTS_PLAYERMAIN._players_obj.x < _this.x)
-				? _this.direct = _DEF_DIR._D //左向
-				: _this.direct = _DEF_DIR._LD; //右向
+			_this.direct =
+				(_px < _ex)
+				?_DEF_DIR._D //左向
+				:_DEF_DIR._LD; //右向
 		}
 	}
 	moveSet(){
@@ -506,10 +508,6 @@ class ENEMY_c extends GameObject_ENEMY{
 		_this._collision_type='t3';
 		_this._count=0;//移動切り替えようのカウント
 
-		_this.y=(_p.direct===_DEF_DIR._D)
-			?_p.y-_this.height-_MAP.t
-			:_p.y;
-
 		_this.shotColMap=
 				(_this.direct===_DEF_DIR._D)
 					?["10,10,43,42"]
@@ -552,66 +550,79 @@ class ENEMY_c extends GameObject_ENEMY{
 
 		//MAPの位置を取得
 		let _map_x=_MAP.getMapX(_e._x);
-		let _map_y=_MAP.getMapY(_e._y);
+		let _map_y=_MAP.getMapY(_this.y);
 
-		//MAP左端では向きを右にきりかえる
+		//MAP末端に達した場合、キャンバス内に戻させる
 		if(_MAP.isMapBefore(_map_x,_map_y)){
 			_this._docker_speed = Math.abs(_this._docker_speed);
+			_this.x += _this._docker_speed * 2;
+			return;
 		}
-		if(_MAP.isMapLastSide(_map_x,_map_y)){
-			_this._docker_speed = _this._docker_speed * -1;
+		if (_MAP.isMapLastSide(_MAP.getMapX(_this.x), _map_y)) {
+			_this._docker_speed *= -1;
+			_this.x += _this._docker_speed * 2;
+			return;
 		}
-		let _s=_MAP.t;
 		//段差処理
 		//左右にどちらかブロックがある
-		_s = (Math.abs(_this._docker_speed) * 2);
-		let _f=(_MAP.isMapCollision(_map_x+1,_map_y)
-			||_MAP.isMapCollision(_map_x-1,_map_y));
-		_this.y=(function(_t){
-			if(_t.direct===_DEF_DIR._U){
-				if(_f){return _t.y+_s;}
-				return _t.y;
-			}else if(_t.direct===_DEF_DIR._D){
-				if(_f){return _t.y-_s;}
-				return _t.y;
-			}
-		})(_this);
-
+		let _s = Math.abs(_this._docker_speed) * 3;
 		//穴パターン
-		_this.y=(function(_t){
-			if(_t.direct===_DEF_DIR._U){
+		_this.y=((_t)=>{
+			if (_t.direct === _DEF_DIR._U || _t.direct === _DEF_DIR._LU) {
+				if (_this.y <= 0) {
+					return _t.y + _s;
+				}
+				_map_y = _MAP.getMapY(_t.y);
+				//両サイドが壁の場合、下にさげる
+				if (_MAP.isMapCollision(_map_x - 1, _map_y)
+					|| _MAP.isMapCollision(_map_x + 1, _map_y)) {
+					return _t.y + _s;
+				}
 				//上に穴がある場合、敵を上にあげる
-				if(!_MAP.isMapCollision(_map_x,_map_y-1)){
-					return _t.y-_s;
+				_map_y = _MAP.getMapY(_t.y - 3);
+				if (!_MAP.isMapCollision(_map_x, _map_y)) {
+					return _t.y - _s;
 				}
 				return _t.y;
-			}else if(_t.direct===_DEF_DIR._D){
-				//下に穴がある場合、敵を下に下げる
-				if(!_MAP.isMapCollision(_map_x,_map_y+1)){
-					return _t.y+_s;
+			} else if (_t.direct === _DEF_DIR._D || _t.direct === _DEF_DIR._LD) {
+				if (_this.y + _this.height >= _CANVAS.height) {
+					return _t.y - _s;
+				}
+				_map_y = _MAP.getMapY(_t.y + _this.height);
+				// 両サイドが壁の場合、上にあげる
+				if (_MAP.isMapCollision(_map_x - 1, _map_y)
+					|| _MAP.isMapCollision(_map_x + 1, _map_y)) {
+					return _t.y - _s;
+				}
+				//下に穴がある場合、下に下げる
+				_map_y = _MAP.getMapY(_t.y + _this.height + 3);
+				if (!_MAP.isMapCollision(_map_x, _map_y)) {
+					return _t.y + _s;
 				}
 				return _t.y;
 			}
 		})(_this);
 
 	}
-	setDrawImageDirect(){
-		let _this=this;
-		if(_this.direct===_DEF_DIR._U){
-			if(_PARTS_PLAYERMAIN._players_obj.x<_this.x){
-				_CONTEXT.setTransform(1,0,0,-1,0,_this.y*2+_this.height);
-			}else{
-				_CONTEXT.setTransform(-1,0,0,-1,_this.x*2+_this.width,_this.y*2+_this.height);			
-			}
+	setDrawImageDirect() {
+		let _this = this;
+		//向き・位置の設定
+		let _ex = _this.getEnemyCenterPosition()._x;
+		let _px = _PARTS_PLAYERMAIN._players_obj.getPlayerCenterPosition()._x;
+		//上
+		if (_this.direct === _DEF_DIR._U || _this.direct === _DEF_DIR._LU) {
+			_this.direct =
+				(_px < _ex)
+				?_DEF_DIR._U //左向
+				:_DEF_DIR._LU; //右向
 		}
-		if(_this.direct===_DEF_DIR._D){
-			if(_PARTS_PLAYERMAIN._players_obj.x<_this.x){
-				_CONTEXT.setTransform(1,0,0,1,0,0);
-			}else{
-				_CONTEXT.setTransform(-1,0,0,1,_this.x*2+_this.width,0);
-			}
+		//下
+		if (_this.direct === _DEF_DIR._D || _this.direct === _DEF_DIR._LD) {
+			_this.direct =
+				(_px < _ex)
+				?_DEF_DIR._D //左向
+				:_DEF_DIR._LD; //右向
 		}
-		return;
 	}
 	set_speed(){
 		let _this = this;
@@ -648,6 +659,7 @@ class ENEMY_c extends GameObject_ENEMY{
 	}
 	moveSet(){
 		let _this=this;
+		_this.setDrawImageDirect();
 		_this.map_collition();
 		_this.set_speed();
 
@@ -787,7 +799,7 @@ class ENEMY_m extends GameObject_ENEMY{
 			y:_p.y,
 			imgPos:[0,50,100,150,100,50,0],
 			width:50,
-			height:24,
+			height:25,
 			aniItv:5,
 			direct:_p.direct
 		});
@@ -1038,8 +1050,7 @@ class ENEMY_p extends GameObject_ENEMY{
 		super({
 			img:_p.img||_CANVAS_IMGS['enemy_p_1'].obj,
 			x:_p.x,
-			y:_p.y,
-			direct:_p.direct
+			y:_p.y
 		});
 		let _this=this;
 		_this._status=4;
@@ -1668,18 +1679,6 @@ class ENEMY_frame_2 extends ENEMY_frame_1 {
 			imgPosx:_this.get_imgPos(),
 			basePoint:1
 		});
-		if (_ISDEBUG) {
-			_CONTEXT.strokeStyle = 'rgba(200,200,255,0.5)';
-			_CONTEXT.beginPath();
-			_CONTEXT.rect(
-				_this.x,
-				_this.y,
-				_this.width,
-				_this.height
-			);
-			_CONTEXT.stroke();
-		}
-
 	}
 	showCollapes(){
 		let _this=this;

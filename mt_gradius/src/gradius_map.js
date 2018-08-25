@@ -414,7 +414,10 @@ class GameObject_MAP{
 							_DEF_MAP_MAPS[_d[_v].map[_m]]._obj({x:_x,y:_y})
 						);
 					},
-					_getObj(_p){return _DEF_MAP_MAPS[_d[_v].map[_m]]._obj({x:_p.x,y:_p.y});}
+					_getObj(_p){
+						_p=_p||{x:0,y:0,md:0};
+						return _DEF_MAP_MAPS[_d[_v].map[_m]]._obj({x:_p.x,y:_p.y});
+					}
 				}
 			}
 			//敵定義
@@ -426,7 +429,10 @@ class GameObject_MAP{
 						);
 					},
 					_st: _DEF_MAP_ENEMIES[_d[_v].enemies[_e]]._st,
-					_getObj(_p) {return _DEF_MAP_ENEMIES[_d[_v].enemies[_e]]._obj(_p.x, _p.y, _p.md);}
+					_getObj(_p) {
+						_p=_p||{x:0,y:0,md:0};
+						return _DEF_MAP_ENEMIES[_d[_v].enemies[_e]]._obj(_p.x, _p.y, _p.md);
+					}
 				}
 			}
 
@@ -486,7 +492,6 @@ class GameObject_MAP{
 		_this.initx=parseInt(_MAPDEFS[_this.map_pettern]._initx);
 		_this.mapdef=_MAPDEFS[_this.map_pettern]._map;
 		_this.map_difficult = _GAME._url_params['ed'] || parseInt(_MAPDEFS[_this.map_pettern]._difficult) - 1;
-		_this.map_pettern = parseInt(_GAME._url_params['mp'] || _this.map_pettern);
 		_this.map_background_speed=parseInt(_MAPDEFS[_this.map_pettern]._speed);
 		_this.map_theme=_MAPDEFS[_this.map_pettern]._theme;
 		_this.map_infinite=(_MAPDEFS[_this.map_pettern]._map_infinite==='true')?true:false;
@@ -512,9 +517,9 @@ class GameObject_MAP{
 			//MAP1行分ループ
 			if(_this.isEnemiesBit(_m[_j])){
 				//敵のゲーム開始前初期化
-				let _d=_MAP.get_enemy_dir(_j,_i);//向きを取得する
-				_MAP_THEME[_this.map_theme]._enemies[_m[_j]]
-					._gamestart(_this.x+(_j*_this.t),_i*_this.t,_d);
+				let _o = _MAP_THEME[_this.map_theme]._enemies[_m[_j]];
+				let _d = _MAP.get_enemy_dir(_j, _i, _o); //向きを取得する
+				_o._gamestart(_this.x+(_j*_this.t),_i*_this.t,_d);
 				continue;
 			}
 			if(_this.isCollisionBit(_m[_j])){
@@ -549,8 +554,8 @@ class GameObject_MAP{
 			//MAPテーマより、MAP・敵ビットを取得する
 			let _p=
 				(_this.isEnemiesBit(_m[_j]))
-				?_MAP_THEME[_this.map_theme]._enemies[_m[_j]]._getObj({})
-				:_MAP_THEME[_this.map_theme]._map[_m[_j]]._getObj({});
+				?_MAP_THEME[_this.map_theme]._enemies[_m[_j]]._getObj()
+				:_MAP_THEME[_this.map_theme]._map[_m[_j]]._getObj();
 			if(_p===undefined){
 				//テーマに対するMAP・敵ビットが存在しない場合
 				console.log('テーマ:'+_this.map_theme+'に対して '+_m[_j]+'の定義がありません。');
@@ -597,13 +602,21 @@ class GameObject_MAP{
 				+_s_mapdef_col.substr(_mx+_p_s[_l].length);			
 		}//_l
 	}
-	get_enemy_dir(_mx,_my){
+	get_enemy_dir(_mx,_my,_o){
 		//MAP衝突の情報から、敵の上下の向きを取得
+
 		let _this=this;
+		let _t=_o._getObj().height/_this.t||1;
+		if (!_this.isMapCollision(_mx, _my - 1)
+			&&!_this.isMapCollision(_mx, _my + Math.ceil(_t))){
+			//空中の敵は向きは下
+			return _DEF_DIR._D;
+		}
+		//地上用の向き処理
 		let _d=(_this.isMapCollision(_mx,_my-1))
 				?_DEF_DIR._U
 				:_DEF_DIR._D;
-		_d=(_this.isMapCollision(_mx,_my+1))
+		_d=(_this.isMapCollision(_mx,_my+Math.ceil(_t)))
 				?_DEF_DIR._D
 				:_DEF_DIR._U;
 		return _d;
@@ -779,58 +792,37 @@ class GameObject_MAP{
 			if(_k==='0'){continue;}
 			if(_k.match(_this.collision_enemies)!==null){
 				//敵
-				let _p=_MAP_THEME[_m._theme]._enemies[_k]._getObj({md:_MAP.get_enemy_dir(_j + 100, _i)});
-				_CONTEXT.save();
-				let _d = _p.direct;
-				let _x=0+(_j*10);
-				let _y=130+(_i*10);
-				let _w=_p.width/2.5;
-				let _h=_p.height/2.5;
-
-				if(_d===_DEF_DIR._U){
-					_CONTEXT.setTransform(1,0,0,-1,0,_y*2+_h);
-				}
-				if(_d===_DEF_DIR._LU){
-					_CONTEXT.setTransform(-1,0,0,-1,_x*2+_w,_y*2+_h);
-				}
-				if(_d===_DEF_DIR._LD){
-					_CONTEXT.setTransform(-1,0,0,1,_x*2+_w,0);
-				}
-				_CONTEXT.translate(0+(_j*10),130+(_i*10));
-				_CONTEXT.scale(0.25,0.25);
-				_CONTEXT.drawImage(
-					_p.img,
-					_p.imgPos[0],
-					0,
-					_p.width,
-					_p.height,			
-					0,
-					0,
-					_p.width*1.60,//偶然の一致
-					_p.height*1.60
-				);
-				_CONTEXT.restore();
+				let _o = _MAP_THEME[_m._theme]._enemies[_k];
+				let _p=_o._getObj();
+				_GAME._setDrawImage({
+					img: _p.img,
+					x: 0 + (_j * 10),
+					y: 130 + (_i * 10),
+					imgPosx: _p.imgPos[0],
+					width: _p.width / 2.5,
+					height: _p.height / 2.5,
+					t_width: _p.width,
+					t_height: _p.height,
+					direct: _MAP.get_enemy_dir(_j + 100, _i, _o),
+					basePoint: 1
+				});
 			}else{
 				//MAP
-				let _p=_MAP_THEME[_m._theme]._map[_k]._getObj({});
+				let _p=_MAP_THEME[_m._theme]._map[_k]._getObj();
 //				let img=_p._obj.img;
 				//画像サイズは、25x25px
 				//ここでは10x10pxに調整
-				_CONTEXT.save();
-				_CONTEXT.translate(0+(_j*10),130+(_i*10));
-				_CONTEXT.scale(0.25,0.25);
-				_CONTEXT.drawImage(
-					_p.img,
-					_p.imgPos[0],
-					0,
-					_p.width,
-					_p.height,			
-					0,
-					0,
-					_p.width*1.60,//偶然の一致
-					_p.height*1.60
-				);
-				_CONTEXT.restore();
+				_GAME._setDrawImage({
+					img: _p.img,
+					x: 0 + (_j * 10),
+					y: 130 + (_i * 10),
+					imgPosx: _p.imgPos[0],
+					width: _p.width / 2.5,
+					height: _p.height / 2.5,
+					t_width: _p.width,
+					t_height: _p.height,
+					basePoint: 1
+				});
 			}
 		}//_j
 		}//_i

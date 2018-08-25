@@ -74,8 +74,8 @@
             "enemy_bigcore_core": {"src":"images/gradius_enemy_bigcore_core.png","rate":1.00},
 
             "enemy_cristalcore": {"src":"images/gradius_enemy_cristalcore.png","rate":1.0},
-            "enemy_cristalcore_hand1": {"src":"images/gradius_enemy_cristalcore_hand1.png","rate":0.30},
-            "enemy_cristalcore_hand2": {"src":"images/gradius_enemy_cristalcore_hand2.png","rate":0.40},
+            "enemy_cristalcore_hand1": {"src":"images/gradius_enemy_cristalcore_hand1.png","rate":1.00},
+            "enemy_cristalcore_hand2": {"src":"images/gradius_enemy_cristalcore_hand2.png","rate":1.00},
             "enemy_cristalcore_wall1": {"src":"images/gradius_enemy_cristalcore_wall1.png","rate":1.00},
             "enemy_cristalcore_wall2": {"src":"images/gradius_enemy_cristalcore_wall2.png","rate":1.00},
             "enemy_cristalcore_shot": {"src":"images/gradius_enemy_cristalcore_shot.png","rate":1.00},
@@ -190,6 +190,8 @@
             "enemy_cube": {"src":"audios/enemy_cube.mp3","volume":1.0},
 
             "map_cell_wall": {"src":"audios/map_cell_wall.mp3","volume":1.0},
+
+            "opening": {"src":"audios/opening.mp3","volume":1.0},
 
             "bg_powermeterselect": {"src":"audios/bg_powermeterselect.mp3","volume":1.0},
             "bg_boss": {"src":"audios/bg_boss.mp3","volume":1.0},

@@ -14,8 +14,11 @@ let _DRAW_SETINTERVAL = null;
 let _DRAW_OPENING_SETINTERVAL = null;
 let _DRAW_GAMESTART_SETINTERVAL = null;
 
-let _DRAW_IS_GAMECLEAR = false; //GameClearフラグ
+let _DRAW_GAMESTART_AUDIO = null;
 
+let _DRAW_IS_GAMECLEAR = false; //GameClearフラグ
+let _DRAW_IS_GAMEOVER = false; //GameOverフラグ
+let _DRAW_IS_MAIN = false;
 
 const _IS_DRAW_STOP=()=>{
 	return (_DRAW_SETINTERVAL === null);
@@ -30,14 +33,19 @@ const _IS_DRAW_STOP=()=>{
 const _DRAW=()=>{
 	_KEYEVENT_MASTER.addKeydownGame();
 	_KEYEVENT_MASTER.addKeyupGame();
-	_GAME_AUDIO._setPlayOnBG(_GAME_AUDIO._audio_now_obj_bg);
+
+	_GAME_AUDIO._setPlayOnBG();
 
 	const _loop=()=>{
-		_DRAW_SETINTERVAL=window.requestAnimationFrame(_loop);		
-		_CONTEXT.clearRect(0,0,
-					_CANVAS.width,
-					_CANVAS.height);
-
+		_DRAW_SETINTERVAL=window.requestAnimationFrame(_loop);
+		
+		if (_MAP.isChangeBackgroundMain() && !_DRAW_IS_MAIN) {
+			//オープニング曲からメイン曲への変更
+			_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_' + _MAP.map_bgmusic]);
+			_DRAW_IS_MAIN = true;
+		}
+		
+		_CONTEXT.clearRect(0,0,_CANVAS.width,_CANVAS.height);
 		//以下は大体のシーケンス
 		//・移動設定
 		//・衝突判定
@@ -312,19 +320,19 @@ const _DRAW_GAMESTART=()=>{
 	//MAP
 	_MAP.set_gamestart();
 
+	_GAME_AUDIO._setStopOnBG();
+	_GAME_AUDIO._setOnBG(((_MAP.map_bgchange === 0) ? null :  _DRAW_GAMESTART_AUDIO));
+
 	if(_ISDEBUG){_DRAW();return;}
 	let _c=0;
 	const _loop=()=>{
 		_DRAW_GAMESTART_SETINTERVAL=window.requestAnimationFrame(_loop);
-		if(_c>250){
+		if(_c>140){
 			_DRAW_STOP_GAMESTART();
-			_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_'+_MAP.map_bgmusic]);			
 			_DRAW();
 			return;
 		}
-		_CONTEXT.clearRect(0,0,
-					_CANVAS.width,
-					_CANVAS.height);
+		_CONTEXT.clearRect(0,0,_CANVAS.width,_CANVAS.height);
 
 		//BACKGROUND
 		_PARTS_OTHERS._move_background();
@@ -347,14 +355,9 @@ const _DRAW_GAMESTART=()=>{
 		_c++;
 	};
 	_DRAW_GAMESTART_SETINTERVAL=window.requestAnimationFrame(_loop);
-	_GAME_AUDIO._setStopOnBG();
 }
 
 const _DRAW_GAMECLEAR=()=>{
-	if (_DRAW_IS_MATCH_BOSS_COUNT === 0) {
-		_MAP.set_mapdefs_difficult();
-	}
-
 	if (_DRAW_IS_MATCH_BOSS_COUNT > 100) {
 		_DRAW_SCROLL_RESUME();
 	} else {
@@ -380,7 +383,6 @@ const _DRAW_GAMECLEAR=()=>{
 		r: 0.3
 	});
 	_DRAW_IS_GAMECLEAR=true;
-
 }
 
 const _DRAW_GAMEOVER=()=>{
@@ -418,7 +420,8 @@ const _DRAW_GAMEOVER=()=>{
 		y: (_CANVAS.height / 2) + 60,
 		r: 0.3
 	});
-
+	_DRAW_IS_GAMEOVER = true;
+	_DRAW_IS_GAMECLEAR = false;
 }// _DRAW_GAMEOVER
 
 const _DRAW_SCROLL_STOP=()=>{
@@ -463,6 +466,21 @@ const _DRAW_RESET_OBJECT=()=>{
 	_DRAW_MATCH_BOSS_MOVEX_COUNT = 0;
 	_DRAW_MATCH_BOSS_OBJ = new Object();
 
+	//クリアしたら難易度追加
+	if (_DRAW_IS_GAMECLEAR) _MAP.set_mapdefs_difficult();
+	//SCORE
+	if (!_DRAW_IS_GAMECLEAR) _PARTS_OTHERS._reset_score();
+	//ゲーム開始時の曲設定
+	_DRAW_GAMESTART_AUDIO = 
+		_DRAW_IS_GAMECLEAR ?
+		_CANVAS_AUDIOS['background_playing_start2'] :
+		_CANVAS_AUDIOS['background_playing_start'];
+
+	//ゲームクリアをリセット
+	_DRAW_IS_GAMECLEAR = false;
+	_DRAW_IS_GAMEOVER = false;
+	_DRAW_IS_MAIN = false;
+
 }
 
 const _DRAW_INIT_OBJECT=()=>{
@@ -478,13 +496,12 @@ const _DRAW_INIT_OBJECT=()=>{
  
 	//METER
 	_POWERMETER=new GameObject_PM();
-	//SCORE
-	if(!_DRAW_IS_GAMECLEAR){
-		//クリアしていなければスコアをリセット
-		_PARTS_OTHERS._reset_score();
-	}
-	_DRAW_IS_GAMECLEAR=false;
 
+	//GameStart後の曲の設定
+	_DRAW_GAMESTART_AUDIO =
+		 (_DRAW_GAMESTART_AUDIO === null)
+			 ? _CANVAS_AUDIOS['background_playing_start']
+			 : _DRAW_GAMESTART_AUDIO;
 	_DRAW_GAMESTART();
 }
 

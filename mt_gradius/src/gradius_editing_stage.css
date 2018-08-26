@@ -89,6 +89,28 @@ form #map *{
 }
 form #map h2{padding:20px;}
 
+form #map #ruler {
+	border-left: 2px solid transparent;
+	border-right: 2px solid transparent;
+	margin: 30px;
+	height: 1em;
+	margin-bottom: 0px;
+	position: relative;
+	overflow: hidden;
+}
+form #map #ruler #ruler_inner{display:flex;}
+form #map #ruler span {
+	flex-shrink: 0;
+	line-height: 1em;
+	color: rgba(255, 255, 255, 0.5);
+	width: 20px;
+}
+form #map #ruler span:before {
+    content: '';
+    position: relative;
+    border: 1px dotted rgba(255, 255, 255, 0.3);
+}
+
 form #map section#map_bts {margin: 0 30px 20px;}
 form #map section#map_bts a {
     background-color: rgba(255,255,255,0.3);
@@ -198,6 +220,7 @@ form .form_group input[type="range"] {
     width: 40%;
 }
 form .form_group{border: 2px solid rgba(255,255,255,0);margin-bottom:10px;padding:10px 20px;}
+form .form_group#init{display: none;}
 form .form_group:after{clear:both;content:'';display:table;}
 form .form_group:hover{
 	border: 2px solid rgba(255,255,255,0.5);

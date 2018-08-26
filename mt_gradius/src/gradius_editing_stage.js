@@ -169,6 +169,15 @@ _setInitMap:function(_m){
 	//初期表示
 	this._theme=_m._theme;
 	let _mo=_m._map;
+
+	//ルーラーの表示
+	let _r_str='';
+    for (let _i = 0; _i < _mo[0].length; _i++) {
+		_r_str+='<span>'+((_i*25%100===0)?_i*25:'')+'</span>';
+	};
+	document.querySelector('form #map #ruler #ruler_inner').innerHTML = _r_str;
+
+	//マップの表示
     let _str='';
     for(let _i=0;_i<_mo.length;_i++){
     _str+='<div class="area_blocks_rows">';
@@ -353,9 +362,18 @@ _setData:function(_pt){
 			break;
 		}
 	}
-	$_bgmusic.addEventListener('click',function(){
+	$_bgmusic.addEventListener('click', function () {
 		_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop();
-	})
+	});
+
+	//BGM CHANGEを表示
+	const $_bgchange = document.querySelector('#bgchange input[name="bgchange"]'),
+		$_bgchange_v = document.querySelector('#bgchange .col_r .val');
+	_data._bgchange = _data._bgchange || 0;
+	$_bgchange.value = _data._bgchange;
+	$_bgchange_v.setAttribute('data-val', _data._bgchange);
+	_this._setTextToFont($_bgchange_v, _data._bgchange, 20);
+
 	//BOSSを表示
 	const $_boss=document.querySelector('#boss select');
 	for(let _i=0;_i<$_boss.length;_i++){
@@ -411,6 +429,7 @@ setDataForDataApi:function(){
 		_str+='"_body":"'+document.querySelector('#body textarea[name="body"]').value+'",';
 		_str+='"_initx":"'+document.querySelector('#init .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_bgmusic":"'+document.querySelector('#bgmusic select').value+'",';
+		_str += '"_bgchange":"' + document.querySelector('#bgchange .col_r .val').getAttribute('data-val') + '",';
 		_str+='"_boss":"'+document.querySelector('#boss select').value+'",';
 		_str+='"_speed":"'+document.querySelector('#speed .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_difficult":"'+document.querySelector('#difficult .col_r .val').getAttribute('data-val')+'",';
@@ -825,7 +844,22 @@ _f_bgmusic_stop:function(e){
 
 
 
-
+document.querySelector('form #map #area').addEventListener('scroll', (e) => {
+	//#map
+	let $area_blocks=document.querySelector('form #map #area .area_blocks').getBoundingClientRect().width;
+	//スクロールが両端に届いた時の調整
+	if (e.currentTarget.scrollLeft === 0) {
+		//左端
+		document.querySelector('form #map #ruler').scrollLeft=0;
+		return;
+	}
+	if (e.currentTarget.scrollLeft >= $area_blocks) {
+		//右端
+		document.querySelector('form #map #ruler').scrollLeft = $area_blocks;
+		return;
+	}
+	document.querySelector('form #map #ruler').scrollLeft = e.currentTarget.scrollLeft;
+});
 document.addEventListener('scroll',()=>{
 	_GAME_STAGEEDIT_EVENTS._e_scroll();
 });

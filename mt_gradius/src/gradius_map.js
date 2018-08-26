@@ -385,6 +385,7 @@ class GameObject_MAP{
 		_this.map_bgmusic='';
 		_this.map_boss='';
 		_this.map_enemies_boss = new Object();
+		_this.map_bgchange = 0;
 		_this.isboss=false;
 	}
 	init(){
@@ -497,6 +498,8 @@ class GameObject_MAP{
 		_this.map_infinite=(_MAPDEFS[_this.map_pettern]._map_infinite==='true')?true:false;
 		_this.map_bgmusic=_MAPDEFS[_this.map_pettern]._bgmusic;
 		_this.map_boss=_MAPDEFS[_this.map_pettern]._boss;
+
+		_this.map_bgchange = parseInt(_MAPDEFS[_this.map_pettern]._bgchange) || 0;
 
 		_this.map_enemies_boss = _MAP_ENEMIES_BOSS[_this.map_boss];
 		_this.isboss=false;
@@ -741,6 +744,9 @@ class GameObject_MAP{
 				return true;
 		}
 
+	}
+	isChangeBackgroundMain(){
+		return _MAP_SCROLL_POSITION_X > this.map_bgchange;
 	}
 	setPlayersShotAbleCollision(_mx,_my,_shot){
 		let _obj = _PARTS_MAP._obj[_mx + ',' + _my];

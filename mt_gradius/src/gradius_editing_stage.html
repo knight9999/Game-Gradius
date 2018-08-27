@@ -22,6 +22,8 @@
 <a class="map_bt add" onclick="_GAME_STAGEEDIT_EVENTS._f_map_add(event);" nohref="">add</a>
 <a class="map_bt remove" onclick="_GAME_STAGEEDIT_EVENTS._f_map_remove(event);" nohref="">remove</a>
 </section>
+<section id="ruler"><div id="ruler_inner"></div>
+</section><!-- ruler -->
 <section id="area">
 <div id="area_selectable"></div>
 <section class="area_blocks drop">
@@ -83,6 +85,13 @@
 <a class="bgmusic_stop"><span>⏹</span></a>
 </div>
 </div><!-- /#bgmusic -->
+<div id="bgchange" class="form_group">
+<label class="col_l">BG CHANGE:</label>
+<div class="col_r">
+<div class="val">0</div>
+<label><span>0</span><input name="bgchange" type="range" min="0" max="2000" step="25"><span>2000</span></label>
+</div>
+</div><!-- /#bgchange -->
 <div id="boss" class="form_group">
 <label class="col_l">BOSS:</label>
 <div class="col_r">

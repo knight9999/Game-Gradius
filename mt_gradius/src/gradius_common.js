@@ -209,15 +209,21 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 		}); //promise
 
 	},
+	_setOnBG(_obj){
+		if(_obj===undefined){return;}
+		this._audio_now_obj_bg = _obj
+	},
 	_setPlayOnBG(_obj, _loop, _time) {
 		//バックグラウンド用再生
+		//再生中の場合は、上書きする。
 		//_obj:再生させたい音声オブジェクト
 		//_loop:ループ可否
 		//_time:再生完了時間（ms）
-		if(_obj===null||_obj===undefined){return;}
 		let _this = this;
-		_loop=(_loop===undefined)?true:false;
+		_obj = (_obj === undefined) ? _this._audio_now_obj_bg : _obj;
+		_loop = (_loop === undefined) ? true : false;
 
+		if (_obj===null){return;}
 		return new Promise((_res, _rej) => {
 		
 		if(_this._is_audio_context_source_bg===true){

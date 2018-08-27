@@ -315,13 +315,7 @@ const _DRAW_GAMESTART=()=>{
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
 
-	//BACKGROUND
-	_PARTS_OTHERS._init_background();
-	//MAP
-	_MAP.set_gamestart();
-
 	_GAME_AUDIO._setStopOnBG();
-	_GAME_AUDIO._setOnBG(((_MAP.map_bgchange === 0) ? null :  _DRAW_GAMESTART_AUDIO));
 
 	if(_ISDEBUG){_DRAW();return;}
 	let _c=0;
@@ -388,15 +382,13 @@ const _DRAW_GAMECLEAR=()=>{
 const _DRAW_GAMEOVER=()=>{
 	_KEYEVENT_MASTER.removeKeydownGame();
 	_KEYEVENT_MASTER.removeKeyupGame();
+	_KEYEVENT_MASTER.addKeydownGameover();
 
 	_DRAW_STOP();
-
-	_KEYEVENT_MASTER.addKeydownGameover();
 	_CONTEXT.clearRect(0,0,_CANVAS.width,_CANVAS.height);
 
 	//BACKGROUNDを表示
 	_PARTS_OTHERS._draw_background();
-
 	//DRAW POWER METERを表示
 	_POWERMETER.show();
 	//SCOREを表示
@@ -493,15 +485,26 @@ const _DRAW_INIT_OBJECT=()=>{
 	_PARTS_PLAYERMAIN._init_players_force_obj(_PLAYERS_POWER_METER);
 	//OPTIONの初期設定
 	_PARTS_PLAYERMAIN._init_option_obj(_PLAYERS_POWER_METER);
- 
+
 	//METER
 	_POWERMETER=new GameObject_PM();
+
+	//BACKGROUND
+	_PARTS_OTHERS._init_background();
+	//MAP
+	_MAP.set_gamestart();
 
 	//GameStart後の曲の設定
 	_DRAW_GAMESTART_AUDIO =
 		 (_DRAW_GAMESTART_AUDIO === null)
 			 ? _CANVAS_AUDIOS['background_playing_start']
 			 : _DRAW_GAMESTART_AUDIO;
+	_DRAW_GAMESTART_AUDIO =
+		(_MAP.map_bgchange === 0)
+			? null
+			: _DRAW_GAMESTART_AUDIO;
+	_GAME_AUDIO._setOnBG(_DRAW_GAMESTART_AUDIO);
+	
 	_DRAW_GAMESTART();
 }
 

@@ -799,7 +799,8 @@ class GameObject_MAP{
 			if(_k.match(_this.collision_enemies)!==null){
 				//敵
 				let _o = _MAP_THEME[_m._theme]._enemies[_k];
-				let _p=_o._getObj();
+				let _d = _MAP.get_enemy_dir(_j + 100, _i, _o);
+				let _p=_o._getObj({x:0,y:0,md:_d});
 				_GAME._setDrawImage({
 					img: _p.img,
 					x: 0 + (_j * 10),
@@ -809,7 +810,7 @@ class GameObject_MAP{
 					height: _p.height / 2.5,
 					t_width: _p.width,
 					t_height: _p.height,
-					direct: _MAP.get_enemy_dir(_j + 100, _i, _o),
+					direct: _p.direct,
 					basePoint: 1
 				});
 			}else{

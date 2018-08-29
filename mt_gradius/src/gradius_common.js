@@ -4,6 +4,8 @@
 //=====================================================
 'use strict';
 
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
 let _ISDEBUG=false;
 let _PLAYERS_POWER_METER=0;
 let _PLAYERS_POWER_METER_SHIELD=0;
@@ -146,7 +148,7 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 	_is_audio_context_source_bg: false, //バックグラウンド再生中判別フラグ
 	_init(){
 		let _this = this;
-		_this._audio_context = new(window.AudioContext || window.webkitAudioContext)();
+		_this._audio_context = new window.AudioContext();
 	},
 	_init_audios(_obj,_progressfunc){
 		return new Promise((_res, _rej) => {
@@ -159,7 +161,7 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 				// contextにArrayBufferを渡し、decodeさせる
 				_this._audio_context.decodeAudioData(
 					_r.response,
-					function (_buf) {
+					(_buf)=>{
 						_obj[_i].buf = _buf;
 						_this._audio_loaded_count++;
 						if (_this._audio_loaded_count >= Object.keys(_obj).length) {
@@ -171,7 +173,7 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 							_progressfunc(_this._audio_loaded_count / Object.keys(_obj).length * 100);
 						}
 					},
-					function (_error) {
+					(_error)=>{
 						alert('一部音声読み込みに失敗しました。再度立ち上げなおしてください:' + _error);
 						_rej();
 						return;
@@ -192,59 +194,48 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 
 		_this._audio_loaded_count = 0;
 	},
-	_setPlay(_obj, _time) {
+	_setPlay(_obj) {
+		//効果音用再生
 		if(_obj===null||_obj===undefined){return;}
 		let _this = this;
-	
-		return new Promise((_res, _rej) => {
-
 		var _s=_this._audio_context.createBufferSource();
 		_s.buffer=_obj.buf;
 		_s.loop=false;
 		_s.connect(_this._audio_context.destination);
 		_s.start(0);
-		if(_time===undefined){return;}
-		_this._audio_settimeout=setTimeout(()=>{_res();},_time);
-
-		}); //promise
-
 	},
 	_setOnBG(_obj){
 		if(_obj===undefined){return;}
-		this._audio_now_obj_bg = _obj
+		this._audio_now_obj_bg = _obj;
 	},
-	_setPlayOnBG(_obj, _loop, _time) {
+	_setPlayOnBG(_obj, _loop) {
 		//バックグラウンド用再生
 		//再生中の場合は、上書きする。
 		//_obj:再生させたい音声オブジェクト
 		//_loop:ループ可否
 		//_time:再生完了時間（ms）
 		let _this = this;
-		_obj = (_obj === undefined) ? _this._audio_now_obj_bg : _obj;
-		_loop = (_loop === undefined) ? true : false;
 
+		_obj = (_obj === undefined) ? _this._audio_now_obj_bg : _obj;
 		if (_obj===null){return;}
-		return new Promise((_res, _rej) => {
-		
+		let _time = _obj.loopOffset||0;
+		_loop = (_loop || _loop === undefined) ? true : false;
+
 		if(_this._is_audio_context_source_bg===true){
 			_this._audio_context_source_bg.stop();
 			_this._is_audio_context_source_bg=false;
 		}
 		let _t=_this._audio_context.createBufferSource();
-		_t.buffer=_obj.buf;
-		_this._audio_now_obj_bg=_obj;//バッファの一時保存用
-		_t.loop=_loop;
-		_t.loopStart=0;
+		_t.buffer = _obj.buf;
+		_this._audio_now_obj_bg = _obj; //バッファの一時保存用
 		_t.connect(_this._audio_context.destination);
-		_t.start(0);
+		_t.loop = _loop;
+		_t.loopStart = _time || 0;
+		_t.loopEnd = _obj.buf.duration;
+		_t.start();
 		
 		_this._audio_context_source_bg=_t;
 		_this._is_audio_context_source_bg=true;
-
-		if(_time===undefined){return;}
-		_this._audio_settimeout=setTimeout(()=>{_res();},_time);
-
-		});//promise
 	},
 	_setStopOnBG(){
 		//バックグラウンド用停止

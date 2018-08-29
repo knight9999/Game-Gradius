@@ -123,7 +123,7 @@ _set_entryupdate(_ed){
 }//_DATAAPI
 
 const _GAME_STAGEEDIT={
-_ac:new(window.AudioContext||window.webkitAudioContext)(),
+_ac:new window.AudioContext(),
 _as:null,
 _theme:0,
 _txt:{//スプライトされたフォントのマッピング
@@ -605,20 +605,6 @@ _e_update:function(){
 	return false;
 },//_e_update
 
-//ページスクロール時
-_e_scroll:function(e){
-    const $_b=document.body;
-//    const _boh=$_b.offsetHeight;
-    const _wih=document.body.clientHeight;
-    const $_m=document.getElementById('menu');
-    const _mh=$_m.offsetHeight;
-//    console.log($_b.scrollTop+window.innerHeight);
-//	console.log('mh:'+_mh);
-    ($_b.scrollTop+window.innerHeight>_wih-(_mh/2))
-        ?$_b.classList.remove('ismenu')
-        :$_b.classList.add('ismenu');
-},//_e_scroll
-
 //レンジ設定
 _f_fg_range:function(e){
     let $_t_val=e.target.parentNode.previousElementSibling;
@@ -663,7 +649,7 @@ _f_map_remove:function(e){
 //====================
 _f_as_dragleave:function(e){
 	//dragout at the area_block
-//	console.log('dragleave')
+//	console.log('_f_as_dragleave')
 	if(_GAME_STAGEEDIT_EVENTS.$_mouseover_area_parts_obj===null
 		||_GAME_STAGEEDIT_EVENTS.$_mouseover_area_parts_obj===undefined)
 		{return;}
@@ -674,7 +660,7 @@ _f_as_dragleave:function(e){
 }, //_f_as_dragleave
 _f_as_dragenter:function(e){
 	//dragin at the area_block to control not out of .area_blocks
-//	console.log(e.target);
+//	console.log('_f_as_dragenter')
 	if(this.$_do_area_parts_obj!==null){
 		this.$_do_area_parts_obj.classList.remove('over');
 	}
@@ -713,7 +699,7 @@ _f_as_dragenter:function(e){
 	return false;
 },//_f_as_dragenter
 _f_as_drop:function(e){
-    console.log('as_drop');
+    console.log('f_as_drop');
     let _o=e.dataTransfer.getData("text");//data-val
 	let $_ect = document.querySelector('.area_block.over'); //ドロップ先.area_block
 	let $_e=this.$_start_area_parts_obj;//元.area_block
@@ -721,8 +707,10 @@ _f_as_drop:function(e){
 	$_e.style.visibility = null;
 
 	$_ect.classList.remove('over');
-    //コピー・移動先にオブジェクトを配置
-	if(e.dataTransfer.effectAllowed==='move'){
+	//drag元の親要素のクラス名で、コピー・移動を決定
+	//コピー・移動先にオブジェクトを配置
+	let _parent_class = $_e.parentElement.getAttribute('class');
+	if (_parent_class === 'area_block') {
 		//移動
 		$_ect.appendChild($_e);
 	}else{
@@ -743,8 +731,6 @@ _f_as_drop:function(e){
 			);
 			$_cn.setAttribute('data-width', parseInt(_obj.width * 0.8));
 			$_cn.setAttribute('data-height', parseInt(_obj.height * 0.8));
-			// $_cn.children[0].width=parseInt(_obj.width*0.8);
-			// $_cn.children[0].height=parseInt(_obj.height*0.8);
 		}
 		if(_o.match(_MAP.collision_map)!==null){
 			//MAPの表示
@@ -758,10 +744,6 @@ _f_as_drop:function(e){
 			);
 			$_cn.setAttribute('data-width', parseInt(_obj.width * 0.8));
 			$_cn.setAttribute('data-height', parseInt(_obj.height * 0.8));
-			// $_cn.style.width=parseInt(_obj.width*0.8);
-			// $_cn.style.height=parseInt(_obj.height*0.8);
-//			$_cn.children[0].width=parseInt(_obj.width*0.8);
-//			$_cn.children[0].height=parseInt(_obj.height*0.8);
 		}
 		$_ect.children[0].addEventListener('dragstart',this._f_pb_dragstart,false);
 	}
@@ -823,7 +805,6 @@ _f_pb_dragstart:function(e){
 	e.target.style.visibility = 'hidden'; //非表示。
 	console.log('_f_pb_dragstart');
 	e.dataTransfer.effectAllowed='move';
-	e.dataTransfer.dropEffect='move';
 	_GAME_STAGEEDIT_EVENTS.$_start_area_parts_obj=e.currentTarget;
 	e.dataTransfer.setData("text",e.currentTarget.parentNode.getAttribute('data-val'));
 	e.currentTarget.parentNode.setAttribute('data-val',0);
@@ -860,17 +841,14 @@ document.querySelector('form #map #area').addEventListener('scroll', (e) => {
 	}
 	document.querySelector('form #map #ruler').scrollLeft = e.currentTarget.scrollLeft;
 });
-document.addEventListener('scroll',()=>{
-	_GAME_STAGEEDIT_EVENTS._e_scroll();
-});
-window.addEventListener('load',()=>{
+window.addEventListener('load', () => {
 	$_pb=document.getElementsByClassName('parts_block');
 	$_ab=document.getElementsByClassName('area_block');
 	$_mp=document.querySelector('#menu .prev');
 	$_mn=document.querySelector('#menu .next'); 
 	$_bm=document.querySelector('#bgmusic');
 
-	_GAME_AUDIO._audio_context = new(window.AudioContext || window.webkitAudioContext)();
+	_GAME_AUDIO._audio_context = new AudioContext();
 	_AJAX({url:'./gradius_config.json'})
 	.then((_d)=>{
 		//設定情報取得した値を各オブジェクトにセット

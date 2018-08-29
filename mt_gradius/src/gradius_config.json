@@ -194,13 +194,14 @@
             "opening": {"src":"audios/opening.mp3","volume":1.0},
 
             "background_playing_start": {"src":"audios/background_playing_start.mp3","volume":1.0},
-            "background_playing_start2": {"src":"audios/background_playing_start2.mp3","volume":1.0},
+            "background_playing_start2": {"src":"audios/background_playing_start2.mp3","volume":1.0,"loopOffset":6.12},
 
             "bg_powermeterselect": {"src":"audios/bg_powermeterselect.mp3","volume":1.0},
             "bg_boss": {"src":"audios/bg_boss.mp3","volume":1.0},
+            "bg_boss_bigcore": {"src":"audios/bg_boss_bigcore.mp3","volume":1.0,"loopOffset":2.7},
 
             "bg_type1": {"src":"audios/bg_moai.mp3","volume":1.0},
-            "bg_type2": {"src":"audios/bg_volcano.mp3","volume":1.0},
+            "bg_type2": {"src":"audios/bg_volcano.mp3","volume":1.0,"loopOffset":0.75},
             "bg_type3": {"src":"audios/bg_crystal.mp3","volume":1.0},
             "bg_type4": {"src":"audios/bg_frame.mp3","volume":1.0},
             "bg_type5": {"src":"audios/bg_thunderbolt.mp3","volume":1.0},
@@ -325,7 +326,7 @@
                     "obj": {"img":"enemy_bigcore"},
                     "movex": 0,
                     "left": false,
-                    "bgmusic": "bg_boss"
+                    "bgmusic": "bg_boss_bigcore"
                 }
             ],
             "enemy_bigcore2": [

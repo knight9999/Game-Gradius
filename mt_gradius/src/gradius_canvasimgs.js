@@ -31,6 +31,7 @@ const _CANVAS_IMGS_CONTROL={
 			_CANVAS_AUDIOS[_v] = {};
 			_CANVAS_AUDIOS[_v]['src'] = _d[_v].src;
 			_CANVAS_AUDIOS[_v]['valume'] = _d[_v].volume;
+			_CANVAS_AUDIOS[_v]['loopOffset'] = _d[_v].loopOffset;
 			_CANVAS_AUDIOS[_v]['buf'] = new Object();
 		}
 

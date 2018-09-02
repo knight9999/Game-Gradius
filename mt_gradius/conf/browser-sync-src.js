@@ -5,6 +5,7 @@ const _BS_SRC = require("browser-sync").create('server_src');
 const _CI = require("cheerio");
 const _UE = require("uglify-es");
 const _UC = require('uglifycss');
+const _JM = require('jsonminify');
 
 const _FS = require('fs-extra');
 const _IM = require('imagemin');
@@ -56,8 +57,7 @@ const _SET_JSON = () => {
 
             console.log(_file);
             let _jc = _FS.readFileSync('./src/'+_file, "utf8");
-            _jc = _jc.replace(/[\t\n]/ig, '');
-            _FS.writeFileSync('./dist/'+_file, _jc);
+            _FS.writeFileSync('./dist/' + _file, _JM(_jc));
         });
     });
 }

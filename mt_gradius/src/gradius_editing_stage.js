@@ -98,8 +98,10 @@ _set_entryupdate(_ed){
 			//BG MUSICによる音再生イベント設定
 			const $_fg_bg_play=document.querySelector('a.bgmusic_play');
 			$_fg_bg_play.addEventListener('click',_GAME_STAGEEDIT_EVENTS._f_bgmusic_play);
-			const $_fg_bg_stop=document.querySelector('a.bgmusic_stop');
-			$_fg_bg_stop.addEventListener('click',_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop);
+
+			document.querySelectorAll('a.bgmusic_stop, .component_select span, .component_select span div').forEach((_o) => {
+				_o.addEventListener('click', _GAME_STAGEEDIT_EVENTS._f_bgmusic_stop);
+			});
 
 			//設定が全て終わったらページを表示させる
 			document.body.classList.add('on');
@@ -382,7 +384,7 @@ _setData:function(_pt){
 	_data._bgchange = _data._bgchange || 0;
 	$_bgchange.value = _data._bgchange;
 	$_bgchange_v.setAttribute('data-val', _data._bgchange);
-	_this._setTextToFont($_bgchange_v, _data._bgchange, 20);
+	_this._setTextToFont($_bgchange_v, _data._bgchange, 15);
 	//BOSSを表示
 	const $_boss = document.querySelector('#boss .component_select');
 	document.querySelectorAll('#boss .component_select ul li').forEach((_o)=>{_o.classList.remove('on');})
@@ -396,25 +398,25 @@ _setData:function(_pt){
 		$_init_v=document.querySelector('#init .col_r .val');
 	$_init.value=_data._initx;
 	$_init_v.setAttribute('data-val',_data._initx);
-	_this._setTextToFont($_init_v,_data._initx,20);
+	_this._setTextToFont($_init_v,_data._initx,15);
 	//speedを表示
 	const $_speed=document.querySelector('#speed input[name="speed"]'),
 		$_speed_v=document.querySelector('#speed .col_r .val');
 	$_speed.value=_data._speed;
 	$_speed_v.setAttribute('data-val',_data._speed);
-	_this._setTextToFont($_speed_v,_data._speed,20);
+	_this._setTextToFont($_speed_v,_data._speed,15);
 	//difficultを表示
 	const $_difficult=document.querySelector('#difficult input[name="difficult"]'),
 		$_difficult_v=document.querySelector('#difficult .col_r .val');
 	$_difficult.value=_data._difficult;
 	$_difficult_v.setAttribute('data-val',_data._difficult);
-	_this._setTextToFont($_difficult_v,_data._difficult,20);
+	_this._setTextToFont($_difficult_v,_data._difficult,15);
 	//map_infiniteを表示
 	const $_map_infinite=document.querySelector('#map_infinite input[name="map_infinite"]'),
 	$_map_infinite_v=document.querySelector('#map_infinite .col_r .val');
 	$_map_infinite.value=(_data._map_infinite==="true")?"1":"0";
 	$_map_infinite_v.setAttribute('data-val',_data._map_infinite);
-	_this._setTextToFont($_map_infinite_v,_data._map_infinite,20);
+	_this._setTextToFont($_map_infinite_v,_data._map_infinite,15);
 
 },//_setData
 
@@ -509,8 +511,9 @@ _init:()=>{
 		//BG MUSICによる音再生イベント設定
 		const $_fg_bg_play=document.querySelector('a.bgmusic_play');
 		$_fg_bg_play.addEventListener('click',_GAME_STAGEEDIT_EVENTS._f_bgmusic_play);
-		const $_fg_bg_stop=document.querySelector('a.bgmusic_stop');
-		$_fg_bg_stop.addEventListener('click',_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop);
+		document.querySelectorAll('a.bgmusic_stop, .component_select span, .component_select span div').forEach((_o) => {
+			_o.addEventListener('click', _GAME_STAGEEDIT_EVENTS._f_bgmusic_stop);
+		});
 
 		//設定が全て終わったらページを表示させる
 		document.body.classList.add('on');

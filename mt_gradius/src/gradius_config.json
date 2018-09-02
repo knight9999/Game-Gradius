@@ -205,7 +205,8 @@
             "bg_type3": {"src":"audios/bg_crystal.mp3","volume":1.0},
             "bg_type4": {"src":"audios/bg_frame.mp3","volume":1.0},
             "bg_type5": {"src":"audios/bg_thunderbolt.mp3","volume":1.0},
-            "bg_type6": {"src":"audios/bg_cell.mp3","volume":1.0}
+            "bg_type6": {"src":"audios/bg_cell.mp3","volume":1.0},
+            "bg_type7": {"src":"audios/bg_burningheat.mp3","volume":1.0,"loopOffset":0.72}
         }
     },
     "map":{

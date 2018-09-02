@@ -120,17 +120,16 @@ const _GAME_IMG={//画像系スクリプト
 					_progressfunc(_s);
 				}
 			}
-			_o.obj.onabort = function () {
-				_rej();
+			_o.obj.onabort = () => {
+				if (_alertFlag) {return;}
+				_alertFlag = true;
+				_rej(_o.obj.src);
 				return;
 			}
-			_o.obj.onerror = function () {
-				if (_alertFlag) {
-					return;
-				}
+			_o.obj.onerror = () => {
+				if (_alertFlag) {return;}
 				_alertFlag = true;
-				alert('一部画像読み込みに失敗しました。再度立ち上げなおしてください');
-				Promise.reject();
+				_rej(_o.obj.src);
 				return;
 			}
 		}
@@ -153,11 +152,12 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 	_init_audios(_obj,_progressfunc){
 		return new Promise((_res, _rej) => {
 		let _this = this;
+		let _alertFlag = false;
 		for (let _i in _obj) {
 			let _r = new XMLHttpRequest();
 			_r.open('GET', _obj[_i].src, true);
 			_r.responseType = 'arraybuffer'; //ArrayBufferとしてロード
-			_r.onload = function () {
+			_r.onload =  ()=>{
 				// contextにArrayBufferを渡し、decodeさせる
 				_this._audio_context.decodeAudioData(
 					_r.response,
@@ -174,11 +174,23 @@ const _GAME_AUDIO={//オーディオ系スクリプト
 						}
 					},
 					(_error)=>{
-						alert('一部音声読み込みに失敗しました。再度立ち上げなおしてください:' + _error);
-						_rej();
+						console.log('一部音声読み込みに失敗しました。再度立ち上げなおしてください:' + _obj[_i].src);
+						_rej(_obj[_i].src);
 						return;
 					});
 			};
+			_r.onabort = () => {
+				if (_alertFlag) {return;}
+				_alertFlag = true;
+				_rej(_obj[_i].src);
+				return;
+			}
+			_r.onerror = () => {
+				if (_alertFlag) {return;}
+				_alertFlag = true;
+				_rej(_obj[_i].src);
+				return;
+			}
 			_r.send();
 		}
 		});
@@ -287,7 +299,9 @@ const _GAME={//ゲーム用スクリプト
 		"x":"1980",
 		"y":"2040",
 		"z":"2100",
-		":":"2160"
+		":": "2160",
+		"_": "2280",
+		"-": "2340"
 	},
 	_ac:{
 		//_DRAWのsetIntervalのアニメに併せ

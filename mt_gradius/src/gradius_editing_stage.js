@@ -8,6 +8,7 @@ let $_mn=null;
 let $_bm=null;
 
 let _MAP_PETTERN=0;
+let _COMPONENT_DIALOG='';
 
 const _DATAAPI={
 _data_api:'',
@@ -59,20 +60,21 @@ _set_entryupdate(_ed){
 		_ed._eid,
 		_ed,
 		function(_r) {
+		_COMPONENT_DIALOG.closeComponentModal();
 		if(_r.error){
-			alert('エントリ更新に失敗しました。');
+			_COMPONENT_DIALOG.openComponentDialog('エントリ更新に失敗しました。');
 			if(_r.error.code===401){
 				location.href=
 					_this._data_api.getAuthorizationUrl(location.href);
 			}
 			return;
 		}
-		alert('エントリ更新しました。');
+		_COMPONENT_DIALOG.openComponentDialog('エントリ更新しました。');
 		_GAME_STAGEEDIT_EVENTS._edits = false;
 
 		//jsonファイルを取得して再表示させる
 		_MAP.init(function(){
-			_MAP_PETTERN=(function(){
+			_MAP_PETTERN=(()=>{
 				//エントリした記事を記事更新後初期表示させる
 				for(let _i=0;_i<_MAPDEFS.length;_i++){
 					if(_MAPDEFS[_i]._eid===_ed._eid){return _i;}
@@ -81,19 +83,17 @@ _set_entryupdate(_ed){
 			_GAME_STAGEEDIT._setData(_MAP_PETTERN);
 
 			//area_parts内、parts_blockイベント設定
-			const $_ap_pb=document.querySelectorAll('#area_parts .parts_block');
-			for(let _i=0;_i<$_ap_pb.length;_i++){
-			    $_ap_pb[_i].setAttribute('draggable',true);
-			    $_ap_pb[_i].addEventListener('dragstart',_GAME_STAGEEDIT_EVENTS._f_ap_dragstart,false);
-				$_ap_pb[_i].addEventListener('dragend',_GAME_STAGEEDIT_EVENTS._f_ap_dragend,false);
-			}
+			document.querySelectorAll('#area_parts .parts_block').forEach((_o)=>{
+			    _o.setAttribute('draggable', true);
+			    _o.addEventListener('dragstart', _GAME_STAGEEDIT_EVENTS._f_ap_dragstart, false);
+			    _o.addEventListener('dragend', _GAME_STAGEEDIT_EVENTS._f_ap_dragend, false);
+			});
 
 			//入力フォームのイベント設定
-			const $_fg_range=document.querySelectorAll('.form_group .col_r input[type="range"]');
-			for(let _i=0;_i<$_fg_range.length;_i++){
-			    $_fg_range[_i].addEventListener('input',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
-			    $_fg_range[_i].addEventListener('change',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
-			}
+			document.querySelectorAll('.form_group .col_r input[type="range"]').forEach((_o) => {
+				_o.addEventListener('input', _GAME_STAGEEDIT_EVENTS._f_fg_range, false);
+				_o.addEventListener('change', _GAME_STAGEEDIT_EVENTS._f_fg_range, false);
+			});
 
 			//BG MUSICによる音再生イベント設定
 			const $_fg_bg_play=document.querySelector('a.bgmusic_play');
@@ -108,12 +108,7 @@ _set_entryupdate(_ed){
 			_GAME_STAGEEDIT._setEntryLink();
 
 			//gradiusフォントにセット
-			const $_qsa=document.querySelectorAll(
-				'.parts_block_wrapper .text'
-			);
-			for(let _i=0;_i<$_qsa.length;_i++){
-				_GAME_STAGEEDIT._setTextToFont($_qsa[_i],$_qsa[_i].innerText,14);
-			}
+			document.querySelectorAll('.parts_block_wrapper .text,#map_bts a').forEach((_o)=>{_this._setTextToFont(_o, _o.innerText, 14);});
 
 	    });//_MAP.init()
 
@@ -163,7 +158,9 @@ _txt:{//スプライトされたフォントのマッピング
 	"x":"1980",
 	"y":"2040",
 	"z":"2100",
-	":":"2160"
+	":":"2160",
+	"_": "2280",
+	"-": "2340"
 },
 _setInitMap:function(_m){
 	//初期表示
@@ -306,13 +303,30 @@ _clearMap:function(){
 		.textContent=null;
 },//_clearMap
 
-_getTextToFont:function($_obj){
-	let _str='';
-	let $_o=$_obj.children;
-	for(let _i=0;_i<$_o.length;_i++){
-		_str+=$_o[_i]
+_getTextToFont:function(_str, _w){
+	_w = _w || 60;
+	let _s = '';
+	for (let _i = 0; _i < _str.length; _i++) {
+		if (_str[_i] === ':') {
+			continue;
+		}
+		if (_str[_i] === ' ') {
+			_s += '<img src="./images/gradius_spacer.png" width="' + _w + '">';
+			continue;
+		}
+		//		console.log(_str[_i]+':');
+		let _pos = parseInt(this._txt[_str[_i].toLowerCase()]) * (_w / 60) * -1;
+		_s += '<div style="' +
+			'background:url(./images/gradius_font.png) no-repeat;' +
+			'background-size:cover;' +
+			'background-position:' + _pos + 'px 0px;' +
+			'display:inline-block;' +
+			'width:' + _w + 'px;' +
+			'height:' + _w + 'px;' +
+			'"></div>';
+		//		_s+='<img src="./images/gradius_font_'+_str[_i]+'.png" width="'+_w+'">';
 	}
-	return _str;
+	return _s;
 },
 _setTextToFont:function(_o,_str,_w){
 	if(_o===undefined||_o===null){return;}
@@ -338,7 +352,6 @@ _setTextToFont:function(_o,_str,_w){
 	}
 	_o.innerHTML=_s;
 },//_setTextToFont
-
 _clearData:function(){
 
 },//_clearData()
@@ -355,17 +368,14 @@ _setData:function(_pt){
 	const $_body=document.querySelector('#body textarea[name="body"]');
 	$_body.value=_data._body;
 	//BGM MUSICを表示
-	const $_bgmusic=document.querySelector('#bgmusic select');
-	for(let _i=0;_i<$_bgmusic.length;_i++){
-		if($_bgmusic[_i].value===_data._bgmusic){
-			$_bgmusic[_i].selected=true;
-			break;
-		}
+	const $_bgmusic = document.querySelector('#bgmusic .component_select');
+	$_bgmusic.setAttribute('data-val', 'bg_'+_data._bgmusic);
+	document.querySelectorAll('#bgmusic .component_select ul li').forEach((_o)=>{_o.classList.remove('on');})
+	if(_data._bgmusic){
+		document.querySelector('#bgmusic .component_select ul li[data-val=bg_' + _data._bgmusic + ']').classList.add('on');
+		document.querySelector('#bgmusic .component_select span').innerHTML = _this._getTextToFont('bg_'+_data._bgmusic,15);
 	}
-	$_bgmusic.addEventListener('click', function () {
-		_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop();
-	});
-
+	$_bgmusic.addEventListener('click', ()=>{_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop();});
 	//BGM CHANGEを表示
 	const $_bgchange = document.querySelector('#bgchange input[name="bgchange"]'),
 		$_bgchange_v = document.querySelector('#bgchange .col_r .val');
@@ -373,15 +383,14 @@ _setData:function(_pt){
 	$_bgchange.value = _data._bgchange;
 	$_bgchange_v.setAttribute('data-val', _data._bgchange);
 	_this._setTextToFont($_bgchange_v, _data._bgchange, 20);
-
 	//BOSSを表示
-	const $_boss=document.querySelector('#boss select');
-	for(let _i=0;_i<$_boss.length;_i++){
-		if($_boss[_i].value===_data._boss){
-			$_boss[_i].selected=true;
-			break;
-		}
+	const $_boss = document.querySelector('#boss .component_select');
+	document.querySelectorAll('#boss .component_select ul li').forEach((_o)=>{_o.classList.remove('on');})
+	if (_data._boss) {
+		document.querySelector('#boss .component_select ul li[data-val=' + _data._boss + ']').classList.add('on');
+		document.querySelector('#boss .component_select span').innerHTML = _this._getTextToFont(_data._boss, 15);
 	}
+	$_boss.setAttribute('data-val', _data._boss);
 	//initを表示
 	const $_init=document.querySelector('#init input[name="init"]'),
 		$_init_v=document.querySelector('#init .col_r .val');
@@ -428,9 +437,9 @@ setDataForDataApi:function(){
 		_str+='"_theme":"'+_m._theme+'",';
 		_str+='"_body":"'+document.querySelector('#body textarea[name="body"]').value+'",';
 		_str+='"_initx":"'+document.querySelector('#init .col_r .val').getAttribute('data-val')+'",';
-		_str+='"_bgmusic":"'+document.querySelector('#bgmusic select').value+'",';
+		_str += '"_bgmusic":"' + document.querySelector('#bgmusic .component_select').getAttribute('data-val').replace('bg_','') + '",';
 		_str += '"_bgchange":"' + document.querySelector('#bgchange .col_r .val').getAttribute('data-val') + '",';
-		_str+='"_boss":"'+document.querySelector('#boss select').value+'",';
+		_str += '"_boss":"' + document.querySelector('#boss .component_select').getAttribute('data-val') + '",';
 		_str+='"_speed":"'+document.querySelector('#speed .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_difficult":"'+document.querySelector('#difficult .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_map_infinite":"'+document.querySelector('#map_infinite .col_r .val').getAttribute('data-val')+'"';
@@ -461,35 +470,27 @@ _setEntryLink:function(){
 },//setEntryLink
 _setPartsBlockEvent:function(){
 	//area_parts内、parts_blockイベント設定
-	const $_ap_pb=document.querySelectorAll('#area_parts .parts_block');
-	for(let _i=0;_i<$_ap_pb.length;_i++){
-		$_ap_pb[_i].setAttribute('draggable',true);
-		$_ap_pb[_i].addEventListener('dragstart',_GAME_STAGEEDIT_EVENTS._f_ap_dragstart,false);
-		$_ap_pb[_i].addEventListener('dragend',_GAME_STAGEEDIT_EVENTS._f_ap_dragend,false);
-	}
+	document.querySelectorAll('#area_parts .parts_block').forEach((_o)=>{
+		_o.setAttribute('draggable', true);
+		_o.addEventListener('dragstart', _GAME_STAGEEDIT_EVENTS._f_ap_dragstart, false);
+		_o.addEventListener('dragend', _GAME_STAGEEDIT_EVENTS._f_ap_dragend, false);
+	});
 },//_setPartsBlockEvent
 _init:()=>{
 	//DataAPI読み込み完了後に実行
     const _this=_GAME_STAGEEDIT;
 	//入力画面 BG MUSICの選択ボックス作成
-	const $bgm=document.querySelector('#bgmusic select');
-	Object.keys(_CANVAS_AUDIOS).forEach(function(_k){
-		if(_k.indexOf('bg_type')===-1){return;}
-		let _op=document.createElement('option');
-		_op.setAttribute('value',_k.replace('bg_',''));
-		_op.innerHTML=_k.replace('bg_','');
-		$bgm.appendChild(_op);
-		
+	const $bgm = document.querySelector('#bgmusic .component_select');
+	let _arr = Object.keys(_CANVAS_AUDIOS).filter((_k)=>{
+		return (_k.indexOf('bg_type')!==-1);
 	});
+	$bgm.setAttribute('data-set', _arr.join(','));
 
-	const $boss=document.querySelector('#boss select');
-	Object.keys(_MAP_ENEMIES_BOSS).forEach(function(_k){
-		let _op=document.createElement('option');
-		_op.setAttribute('value',_k);
-		_op.innerHTML=_k;
-		$boss.appendChild(_op);
-		
-	});
+	//入力画面 BOSSの選択ボックス作成
+	const $boss = document.querySelector('#boss .component_select');
+	let _ar = Object.keys(_MAP_ENEMIES_BOSS).map((_k)=>{return _k;});
+	$boss.setAttribute('data-set', _ar.join(','));
+	new components();
 
     //入力値をセット
     _MAP.init().then(()=>{
@@ -500,11 +501,10 @@ _init:()=>{
 		_GAME_STAGEEDIT._setPartsBlockEvent();
 		
 		//入力フォームのイベント設定
-		const $_fg_range=document.querySelectorAll('.form_group .col_r input[type="range"]');
-		for(let _i=0;_i<$_fg_range.length;_i++){
-		    $_fg_range[_i].addEventListener('input',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
-		    $_fg_range[_i].addEventListener('change',_GAME_STAGEEDIT_EVENTS._f_fg_range,false);
-		}
+		document.querySelectorAll('.form_group .col_r input[type="range"]').forEach((_o)=>{
+		    _o.addEventListener('input', _GAME_STAGEEDIT_EVENTS._f_fg_range, false);
+		    _o.addEventListener('change', _GAME_STAGEEDIT_EVENTS._f_fg_range, false);
+		});
 
 		//BG MUSICによる音再生イベント設定
 		const $_fg_bg_play=document.querySelector('a.bgmusic_play');
@@ -520,23 +520,11 @@ _init:()=>{
 		_GAME_STAGEEDIT._setEntryLink();
 
 		//gradiusフォントにセット
-		let $_qsa=document.querySelectorAll('h1');
-		for(let _i=0;_i<$_qsa.length;_i++){
-			_this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,40);
-		}
+		document.querySelectorAll('h1').forEach((_o)=>{_this._setTextToFont(_o, _o.innerText, 40);});
+		document.querySelectorAll('h2,h3,#entrylink a,label.col_l,div.col_r label span, #menu_inner a').forEach((_o)=>{_this._setTextToFont(_o, _o.innerText, 20);});
+		document.querySelectorAll('.parts_block_wrapper .text,#map_bts a').forEach((_o)=>{_this._setTextToFont(_o, _o.innerText, 14);});
 
-		$_qsa=document.querySelectorAll(
-			'h2,h3,#map_bts a,#entrylink a,label.col_l,div.col_r label span, #menu_inner a'
-		);
-		for(let _i=0;_i<$_qsa.length;_i++){
-			_this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,20);
-		}
-
-		$_qsa=document.querySelectorAll('.parts_block_wrapper .text');
-		for(let _i=0;_i<$_qsa.length;_i++){
-			_this._setTextToFont($_qsa[_i],$_qsa[_i].innerText,14);
-		}
-
+		_COMPONENT_DIALOG = new component_dialog();
 	});
 
 }//_init
@@ -599,9 +587,13 @@ _e_entrylink_next:function(e){
 
 //UPDATEボタン押下時
 _e_update:function(){
-	(window.confirm('更新しますか?'))
-		?_GAME_STAGEEDIT.setDataForDataApi()
-		:console.log('false');
+	_COMPONENT_DIALOG.openComponentModal({
+		str: 'このステージを更新しますか?',
+		yes: _GAME_STAGEEDIT.setDataForDataApi
+	})
+	// (window.confirm('更新しますか?'))
+	// 	?_GAME_STAGEEDIT.setDataForDataApi()
+	// 	:console.log('false');
 	return false;
 },//_e_update
 
@@ -814,16 +806,14 @@ _f_pb_dragstart:function(e){
 //	audio playing events
 //====================
 _f_bgmusic_play:function(e){
-	let _b=document.querySelector('#bgmusic select').value;
-	_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS['bg_' + _b]);
+	let _b = document.querySelector('#bgmusic .component_select').getAttribute('data-val');
+	_GAME_AUDIO._setPlayOnBG(_CANVAS_AUDIOS[_b]);
 },//_f_bgmusic_play
 _f_bgmusic_stop:function(e){
 	_GAME_AUDIO._setStopOnBG();
 }//_f_bgmusic_stop
 
 };//_GAME_STAGEEDIT_EVENTS
-
-
 
 document.querySelector('form #map #area').addEventListener('scroll', (e) => {
 	//#map
@@ -841,6 +831,11 @@ document.querySelector('form #map #area').addEventListener('scroll', (e) => {
 	}
 	document.querySelector('form #map #ruler').scrollLeft = e.currentTarget.scrollLeft;
 });
+
+
+//====================
+//	main
+//====================
 window.addEventListener('load', () => {
 	$_pb=document.getElementsByClassName('parts_block');
 	$_ab=document.getElementsByClassName('area_block');
@@ -918,3 +913,157 @@ window.addEventListener('load', () => {
 //     e.preventDefault();
 //     return false;
 // });
+
+
+//====================
+//	components
+//====================
+class components {
+	constructor() {
+		document.querySelectorAll('.component_select').forEach((_o) => {
+			let _d = _o.getAttribute('data-set');
+			let _str = '<span>' + _GAME_STAGEEDIT._getTextToFont('select in below', 15) + '</span>';
+			_str += '<ul>';
+			_d.split(',').forEach((_elem) => {
+				_str += '<li data-val="' + _elem + '">' + _GAME_STAGEEDIT._getTextToFont(_elem, 15) + '</li>';
+			});
+			_str += '</ul>';
+			_o.innerHTML = _str;
+		});
+
+		document.body.addEventListener('click', (e) => {
+			document.querySelectorAll('.component_select span').forEach((_o) => {
+				_o.classList.remove('on')
+			}); //span
+			document.querySelectorAll('.component_select ul').forEach((_o) => {
+				_o.classList.remove('on')
+			}); //ul
+		})
+
+		document.querySelectorAll('.component_select span,.component_select span div').forEach((_o) => {
+			_o.addEventListener('click', (e) => {
+				const $_span = e.currentTarget;//span
+				const $_ul = e.currentTarget.nextElementSibling;//ul
+				if ($_span.classList.contains('on')) {
+					$_span.classList.remove('on');
+					$_ul.classList.remove('on');
+				} else {
+					document.querySelectorAll('.component_select span').forEach((_o) => {
+						_o.classList.remove('on', 'top', 'bottom');
+					}); //span
+					document.querySelectorAll('.component_select ul').forEach((_o) => {
+						_o.classList.remove('on', 'top', 'bottom');
+					}); //ul
+					$_span.classList.add('on');//span
+					$_ul.classList.add('on');//ul
+
+					if($_span.getBoundingClientRect().y>350){
+						$_span.classList.add('bottom'); //span
+						$_ul.classList.add('bottom');
+					}else{
+						$_span.classList.add('top'); //span
+						$_ul.classList.add('top');
+					}
+				}
+
+				e.stopPropagation();
+				return false;
+			});
+		});
+
+		document.querySelectorAll('.component_select ul li').forEach((_o) => {
+			_o.addEventListener('click', (e) => {
+				let _obj = e.currentTarget.parentElement; //ul
+				_obj.previousElementSibling.classList.remove('on') //span
+				_obj.classList.remove('on'); //ul
+				_obj.parentElement.setAttribute('data-val', e.currentTarget.getAttribute('data-val')) //.component_select
+				_obj.previousElementSibling.innerHTML = e.currentTarget.innerHTML //span
+
+				Array.from(_obj.children).forEach((_o) => { //li s
+					_o.classList.remove('on');
+				})
+				e.currentTarget.classList.add('on'); //li current
+				e.stopPropagation();
+				return false;
+			});
+		});
+	}
+}
+
+class component_dialog{
+	constructor(){
+		//モーダルのコンポーネント大枠準備
+		this._e_cm_cn = 'component_modal';
+		this._e_cm_cn_yes = '.component_modal button.yes';
+		this._e_cm_html = '<section class="component_modal_dialog on">' +
+			'<div class="message_area"></div><div class="footer_area"><button class="yes">YES</button><button class="no">NO</button></div>' +
+			'</section>' +
+			'<section id="g_loading">' +
+			'<div id="loading_icon">' +
+			'<div id="loading_rotate" class="out"></div>' +
+			'<div id="loading_rotate" class="in"></div>' +
+			'</div><!-- #loading_icon -->' +
+			'</section><!-- #g_loading -->';
+		this._e_cm = document.createElement('section');
+
+		//以下はモーダルにあるyes,noボタンイベント
+		this._event_modal_yes_func='';//yes時の処理関数
+		this._event_modal_yes = (e) => {
+			document.querySelector('.component_modal_dialog').classList.remove('on');
+			this._e_g_loading.classList.add('on');
+			this._e_cm.removeEventListener('click', this._event_modal_no);
+			this._event_modal_yes_func();
+			e.stopPropagation();
+			return false;
+		};
+		this._event_modal_no = (e) => {
+			e.currentTarget.classList.remove('on');
+			this._e_cm.remove();
+			e.stopPropagation();
+			return false;
+		}
+
+
+		//ダイアログ（下）の大枠準備
+		this._e_cd = document.createElement('section');
+		this._e_cd.className = 'component_dialog';
+		document.body.appendChild(this._e_cd);
+	}
+	closeComponentModal(){
+		//モーダルのクローズ
+		this._e_cm.remove();
+	}
+	openComponentModal(_p){
+		//モーダルのオープン
+		//_p.str：モーダルに表示するメッセージ
+		//_p.yes：YES決定後の処理関数
+		if(_p===undefined){return;}
+		this._e_cm.className = this._e_cm_cn;
+		this._e_cm.innerHTML = this._e_cm_html;
+		document.body.appendChild(this._e_cm);
+		this._e_cm.addEventListener('click', this._event_modal_no, false);
+		this._e_cm.classList.add('on');
+		this._e_g_loading = document.querySelector('#g_loading');
+
+		document.querySelector('.' + this._e_cm_cn + ' .message_area').innerHTML = _p.str;
+		document.querySelector(this._e_cm_cn_yes).addEventListener('click', this._event_modal_yes, false);
+
+		this._event_modal_yes_func=_p.yes;
+	}
+	openComponentDialog(_str){
+		//ダイアログ表示させるために、文字列を渡す
+		if(_str===undefined){return;}
+		let _e_cm = document.createElement('div');
+		_e_cm.innerHTML = _str;
+		let _elem=document.querySelector('.component_dialog');
+		_elem.appendChild(_e_cm);
+		//追加分のコンポーネントに対してイベント追加
+		_e_cm.addEventListener('click', (e) => {
+			e.target.remove();
+			e.stopPropagation();
+			return false;
+		});
+		//時間経過後は自動的にDOMを削除する。
+		window.setTimeout(()=>{_e_cm.remove();},4000);
+	}
+}

@@ -2390,7 +2390,7 @@ class ENEMY_BOSS_DEATH
 		_this.tid=null;
 
 		_this.shotColMap=[
-			"0,0,40,100",
+			"20,0,40,100",
 			"40,0,230,140,false"
 		];
 		_this._collision_type='t9';
@@ -2953,6 +2953,7 @@ class ENEMY_BOSS_AIAN_CONTROL
 		_this._collision_type = 't2';
 		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER = 0.5;
 		_this.getscore = 100; //倒した時のスコア
+		_this.is_ignore = true;//母体は無視する
 
 		_this.aians_max = 50;//アイアンの最大登場数
 		_this.aians_count = 0;//アイアンの登場カウント

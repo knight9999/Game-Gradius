@@ -538,7 +538,8 @@ const _DRAW_STAGE_SELECT=()=>{
 
 
 let _DRAW_OPENING_IMGLOAD_RATE=0;
-const _DRAW_OPENING_START=()=>{
+const _DRAW_OPENING_START = () => {
+	_KEYEVENT_MASTER.removeKeydownStart();
 	_GAME_IMG._init_imgs(_CANVAS_IMGS, (_n) => {
 			//進捗中処理
 			_DRAW_OPENING_IMGLOAD_RATE=_n;
@@ -649,15 +650,12 @@ window.addEventListener('load',()=>{
 	.then(() => {
 		_PARTS_PLAYERMAIN._set_shot_type('_SHOTTYPE_NORMAL');
 		_PARTS_OTHERS._init_score();
-		let _gsl = document.querySelector('#game_start_loading');
-		_gsl.classList.remove('on');
-		let _gw = document.querySelector('#game_wrapper');
-		_gw.classList.add('on');
+		document.querySelector('#game_start_loading').classList.remove('on');
+		document.querySelector('#game_wrapper').classList.add('on');
 
 		//SPのみコントローラーのオブジェクトを取得
 		if (_ISSP) {
-			let _spc = document.querySelector('#sp_controller');
-			_spc.classList.add('on');
+			document.querySelector('#sp_controller').classList.add('on');
 			_SP_CONTROLLER._set_obj();
 		}
 

@@ -32,7 +32,12 @@ body::before {
 
 article, aside, dialog, figure, footer, header, hgroup, menu, nav, section { display: block; }
 p{margin:0px;padding:0px;}
-body *{box-sizing:border-box;}
+body *{
+	box-sizing:border-box;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+}
 
 @keyframes _fadein{
 	0%{opacity:0;}
@@ -99,6 +104,8 @@ body:not(.sp) #sp_landscapemode{display:none;}
 }
 }
 
+/* ポートレートモード
+***************/
 @media screen and (orientation: portrait) {
 body.sp section:not(#sp_landscapemode){display:none !important;}
 body.sp section#sp_landscapemode{
@@ -153,12 +160,17 @@ body.sp section#sp_landscapemode{display:none !important;}
 }
 
 body.sp section#game_wrapper.on{display:block;}
-body.sp section#game_wrapper #game{border:2px solid rgba(190,190,190,1.0);}
+body.sp section#game_wrapper #game{
+	border:2px solid rgba(190,190,190,1.0);
+	height:100%;
+	margin:auto;
+	width:auto;
+}
 
 body.sp section#sp_controller.on{
     bottom:0px;
     display:block;
-    height:130px;
+    height:100px;
     left:0px;
     position:absolute;
     width:100%;
@@ -240,10 +252,22 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a::before{
 iPad
 ********/
 @media screen and (min-width: 1024px) and (orientation: landscape){
-body.sp section#sp_controller.on{height:250px;}
+body.sp section#game_wrapper {
+	height: calc(100% - 200px);
+	margin: 0px auto;
+	position: relative;
+	width:100%;
+}
+body.sp section#game_wrapper #game{height: auto;width: 100%;}
+@media screen and (max-height: 704px) and (orientation: landscape) {
+	/*ここはアドレスバーが表示された場合の状態*/
+	body.sp section#game_wrapper {width: inherit;}
+	body.sp section#game_wrapper #game {height: 100%;width: auto;}
+}
+body.sp section#sp_controller.on{height:200px;}
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main{
 	height:200px;
-	top:40px;
+	top:0px;
 	width:200px;
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main .sp_controller_main_center{
@@ -259,15 +283,15 @@ body.sp section#sp_controller #sp_controller_inner>div[class*="bt"]{
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.hide{
 	right:435px;
-	top:155px;
+	top:115px;
 	height:60px !important;
 	width:60px !important;
 }
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r{right:400px;top:40px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:200px;top:40px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:300px;top:110px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b{right:100px;top:110px;}
-body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px;top:40px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.r{right:400px;top:00px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.p{right:200px;top:00px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.s{right:300px;top:70px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.b{right:100px;top:70px;}
+body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px;top:0px;}
 }
 
 /********
@@ -334,12 +358,7 @@ iPhone 5.5 4.7 4.0inch
 ********/
 @media screen and (min-width: 569px) and (max-width: 736px) and (orientation: landscape) {
 body.sp section#game_wrapper {
-	height: 100%;
-	transform: scale(0.80);
-	transform-origin: top;
-}
-body.sp section#sp_controller.on{
-	height:100px;
+	height: calc(100% - 100px);
 }
 body.sp section#sp_controller #sp_controller_inner .sp_controller_main {
 	height: 100px;
@@ -392,9 +411,7 @@ iPhone 4.0inch
 ********/
 @media screen and (max-width: 568px) and (orientation: landscape) {
 body.sp section#game_wrapper {
-	height: 100%;
-	transform: scale(0.80);
-	transform-origin: top;
+	height: calc(100% - 100px);
 }
 body.sp section#sp_controller #sp_controller_inner {
 	width: 95%;

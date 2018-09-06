@@ -439,9 +439,6 @@ const _GAME={//ゲーム用スクリプト
 		let _s1_p=_s1.split(',');//s1ポイント
 		let _s1_w=parseInt(_s1_p[2])-parseInt(_s1_p[0]);//幅
 		let _s1_h=parseInt(_s1_p[3])-parseInt(_s1_p[1]);//高
-		let _s1_l=Math.sqrt(
-					Math.pow(_s1_w,2)+Math.pow(_s1_h,2)
-				);//斜辺
 		let _s1_c_x=(_s1_w/2)+_s1_n_x+parseInt(_s1_p[0]);//_s1の中心点x
 		let _s1_c_y=(_s1_h/2)+_s1_n_y+parseInt(_s1_p[1]);//_s1の中心点y
 		if(_d){
@@ -460,22 +457,14 @@ const _GAME={//ゲーム用スクリプト
 				if(_f==='false'){return false;}
 				return false;
 			})(_s2_p[4]);
-	
-			//1衝突マップの斜辺
-			let _s2_l=Math.sqrt(
-				Math.pow(_s2_w,2)+Math.pow(_s2_h,2)
-			);//斜辺
-				
+					
 			let _s2_c_x=(_s2_w/2)+_s2_n_x+parseInt(_s2_p[0]);//_s2の中心点x
 			let _s2_c_y=(_s2_h/2)+_s2_n_y+parseInt(_s2_p[1]);//_s2の中心点y
 					
 			//_s1（自機）と_s2（1衝突）中心点の距離とその斜辺
 			let _d_x=Math.abs(_s2_c_x-_s1_c_x);
 			let _d_y=Math.abs(_s2_c_y-_s1_c_y);
-			let _d_l=Math.sqrt(
-				Math.pow(_d_x,2)+Math.pow(_d_y,2)
-			);//斜辺
-	
+
 			//衝突判定
 			let _tmpx=_s2_n_x+parseInt(_s2_p[0]);
 	//		if(_d_l<(_s1_l/2)+(_s2_l/2)){

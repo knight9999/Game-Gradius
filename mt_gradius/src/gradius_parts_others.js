@@ -88,8 +88,7 @@ const _PARTS_OTHERS = {
 				Math.pow(_PARTS_PLAYERMAIN._players_obj.height,2)
 			);
 
-			let _s=(_a<_d/2)?true:false;
-			if(!_s){continue;}
+			if(!(_a<_d/2)){continue;}
 
 			_pwc.getPowerCapcell();
 			if(_pwc.type==='red'){
@@ -100,25 +99,22 @@ const _PARTS_OTHERS = {
 			}
 			if(_pwc.type==='blue'){
 				//CANVAS内の敵を外す
-				for (let _i = 0; _i < _PARTS_ENEMIES._get_enemies().length; _i++) {
-					let _e = _PARTS_ENEMIES._get_enemies()[_i];
-					if(_GAME.isEnemyCanvasOut(_e)){continue;}
-					if(_e.isStandBy()){continue;}
-					if(!_e.isAbleCollision()){continue;}
+				_PARTS_ENEMIES._get_enemies().forEach((_e)=>{
+					if(_GAME.isEnemyCanvasOut(_e)){return;}
+					if(_e.isStandBy()){return;}
+					if(!_e.isAbleCollision()){return;}
 
 					_e._status-=1;
 					if(!_e.isalive()){
 						_PARTS_OTHERS._set_score(_e.getscore);
 						_e.showCollapes();
 					}
-				}
+				});
 				//CANVAS内の敵のショットを全て外す
-				let _eshot= _PARTS_ENEMY_SHOT._get_shot();
-				for (let _i = 0; _i < _eshot.length; _i++) {
-					let _es = _eshot[_i];
-					if(_GAME.isEnemyCanvasOut(_es)){continue;}
+				_PARTS_ENEMY_SHOT._get_shot().forEach((_es)=>{
+					if(_GAME.isEnemyCanvasOut(_es)){return;}
 					_es.init();
-				}
+				});
 				_GAME_AUDIO._setPlay(_CANVAS_AUDIOS['enemy_all_out']);
 			}
 		}

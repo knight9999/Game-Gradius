@@ -4,7 +4,7 @@
   "description": "Gradius no pakuri",
   "scripts": {
     "watch": "node ./conf/browser-sync.js",
-    "watch:src": "node ./conf/browser-sync-src.js"
+    "watch:src": "node ./conf/browser-sync.js src"
   },
   "author": "Takahashi Masaya",
   "license": "ISC",

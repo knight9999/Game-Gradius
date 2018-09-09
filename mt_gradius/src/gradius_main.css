@@ -413,6 +413,10 @@ iPhone 4.0inch
 body.sp section#game_wrapper {
 	height: calc(100% - 100px);
 }
+body.sp section#game_wrapper #game {
+	height: 100%;
+	width: auto;
+}
 body.sp section#sp_controller #sp_controller_inner {
 	width: 95%;
 }

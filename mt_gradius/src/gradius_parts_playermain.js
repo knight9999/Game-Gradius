@@ -169,65 +169,55 @@ const _PARTS_PLAYERMAIN={
 	_start_shots(){
 		let _this=this;
 		//自機・オプションのショット
-		for(var _i=0;_i<_this._shots.shot[_this._shot_type].length;_i++){
-			let _ps=_this._shots.shot[_this._shot_type][_i];
-			if(!_ps.player._isalive){continue;}
+		_this._shots.shot[_this._shot_type].forEach((_ps,_i)=>{
+			if(!_ps.player._isalive){return;}
 			//ここで同時ショットと
 			//個別ショットで判別させる
 			if(_this._shot_type===_this._shot_type_def.DOUBLE){
 				if(_ps.shots[0]._shot_alive||
-					_ps.shots[1]._shot_alive){continue;}
+					_ps.shots[1]._shot_alive){return;}
 				_ps.shots[0]._shot=true;
 				_ps.shots[1]._shot=true;
 				//最初の要素（自機）のみショット音をだす
-				if(_i!==0){continue;}
+				if(_i!==0){return;}
 				_GAME_AUDIO._setPlay(_ps.shots[0]._audio);
-				continue;
+				return;
 			}
 
-			_ps._sq=
-			(_ps._sq===_ps.shots.length-1)
-				?0
-				:_ps._sq+1;
+			_ps._sq=(_ps._sq===_ps.shots.length-1)?0:_ps._sq+1;
 			var _s=_ps.shots[_ps._sq];
 
-			if(_s._shot_alive){continue;}
+			if(_s._shot_alive){return;}
 			//ショット中は、ショットを有効にしない
 			_s._shot=true;
 
 			//最初の要素（自機）のみショット音をだす
-			if(_i!==0){continue;}
+			if(_i!==0){return;}
 			_GAME_AUDIO._setPlay(_s._audio);
-		}
+		});
 	}, //_start_shots
 	_stop_shots(){
-		let _this=this;
-		for(var _i=0;_i<_this._shots.shot[_this._shot_type].length;_i++){
-			let _ps=_this._shots.shot[_this._shot_type][_i];
-			for(let _j=0;_j<_ps.shots.length;_j++){
-				_ps.shots[_j]._shot=false;
-			}
-		}
+		this._shots.shot[this._shot_type].forEach((_ps) => {
+			_ps.shots.forEach((_pss)=>{_pss._shot=false;});
+		});
 	}, //_move_shots_stop
 	_start_missile_shots(){
-		let _this=this;
 		//自機・オプションのミサイルショット
-		if(!_this._shot_missle_isalive){return;}
+		if(!this._shot_missle_isalive){return;}
 		//ミサイル
-		for(var _i=0;_i<_this._shots.missile.length;_i++){
-			let _pm=_this._shots.missile[_i];
-			if(!_pm.player._isalive){continue;}
+		this._shots.missile.forEach((_pm,_i) => {
+			if(!_pm.player._isalive){return;}
 			//ここで同時ショット(2WAY)と
 			//個別ショットで判別させる
 			if(_PLAYERS_POWER_METER===3){
 				if(_pm.shots[0]._shot_alive||
-					_pm.shots[1]._shot_alive){continue;}
+					_pm.shots[1]._shot_alive){return;}
 				_pm.shots[0]._shot=true;
 				_pm.shots[1]._shot=true;
 				//最初の要素（自機）のみショット音をだす
-				if(_i!==0){continue;}
+				if(_i!==0){return;}
 				_GAME_AUDIO._setPlay(_pm.shots[0]._audio);
-				continue;
+				return;
 			}
 
 			_pm._sq=
@@ -236,21 +226,17 @@ const _PARTS_PLAYERMAIN={
 					:_pm._sq+1;
 			var _sm=_pm.shots[_pm._sq];
 			//ショット中は、ショットを有効にしない
-			if(_sm._shot_alive){continue;}
+			if(_sm._shot_alive){return;}
 			_sm._shot=true;
 			//最初の要素（自機）のみショット音をだす
-			if(_i!==0){continue;}
+			if(_i!==0){return;}
 			_GAME_AUDIO._setPlay(_sm._audio);
-		}
+		});
 	}, //_start_missile_shots
 	_stop_missile_shots(){
-		let _this = this;
-		for(var _i=0;_i<_this._shots.missile.length;_i++){
-			let _pm=_this._shots.missile[_i];
-			for(let _j=0;_j<_pm.shots.length;_j++){
-				_pm.shots[_j]._shot=false;
-			}
-		}
+		this._shots.missile.forEach((_pm)=>{
+			_pm.shots.forEach((_pms)=>{_pms._shot=false;});
+		})
 	}, //_stop_missile_shots
 
 	_draw_player_collision(){
@@ -283,39 +269,34 @@ const _PARTS_PLAYERMAIN={
 			if (_oe.isStandBy()) {continue;}
 			if (!_oe.isalive()) {continue;}
 
-			for (let _j = 0; _j < _this._shots.shot[_this._shot_type].length; _j++) {
-				let _os = _this._shots.shot[_this._shot_type][_j];
+			//自機衝突判定
+			_this._players_obj.enemy_collision(_oe);
+			_this._players_force_obj.enemy_collision(_oe);
+
+			//ショットと敵の衝突判定
+			_this._shots.shot[_this._shot_type].forEach((_os)=>{
 				if (!_os.player._isalive) {
-					continue;
+					return;
 				}
 				if (_this._is_shottype_laser()) {
 					//レーザーの処理
 					let _m = _os.enemy_collision(_oe);
 					_os.set_laser_col_max(_m);
-					continue;
+					return;
 				}
 				//レーザー以外の処理
 				_os.enemy_collision(_oe);
-			}
-
-			//自機衝突判定
-			_this._players_obj.enemy_collision(_oe);
-			_this._players_force_obj.enemy_collision(_oe);
+			})
 
 			//ミサイルが装備されていない場合は無視する
 			if (!_this._shot_missle_isalive) {
 				continue;
 			}
-			for (let _k = 0; _k < _this._shots.missile.length; _k++) {
-				let _pm = _this._shots.missile[_k];
-				if (!_pm.player.isalive()) {
-					continue;
-				}
-				for (let _j = 0; _j < _pm.shots.length; _j++) {
-					let _pms = _pm.shots[_j];
-					_pm.enemy_collision(_oe, _pms);
-				} //_j
-			} //_k
+			//ミサイルと敵の衝突判定
+			_this._shots.missile.forEach((_pm)=>{
+				if (!_pm.player.isalive()) {return;}
+				_pm.shots.forEach((_pms)=>{_pm.enemy_collision(_oe, _pms)});
+			});
 
 		} //_i
 		//ここでレーザーに対して、
@@ -343,72 +324,59 @@ const _PARTS_PLAYERMAIN={
 
 
 	_init_laser_col_max(){
-		let _this = this;
-		if (!_this._is_shottype_laser()){return;}
-		for (let _j = 0; _j < _this._shots.shot[_this._shot_type].length; _j++) {
-			let _os = _this._shots.shot[_this._shot_type][_j];
-			if (!_os.player._isalive) {
-				continue;
-			}
+		if (!this._is_shottype_laser()){return;}
+		this._shots.shot[this._shot_type].forEach((_os)=>{
+			if (!_os.player._isalive) {return;}
 			//レーザーのx位置も調整する。
 			let _t = _os.shots[0];
-			_t._laser_col_max=null;
-		}
+			_t._laser_col_max = null;
+		});
 	},
 	_set_shot_laser_MaxX(){
-		let _this=this;
-		if (!_this._is_shottype_laser()){return;}
+		if (!this._is_shottype_laser()){return;}
+		this._shots.shot[this._shot_type].forEach((_os)=>{
+			if(!_os.player._isalive){return;}
+			//レーザーのx位置も調整する。
+			let _t=_os.shots[0];
 
-		for(let _j=0;
-			_j<_this._shots.shot[_this._shot_type].length;
-			_j++){
-		let _os=_this._shots.shot[_this._shot_type][_j];
-		if(!_os.player._isalive){continue;}
-		//レーザーのx位置も調整する。
-		let _t=_os.shots[0];
+			//以下は敵衝突結果後とMAP衝突結果後を比べて、
+			//レーザーのMAX値を求める
+			if(_t._laser_col_max===0
+				||_t._laser_col_max===null){
+				//敵衝突がない場合。
+				if (_t._is_col_map){return;}
+				//MAPの衝突がない場合
+				_os.setLaserMaxX(_t, _CANVAS.width);
+				return;
+			}
 
-		//以下は敵衝突結果後とMAP衝突結果後を比べて、
-		//レーザーのMAX値を求める
-		if(_t._laser_col_max===0
-			||_t._laser_col_max===null){
-			//敵衝突がない場合。
-			if (_t._is_col_map){continue;}
-			//MAPの衝突がない場合
-			_os.setLaserMaxX(_t, _CANVAS.width);
-			continue;
-		}
+			if(_t.x>=_t._laser_col_max+(_os.speed*2)){
+				if (_t._is_col_map){return;}
+				//MAPの衝突がない場合
+				//すでにレーザーの先端が
+				//衝突から超えた場合は、衝突なしとして照射
+				_os.setLaserMaxX(_t,_CANVAS.width);
+				return;
+			}
 
-		if(_t.x>=_t._laser_col_max+(_os.speed*2)){
-			if (_t._is_col_map){continue;}
-			//MAPの衝突がない場合
-			//すでにレーザーの先端が
-			//衝突から超えた場合は、衝突なしとして照射
-			_os.setLaserMaxX(_t,_CANVAS.width);
-			continue;
-		}
+			//敵の衝突判定があっても、手前の壁の衝突を優先にする。
+			_os.setLaserMaxX(_t,
+				(_t._is_col_map && _os.getLaserMaxX(_t) < _t._laser_col_max + 10)
+				? _os.getLaserMaxX(_t)
+				: _t._laser_col_max + 10
+			);
 
-		//敵の衝突判定があっても、手前の壁の衝突を優先にする。
-		_os.setLaserMaxX(_t,
-			(_t._is_col_map && _os.getLaserMaxX(_t) < _t._laser_col_max + 10)
-			? _os.getLaserMaxX(_t)
-			: _t._laser_col_max + 10
-		);
-
-		}//_j
+		});
 	},
 	_set_shot_collision_control(){
 		//レーザー以外にて、衝突判定したショットを初期化させる
-		let _this=this;
-		if (_this._is_shottype_laser()){return;}
-//		if(_this._shot_type===_this._shot_type_def.LASER){return;}
-		for (let _i = 0; _i < _this._shots.shot[_this._shot_type].length; _i++) {
-			let _os = _this._shots.shot[_this._shot_type][_i];
-			if (!_os.player._isalive) {continue;}
-			for (let _j = 0; _j < _os.shots.length; _j++) {
-				let _oss = _os.shots[_j];
+		if (this._is_shottype_laser()){return;}
+		this._shots.shot[this._shot_type].forEach((_os)=>{
+			if (!_os.player._isalive) {return;}
+			_os.shots.forEach((_oss)=>{
 				if(_oss.isCollision){_oss._init();}
-			}//_j
-		}//_i
+			});
+		});
 	},
 
 	_get_move_drawX(_elem){

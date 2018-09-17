@@ -26,6 +26,8 @@
 </section><!-- ruler -->
 <section id="area">
 <div id="area_selectable"></div>
+<section class="area_blocks_background_img">
+</section>
 <section class="area_blocks drop">
 <!-- <div class="area_blocks_rows">
 <div class="area_block"></div>
@@ -77,60 +79,74 @@
 <textarea name="body" cols="80" rows="10"></textarea>
 </div>
 </div><!-- /#body -->
-<div id="bgmusic" class="form_group">
+<div id="bgimg" class="form_group select_box">
+<label class="col_l">BG IMG:</label>
+<div class="col_r">
+<div class="col_r_group">
+<div class="component_select"></div>
+</div><!-- /.col_r_group -->
+<div class="col_r_group">
+<div class="val">0</div>
+<label><span>0</span><input name="bgimg" type="range" min="0" max="2000" step="25"><span>2000</span></label>
+</div><!-- /.col_r_group -->
+</div><!-- /.col_r -->
+</div><!-- /#bg_img -->
+<div id="bgmusic" class="form_group select_box">
 <label class="col_l">BG MUSIC:</label>
 <div class="col_r">
+<div class="col_r_group">
 <div class="component_select"></div>
 <a class="bgmusic_play"><span>▶️</span></a>
 <a class="bgmusic_stop"><span>⏹</span></a>
-</div>
-</div><!-- /#bgmusic -->
-<div id="bgchange" class="form_group">
-<label class="col_l">BG CHANGE:</label>
-<div class="col_r">
+</div><!-- /.col_r_group -->
+<div class="col_r_group">
 <div class="val">0</div>
 <label><span>0</span><input name="bgchange" type="range" min="0" max="2000" step="25"><span>2000</span></label>
-</div>
-</div><!-- /#bgchange -->
-<div id="boss" class="form_group">
+</div><!-- /.col_r_group -->
+</div><!-- /.col_r -->
+</div><!-- /#bgmusic -->
+<div id="boss" class="form_group select_box">
 <label class="col_l">BOSS:</label>
 <div class="col_r">
+<div class="col_r_group">
 <div class="component_select"></div>
+</div><!-- /.col_r_group -->
 </div>
 </div><!-- /#boss -->
-<div id="init" class="form_group">
+<div id="init" class="form_group select_box">
 <label class="col_l">INIT:</label>
 <div class="col_r">
+<div class="col_r_group">
 <div class="val">0</div>
 <label><span>1</span><input name="init" type="range" min="0" max="999" step="25"><span>999</span></label>
+</div><!-- /.col_r_group -->
 </div>
 </div><!-- /#init -->
-<div id="speed" class="form_group">
+<div id="speed" class="form_group select_box">
 <label class="col_l">SPEED:</label>
 <div class="col_r">
+<div class="col_r_group">
 <div class="val">0</div>
 <label><span>1</span><input name="speed" type="range" min="1" max="5"><span>5</span></label>
+</div><!-- /.col_r_group -->
 </div>
 </div><!-- /#speed -->
-<div id="difficult" class="form_group">
+<div id="difficult" class="form_group select_box">
 <label class="col_l">DIFFICULT:</label>
 <div class="col_r">
+<div class="col_r_group">
 <div class="val">0</div>
-<label><span>1</span><input list="difficult_" step="1" name="difficult" type="range" min="1" max="5"><span>5</span></label>
-<datalist id="difficult_">
-<option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-<option value="5">5</option>
-</datalist>
+<label><span>1</span><input step="1" name="difficult" type="range" min="1" max="5"><span>5</span></label>
+</div><!-- /.col_r_group -->
 </div>
 </div><!-- /#difficult -->
-<div id="map_infinite" class="form_group">
+<div id="map_infinite" class="form_group select_box">
 <label class="col_l">infinite:</label>
 <div class="col_r">
+<div class="col_r_group">
 <div class="val">true</div>
 <label><span>false</span><input name="map_infinite" type="range" min="0" max="1"><span>true</span></label>
+</div><!-- /.col_r_group -->
 </div>
 </div><!-- /#speed -->
     

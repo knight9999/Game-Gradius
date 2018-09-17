@@ -1496,9 +1496,6 @@ class ENEMY_moai_ring extends GameObject_ENEMY{
 		_this.sx=Math.cos(_this.rad);
 		_this.sy=Math.sin(_this.rad);
 
-		//レーザーのみ当たり判定を通常の半分にする。
-		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
-
 		_this._collision_type='t2';
 		((_this.direct===_DEF_DIR._D)?-10:0);
 	}

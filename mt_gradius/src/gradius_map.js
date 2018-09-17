@@ -381,6 +381,8 @@ class GameObject_MAP{
 		_this.map_difficult=0;
 		_this.map_background_speed=0;
 		_this.map_backgroundY_speed=0;//移動単位
+		_this.map_background_img = false;//背景画像
+		_this.map_background_initx = 0; //背景画像の初期x位置
 		_this.map_infinite=false;
 		_this.map_bgmusic='';
 		_this.map_boss='';
@@ -487,19 +489,23 @@ class GameObject_MAP{
 	set_gamestart(){
 		//ゲーム開始処理
 		let _this=this;
-		_this.map_backgroundY_speed=0;
-		_this.x=parseInt(_MAPDEFS[_this.map_pettern]._initx);
-		_this.y=_this.inity;
-		_this.initx=parseInt(_MAPDEFS[_this.map_pettern]._initx);
-		_this.mapdef=_MAPDEFS[_this.map_pettern]._map;
-		_this.map_difficult = _GAME._url_params['ed'] || parseInt(_MAPDEFS[_this.map_pettern]._difficult) - 1;
-		_this.map_background_speed=parseInt(_MAPDEFS[_this.map_pettern]._speed);
-		_this.map_theme=_MAPDEFS[_this.map_pettern]._theme;
-		_this.map_infinite=(_MAPDEFS[_this.map_pettern]._map_infinite==='true')?true:false;
-		_this.map_bgmusic=_MAPDEFS[_this.map_pettern]._bgmusic;
-		_this.map_boss=_MAPDEFS[_this.map_pettern]._boss;
+		const _mp = _MAPDEFS[_this.map_pettern];
+		_this.map_backgroundY_speed = 0;
+		_this.x = parseInt(_mp._initx);
+		_this.y = _this.inity;
+		_this.initx = parseInt(_mp._initx);
+		_this.mapdef = _mp._map;
+		_this.map_difficult = _GAME._url_params['ed'] || parseInt(_mp._difficult) - 1;
+		_this.map_background_img = (_mp._background_img === 'false') ? false : _mp._background_img; //背景画像
+		_this.map_background_initx = parseInt(_mp._background_initx); //背景画像の初期x位置
+		_this.map_background_speed = parseInt(_mp._speed);
 
-		_this.map_bgchange = parseInt(_MAPDEFS[_this.map_pettern]._bgchange) || 0;
+		_this.map_theme = _mp._theme;
+		_this.map_infinite = (_mp._map_infinite === 'true') ? true : false;
+		_this.map_bgmusic = _mp._bgmusic;
+		_this.map_boss = _mp._boss;
+
+		_this.map_bgchange = parseInt(_mp._bgchange) || 0;
 
 		_this.map_enemies_boss = _MAP_ENEMIES_BOSS[_this.map_boss];
 		_this.isboss=false;
@@ -647,6 +653,23 @@ class GameObject_MAP{
 		}
 		return (_y-_this.map_backgroundY_speed)%1000;
 	}
+	getBackGroundX(_x,_slow){
+		//BACKGROUND画像用x位置取得
+		let _this=this;
+		return (_x<=-_CANVAS.width)?_CANVAS.width-5:_x-(this.map_background_speed/(_slow||1.3));
+	} //getBackGroundX
+	getBackGroundY(_y,_slow){
+		//BACKGROUND画像用y位置取得
+		let _this=this;
+		if(!_this.map_infinite){return _y;}
+		if (_y - (_this.map_backgroundY_speed/_slow) < -_CANVAS.height) {
+			return _CANVAS.height;
+		}
+		if (_y - (_this.map_backgroundY_speed/_slow) > _CANVAS.height) {
+			return -_CANVAS.height;
+		}
+		return _y - (_this.map_backgroundY_speed/_slow);
+	} //getBackGroundY
 	getShotY(_y){
 		return _y-this.map_backgroundY_speed;
 	}

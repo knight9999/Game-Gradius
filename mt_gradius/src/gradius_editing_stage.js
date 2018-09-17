@@ -8,6 +8,7 @@ let $_mn=null;
 let $_bm=null;
 
 let _MAP_PETTERN=0;
+let _OTHERS_BACKGROUND_IMG='';
 let _COMPONENT_DIALOG='';
 
 const _DATAAPI={
@@ -95,9 +96,11 @@ _set_entryupdate(_ed){
 				_o.addEventListener('change', _GAME_STAGEEDIT_EVENTS._f_fg_range, false);
 			});
 
+			//BG IMGによるイベント設定
+			document.querySelector('#bgimg.form_group .col_r input[type="range"]').addEventListener('change', _GAME_STAGEEDIT_EVENTS._f_bgimg_set);
+
 			//BG MUSICによる音再生イベント設定
-			const $_fg_bg_play=document.querySelector('a.bgmusic_play');
-			$_fg_bg_play.addEventListener('click',_GAME_STAGEEDIT_EVENTS._f_bgmusic_play);
+			document.querySelector('a.bgmusic_play').addEventListener('click',_GAME_STAGEEDIT_EVENTS._f_bgmusic_play);
 
 			document.querySelectorAll('a.bgmusic_stop, .component_select span, .component_select span div').forEach((_o) => {
 				_o.addEventListener('click', _GAME_STAGEEDIT_EVENTS._f_bgmusic_stop);
@@ -300,9 +303,7 @@ _setInitPartsBlocksWrapper:function(_m){
 
 _clearMap:function(){
 	//MAPを削除
-    document
-		.querySelector('.area_blocks.drop')
-		.textContent=null;
+    document.querySelector('.area_blocks.drop').textContent=null;
 },//_clearMap
 
 _getTextToFont:function(_str, _w){
@@ -357,66 +358,91 @@ _setTextToFont:function(_o,_str,_w){
 _clearData:function(){
 
 },//_clearData()
-_setData:function(_pt){
+_setInit(){
+
+},
+_setComponentSelect(_p) {
+	//conponentSelect入力フォームへの設定
+	document.querySelectorAll('#' + _p.form_group + ' .component_select ul li').forEach((_o) => {_o.classList.remove('on');});
+	if (_p.data_val) {
+		document.querySelector('#' + _p.form_group + ' .component_select ul li[data-val=' + _p.data_val + ']').classList.add('on');
+		document.querySelector('#' + _p.form_group + ' .component_select span').innerHTML = this._getTextToFont(_p.data_val, 15);
+	}
+	document.querySelector('#' + _p.form_group + ' .component_select').setAttribute('data-val', _p.data_val);
+
+},
+_setInputRange(_p){
+	//rangeタイプの入力フォームへの設定
+	document.querySelector('#' + _p.form_group + ' .col_r .val').setAttribute('data-val', _p.data_val);
+	document.querySelector('#' + _p.form_group + ' input[name="' + _p.input_range + '"]').value = _p.input_val;
+	this._setTextToFont(document.querySelector('#' + _p.form_group + ' .col_r .val'), _p.data_val, 15);
+},
+_setData(_pt){
 	let _this=this;
 	let _data=_MAPDEFS[_pt];
 	_this._setInitMap(_data);
 	_this._setInitPartsBlocksWrapper(_data);
 
 	//タイトルを表示
-	const $_title=document.querySelector('#title input[name="title"]');
-	$_title.value=_data._title;
+	document.querySelector('#title input[name="title"]').value = _data._title;
 	//bodyを表示
-	const $_body=document.querySelector('#body textarea[name="body"]');
-	$_body.value=_data._body;
+	document.querySelector('#body textarea[name="body"]').value = _data._body;
+
+	//BG IMGを表示
+	this._setComponentSelect({
+		form_group: 'bgimg',
+		data_val: _data._background_img
+	});
+
+	//BG_IMG_INITXを表示
+	this._setInputRange({
+		form_group: 'bgimg',
+		input_range: 'bgimg',
+		data_val: _data._background_initx,
+		input_val: _data._background_initx
+	});
+
 	//BGM MUSICを表示
-	const $_bgmusic = document.querySelector('#bgmusic .component_select');
-	$_bgmusic.setAttribute('data-val', 'bg_'+_data._bgmusic);
-	document.querySelectorAll('#bgmusic .component_select ul li').forEach((_o)=>{_o.classList.remove('on');})
-	if(_data._bgmusic){
-		document.querySelector('#bgmusic .component_select ul li[data-val=bg_' + _data._bgmusic + ']').classList.add('on');
-		document.querySelector('#bgmusic .component_select span').innerHTML = _this._getTextToFont('bg_'+_data._bgmusic,15);
-	}
-	$_bgmusic.addEventListener('click', ()=>{_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop();});
+	this._setComponentSelect({
+		form_group: 'bgmusic',
+		data_val: 'bg_'+_data._bgmusic
+	});
+	document.querySelector('#bgmusic .component_select').addEventListener('click', () => {
+		_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop();
+	});
 	//BGM CHANGEを表示
-	const $_bgchange = document.querySelector('#bgchange input[name="bgchange"]'),
-		$_bgchange_v = document.querySelector('#bgchange .col_r .val');
-	_data._bgchange = _data._bgchange || 0;
-	$_bgchange.value = _data._bgchange;
-	$_bgchange_v.setAttribute('data-val', _data._bgchange);
-	_this._setTextToFont($_bgchange_v, _data._bgchange, 15);
+	this._setInputRange({
+		form_group: 'bgmusic',
+		input_range: 'bgchange',
+		data_val: _data._bgchange || 0,
+		input_val: _data._bgchange || 0
+	});
 	//BOSSを表示
-	const $_boss = document.querySelector('#boss .component_select');
-	document.querySelectorAll('#boss .component_select ul li').forEach((_o)=>{_o.classList.remove('on');})
-	if (_data._boss) {
-		document.querySelector('#boss .component_select ul li[data-val=' + _data._boss + ']').classList.add('on');
-		document.querySelector('#boss .component_select span').innerHTML = _this._getTextToFont(_data._boss, 15);
-	}
-	$_boss.setAttribute('data-val', _data._boss);
-	//initを表示
-	const $_init=document.querySelector('#init input[name="init"]'),
-		$_init_v=document.querySelector('#init .col_r .val');
-	$_init.value=_data._initx;
-	$_init_v.setAttribute('data-val',_data._initx);
-	_this._setTextToFont($_init_v,_data._initx,15);
+	this._setComponentSelect({
+		form_group: 'boss',
+		data_val: _data._boss
+	});
 	//speedを表示
-	const $_speed=document.querySelector('#speed input[name="speed"]'),
-		$_speed_v=document.querySelector('#speed .col_r .val');
-	$_speed.value=_data._speed;
-	$_speed_v.setAttribute('data-val',_data._speed);
-	_this._setTextToFont($_speed_v,_data._speed,15);
+	this._setInputRange({
+		form_group: 'speed',
+		input_range: 'speed',
+		data_val: _data._speed,
+		input_val: _data._speed
+	});
 	//difficultを表示
-	const $_difficult=document.querySelector('#difficult input[name="difficult"]'),
-		$_difficult_v=document.querySelector('#difficult .col_r .val');
-	$_difficult.value=_data._difficult;
-	$_difficult_v.setAttribute('data-val',_data._difficult);
-	_this._setTextToFont($_difficult_v,_data._difficult,15);
+	this._setInputRange({
+		form_group: 'difficult',
+		input_range: 'difficult',
+		data_val: _data._difficult,
+		input_val: _data._difficult
+	});
 	//map_infiniteを表示
-	const $_map_infinite=document.querySelector('#map_infinite input[name="map_infinite"]'),
-	$_map_infinite_v=document.querySelector('#map_infinite .col_r .val');
-	$_map_infinite.value=(_data._map_infinite==="true")?"1":"0";
-	$_map_infinite_v.setAttribute('data-val',_data._map_infinite);
-	_this._setTextToFont($_map_infinite_v,_data._map_infinite,15);
+	this._setInputRange({
+		form_group: 'map_infinite',
+		input_range: 'map_infinite',
+		data_val: _data._map_infinite,
+		input_val: (_data._map_infinite === "true") ? "1" : "0"
+	});
 
 },//_setData
 
@@ -438,9 +464,11 @@ setDataForDataApi:function(){
 		_str+='],';
 		_str+='"_theme":"'+_m._theme+'",';
 		_str+='"_body":"'+document.querySelector('#body textarea[name="body"]').value+'",';
-		_str+='"_initx":"'+document.querySelector('#init .col_r .val').getAttribute('data-val')+'",';
+		_str+='"_initx":"0",';
+		_str += '"_background_img":"' + document.querySelector('#bgimg .component_select').getAttribute('data-val') + '",';
+		_str += '"_background_initx":"' + document.querySelector('#bgimg .col_r .val').getAttribute('data-val') + '",';
 		_str += '"_bgmusic":"' + document.querySelector('#bgmusic .component_select').getAttribute('data-val').replace('bg_','') + '",';
-		_str += '"_bgchange":"' + document.querySelector('#bgchange .col_r .val').getAttribute('data-val') + '",';
+		_str += '"_bgchange":"' + document.querySelector('#bgmusic .col_r .val').getAttribute('data-val') + '",';
 		_str += '"_boss":"' + document.querySelector('#boss .component_select').getAttribute('data-val') + '",';
 		_str+='"_speed":"'+document.querySelector('#speed .col_r .val').getAttribute('data-val')+'",';
 		_str+='"_difficult":"'+document.querySelector('#difficult .col_r .val').getAttribute('data-val')+'",';
@@ -478,20 +506,52 @@ _setPartsBlockEvent:function(){
 		_o.addEventListener('dragend', _GAME_STAGEEDIT_EVENTS._f_ap_dragend, false);
 	});
 },//_setPartsBlockEvent
+_set_bgimg_set() {
+	const $_abb = document.querySelector('.area_blocks_background_img');
+
+	$_abb.removeAttribute('style');
+	//areaに背景をセットする
+	let _background_img = document.querySelector('#bgimg .component_select').getAttribute('data-val');
+	if (_background_img === 'none') {
+		//背景指定しない場合は、全てクリア
+		return;
+	}
+
+	//背景画像の調整
+	//実際の背景サイズ（例：高さ500 or 1000）にして、
+	//cssのtransformで0.8でする。
+	const $_abd = document.querySelector('.area_blocks.drop');
+	let _w = $_abd.offsetWidth * 5 / 4;
+	let _h = $_abd.offsetHeight * 5 / 4;
+
+	const $_bgimg_v = document.querySelector('#bgimg .col_r .val');
+	let _left = parseInt($_bgimg_v.getAttribute('data-val'));
+	$_abb.style.backgroundImage = 'url(./images/gradius_background_' + _background_img + '.png)';
+	$_abb.style.width = (_w - _left) + 'px';
+	$_abb.style.height = _h + 'px';
+	$_abb.style.left = (_left*4/5) + 'px';
+
+}, //_set_bgimg_set
 _init:()=>{
 	//DataAPI読み込み完了後に実行
     const _this=_GAME_STAGEEDIT;
+	//入力画面 BG IMGの選択ボックス作成
+	const $bgimg = document.querySelector('#bgimg .component_select');
+	let _arr = Object.keys(_OTHERS_BACKGROUND_IMG);
+	_arr.push('none');
+	$bgimg.setAttribute('data-set', _arr.join(','));
+
 	//入力画面 BG MUSICの選択ボックス作成
 	const $bgm = document.querySelector('#bgmusic .component_select');
-	let _arr = Object.keys(_CANVAS_AUDIOS).filter((_k)=>{
+	_arr = Object.keys(_CANVAS_AUDIOS).filter((_k)=>{
 		return (_k.indexOf('bg_type')!==-1);
 	});
 	$bgm.setAttribute('data-set', _arr.join(','));
 
 	//入力画面 BOSSの選択ボックス作成
 	const $boss = document.querySelector('#boss .component_select');
-	let _ar = Object.keys(_MAP_ENEMIES_BOSS).map((_k)=>{return _k;});
-	$boss.setAttribute('data-set', _ar.join(','));
+	_arr = Object.keys(_MAP_ENEMIES_BOSS).map((_k)=>{return _k;});
+	$boss.setAttribute('data-set', _arr.join(','));
 	new components();
 
     //入力値をセット
@@ -507,6 +567,9 @@ _init:()=>{
 		    _o.addEventListener('input', _GAME_STAGEEDIT_EVENTS._f_fg_range, false);
 		    _o.addEventListener('change', _GAME_STAGEEDIT_EVENTS._f_fg_range, false);
 		});
+
+		//BG IMGによるイベント設定
+		document.querySelector('#bgimg.form_group .col_r input[type="range"]').addEventListener('change', _GAME_STAGEEDIT._set_bgimg_set);
 
 		//BG MUSICによる音再生イベント設定
 		const $_fg_bg_play=document.querySelector('a.bgmusic_play');
@@ -528,6 +591,7 @@ _init:()=>{
 		document.querySelectorAll('.parts_block_wrapper .text,#map_bts a').forEach((_o)=>{_this._setTextToFont(_o, _o.innerText, 14);});
 
 		_COMPONENT_DIALOG = new component_dialog();
+		_GAME_STAGEEDIT._set_bgimg_set();
 	});
 
 }//_init
@@ -541,7 +605,7 @@ $_do_area_parts_obj: null, //area_parts内ドラッグ中のオブジェクト
 $_start_area_parts_obj: null, //area_parts内ドラッグ開始のオブジェクト
 $_mouseover_area_parts_obj: null, //area_parts内マウスオーバー時のオブジェクト
 //前のエントリ
-_e_entrylink_prev:function(e){
+_e_entrylink_prev(e){
 	if(this._edits&&!window.confirm('編集ずみがあります。続けますか?')){return;}
 	if(_MAP_PETTERN===0){return;}
 	_MAP_PETTERN--;
@@ -553,19 +617,17 @@ _e_entrylink_prev:function(e){
 	_GAME_STAGEEDIT._setPartsBlockEvent();	
 	
 	//gradiusフォントにセット
-	const $_qsa=document.querySelectorAll(
-		'.parts_block_wrapper .text'
-	);
-	for(let _i=0;_i<$_qsa.length;_i++){
-		_GAME_STAGEEDIT._setTextToFont($_qsa[_i],$_qsa[_i].innerText,14);
-	}
+	document.querySelectorAll('.parts_block_wrapper .text').forEach((_o) => {
+		_GAME_STAGEEDIT._setTextToFont(_o, _o.innerText, 14);
+	})
 	this._f_bgmusic_stop();
 	this._edits = false;
+	_GAME_STAGEEDIT._set_bgimg_set();
 	return false;
 },//_e_entrylink_prev
 
 //次のエントリ
-_e_entrylink_next:function(e){
+_e_entrylink_next(e){
 	if(this._edits&&!window.confirm('編集ずみがあります。続けますか?')){return;}
 	if(_MAP_PETTERN>=_MAPDEFS.length-1){return;}
 	_MAP_PETTERN++;
@@ -577,14 +639,12 @@ _e_entrylink_next:function(e){
 	_GAME_STAGEEDIT._setPartsBlockEvent();	
 
 	//gradiusフォントにセット
-	const $_qsa=document.querySelectorAll(
-		'.parts_block_wrapper .text'
-	);
-	for(let _i=0;_i<$_qsa.length;_i++){
-		_GAME_STAGEEDIT._setTextToFont($_qsa[_i],$_qsa[_i].innerText,14);
-	}
+	document.querySelectorAll('.parts_block_wrapper .text').forEach((_o)=>{
+		_GAME_STAGEEDIT._setTextToFont(_o, _o.innerText, 14);
+	})
 	this._f_bgmusic_stop();
 	this._edits = false;
+	_GAME_STAGEEDIT._set_bgimg_set();
 	return false;
 },//_e_entrylink_next
 
@@ -601,7 +661,7 @@ _e_update:function(){
 },//_e_update
 
 //レンジ設定
-_f_fg_range:function(e){
+_f_fg_range(e){
     let $_t_val=e.target.parentNode.previousElementSibling;
 	let _val=(function(){
 		if(e.target.name!=="map_infinite"){return e.target.value;}
@@ -609,7 +669,7 @@ _f_fg_range:function(e){
 	})();
 	$_t_val.setAttribute('data-val',_val);
     $_t_val.innerText=_val;
-    _GAME_STAGEEDIT._setTextToFont($_t_val,_val,20);
+    _GAME_STAGEEDIT._setTextToFont($_t_val,_val,15);
 
 },//_f_fg_range
 
@@ -851,6 +911,7 @@ window.addEventListener('load', () => {
 	.then((_d)=>{
 		//設定情報取得した値を各オブジェクトにセット
 		_DEF_DIFFICULT = _d.common.difficult;
+		_OTHERS_BACKGROUND_IMG = _d.others.background_img;
 
 		_CANVAS_IMGS_CONTROL._init_canvas_imgs(_d.canvasimgs.imgs);
 		_CANVAS_IMGS_CONTROL._init_canvas_imgs_init(_d.canvasimgs.imgs_init);
@@ -985,6 +1046,7 @@ class components {
 				Array.from(_obj.children).forEach((_o) => { //li s
 					_o.classList.remove('on');
 				})
+				_GAME_STAGEEDIT._set_bgimg_set();
 				e.currentTarget.classList.add('on'); //li current
 				e.stopPropagation();
 				return false;

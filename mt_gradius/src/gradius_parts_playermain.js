@@ -159,10 +159,8 @@ const _PARTS_PLAYERMAIN={
 		let _this=this;
 		for(let _i=0;_i<_this._players_max;_i++){
 			if(_this._shot_missle_isalive){
-//				if(_this._players_obj.isalive()){_this._shots.missile[_i].move();}
 				_this._shots.missile[_i].setDrawImage();
 			}
-//			if(_this._players_obj.isalive()){_this._shots.shot[_this._shot_type][_i].move();}
 			_this._shots.shot[_this._shot_type][_i].setDrawImage();
 		}
 	}, //_draw_shots
@@ -350,7 +348,7 @@ const _PARTS_PLAYERMAIN={
 				return;
 			}
 
-			if(_t.x>=_t._laser_col_max+(_os.speed*2)){
+			if(_t.x>=_t._laser_col_max+(_os.speed*4)){
 				if (_t._is_col_map){return;}
 				//MAPの衝突がない場合
 				//すでにレーザーの先端が
@@ -2498,13 +2496,13 @@ class GameObject_SHOTS_LASER
 			//衝突していないのでスルー
 			return;
 		}
-		for (let _k = 0; _k < _this.shots.length; _k++) {
-			let _t = _this.shots[_k];
+		_this.shots.forEach((_t)=>{
 			_t._laser_col_max=
-				(_t._laser_col_max<_v|| _t._laser_col_max === null)
+				(_t._laser_col_max>_v
+					|| _t._laser_col_max === null)
 					? _v
-					: _t._laser_col_max
-		}
+					: _t._laser_col_max;
+		})
 	}
 	is_laser_collision(_t){
 		return (_t._laser_MaxX < _CANVAS.width);

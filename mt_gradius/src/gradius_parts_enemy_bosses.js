@@ -2307,7 +2307,6 @@ class ENEMY_BOSS_CELL_EYE
 					img:_CANVAS_IMGS['enemy_bullet_cell'].obj,
 					imgPos:[0,15],
 					width:15,
-					speed:3,
 					aniItv:10,
 					deg:_deg+_i
 				})

@@ -655,20 +655,27 @@ class GameObject_MAP{
 	}
 	getBackGroundX(_x,_slow){
 		//BACKGROUND画像用x位置取得
-		let _this=this;
-		return (_x<=-_CANVAS.width)?_CANVAS.width-5:_x-(this.map_background_speed/(_slow||1.3));
+		let _xx = _x - (this.map_background_speed / (_slow || 1.3));
+		_xx = Math.floor(_xx * 10) / 10;
+//		console.log("_xx:"+_xx);
+		return (_xx <= -_CANVAS.width)
+				?_CANVAS.width - (_xx % _CANVAS.width)
+				:_xx;
 	} //getBackGroundX
 	getBackGroundY(_y,_slow){
 		//BACKGROUND画像用y位置取得
 		let _this=this;
 		if(!_this.map_infinite){return _y;}
-		if (_y - (_this.map_backgroundY_speed/_slow) < -_CANVAS.height) {
-			return _CANVAS.height;
+		let _yy = _y - (_this.map_backgroundY_speed / (_slow || 1.0));
+		_yy = Math.floor(_yy*10)/10;
+//		console.log("_yy"+_yy);
+		if (_yy <= -_CANVAS.height) {
+			return _CANVAS.height + (_yy % _CANVAS.height);
 		}
-		if (_y - (_this.map_backgroundY_speed/_slow) > _CANVAS.height) {
-			return -_CANVAS.height;
+		if (_yy >= _CANVAS.height) {
+			return -_CANVAS.height + (_yy % _CANVAS.height);
 		}
-		return _y - (_this.map_backgroundY_speed/_slow);
+		return _yy;
 	} //getBackGroundY
 	getShotY(_y){
 		return _y-this.map_backgroundY_speed;

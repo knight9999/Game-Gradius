@@ -50,12 +50,10 @@ const _DRAW=()=>{
 		//・移動設定
 		//・衝突判定
 		//・表示
-
-		//BACKGROUNDを表示
-		_PARTS_OTHERS._move_background();
-		_PARTS_OTHERS._draw_background();
-
 		if(_PARTS_PLAYERMAIN._players_obj.isalive()){
+			//BACKGROUNDを表示
+			_PARTS_OTHERS._move_background();
+
 			//MAPオブジェクトの最適化、移動
 			_PARTS_MAP._move_maps();
 			//MAP位置と敵の表示はこのシーケンス
@@ -89,6 +87,7 @@ const _DRAW=()=>{
 			//自機移動分配列をセット
 			_PARTS_PLAYERMAIN._set_move_draw();
 		}
+		_PARTS_OTHERS._draw_background();
 		//敵の弾を表示
 		_PARTS_ENEMY_SHOT._draw_shot();
 		//敵を表示
@@ -385,15 +384,10 @@ const _DRAW_GAMEOVER=()=>{
 	_KEYEVENT_MASTER.addKeydownGameover();
 
 	_DRAW_STOP();
-	_CONTEXT.clearRect(0,0,_CANVAS.width,_CANVAS.height);
-
-	//BACKGROUNDを表示
-	_PARTS_OTHERS._draw_background();
-	//DRAW POWER METERを表示
-	_POWERMETER.show();
-	//SCOREを表示
-	_PARTS_OTHERS._draw_score();
-
+	_CONTEXT.save();
+	_CONTEXT.fillStyle = "rgba(0,0,0,0.6)";
+	_CONTEXT.fillRect(0, 0, _CANVAS.width, _CANVAS.height);
+	_CONTEXT.restore();
 //	console.log('gameover');
 	_GAME._setDrawToText({
 		s: 'gameover',
@@ -489,10 +483,11 @@ const _DRAW_INIT_OBJECT=()=>{
 	//METER
 	_POWERMETER=new GameObject_PM();
 
-	//BACKGROUND
-	_PARTS_OTHERS._init_background();
 	//MAP
 	_MAP.set_gamestart();
+
+	//BACKGROUND
+	_PARTS_OTHERS._init_background();
 
 	//GameStart後の曲の設定
 	_DRAW_GAMESTART_AUDIO =

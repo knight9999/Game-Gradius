@@ -149,7 +149,12 @@
             "map_cell_W": {"src":"images/gradius_map_cell_W.png","rate":1.00},
             "map_cell_Y": {"src":"images/gradius_map_cell_Y.png","rate":1.00},
             "map_cell_Z": {"src":"images/gradius_map_cell_Z.png","rate":1.00},
-            "map_cell_wall": {"src":"images/gradius_map_cell_wall.png","rate":1.00}
+            "map_cell_wall": {"src":"images/gradius_map_cell_wall.png","rate":1.00},
+
+            "background_cell": {"src":"images/gradius_background_cell.png","rate":1.00},
+            "background_moai": {"src":"images/gradius_background_moai.png","rate":1.00},
+            "background_frame": {"src":"images/gradius_background_frame.png","rate":1.00},
+            "background_volcano": {"src":"images/gradius_background_volcano.png","rate":1.00}
 
         },
         "imgs_init":{
@@ -207,6 +212,14 @@
             "bg_type5": {"src":"audios/bg_thunderbolt.mp3","volume":1.0},
             "bg_type6": {"src":"audios/bg_cell.mp3","volume":1.0},
             "bg_type7": {"src":"audios/bg_burningheat.mp3","volume":1.0,"loopOffset":0.72}
+        }
+    },
+    "others":{
+        "background_img":{
+            "volcano":{"img":"background_volcano"},
+            "moai":{"img":"background_moai"},
+            "cell":{"img":"background_cell"},
+            "frame":{"img":"background_frame"}
         }
     },
     "map":{

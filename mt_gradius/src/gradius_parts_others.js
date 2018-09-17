@@ -9,18 +9,25 @@ const _PARTS_OTHERS = {
 	_pm:new Object(),
 	_stageselect:new Object(),
 	_score:new Object(),
+	_background: new Object(),
+	_background_star: new Object(),
+	_background_defimg: {//背景オブジェクト定義
+		'volcano': (_p)=>{return new GameObject_BACKGROUND_VOLCANO(_p)},
+		'moai': (_p)=>{return new GameObject_BACKGROUND_MOAI(_p)},
+		'cell': (_p)=>{return new GameObject_BACKGROUND_CELL(_p)},
+		'frame': (_p)=>{return new GameObject_BACKGROUND_FRAME(_p)}
+	},
 
-	_background_ar:new Array(),
-	_background_star_max:70,
 	_powercapsell_ar:new Array(),
 
 	_reset(){
 		let _this = this;
-		_this._pm= new Object();
-		_this._stageselect= new Object();
+		_this._pm = new Object();
+		_this._stageselect = new Object();
+		_this._background = new Object(),
+		_this._background_star = new Object(),
 //		_this._score= new Object();スコアは永続させる
 
-		_this._background_ar=new Array();
 		_this._powercapsell_ar= new Array();
 	},
 	_init_score(){
@@ -36,18 +43,22 @@ const _PARTS_OTHERS = {
 		this._score.reset();
 	},
 	_init_background(){
-		let _this = this;
-		for (let _i = 0; _i < _this._background_star_max; _i++) {
-			_this._background_ar.push(new GameObject_BACKGROUND());
-		}
+		this._background_star = new GameObject_BACKGROUND_CONTROL_STAR({initx:_MAP.map_background_initx});
+		if (_MAP.map_background_img==='none'){return;}
+		this._background = this._background_defimg[_MAP.map_background_img]({
+			_initx: _MAP.map_background_initx,
+			_infinite: _MAP.map_infinite
+		});
 	},
 	_move_background(){
-		let _this = this;
-		_this._background_ar.map((_o)=>{_o.move();});
+		this._background_star.move();
+		if (_MAP.map_background_img==='none'){return;}
+		this._background.move();
 	},
 	_draw_background(){
-		let _this = this;
-		_this._background_ar.map((_o)=>{_o.setDrawImage();});
+		this._background_star.setDrawImage();
+		if (_MAP.map_background_img==='none'){return;}
+		this._background.setDrawImage();
 	},
 
 	_add_powercapsell(_p){
@@ -587,10 +598,39 @@ class GameObject_POWERCAPSELL{
 }
 
 
-class GameObject_BACKGROUND{
+class GameObject_BACKGROUND {
+	constructor(_p){
+		this.x = _p.x || 0;
+		this.y = _p.y || 0;
+		this._c = 0;
+	}
+	setDrawImage() {} //描画
+	move() {} //移動
+}
+
+//背景（星）コントローラー
+class GameObject_BACKGROUND_CONTROL_STAR extends GameObject_BACKGROUND {
 	constructor(){
-		this.x=_CANVAS.width*Math.random();
-		this.y=_CANVAS.height*Math.random();
+		super({x:0,y:0});
+		this._background_ar = new Array();
+		for (let _i = 0; _i < 70; _i++) {
+			this._background_ar.push(new GameObject_BACKGROUND_STAR());
+		}
+	}
+	setDrawImage() { //描画
+		this._background_ar.forEach((_o)=>{_o.setDrawImage();});
+	}
+	move() { //移動
+		this._background_ar.forEach((_o)=>{_o.move();});
+	}
+}
+//背景（星）
+class GameObject_BACKGROUND_STAR extends GameObject_BACKGROUND {
+	constructor(){
+		super({
+			x: _CANVAS.width * Math.random(),
+			y: _CANVAS.height * Math.random()
+		});
 		this.rgb=parseInt(Math.random()*255)+","+
 				parseInt(Math.random()*255)+","+
 				parseInt(Math.random()*255);
@@ -609,13 +649,103 @@ class GameObject_BACKGROUND{
 	}
 	move(){
 		let _this = this;
+		_this._c = (_this._c >= 200 - 1) ? 0 : _this._c + 1;
+		if (_MAP.getBackGroundSpeed() === 0){return;}
 		_this.x=(_this.x<0)
 					?_CANVAS.width
-					:_this.x;
-		_this.x -= (_MAP.getBackGroundSpeed() === 0)
-					?0
-					:_this.speed;
+					: _this.x - _this.speed;		
+	}
+}
 
-		_this._c=(_this._c>=200-1)?0:_this._c+1;
+//背景（親）
+class GameObject_BACKGROUND_IMG extends GameObject_BACKGROUND {
+	constructor(_p) {
+		super({x: 0,y: 0});
+		this._initx = _p._initx||0;
+		this._alpha = 1;
+		this._slowx = _p._slowx || 1.3;
+		this._slowy = _p._slowy || 2;
+		this.img = _CANVAS_IMGS['background_'+_p._img];
+		//タイル上の画像
+		this._ar = 
+			(()=>{
+				if(_p._infinite){
+					//縦スクロール有
+					return [{x:this._initx,y:0},
+							{x:this._initx+_CANVAS.width,y:0},
+							{x:this._initx,y:_CANVAS.height},
+							{x:this._initx+_CANVAS.width,y:_CANVAS.height}]
+				}
+				return [{x:this._initx,y:0},
+						{x:this._initx+_CANVAS.width,y:0}]
+			})();
+	}
+	setDrawImage() {
+		// 現在のパスをリセットする
+		this._ar.forEach((_o) => {
+			_CONTEXT.save();
+			_CONTEXT.globalAlpha = this._alpha;
+			// 塗りつぶしスタイルの設定
+			_CONTEXT.fillStyle = _CONTEXT.createPattern(this.img.obj, 'repeat');
+			_CONTEXT.translate(_o.x, _o.y);
+			_CONTEXT.fillRect(0, 0, _CANVAS.width, _CANVAS.height);
+			_CONTEXT.restore();
+		});
+	}
+	move() {
+		if(_MAP.getBackGroundSpeed() === 0){return;}
+		this._ar.forEach((_o,_i) => {
+			_o.x = _MAP.getBackGroundX(_o.x, this._slowx);
+			_o.y = _MAP.getBackGroundY(_o.y, this._slowy);
+		});
+	}
+}
+
+
+class GameObject_BACKGROUND_VOLCANO
+	extends GameObject_BACKGROUND_IMG {
+	constructor(_p) {
+		super({
+			_initx: _p._initx,
+			_infinite: _p._infinite
+		});
+		this._alpha = 1;
+		this.img = _CANVAS_IMGS['background_volcano'];
+	}
+}
+
+class GameObject_BACKGROUND_MOAI
+	extends GameObject_BACKGROUND_IMG {
+	constructor(_p) {
+		super({
+			_initx: _p._initx,
+			_infinite: _p._infinite
+		});
+		this._alpha = 1;
+		this.img = _CANVAS_IMGS['background_moai'];
+	}
+}
+
+class GameObject_BACKGROUND_CELL
+	extends GameObject_BACKGROUND_IMG {
+	constructor(_p) {
+		super({
+			_initx: _p._initx,
+			_infinite: _p._infinite
+		});
+		this._alpha = 1;
+		this.img = _CANVAS_IMGS['background_cell'];
+	}
+}
+
+class GameObject_BACKGROUND_FRAME
+	extends GameObject_BACKGROUND_IMG {
+	constructor(_p) {
+		super({
+			_initx: _p._initx,
+			_infinite: _p._infinite
+		});
+		this._alpha = 1;
+		this.img = _CANVAS_IMGS['background_frame'];
 	}
 }

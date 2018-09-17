@@ -144,6 +144,19 @@ form #area #area_selectable{
 }
 form #area #area_selectable.on{display:block;}
 
+form #area .area_blocks_background_img {
+	background: none;
+	background-repeat: repeat;
+	height: 100%;
+	left: 0px;
+	position: absolute;
+	top: 0px;
+	transform-origin: top left;
+	transform: scale(0.8);
+	width: 100%;
+	z-index: 0;
+}
+
 form #area .area_blocks{left:0px;position:absolute;top:0px;}
 form #area .area_blocks.drop{z-index:10;}
 
@@ -220,7 +233,7 @@ form .form_group textarea{
 }
 form .form_group input[type="range"] {
     margin:0px 20px;
-    width: 40%;
+    width: 250px;
 }
 form .form_group{border: 1px solid rgba(255,255,255,0);margin-bottom:10px;padding:10px 20px;}
 form .form_group#init{display: none;}
@@ -245,10 +258,11 @@ form .form_group .col_r .val{
 }
 form .form_group .col_r.range{margin-right:5%;width:10%;}
 
+form .form_group .col_r .col_r_group{display:flex;width:100%;align-items: center;}
+form .form_group .col_r .col_r_group:not(:last-child){margin-bottom:10px;}
+
 /* bgmusic */
-form .form_group#bgmusic .col_r{display:flex;}
-form .form_group#bgmusic .col_r>*{margin-right:3px;}
-form .form_group#bgmusic .col_r>a{
+form .form_group#bgmusic .col_r .col_r_group>a{
 	background-color: rgba(150,150,150,1);
     border:1px solid rgba(255,255,255,0.7);
 	border-radius:5px;
@@ -258,7 +272,7 @@ form .form_group#bgmusic .col_r>a{
 	position: relative;
 	width:40px;
 }
-form .form_group#bgmusic .col_r>a span {
+form .form_group#bgmusic .col_r .col_r_group>a span {
     position: absolute;
     top: 0px;
     left: 0px;

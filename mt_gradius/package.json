@@ -17,6 +17,7 @@
     "imagemin-pngquant": "^5.1.0",
     "jsonminify": "^0.4.1",
     "uglify-es": "^3.3.9",
-    "uglifycss": "0.0.29"
+    "uglifycss": "0.0.29",
+    "vue": "^2.5.17"
   }
 }

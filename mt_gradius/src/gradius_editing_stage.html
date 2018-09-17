@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <title>HTML 5 Gradius Editing Stage</title>
+<script src="../node_modules/vue/dist/vue.min.js"></script>
 <script src="/mt7/mt-static/data-api/v4/js/mt-data-api.min.js"></script>
 <link rel="stylesheet" href="./gradius_editing_stage.css">
 </head>
@@ -140,13 +141,7 @@
 </div><!-- /.col_r_group -->
 </div>
 </div><!-- /#difficult -->
-<div id="map_infinite" class="form_group select_box">
-<label class="col_l">infinite:</label>
-<div class="col_r">
-<div class="col_r_group">
-<div class="val">true</div>
-<label><span>false</span><input name="map_infinite" type="range" min="0" max="1"><span>true</span></label>
-</div><!-- /.col_r_group -->
+<component-range id="map_infinite" title="infinite"></component-range>
 </div>
 </div><!-- /#speed -->
     
@@ -172,7 +167,7 @@
 <script src="./gradius_parts_enemies.js"></script>
 <script src="./gradius_parts_map.js"></script>
 <script src="./gradius_map.js"></script>
-<script src="./gradius_editing_stage.js"></script>
+<script src="./gradius_editing_stage.js" type="module"></script>
 
 </body>
 </html>

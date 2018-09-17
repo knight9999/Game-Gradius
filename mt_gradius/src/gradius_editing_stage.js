@@ -1132,3 +1132,21 @@ class component_dialog{
 		window.setTimeout(()=>{_e_cm.remove();},4000);
 	}
 }
+
+
+Vue.component(
+	'component-range',{
+	'props':{'id':String,'title':String},
+	'template':
+		'<div id="id.text" class="form_group select_box">'+
+		'<label class="col_l">{{title}}:</label>' +
+		'<div class="col_r">' +
+		'<div class="col_r_group">' +
+		'<div class="val">true</div>' +
+		'<label><span>false</span><input name="{{id}}" type="range" min="0" max="1"><span>true</span></label>' +
+		'</div><!-- /.col_r_group -->'
+	}
+);
+const app = new Vue({
+	el: 'form'
+});

@@ -1134,19 +1134,107 @@ class component_dialog{
 }
 
 
-Vue.component(
-	'component-range',{
-	'props':{'id':String,'title':String},
-	'template':
-		'<div id="id.text" class="form_group select_box">'+
-		'<label class="col_l">{{title}}:</label>' +
-		'<div class="col_r">' +
-		'<div class="col_r_group">' +
-		'<div class="val">true</div>' +
-		'<label><span>false</span><input name="{{id}}" type="range" min="0" max="1"><span>true</span></label>' +
-		'</div><!-- /.col_r_group -->'
+const component_range = {
+	props:{'name':String,'min':Number,'max':Number,'step':Number},
+	template: '#component-range'
+};
+
+const component_range_boolean = {
+	props:{'name':String},
+	template: '#component-range-boolean'
+};
+
+const tag_BASE = {
+	'props':{'id':String,'title':String,'min':Number,'max':Number},
+	'template':`<div :id="id" class="form_group select_box">
+				<label class="col_l">{{title}}:</label>
+				<div class="col_r">
+				<component-range :name="id" :min="min" :max="max"></component-range>
+				</div><!-- ./col_r -->
+				</div><!-- ./form_group -->`
+};
+
+const tag_test_select = {
+	props:{'lis':{type:Array}},
+	template: '<component-select v-bind:lis="lis"></component-select>',
+	data(){
+		return this.lis
 	}
-);
+}
+
+const tag_select = {
+	props:{'lis':{type:Array}},
+	template: '<component-select v-bind:lis="lis"></component-select>',
+	data(){
+		return this.lis
+	}
+}
+
+const tag_speed = {'props': tag_BASE.props,'template': tag_BASE.template};
+const tag_difficult = {'props': tag_BASE.props,'template': tag_BASE.template};
+const tag_map_infinite = {
+	'props':{'id':String,'title':String},
+	'template': `<div :id="id" class="form_group select_box">
+				<label class="col_l">{{title}}:</label>
+				<div class="col_r">
+				<component-range-boolean name="map_infinite"></component-range-boolean>
+				</div><!-- ./col_r -->
+				</div><!-- ./form_group -->`
+};
+
+Vue.component('component-range', component_range);
+Vue.component('component-range-boolean', component_range_boolean);
+
+Vue.component('tag-speed', tag_speed);
+// Vue.component('tag-difficult', tag_difficult);
+// Vue.component('tag-map-infinite', tag_map_infinite);
+
 const app = new Vue({
-	el: 'form'
+	el: 'form #form_groups',
+	data(){
+		return {
+			json_data: null
+		}
+	},
+	components: {
+		'tag-speed': tag_speed,
+		'tag-difficult': tag_difficult,
+		'tag-map-infinite': tag_map_infinite,
+		'tag-test-select': tag_test_select,
+		'tag-select': tag_select
+	},
+	methods: {
+		init:()=>{
+			alert('test');
+		}
+	}
 });
+
+
+// Vue.component('component-range', component_range);
+// Vue.component('component-range-boolean', component_range_boolean);
+
+// Vue.component('tag-speed', tag_speed);
+// Vue.component('tag-difficult', tag_difficult);
+// Vue.component('tag-map-infinite', tag_map_infinite);
+
+// const app = new Vue({
+// 	el: 'form',
+// 	components: {
+// 		'component-range': component_range,
+// 	}
+// });
+
+
+// const component_range_boolean = Vue.extend({
+// 	'props':{'name':String},
+// 	'template':`
+// 		<div class="col_r_group">
+// 		<div class="val">true</div>
+// 		<label><span>false</span><input :name="name" type="range" min="0" max="1"><span>true</span></label>
+// 		</div><!-- /.col_r_group -->
+// 		`
+// });
+// 
+
+//app2.$mount('tag-map-infinite');

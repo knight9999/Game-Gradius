@@ -68,6 +68,7 @@
 </section><!-- /#map -->
 
 
+<section id="form_groups">
 <div id="title" class="form_group">
 <label class="col_l">TITLE:</label>
 <div class="col_r">
@@ -114,60 +115,58 @@
 </div><!-- /.col_r_group -->
 </div>
 </div><!-- /#boss -->
-<div id="init" class="form_group select_box">
-<label class="col_l">INIT:</label>
-<div class="col_r">
-<div class="col_r_group">
-<div class="val">0</div>
-<label><span>1</span><input name="init" type="range" min="0" max="999" step="25"><span>999</span></label>
-</div><!-- /.col_r_group -->
-</div>
-</div><!-- /#init -->
-<div id="speed" class="form_group select_box">
-<label class="col_l">SPEED:</label>
-<div class="col_r">
-<div class="col_r_group">
-<div class="val">0</div>
-<label><span>1</span><input name="speed" type="range" min="1" max="5"><span>5</span></label>
-</div><!-- /.col_r_group -->
-</div>
-</div><!-- /#speed -->
-<div id="difficult" class="form_group select_box">
-<label class="col_l">DIFFICULT:</label>
-<div class="col_r">
-<div class="col_r_group">
-<div class="val">0</div>
-<label><span>1</span><input step="1" name="difficult" type="range" min="1" max="5"><span>5</span></label>
-</div><!-- /.col_r_group -->
-</div>
-</div><!-- /#difficult -->
-<component-range id="map_infinite" title="infinite"></component-range>
-</div>
-</div><!-- /#speed -->
-    
+<tag-speed id="speed" title="speed" min="1" max="5"></tag-speed>
+<tag-difficult id="difficult" title="difficult" min="1" max="5"></tag-difficult>
+<tag-map-infinite id="map_infinite" title="infinite"></tag-map-infinite>
+
+<component-select-a :ar="['kkk','bbb','ccc','ddd']"></component-select-a>
+</section><!-- /#form_groups -->
 
 </section><!-- /#form_inner -->
 </form>
 
-<section id="popup">
-<div class="inner"></div>
-</section>
-
 <section id="menu">
 <section id="menu_inner">
 <a nohref="" class="prev" onClick="_GAME_STAGEEDIT_EVENTS._e_entrylink_prev(event);">prev</a>
-<a nohref="" onClick="_GAME_STAGEEDIT_EVENTS._e_update(event);">update</a>
+<a nohref="" onClick="_VUE_COMPONENT_MODAL.open(event);">update</a>
+<!-- <a nohref="" onClick="_GAME_STAGEEDIT_EVENTS._e_update(event);">update</a> -->
 <a href="./gradius.html" target="_blank">back to game</a>
 <a nohref="" class="next" onClick="_GAME_STAGEEDIT_EVENTS._e_entrylink_next(event);">next</a>
 </section><!-- /#menu_inner -->
 </section><!-- /#menu -->
+
+<section id="vue-component-modal">
+<component-modal ref="comp"></component-modal>
+</section>
+
+
+
+
+
+<script type="text/x-template" id="component-range">
+<div class="col_r_group">
+<div class="val"></div>
+<label><span>{{min}}</span><input :name="name" type="range" :min="min" :max="max" :step="step"><span>{{max}}</span></label>
+</div><!-- /.col_r_group -->
+</script>
+
+<script type="text/x-template" id="component-range-boolean">
+<div class="col_r_group">
+<div class="val">true</div>
+<label><span>false</span><input :name="name" type="range" min="0" max="1"><span>true</span></label>
+</div><!-- /.col_r_group -->
+</script>
+
+<div id="set_style"></div>
 
 <script src="./gradius_canvasimgs.js"></script>
 <script src="./gradius_common.js"></script>
 <script src="./gradius_parts_enemies.js"></script>
 <script src="./gradius_parts_map.js"></script>
 <script src="./gradius_map.js"></script>
-<script src="./gradius_editing_stage.js" type="module"></script>
+<script src="./gradius_editing_stage.js"></script>
+<script src="./gradius_editing_stage_vue_comp_modal.js"></script>
+<script src="./gradius_editing_stage_vue_comp_select.js"></script>
 
 </body>
 </html>

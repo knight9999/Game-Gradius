@@ -51,7 +51,7 @@ const _PARTS_PLAYERMAIN={
 	_move_drawX:new Array(),
 	_move_drawY:new Array(),
 	_move_drawY_moves:new Array(),
-	_move_draw_max:100,
+	_move_draw_max:50,
 
 	_reset(){
 		//以下定義をリセット
@@ -348,7 +348,7 @@ const _PARTS_PLAYERMAIN={
 				return;
 			}
 
-			if(_t.x>=_t._laser_col_max+(_os.speed*4)){
+			if(_t.x>=_t._laser_col_max+(_os.speed*5)){
 				if (_t._is_col_map){return;}
 				//MAPの衝突がない場合
 				//すでにレーザーの先端が
@@ -359,9 +359,9 @@ const _PARTS_PLAYERMAIN={
 
 			//敵の衝突判定があっても、手前の壁の衝突を優先にする。
 			_os.setLaserMaxX(_t,
-				(_t._is_col_map && _os.getLaserMaxX(_t) < _t._laser_col_max + 10)
+				(_t._is_col_map && _os.getLaserMaxX(_t) <= _t._laser_col_max+10)
 				? _os.getLaserMaxX(_t)
-				: _t._laser_col_max + 10
+				: _t._laser_col_max+10
 			);
 
 		});
@@ -2456,7 +2456,7 @@ class GameObject_SHOTS_LASER
 				sx:0,//処理変数：レーザー左端x
 				y:0,
 				_c_col:0,//アニメーションカウント衝突
-				laser_time:600,//定義：照射時間（照射終了共通）
+				laser_time:25,//定義：照射時間（照射終了共通）
 				_enemy:null,//レーザーに衝突した敵のオブジェクト
 				_laser_t:0,//処理変数：照射時間
 				_laser_ts:0,//処理変数：照射終了後時間
@@ -2511,7 +2511,6 @@ class GameObject_SHOTS_LASER
 		let _this=this;
 		if (!_this.is_laser_collision(_t)) {return;}
 		_t._c_col=(_t._c_col>=_this.img_col_ani.length-1)?0:_t._c_col+1;
-
 		_GAME._setDrawImage({
 			img: _this.img_col,
 			imgPosx: _this.img_col_ani[_t._c_col],
@@ -2670,7 +2669,7 @@ class GameObject_SHOTS_LASER
 				//衝突・または画面右端に達した場合
 	  			if(_i>=_t._laser_MaxX-_pl._x){
 					//レーザーが右端に届いた時
-					_t._laser_t+=(1000/_FPS);
+					_t._laser_t+=1;
 //					console.log('a');
 					return _t._laser_MaxX-_pl._x;
 				}
@@ -2691,11 +2690,11 @@ class GameObject_SHOTS_LASER
 					return _i+=_this.speed;
 				}
 
-				if(_t._laser_t<=_t.laser_time-200){return _i;}
+				if(_t._laser_t<=_t.laser_time){return _i;}
 				//時間経過後に、照射終了カウント開始
-				_t._laser_ts+=(1000/_FPS);
+				_t._laser_ts+=1;
 				//照射時間に達するまで照射を続ける
-				if(_t._laser_ts>_t.laser_time-200){
+				if(_t._laser_ts>_t.laser_time){
 					//照射が終わり切った時
 					_t._init();
 					return 0;

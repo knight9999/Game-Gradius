@@ -43,7 +43,10 @@ const _PARTS_OTHERS = {
 		this._score.reset();
 	},
 	_init_background(){
-		this._background_star = new GameObject_BACKGROUND_CONTROL_STAR({initx:_MAP.map_background_initx});
+		this._background_star = new GameObject_BACKGROUND_CONTROL_STAR({
+			_initx:_MAP.map_background_initx,
+			_infinite: _MAP.map_infinite
+		});
 		if (_MAP.map_background_img==='none'){return;}
 		this._background = this._background_defimg[_MAP.map_background_img]({
 			_initx: _MAP.map_background_initx,
@@ -609,12 +612,13 @@ class GameObject_BACKGROUND {
 }
 
 //背景（星）コントローラー
-class GameObject_BACKGROUND_CONTROL_STAR extends GameObject_BACKGROUND {
-	constructor(){
+class GameObject_BACKGROUND_CONTROL_STAR
+	extends GameObject_BACKGROUND {
+	constructor(_p){
 		super({x:0,y:0});
 		this._background_ar = new Array();
 		for (let _i = 0; _i < 70; _i++) {
-			this._background_ar.push(new GameObject_BACKGROUND_STAR());
+			this._background_ar.push(new GameObject_BACKGROUND_STAR(_p));
 		}
 	}
 	setDrawImage() { //描画
@@ -625,16 +629,19 @@ class GameObject_BACKGROUND_CONTROL_STAR extends GameObject_BACKGROUND {
 	}
 }
 //背景（星）
-class GameObject_BACKGROUND_STAR extends GameObject_BACKGROUND {
-	constructor(){
+class GameObject_BACKGROUND_STAR
+	extends GameObject_BACKGROUND {
+	constructor(_p){
 		super({
 			x: _CANVAS.width * Math.random(),
-			y: _CANVAS.height * Math.random()
+			y: ((_p._infinite)?2:1)*_CANVAS.height * Math.random()
 		});
 		this.rgb=parseInt(Math.random()*255)+","+
 				parseInt(Math.random()*255)+","+
 				parseInt(Math.random()*255);
 		this.speed=Math.random()*5;
+		this._slowx = 1.3;
+		this._slowy = 2;
 
 		this._c=parseInt(Math.random()*200);
 		this._ar_alpha=[0.0,0.2,0.4,0.6,0.8,1.0,0.8,0.6,0.4,0.2];
@@ -653,7 +660,8 @@ class GameObject_BACKGROUND_STAR extends GameObject_BACKGROUND {
 		if (_MAP.getBackGroundSpeed() === 0){return;}
 		_this.x=(_this.x<0)
 					?_CANVAS.width
-					: _this.x - _this.speed;		
+					: _this.x - _this.speed;
+		_this.y = _MAP.getBackGroundY(_this.y, this._slowy);
 	}
 }
 

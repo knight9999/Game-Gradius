@@ -1060,8 +1060,11 @@ class ENEMY_p extends GameObject_ENEMY{
 		_this.speedy = 0;
 		_this.speeds = 1;
 		_this.speedv = _this.speeds;
+
 		//レーザーのみ当たり判定を通常の半分にする。
-		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER = 0.5;
+		_this._DEF_SHOTSTATUS._SHOTTYPE_RIPPLE_LASER = 1.0;
+
 		_this.audio_collision = _CANVAS_AUDIOS['enemy_collision4'];
 
 		_this.shotColMap = ['10,10,' + (_this.width - 20) + ',' + (_this.height - 20)];
@@ -1265,9 +1268,11 @@ class ENEMY_p_small extends ENEMY_p {
 
 		_this.col_date=new Date();
 		_this._collision_type='t1';
-		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER = 1;
-		_this.shotColMap = ['3,3,' + (_this.width-6) + ',' + (_this.height-6)];
-		
+
+		//レーザーのみ当たり判定を通常の半分にする。
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER = 1.0;
+
+		_this.shotColMap = ['3,3,' + (_this.width-6) + ',' + (_this.height-6)];		
 	}
 	setAlive(){
 		let _this=this;
@@ -1316,7 +1321,8 @@ class ENEMY_q extends GameObject_ENEMY{
 		_this._collision_posy=(_this.direct===_DEF_DIR._D)?25:0;
 
 		//レーザーのみ当たり判定を通常の半分にする。
-		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER=0.5;
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER = 0.5;
+		_this._DEF_SHOTSTATUS._SHOTTYPE_RIPPLE_LASER = 0.5;
 
 		_this.shotColMap=[
 			(function(){
@@ -1495,6 +1501,10 @@ class ENEMY_moai_ring extends GameObject_ENEMY{
 		_this.rad=_GAME.getRad(_PARTS_PLAYERMAIN._players_obj,{x:_p.x,y:_p.y});
 		_this.sx=Math.cos(_this.rad);
 		_this.sy=Math.sin(_this.rad);
+
+		//レーザーのみ当たり判定を通常の半分にする。
+		_this._DEF_SHOTSTATUS._SHOTTYPE_LASER = 0.5;
+		_this._DEF_SHOTSTATUS._SHOTTYPE_RIPPLE_LASER = 0.5;
 
 		_this._collision_type='t2';
 		((_this.direct===_DEF_DIR._D)?-10:0);

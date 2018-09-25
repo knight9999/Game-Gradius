@@ -1,20 +1,21 @@
 'use strict';
 
-const _VUE_COMPONENT_SELECT_TEMP = `
+const _VUE_COMPONENT_SELECT={
+template:`<div class="col_r_group">
 <div class="vue_component_select">
-<span ref="span" v-on:click="open">aaa</span>
+<div class="selected" ref="span_select" v-on:click="open">aaa</div>
 <ul><li ref="li" v-on:click="set" v-for="list in lists" :data-val="list">{{list}}</li></ul>
 </div><!-- /.vue_component_select -->
-`;
-
-const _VUE_COMPONENT_SELECT_STYLE = `
+</div>
+`,
+style:`
 /*  component
 =====================*/
 div.vue_component_select {
 	position: relative;
 }
 
-div.vue_component_select span  {
+div.vue_component_select div.selected {
 	background-color: rgba(0, 0, 0, 1);
 	border: 1px solid rgba(255, 255, 255, 0.7);
 	border-radius: 3px;
@@ -27,7 +28,7 @@ div.vue_component_select span  {
 	position: relative;
 }
 
-div.vue_component_select span:after  {
+div.vue_component_select div.selected:after {
 	content: '';
 	position: absolute;
 	width: 0px;
@@ -41,8 +42,8 @@ div.vue_component_select span:after  {
 	transform-origin: 2.5px;
 	transition: 0.2s;
 }
-div.vue_component_select span.on.top:after  {transform: rotate(90deg);}
-div.vue_component_select span.on.bottom:after  {transform: rotate(-90deg);}
+div.vue_component_select div.selected.on.top:after  {transform: rotate(90deg);}
+div.vue_component_select div.selected.on.bottom:after  {transform: rotate(-90deg);}
 
 div.vue_component_select ul  {
 	border: 1px solid rgba(255, 255, 255, 0.7);
@@ -98,26 +99,33 @@ div.vue_component_select ul.on li.on  {
 	background-color: rgba(90, 90, 90, 1);
 }
 
-`;
-
-const _VUE_COMPONENT_SELECT_PARTS = {
-	props:{'ar':{type:Array}},
-	template: _VUE_COMPONENT_SELECT_TEMP,
+`,
+set_style() {
+	const _newstyle = document.createElement('style');
+	_newstyle.innerHTML = this.style;
+	document.getElementById('set_style').appendChild(_newstyle);
+},//set_style()
+set_parts(){
+	return {
+	props:{'name':{type:String},'ar':{type:Array}},
+	template: _VUE_COMPONENT_SELECT.template,
 	data(){
 		return {
-			lists: this.ar
+			lists: this.ar,
+			name:name
 		};
 	},
 	created(){
 	},
 	mounted(){
-		_GAME_STAGEEDIT._setTextToFont(this.$refs.span, this.$refs.span.innerText, 15);
+		console.log(this.name)
+		_GAME_STAGEEDIT._setTextToFont(this.$refs.span_select, this.$refs.span_select.innerText, 15);
 		this.$refs.li.forEach((_o)=>{
 			_GAME_STAGEEDIT._setTextToFont(_o, _o.innerText, 15);
 		})
 	},
 	methods:{
-		set:(e)=>{
+		set(e){
 			const $_li = e.target;//li
 			const $_ul = $_li.parentElement; //ul
 			$_ul.previousElementSibling.classList.remove('on') //span
@@ -130,17 +138,17 @@ const _VUE_COMPONENT_SELECT_PARTS = {
 			})
 			$_li.classList.add('on'); //li current
 		},//set
-		open:(e)=>{
+		open(e){
 			const $_span = e.target;//span
 			const $_ul = $_span.nextElementSibling; //ul
 			if ($_span.classList.contains('on')) {
 				$_span.classList.remove('on');
 				$_ul.classList.remove('on');
 			} else {
-				document.querySelectorAll('.component_select span').forEach((_o) => {
+				document.querySelectorAll('.vue_component_select div').forEach((_o) => {
 					_o.classList.remove('on', 'top', 'bottom');
 				}); //span
-				document.querySelectorAll('.component_select ul').forEach((_o) => {
+				document.querySelectorAll('.vue_component_select ul').forEach((_o) => {
 					_o.classList.remove('on', 'top', 'bottom');
 				}); //ul
 				$_span.classList.add('on'); //span
@@ -156,26 +164,9 @@ const _VUE_COMPONENT_SELECT_PARTS = {
 			}
 		}//open
 	}//methods
+	}
+}//set_parts();
 };
 
-
-const _VUE_COMPONENT_SELECT = new Vue({
-	el: 'form #form_groups',
-	data:{isshow:false},
-	components:{
-		'component-select-a': _VUE_COMPONENT_SELECT_PARTS
-	},
-	created() {
-		console.log('created===');
-	},
-	mounted(){
-		var newelm = document.createElement('style');
-		newelm.innerHTML = _VUE_COMPONENT_SELECT_STYLE;
-		document.getElementById('set_style').appendChild(newelm);
-	},
-	methods:{
-		open(){
-			this.$refs.comp.open();
-		}
-	}
-});
+_VUE_COMPONENT_SELECT.set_style();
+Vue.component('component-select', _VUE_COMPONENT_SELECT.set_parts());

@@ -363,19 +363,19 @@ _setInit(){
 },
 _setComponentSelect(_p) {
 	//conponentSelect入力フォームへの設定
-	document.querySelectorAll('#' + _p.form_group + ' .component_select ul li').forEach((_o) => {_o.classList.remove('on');});
-	if (_p.data_val) {
-		document.querySelector('#' + _p.form_group + ' .component_select ul li[data-val=' + _p.data_val + ']').classList.add('on');
-		document.querySelector('#' + _p.form_group + ' .component_select span').innerHTML = this._getTextToFont(_p.data_val, 15);
-	}
-	document.querySelector('#' + _p.form_group + ' .component_select').setAttribute('data-val', _p.data_val);
+	// document.querySelectorAll('#' + _p.form_group + ' .component_select ul li').forEach((_o) => {_o.classList.remove('on');});
+	// if (_p.data_val) {
+	// 	document.querySelector('#' + _p.form_group + ' .component_select ul li[data-val=' + _p.data_val + ']').classList.add('on');
+	// 	document.querySelector('#' + _p.form_group + ' .component_select span').innerHTML = this._getTextToFont(_p.data_val, 15);
+	// }
+	// document.querySelector('#' + _p.form_group + ' .component_select').setAttribute('data-val', _p.data_val);
 
 },
 _setInputRange(_p){
 	//rangeタイプの入力フォームへの設定
-	document.querySelector('#' + _p.form_group + ' .col_r .val').setAttribute('data-val', _p.data_val);
-	document.querySelector('#' + _p.form_group + ' input[name="' + _p.input_range + '"]').value = _p.input_val;
-	this._setTextToFont(document.querySelector('#' + _p.form_group + ' .col_r .val'), _p.data_val, 15);
+	// document.querySelector('#' + _p.form_group + ' .col_r .val').setAttribute('data-val', _p.data_val);
+	// document.querySelector('#' + _p.form_group + ' input[name="' + _p.input_range + '"]').value = _p.input_val;
+	// this._setTextToFont(document.querySelector('#' + _p.form_group + ' .col_r .val'), _p.data_val, 15);
 },
 _setData(_pt){
 	let _this=this;
@@ -403,13 +403,13 @@ _setData(_pt){
 	});
 
 	//BGM MUSICを表示
-	this._setComponentSelect({
-		form_group: 'bgmusic',
-		data_val: 'bg_'+_data._bgmusic
-	});
-	document.querySelector('#bgmusic .component_select').addEventListener('click', () => {
-		_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop();
-	});
+	// this._setComponentSelect({
+	// 	form_group: 'bgmusic',
+	// 	data_val: 'bg_'+_data._bgmusic
+	// });
+	// document.querySelector('#bgmusic .component_select').addEventListener('click', () => {
+	// 	_GAME_STAGEEDIT_EVENTS._f_bgmusic_stop();
+	// });
 	//BGM CHANGEを表示
 	this._setInputRange({
 		form_group: 'bgmusic',
@@ -536,22 +536,22 @@ _init:()=>{
 	//DataAPI読み込み完了後に実行
     const _this=_GAME_STAGEEDIT;
 	//入力画面 BG IMGの選択ボックス作成
-	const $bgimg = document.querySelector('#bgimg .component_select');
-	let _arr = Object.keys(_OTHERS_BACKGROUND_IMG);
-	_arr.push('none');
-	$bgimg.setAttribute('data-set', _arr.join(','));
+	// const $bgimg = document.querySelector('#bgimg .component_select');
+	// let _arr = Object.keys(_OTHERS_BACKGROUND_IMG);
+	// _arr.push('none');
+	// $bgimg.setAttribute('data-set', _arr.join(','));
 
 	//入力画面 BG MUSICの選択ボックス作成
-	const $bgm = document.querySelector('#bgmusic .component_select');
-	_arr = Object.keys(_CANVAS_AUDIOS).filter((_k)=>{
-		return (_k.indexOf('bg_type')!==-1);
-	});
-	$bgm.setAttribute('data-set', _arr.join(','));
+	// const $bgm = document.querySelector('#bgmusic .component_select');
+	// _arr = Object.keys(_CANVAS_AUDIOS).filter((_k)=>{
+	// 	return (_k.indexOf('bg_type')!==-1);
+	// });
+	// $bgm.setAttribute('data-set', _arr.join(','));
 
 	//入力画面 BOSSの選択ボックス作成
-	const $boss = document.querySelector('#boss .component_select');
-	_arr = Object.keys(_MAP_ENEMIES_BOSS).map((_k)=>{return _k;});
-	$boss.setAttribute('data-set', _arr.join(','));
+	// const $boss = document.querySelector('#boss .component_select');
+	// _arr = Object.keys(_MAP_ENEMIES_BOSS).map((_k)=>{return _k;});
+	// $boss.setAttribute('data-set', _arr.join(','));
 	new components();
 
     //入力値をセット
@@ -1134,16 +1134,6 @@ class component_dialog{
 }
 
 
-const component_range = {
-	props:{'name':String,'min':Number,'max':Number,'step':Number},
-	template: '#component-range'
-};
-
-const component_range_boolean = {
-	props:{'name':String},
-	template: '#component-range-boolean'
-};
-
 const tag_BASE = {
 	'props':{'id':String,'title':String,'min':Number,'max':Number},
 	'template':`<div :id="id" class="form_group select_box">
@@ -1182,37 +1172,10 @@ const tag_map_infinite = {
 				</div><!-- ./form_group -->`
 };
 
-Vue.component('component-range', component_range);
-Vue.component('component-range-boolean', component_range_boolean);
 
 Vue.component('tag-speed', tag_speed);
-// Vue.component('tag-difficult', tag_difficult);
-// Vue.component('tag-map-infinite', tag_map_infinite);
-
-const app = new Vue({
-	el: 'form #form_groups',
-	data(){
-		return {
-			json_data: null
-		}
-	},
-	components: {
-		'tag-speed': tag_speed,
-		'tag-difficult': tag_difficult,
-		'tag-map-infinite': tag_map_infinite,
-		'tag-test-select': tag_test_select,
-		'tag-select': tag_select
-	},
-	methods: {
-		init:()=>{
-			alert('test');
-		}
-	}
-});
 
 
-// Vue.component('component-range', component_range);
-// Vue.component('component-range-boolean', component_range_boolean);
 
 // Vue.component('tag-speed', tag_speed);
 // Vue.component('tag-difficult', tag_difficult);

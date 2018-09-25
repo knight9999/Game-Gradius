@@ -81,45 +81,34 @@
 <textarea name="body" cols="80" rows="10"></textarea>
 </div>
 </div><!-- /#body -->
-<div id="bgimg" class="form_group select_box">
+<div id="bgimg" class="form_group">
 <label class="col_l">BG IMG:</label>
 <div class="col_r">
-<div class="col_r_group">
-<div class="component_select"></div>
-</div><!-- /.col_r_group -->
-<div class="col_r_group">
-<div class="val">0</div>
-<label><span>0</span><input name="bgimg" type="range" min="0" max="2000" step="25"><span>2000</span></label>
-</div><!-- /.col_r_group -->
+<component-select name="bgimg" :ar="['kkk','bbb','ccc','ddd']"></component-select>
+<component-range name="bgimg" min="0" max="2000" step="25"></component-range>
 </div><!-- /.col_r -->
 </div><!-- /#bg_img -->
-<div id="bgmusic" class="form_group select_box">
+<div id="bgmusic" class="form_group">
 <label class="col_l">BG MUSIC:</label>
 <div class="col_r">
+<component-select name="bgmusic" :ar="['kkk','bbb','ccc','ddd']"></component-select>
 <div class="col_r_group">
-<div class="component_select"></div>
 <a class="bgmusic_play"><span>▶️</span></a>
 <a class="bgmusic_stop"><span>⏹</span></a>
 </div><!-- /.col_r_group -->
-<div class="col_r_group">
-<div class="val">0</div>
-<label><span>0</span><input name="bgchange" type="range" min="0" max="2000" step="25"><span>2000</span></label>
-</div><!-- /.col_r_group -->
+<component-range name="bgcolor" min="0" max="2000" step="25"></component-range>
 </div><!-- /.col_r -->
 </div><!-- /#bgmusic -->
-<div id="boss" class="form_group select_box">
+<div id="boss" class="form_group">
 <label class="col_l">BOSS:</label>
 <div class="col_r">
-<div class="col_r_group">
-<div class="component_select"></div>
-</div><!-- /.col_r_group -->
+<component-select name="boss" :ar="['kkk','bbb','ccc','ddd']"></component-select>
 </div>
 </div><!-- /#boss -->
 <tag-speed id="speed" title="speed" min="1" max="5"></tag-speed>
 <tag-difficult id="difficult" title="difficult" min="1" max="5"></tag-difficult>
 <tag-map-infinite id="map_infinite" title="infinite"></tag-map-infinite>
 
-<component-select-a :ar="['kkk','bbb','ccc','ddd']"></component-select-a>
 </section><!-- /#form_groups -->
 
 </section><!-- /#form_inner -->
@@ -143,12 +132,6 @@
 
 
 
-<script type="text/x-template" id="component-range">
-<div class="col_r_group">
-<div class="val"></div>
-<label><span>{{min}}</span><input :name="name" type="range" :min="min" :max="max" :step="step"><span>{{max}}</span></label>
-</div><!-- /.col_r_group -->
-</script>
 
 <script type="text/x-template" id="component-range-boolean">
 <div class="col_r_group">
@@ -167,6 +150,32 @@
 <script src="./gradius_editing_stage.js"></script>
 <script src="./gradius_editing_stage_vue_comp_modal.js"></script>
 <script src="./gradius_editing_stage_vue_comp_select.js"></script>
+<script src="./gradius_editing_stage_vue_comp_range.js"></script>
 
+
+<script>
+const app = new Vue({
+	el: 'form #form_groups',
+	data(){
+		return {
+            json_data: null,
+		}
+	},
+	components: {
+		'tag-speed': tag_speed,
+		'tag-difficult': tag_difficult,
+		'tag-map-infinite': tag_map_infinite,
+		'tag-test-select': tag_test_select,
+		'tag-select': tag_select
+	},
+	methods: {
+		init:()=>{
+			alert('test');
+		}
+	}
+});
+
+
+</script>
 </body>
 </html>

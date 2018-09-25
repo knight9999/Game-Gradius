@@ -168,7 +168,6 @@ const _VUE_COMPONENT_MODAL_PARTS = {
 	}
 };
 
-
 const _VUE_COMPONENT_MODAL = new Vue({
 	el: '#vue-component-modal',
 	data:{isshow:false},

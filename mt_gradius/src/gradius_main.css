@@ -295,7 +295,7 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a{right:0px
 }
 
 /********
-iPhoneX
+iPhoneX(Standard)
 ********/
 @media screen and (min-width: 737px) and (max-width: 1023px) and (orientation: landscape) {
 body.sp section#game_wrapper {
@@ -352,7 +352,7 @@ body.sp section#sp_controller #sp_controller_inner .sp_controller_bt.a {
 }
 
 /********
-iPhone 5.5 4.7 4.0inch
+iPhoneX(Zoom)、iPhone 5.5 4.7 4.0inch
 ********/
 @media screen and (min-width: 569px) and (max-width: 736px) and (orientation: landscape) {
 body.sp section#game_wrapper {

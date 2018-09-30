@@ -53,6 +53,8 @@ const _PARTS_PLAYERMAIN={
 	_move_drawY_moves:new Array(),
 	_move_draw_max:50,
 
+	_pc_keystate: {x:0, y:0},
+
 	_reset(){
 		//以下定義をリセット
 		let _this=this;
@@ -79,6 +81,7 @@ const _PARTS_PLAYERMAIN={
 		_this._move_drawX = new Array();
 		_this._move_drawY = new Array();
 
+		_this._pc_keystate = {x:0, y:0};
 	},
 
 	_draw_players(){
@@ -86,6 +89,30 @@ const _PARTS_PLAYERMAIN={
 		//自機とフォース・シールドの表示処理
 		_this._players_force_obj.setDrawImage();
 		if(_this._players_obj.isalive()){_this._players_obj.setDrawImage();}
+	},
+	_set_pc_keystateX(x){
+		let _this = this;
+		_this._pc_keystate.x = x;
+	},
+	_set_pc_keystateY(y){
+		let _this = this;
+		_this._pc_keystate.y = y;
+	},
+	_get_move_from_pc_keystate(){
+		let _this = this;
+		if (_this._pc_keystate.y == 0) {
+			if (_this._pc_keystate.x == 0) {
+				return {x:0, y:0};
+			} else {
+				return {x:_this._pc_keystate.x, y:0};
+			}
+		} else {
+			if (_this._pc_keystate.x == 0) {
+				return {x:0, y:_this._pc_keystate.y};
+			} else {
+				return {x:_this._pc_keystate.x*(1.0/Math.sqrt(2)), y:_this._pc_keystate.y*(1.0/Math.sqrt(2))};
+			}
+		}
 	},
 	_set_move_players(_p){
 		let _this = this;

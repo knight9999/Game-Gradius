@@ -490,16 +490,24 @@ const _KEYEVENT={
 	}
 
 	if(e.key==='ArrowLeft'||e.key==='Left'){
-		_PARTS_PLAYERMAIN._set_move_players({x:-1,y:0});
+		_PARTS_PLAYERMAIN._set_pc_keystateX(-1);
+		var p = _PARTS_PLAYERMAIN._get_move_from_pc_keystate();
+		_PARTS_PLAYERMAIN._set_move_players(p);
 	}
 	if(e.key==='ArrowRight'||e.key==='Right'){
-		_PARTS_PLAYERMAIN._set_move_players({x:1,y:0});
+		_PARTS_PLAYERMAIN._set_pc_keystateX(1);
+		var p = _PARTS_PLAYERMAIN._get_move_from_pc_keystate();
+		_PARTS_PLAYERMAIN._set_move_players(p);
 	}
 	if(e.key==='ArrowUp'||e.key==='Up'){
-		_PARTS_PLAYERMAIN._set_move_players({x:0,y:-1});
+		_PARTS_PLAYERMAIN._set_pc_keystateY(-1);
+		var p = _PARTS_PLAYERMAIN._get_move_from_pc_keystate();
+		_PARTS_PLAYERMAIN._set_move_players(p);
 	}
 	if(e.key==='ArrowDown'||e.key==='Down'){
-		_PARTS_PLAYERMAIN._set_move_players({x:0,y:1});
+		_PARTS_PLAYERMAIN._set_pc_keystateY(1);
+		var p = _PARTS_PLAYERMAIN._get_move_from_pc_keystate();
+		_PARTS_PLAYERMAIN._set_move_players(p);
 	}
 	//装備
 	if(e.key==='B'||e.key==='b'){
@@ -523,16 +531,40 @@ const _KEYEVENT={
 
 'keyup_game':function(e){
 	if(e.key==='ArrowLeft'||e.key==='Left'){
-		_PARTS_PLAYERMAIN._set_stop_players();
+		_PARTS_PLAYERMAIN._set_pc_keystateX(0);
+		var p = _PARTS_PLAYERMAIN._get_move_from_pc_keystate();
+		if (p.x == 0 && p.y == 0) {
+			_PARTS_PLAYERMAIN._set_stop_players();
+		} else {
+			_PARTS_PLAYERMAIN._set_move_players(p);
+		}
 	}
 	if(e.key==='ArrowRight'||e.key==='Right'){
-		_PARTS_PLAYERMAIN._set_stop_players();
+		_PARTS_PLAYERMAIN._set_pc_keystateX(0);
+		var p = _PARTS_PLAYERMAIN._get_move_from_pc_keystate();
+		if (p.x == 0 && p.y == 0) {
+			_PARTS_PLAYERMAIN._set_stop_players();
+		} else {
+			_PARTS_PLAYERMAIN._set_move_players(p);
+		}
 	}
 	if(e.key==='ArrowUp'||e.key==='Up'){
-		_PARTS_PLAYERMAIN._set_stop_players();
+		_PARTS_PLAYERMAIN._set_pc_keystateY(0);
+		var p = _PARTS_PLAYERMAIN._get_move_from_pc_keystate();
+		if (p.x == 0 && p.y == 0) {
+			_PARTS_PLAYERMAIN._set_stop_players();
+		} else {
+			_PARTS_PLAYERMAIN._set_move_players(p);
+		}
 	}
 	if(e.key==='ArrowDown'||e.key==='Down'){
-		_PARTS_PLAYERMAIN._set_stop_players();
+		_PARTS_PLAYERMAIN._set_pc_keystateY(0);
+		var p = _PARTS_PLAYERMAIN._get_move_from_pc_keystate();
+		if (p.x == 0 && p.y == 0) {
+			_PARTS_PLAYERMAIN._set_stop_players();
+		} else {
+			_PARTS_PLAYERMAIN._set_move_players(p);
+		}
 	}
 	if(e.key===' '||e.key==='Spacebar'){
 		_DRAW_STOP_PLAYERS_SHOTS();
